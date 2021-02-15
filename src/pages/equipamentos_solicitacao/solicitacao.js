@@ -292,7 +292,7 @@ export default class Cadastro extends React.Component {
                                 }`}
                               </td>
                               <td>
-                                {bebida.Qtd} ${bebida.Un}
+                                {bebida.Qtd} {bebida.Un}
                               </td>
                               <td>
                                 <input
