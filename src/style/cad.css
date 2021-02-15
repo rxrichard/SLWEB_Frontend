@@ -1,0 +1,55 @@
+.t1{
+    height: 200px;
+}
+.quad{
+    grid-column: span 4;
+}
+.triple{
+    grid-column: span 3;
+}
+.double{
+    grid-column: span 2;
+}
+
+.exit{
+    position: fixed;
+    z-index: 1000;
+    
+    
+}
+.Nav{
+    position: fixed;
+    z-index: 1000;
+    
+}
+
+.btnModal{
+    margin-right: 10px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.paginadesenvolvimento{
+    padding: auto;
+    align-self: auto;
+    text-align: center;
+    align-content: center;
+    vertical-align: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 50px;
+}
+.paginadesenvolvimentob{
+    padding: auto;
+    align-self: auto;
+    text-align: center;
+    align-content: center;
+    vertical-align: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 50px;
+    background-color: darkblue;
+    
+    
+}

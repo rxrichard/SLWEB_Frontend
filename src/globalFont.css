@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Open Sans' !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  src: url('../src/assets/font/OpenSans-Bold.ttf') !important; /* IE9 Compat Modes */
+}
+#global {
+  font-family: 'Open Sans' !important;
+}

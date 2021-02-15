@@ -1,0 +1,347 @@
+/* CSS Global */
+
+@font-face {
+  font-family: 'Open Sans' !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  src: url('../../src/assets/font/OpenSans-Bold.ttf') !important; /* IE9 Compat Modes */
+}
+
+/* Estilo do scroll */
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  background-color: #f5f5f5;
+}
+
+body {
+  font-family: 'Open Sans' !important;
+  height: 100vh !important;
+  overflow-x: hidden;
+}
+
+/* Estilo Sidebar */
+html,
+body {
+  margin: 0;
+}
+
+.DefaultSelect {
+  display: block !important;
+  font-size: 1em !important;
+  border: 1px dashed #333 !important;
+  width: 100% !important;
+  height: 36px !important;
+}
+
+.datepicker-table-wrapper {
+  color: #000 !important;
+}
+
+/*CSS para tabelas no geral*/
+.Item:hover {
+  animation-name: GreyBIn;
+  animation-duration: 400ms;
+  animation-fill-mode: forwards;
+  cursor: pointer;
+}
+
+.Item:not(:hover) {
+  animation-name: GreyBOut;
+  animation-duration: 400ms;
+  animation-fill-mode: forwards;
+  cursor: auto;
+}
+
+.Selected {
+  animation-name: Bright;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  margin-top: 1px;
+  color: #000;
+}
+
+.tableFixHead thead th {
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  font-weight: bolder;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.tableFixHead tbody {
+  line-height: 0.6;
+}
+
+.modal-trigger:hover {
+  animation-name: GreyBIn;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  cursor: pointer;
+}
+
+.modal-trigger:not(:hover) {
+  animation-name: GreyBOut;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  cursor: auto;
+}
+
+.modal-trigger:hover td:nth-child(2) {
+  width: 40%;
+  min-width: 400px;
+  animation-name: GrowFont;
+  animation-duration: 400ms;
+  animation-fill-mode: forwards;
+  cursor: pointer;
+}
+
+.modal-trigger:not(:hover) td:nth-child(2) {
+  width: 40%;
+  min-width: 400px;
+  animation-name: ShrinkFont;
+  animation-duration: 400ms;
+  animation-fill-mode: forwards;
+  cursor: auto;
+}
+
+/* Rust Aligns */
+
+.floatRight {
+  float: right;
+}
+.floatLeft {
+  float: left;
+}
+
+.XAlign {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.YAlign {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.TextBold {
+  all: 'unset' !important;
+  font-weight: bold !important;
+}
+
+.txt {
+  color: antiquewhite;
+  font-size: 20px !important;
+  font-weight: bold;
+}
+
+/* Estilo aplicado na sidebar */
+.Menu i {
+  margin-left: 5%;
+}
+
+.Menu a {
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+}
+
+.Menu:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition-duration: 0.5s;
+}
+
+.Menu:not(:hover) {
+  background-color: rgb(0, 0, 0, 0);
+  transition-duration: 0.5s;
+}
+
+/* Inputs style */
+
+.t1 {
+  height: 200px;
+}
+.twenty {
+  grid-column: span 20;
+}
+/* nineteen = neth a regra é a 1 e ultima letra da "palavra" nine = ne teen = tn*/
+.neth {
+  grid-column: span 19;
+}
+.ehtn {
+  grid-column: span 18;
+}
+.sntn {
+  grid-column: span 17;
+}
+.sxtn {
+  grid-column: span 16;
+}
+.fftn {
+  grid-column: span 15;
+}
+.frtn {
+  grid-column: span 14;
+}
+.thtn {
+  grid-column: span 13;
+}
+.twv {
+  grid-column: span 12;
+}
+.onc {
+  grid-column: span 11;
+}
+.dez {
+  grid-column: span 10;
+}
+.nono {
+  grid-column: span 9;
+}
+.oct {
+  grid-column: span 8;
+}
+.set {
+  grid-column: span 7;
+}
+.six {
+  grid-column: span 6;
+}
+.five {
+  grid-column: span 5;
+}
+.quad {
+  grid-column: span 4;
+}
+.triple {
+  grid-column: span 3;
+}
+.double {
+  grid-column: span 2;
+}
+
+/* Outros... */
+
+#page-wrap {
+  text-align: center;
+
+  /* Prevent sidebar from showing a scrollbar on page */
+  overflow: hidden !important;
+}
+
+.exit {
+  position: fixed;
+  z-index: 1000;
+}
+
+.Nav {
+  position: fixed;
+  z-index: 1000;
+}
+
+.btnModal {
+  margin-right: 10px;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.paginadesenvolvimento {
+  padding: auto;
+  align-self: auto;
+  text-align: center;
+  align-content: center;
+  vertical-align: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 50px;
+}
+
+.paginadesenvolvimentob {
+  padding: auto;
+  align-self: auto;
+  text-align: center;
+  align-content: center;
+  vertical-align: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 50px;
+  background-color: darkblue;
+}
+
+/* Animações */
+
+@keyframes GreyBIn {
+  0% {
+    background-color: #fff;
+    color: #000;
+  }
+  100% {
+    background-color: #ddd;
+    color: #000000;
+  }
+}
+
+@keyframes GreyBOut {
+  0% {
+    background-color: #ddd;
+    color: #000;
+  }
+  100% {
+    color: #000;
+    background-color: #fff;
+  }
+}
+
+@keyframes Bright {
+  0% {
+    background-color: #38b5a0;
+  }
+  100% {
+    background-color: none;
+  }
+}
+
+@keyframes GrowFont {
+  0% {
+    font-size: 1em;
+    font-weight: normal;
+  }
+  100% {
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+}
+
+@keyframes ShrinkFont {
+  0% {
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+  100% {
+    font-size: 1em;
+    font-weight: normal;
+  }
+}

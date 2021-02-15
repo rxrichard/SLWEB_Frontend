@@ -1,0 +1,20 @@
+.Produto:hover {
+  background-color: #ccc !important;
+  cursor: pointer;
+}
+
+.modal-trigger:hover{
+  background-color: #ccc !important;
+  cursor: pointer;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  margin-top: 1px;
+}
+
+.tableFixHead thead th {
+  background-color: #ccc;
+  position: sticky;
+  top: 0;
+}
