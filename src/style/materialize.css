@@ -6723,11 +6723,18 @@ textarea.materialize-textarea {
 	border-color: #949494
 }
 
+/*Precisei mudar o css vanilla aqui pro checkbox da tela de solicitação de equipamento parar de bugar*/
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
 	position: absolute;
-	opacity: 0;
-	pointer-events: none
+	opacity: 1;
+	pointer-events: auto;
+	-ms-transform: scale(1.5); /* IE */
+  	-moz-transform: scale(1.5); /* FF */
+  	-webkit-transform: scale(1.5); /* Safari and Chrome */
+  	-o-transform: scale(1.5); /* Opera */
+  	transform: scale(1.5);
+  	padding: 10px;
 }
 
 [type="checkbox"]+span:not(.lever) {

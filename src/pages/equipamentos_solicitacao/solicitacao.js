@@ -5,7 +5,6 @@ import Imagem from "../../assets/Capturar.JPG";
 import {
   Button,
   Icon,
-  Checkbox,
   Modal,
   DatePicker,
   Table,
@@ -72,7 +71,7 @@ export default class Cadastro extends React.Component {
       Toast("Falha ao buscar endereços para entrega", "error");
     }
   }
-  
+
   //reformulado
   async handleRequest() {
     if (this.state.requisicao.destino === null) {
@@ -98,7 +97,10 @@ export default class Cadastro extends React.Component {
       return false;
     }
 
-    if (this.state.requisicao.EmailA === null || this.state.requisicao.EmailA === '') {
+    if (
+      this.state.requisicao.EmailA === null ||
+      this.state.requisicao.EmailA === ""
+    ) {
       Toast("Preencha um email para receber atualizações sobre o pedido");
       return false;
     }
@@ -273,6 +275,7 @@ export default class Cadastro extends React.Component {
                         <thead>
                           <tr>
                             <th>Bebida</th>
+                            <th>Medida</th>
                             <th>Acompanha?</th>
                           </tr>
                         </thead>
@@ -286,19 +289,21 @@ export default class Cadastro extends React.Component {
                                     : " "
                                 }${
                                   bebida.Medida !== null ? bebida.Medida : ""
-                                } ${bebida.Qtd} ${bebida.Un}`}
+                                }`}
                               </td>
                               <td>
-                                <Checkbox
-                                  filledIn
+                                {bebida.Qtd} ${bebida.Un}
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
                                   onChange={(e) =>
                                     this.handleAtivarBebida(
                                       bebida,
                                       e.target.checked
                                     )
                                   }
-                                  label="Sim"
-                                ></Checkbox>
+                                ></input>
                               </td>
                             </tr>
                           ))}

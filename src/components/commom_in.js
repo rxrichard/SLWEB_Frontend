@@ -137,6 +137,15 @@ export const Button = Styled.button`
     }
 `
 
+export const CommomCheckbox = Styled.input`
+    height: 16px,
+    width: 16px,
+    background-color: #ccc,
+    opacity: 1,
+    pointer-events: auto
+    border-radius: 4px
+`
+
 export const Contagem = Styled.label`
     height: 2.5vh;
     padding: 0 1vw 0 1vw;
