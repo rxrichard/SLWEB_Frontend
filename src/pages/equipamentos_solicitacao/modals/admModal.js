@@ -140,11 +140,11 @@ export default class AdmModal extends React.Component {
 
   //Função que baixa o PDF da OS
   async handleRetrivePDF(OSID) {
+    console.log(OSID)
     try {
       const response = await api.get("/equip/requests/retrive", {
         params: {
-          token: sessionStorage.getItem("token"),
-          OSID,
+          OSID
         },
         responseType: "arraybuffer",
       });
@@ -548,7 +548,6 @@ export default class AdmModal extends React.Component {
                   this.setState({
                     previsao: data,
                   });
-                  console.log(data);
                 },
                 parse: null,
                 setDefaultDate: false,
