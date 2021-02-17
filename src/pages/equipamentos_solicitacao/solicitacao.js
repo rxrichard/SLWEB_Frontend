@@ -32,6 +32,7 @@ export default class Cadastro extends React.Component {
       Tproduto: null,
       Chip: null,
       EmailA: null,
+      CNPJ_Destino: null,
 
       // estabilizador: false,
       // transformador: false,
@@ -74,91 +75,92 @@ export default class Cadastro extends React.Component {
 
   //reformulado
   async handleRequest() {
-    if (this.state.requisicao.destino === null) {
-      Toast("Preencha um destino para a solicitação");
-      return false;
-    }
+    // if (this.state.requisicao.destino === null) {
+    //   Toast("Preencha um destino para a solicitação");
+    //   return false;
+    // }
 
-    if (this.state.requisicao.maquina === "") {
-      Toast("Escolha um modelo de máquina");
-      return false;
-    }
+    // if (this.state.requisicao.maquina === "") {
+    //   Toast("Escolha um modelo de máquina");
+    //   return false;
+    // }
 
-    if (this.state.config.length === 0) {
-      Toast("Selecione pelo menos uma bebida para a máquina");
-      return false;
-    }
+    // if (this.state.config.length === 0) {
+    //   Toast("Selecione pelo menos uma bebida para a máquina");
+    //   return false;
+    // }
 
-    if (
-      this.state.requisicao.maquina !== "" &&
-      this.state.requisicao.abastecimento === null
-    ) {
-      Toast("Selecione o sistema de abastecimento da máquina");
-      return false;
-    }
+    // if (
+    //   this.state.requisicao.maquina !== "" &&
+    //   this.state.requisicao.abastecimento === null
+    // ) {
+    //   Toast("Selecione o sistema de abastecimento da máquina");
+    //   return false;
+    // }
 
-    if (
-      this.state.requisicao.EmailA === null ||
-      this.state.requisicao.EmailA === ""
-    ) {
-      Toast("Preencha um email para receber atualizações sobre o pedido");
-      return false;
-    }
+    // if (
+    //   this.state.requisicao.EmailA === null ||
+    //   this.state.requisicao.EmailA === ""
+    // ) {
+    //   Toast("Preencha um email para receber atualizações sobre o pedido");
+    //   return false;
+    // }
 
-    if (
-      this.state.requisicao.maquina !== "" &&
-      this.state.requisicao.sisPagamento === null
-    ) {
-      Toast("Selecione o meio de pagamento para a máquina");
-      return false;
-    }
+    // if (
+    //   this.state.requisicao.maquina !== "" &&
+    //   this.state.requisicao.sisPagamento === null
+    // ) {
+    //   Toast("Selecione o meio de pagamento para a máquina");
+    //   return false;
+    // }
 
-    if (this.state.requisicao.DtPretendida === null) {
-      Toast("Preencha uma data conveniente para entrega");
-      return false;
-    }
+    // if (this.state.requisicao.DtPretendida === null) {
+    //   Toast("Preencha uma data conveniente para entrega");
+    //   return false;
+    // }
 
-    if (this.state.requisicao.gabinete === null) {
-      Toast("Especifique sua opção de gabinete");
-      return false;
-    }
+    // if (this.state.requisicao.gabinete === null) {
+    //   Toast("Especifique sua opção de gabinete");
+    //   return false;
+    // }
 
-    if (this.state.requisicao.Tproduto === null) {
-      Toast("Selecione o tipo de produto da máquina");
-      return false;
-    }
+    // if (this.state.requisicao.Tproduto === null) {
+    //   Toast("Selecione o tipo de produto da máquina");
+    //   return false;
+    // }
 
-    if (this.state.requisicao.Chip === null) {
-      Toast(
-        "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
-      );
-      return false;
-    }
+    // if (this.state.requisicao.Chip === null) {
+    //   Toast(
+    //     "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+    //   );
+    //   return false;
+    // }
 
-    //envia a solicitação
-    try {
-      const response = await api.post("/equip", {
-        Maq: this.state.requisicao,
-        config: this.state.config,
-      });
+    // //envia a solicitação
+    // try {
+    //   const response = await api.post("/equip", {
+    //     Maq: this.state.requisicao,
+    //     config: this.state.config,
+    //   });
 
-      if (response.status === 201) {
-        this.setState({ solicitado: true });
-        Toast("Solicitação registrada com sucesso", "success");
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-        return true;
-      } else {
-        throw Error;
-      }
-    } catch (err) {
-      Toast("Falha ao realizar solicitação", "error");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-      return false;
-    }
+    //   if (response.status === 201) {
+    //     this.setState({ solicitado: true });
+    //     Toast("Solicitação registrada com sucesso", "success");
+    //     setTimeout(() => {
+    //       window.location.reload();
+    //     }, 3000);
+    //     return true;
+    //   } else {
+    //     throw Error;
+    //   }
+    // } catch (err) {
+    //   Toast("Falha ao realizar solicitação", "error");
+    //   setTimeout(() => {
+    //     window.location.reload();
+    //   }, 3000);
+    //   return false;
+    // }
+    console.log(this.state.requisicao);
   }
 
   //reformulado
@@ -566,7 +568,59 @@ export default class Cadastro extends React.Component {
                     this.setState({
                       requisicao: {
                         ...this.state.requisicao,
-                        destino: e.target.value,
+                        destino: `${
+                          this.state.endereços_entrega[e.target.value]
+                            .Logradouro === null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].Logradouro.trim()
+                        }, numero: ${
+                          this.state.endereços_entrega[e.target.value]
+                            .Número === null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].Número.trim()
+                        }, complemento: ${
+                          this.state.endereços_entrega[e.target.value]
+                            .Complemento === null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].Complemento.trim()
+                        }, bairro: ${
+                          this.state.endereços_entrega[e.target.value]
+                            .Bairro === null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].Bairro.trim()
+                        }, CEP: ${
+                          this.state.endereços_entrega[e.target.value].CEP ===
+                          null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].CEP.trim()
+                        }, ${
+                          this.state.endereços_entrega[e.target.value]
+                            .Município === null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].Município.trim()
+                        }, ${
+                          this.state.endereços_entrega[e.target.value].UF ===
+                          null
+                            ? "NA"
+                            : this.state.endereços_entrega[
+                                e.target.value
+                              ].UF.trim()
+                        }`,
+                        CNPJ_Destino: this.state.endereços_entrega[
+                          e.target.value
+                        ].CNPJss
                       },
                     });
                   }}
@@ -574,29 +628,8 @@ export default class Cadastro extends React.Component {
                   <option selected hidden disabled value={null}>
                     Selecione...
                   </option>
-                  {this.state.endereços_entrega.map((cliente) => (
-                    <option
-                      key={cliente.CNPJ}
-                      value={`${
-                        cliente.Logradouro === null
-                          ? "NA"
-                          : cliente.Logradouro.trim()
-                      }, numero: ${
-                        cliente.Número === null ? "NA" : cliente.Número.trim()
-                      }, complemento: ${
-                        cliente.Complemento === null
-                          ? "NA"
-                          : cliente.Complemento.trim()
-                      }, bairro: ${
-                        cliente.Bairro === null ? "NA" : cliente.Bairro.trim()
-                      }, CEP: ${
-                        cliente.CEP === null ? "NA" : cliente.CEP.trim()
-                      }, ${
-                        cliente.Município === null
-                          ? "NA"
-                          : cliente.Município.trim()
-                      }, ${cliente.UF === null ? "NA" : cliente.UF.trim()}`}
-                    >
+                  {this.state.endereços_entrega.map((cliente, i) => (
+                    <option key={cliente.CNPJ} value={i}>
                       {cliente.Nome_Fantasia}
                     </option>
                   ))}
