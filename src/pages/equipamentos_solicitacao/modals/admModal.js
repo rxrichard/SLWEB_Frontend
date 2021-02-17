@@ -8,7 +8,6 @@ import {
   FAILED_UPDATE,
 } from "../../../components/messages";
 import {
-  Checkbox,
   Button,
   TextInput,
   Icon,
@@ -232,9 +231,7 @@ export default class AdmModal extends React.Component {
               <Icon left>find_in_page</Icon>
             </Button>
 
-            <Checkbox
-              id="checkbox"
-              indeterminate
+            <input type='checkbox'
               label="Habilitar controle"
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
@@ -334,9 +331,7 @@ export default class AdmModal extends React.Component {
           Inspecionar OS
           <Icon left>find_in_page</Icon>
         </Button>
-        <Checkbox
-          id="checkbox"
-          indeterminate
+        <input type='checkbox'
           label="Confirmo ter ciência dos dados contidos na OS"
           onChange={(e) => {
             this.setState({ readed: e.target.checked });
@@ -427,9 +422,7 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <Checkbox
-              id="checkbox"
-              indeterminate
+            <input type='checkbox'
               label="Confirmo ter ciência dos dados contidos na OS"
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
@@ -633,9 +626,7 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <Checkbox
-              id="checkbox"
-              indeterminate
+            <input type='checkbox'
               label="Confirmo ter ciência dos dados contidos na OS"
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
@@ -729,9 +720,7 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <Checkbox
-              id="checkbox"
-              indeterminate
+            <input type='checkbox'
               label="Confirmo ter ciência dos dados contidos na OS"
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });

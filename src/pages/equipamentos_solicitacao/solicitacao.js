@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import Loading from "../../components/loading_screen";
 
 import Imagem from "../../assets/Capturar.JPG";
