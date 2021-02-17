@@ -49,7 +49,7 @@ export default function Dashboard() {
                   <p>
                     Ou por email com:{" "}
                     <strong style={{ fontWeight: "bold" }}>
-                      suporte1@slaplic.com.br
+                      suporte3@slaplic.com.br
                     </strong>
                   </p>
                 </Panel>

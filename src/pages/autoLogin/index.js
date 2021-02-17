@@ -7,23 +7,25 @@ export default class autoLogin extends Component {
   };
 
   async componentDidMount() {
-    localStorage.clear();
+    sessionStorage.clear();
 
-    this.login(this.props.payload.code);
+    this.login(this.props.match.params.code);
   }
 
   async login(code) {
     try {
       const response = await api.post("/checkAuth", {
-        user_code: code,
+        code
       });
 
+      console.log(response.data)
+
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("usuario", response.data.nome);
-        window.location.assign("/clientes");
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("usuario", response.data.nome);
+        window.location.assign("/equipamentos/solicitacao");
       } else {
-        localStorage.clear();
+        sessionStorage.clear();
         window.location.assign("/");
       }
     } catch (err) {

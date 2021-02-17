@@ -7,14 +7,9 @@ import {
   REQUISICAO_DE_MAQUINA_WARNING,
   FAILED_UPDATE,
 } from "../../../components/messages";
-import {
-  Button,
-  TextInput,
-  Icon,
-  DatePicker,
-} from "react-materialize";
+import { Button, TextInput, Icon, DatePicker } from "react-materialize";
 import { CancelButton, ConfirmButton } from "../../../components/buttons";
-import { dateCheck, convertData } from "../../../components/commom_functions";
+import { convertData } from "../../../components/commom_functions";
 
 export default class AdmModal extends React.Component {
   state = {
@@ -126,7 +121,7 @@ export default class AdmModal extends React.Component {
           prev: this.state.previsao,
         });
 
-        if (response.data === 200) {
+        if (response.status === 200) {
           Toast("Status atualizado com sucesso", "success");
         } else {
           throw Error;
@@ -139,11 +134,11 @@ export default class AdmModal extends React.Component {
 
   //Função que baixa o PDF da OS
   async handleRetrivePDF(OSID) {
-    console.log(OSID)
+    console.log(OSID);
     try {
       const response = await api.get("/equip/requests/retrive", {
         params: {
-          OSID
+          OSID,
         },
         responseType: "arraybuffer",
       });
@@ -231,8 +226,9 @@ export default class AdmModal extends React.Component {
               <Icon left>find_in_page</Icon>
             </Button>
 
-            <input type='checkbox'
-              label="Habilitar controle"
+            <input
+              style={{ marginLeft: "20%" }}
+              type='checkbox'
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
@@ -244,7 +240,6 @@ export default class AdmModal extends React.Component {
                 this.handleUpdateOS("OK");
                 e.target.disabled = true;
               }}
-              
               disabled={
                 this.state.readed && this.state.OS.OSCStaus !== "Cancelado"
                   ? false
@@ -331,8 +326,10 @@ export default class AdmModal extends React.Component {
           Inspecionar OS
           <Icon left>find_in_page</Icon>
         </Button>
-        <input type='checkbox'
-          label="Confirmo ter ciência dos dados contidos na OS"
+        <input
+        style={{ marginLeft: "20%" }}
+          type="checkbox"
+
           onChange={(e) => {
             this.setState({ readed: e.target.checked });
           }}
@@ -422,8 +419,9 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <input type='checkbox'
-              label="Confirmo ter ciência dos dados contidos na OS"
+            <input
+              type="checkbox"
+              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
@@ -626,8 +624,9 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <input type='checkbox'
-              label="Confirmo ter ciência dos dados contidos na OS"
+            <input
+              type="checkbox"
+              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
@@ -720,8 +719,9 @@ export default class AdmModal extends React.Component {
               Inspecionar OS
             </Button>
 
-            <input type='checkbox'
-              label="Confirmo ter ciência dos dados contidos na OS"
+            <input
+              type="checkbox"
+              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
