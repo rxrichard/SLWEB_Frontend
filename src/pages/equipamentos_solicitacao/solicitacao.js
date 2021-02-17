@@ -75,92 +75,91 @@ export default class Cadastro extends React.Component {
 
   //reformulado
   async handleRequest() {
-    // if (this.state.requisicao.destino === null) {
-    //   Toast("Preencha um destino para a solicitação");
-    //   return false;
-    // }
+    if (this.state.requisicao.destino === null) {
+      Toast("Preencha um destino para a solicitação");
+      return false;
+    }
 
-    // if (this.state.requisicao.maquina === "") {
-    //   Toast("Escolha um modelo de máquina");
-    //   return false;
-    // }
+    if (this.state.requisicao.maquina === "") {
+      Toast("Escolha um modelo de máquina");
+      return false;
+    }
 
-    // if (this.state.config.length === 0) {
-    //   Toast("Selecione pelo menos uma bebida para a máquina");
-    //   return false;
-    // }
+    if (this.state.config.length === 0) {
+      Toast("Selecione pelo menos uma bebida para a máquina");
+      return false;
+    }
 
-    // if (
-    //   this.state.requisicao.maquina !== "" &&
-    //   this.state.requisicao.abastecimento === null
-    // ) {
-    //   Toast("Selecione o sistema de abastecimento da máquina");
-    //   return false;
-    // }
+    if (
+      this.state.requisicao.maquina !== "" &&
+      this.state.requisicao.abastecimento === null
+    ) {
+      Toast("Selecione o sistema de abastecimento da máquina");
+      return false;
+    }
 
-    // if (
-    //   this.state.requisicao.EmailA === null ||
-    //   this.state.requisicao.EmailA === ""
-    // ) {
-    //   Toast("Preencha um email para receber atualizações sobre o pedido");
-    //   return false;
-    // }
+    if (
+      this.state.requisicao.EmailA === null ||
+      this.state.requisicao.EmailA === ""
+    ) {
+      Toast("Preencha um email para receber atualizações sobre o pedido");
+      return false;
+    }
 
-    // if (
-    //   this.state.requisicao.maquina !== "" &&
-    //   this.state.requisicao.sisPagamento === null
-    // ) {
-    //   Toast("Selecione o meio de pagamento para a máquina");
-    //   return false;
-    // }
+    if (
+      this.state.requisicao.maquina !== "" &&
+      this.state.requisicao.sisPagamento === null
+    ) {
+      Toast("Selecione o meio de pagamento para a máquina");
+      return false;
+    }
 
-    // if (this.state.requisicao.DtPretendida === null) {
-    //   Toast("Preencha uma data conveniente para entrega");
-    //   return false;
-    // }
+    if (this.state.requisicao.DtPretendida === null) {
+      Toast("Preencha uma data conveniente para entrega");
+      return false;
+    }
 
-    // if (this.state.requisicao.gabinete === null) {
-    //   Toast("Especifique sua opção de gabinete");
-    //   return false;
-    // }
+    if (this.state.requisicao.gabinete === null) {
+      Toast("Especifique sua opção de gabinete");
+      return false;
+    }
 
-    // if (this.state.requisicao.Tproduto === null) {
-    //   Toast("Selecione o tipo de produto da máquina");
-    //   return false;
-    // }
+    if (this.state.requisicao.Tproduto === null) {
+      Toast("Selecione o tipo de produto da máquina");
+      return false;
+    }
 
-    // if (this.state.requisicao.Chip === null) {
-    //   Toast(
-    //     "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
-    //   );
-    //   return false;
-    // }
+    if (this.state.requisicao.Chip === null) {
+      Toast(
+        "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+      );
+      return false;
+    }
 
-    // //envia a solicitação
-    // try {
-    //   const response = await api.post("/equip", {
-    //     Maq: this.state.requisicao,
-    //     config: this.state.config,
-    //   });
+    //envia a solicitação
+    try {
+      const response = await api.post("/equip", {
+        Maq: this.state.requisicao,
+        config: this.state.config,
+      });
 
-    //   if (response.status === 201) {
-    //     this.setState({ solicitado: true });
-    //     Toast("Solicitação registrada com sucesso", "success");
-    //     setTimeout(() => {
-    //       window.location.reload();
-    //     }, 3000);
-    //     return true;
-    //   } else {
-    //     throw Error;
-    //   }
-    // } catch (err) {
-    //   Toast("Falha ao realizar solicitação", "error");
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 3000);
-    //   return false;
-    // }
-    console.log(this.state.requisicao);
+      if (response.status === 201) {
+        this.setState({ solicitado: true });
+        Toast("Solicitação registrada com sucesso", "success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+        return true;
+      } else {
+        throw Error;
+      }
+    } catch (err) {
+      Toast("Falha ao realizar solicitação", "error");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+      return false;
+    }
   }
 
   //reformulado
