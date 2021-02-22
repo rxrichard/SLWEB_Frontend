@@ -3299,7 +3299,7 @@ table span.badge {
 	float: left;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	padding: 0 .75rem;
+	padding: 0px;
 	min-height: 1px
 }
 
@@ -6423,6 +6423,7 @@ textarea.materialize-textarea+label:after,
 	left: .75rem
 }
 
+/*Alterei por causa da tela de requisição de máquinas*/
 .input-field.col .prefix~label,
 .input-field.col .prefix~.validate~label {
 	width: calc(100% - 3rem - 1.5rem)
@@ -6726,7 +6727,7 @@ textarea.materialize-textarea {
 /*Precisei mudar o css vanilla aqui pro checkbox da tela de solicitação de equipamento parar de bugar*/
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
-	position: absolute;
+	cursor: pointer;
 	opacity: 1;
 	pointer-events: auto;
 	-ms-transform: scale(1.5); /* IE */
@@ -6734,7 +6735,7 @@ textarea.materialize-textarea {
   	-webkit-transform: scale(1.5); /* Safari and Chrome */
   	-o-transform: scale(1.5); /* Opera */
   	transform: scale(1.5);
-  	padding: 10px;
+  	margin-right: 10px;
 }
 
 [type="checkbox"]+span:not(.lever) {

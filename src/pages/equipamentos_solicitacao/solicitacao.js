@@ -12,6 +12,7 @@ import {
   CardTitle,
   Textarea,
   TextInput,
+  Switch,
 } from "react-materialize";
 import { Campo, Rotulo } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
@@ -22,6 +23,7 @@ export default class Cadastro extends React.Component {
   state = {
     requisicao: {
       maquina: "",
+      maqid: null,
       capacidade: 0,
       destino: null,
       abastecimento: null,
@@ -33,6 +35,7 @@ export default class Cadastro extends React.Component {
       Chip: null,
       EmailA: null,
       CNPJ_Destino: null,
+      Cliente_Destino: null,
 
       // estabilizador: false,
       // transformador: false,
@@ -41,6 +44,8 @@ export default class Cadastro extends React.Component {
       // validador: false,
       // moedeiro: false,
       sisPagamento: null,
+      TValidador: null,
+      validador: {},
       filtro: false,
       observacoes: "",
     },
@@ -52,6 +57,8 @@ export default class Cadastro extends React.Component {
     // ConfigMaquina: undefined,
     // valorConfig: [],
     a: false, //só um switch, pode dar um nome descente se quiser...
+    b: true, //só um switch, pode dar um nome descente se quiser...
+    c: false, //só um switch, pode dar um nome descente se quiser...
     solicitado: false,
     loaded: false,
   };
@@ -65,7 +72,7 @@ export default class Cadastro extends React.Component {
       this.setState({
         endereços_entrega: response.data.endereços,
         MaqsDisp: response.data.MaquinasDisponiveis,
-        BebidasDisp: response.data.Bebidas,
+        BebidasDisp: response.data.BebidasNovo,
         loaded: true,
       });
     } catch (err) {
@@ -136,7 +143,7 @@ export default class Cadastro extends React.Component {
       return false;
     }
 
-    //envia a solicitação
+    // envia a solicitação
     try {
       const response = await api.post("/equip", {
         Maq: this.state.requisicao,
@@ -168,42 +175,336 @@ export default class Cadastro extends React.Component {
       requisicao: {
         ...this.state.requisicao,
         maquina: this.state.MaqsDisp[i].MaqModelo,
+        maqid: this.state.MaqsDisp[i].MaqModId,
         capacidade: this.state.MaqsDisp[i].MaqCapacidade,
       },
       a: true,
     });
   }
 
-  //reformulado
-  handleAtivarBebida(bebida, activate) {
+  async handleAtivarBebida2(bebida, activate, event) {
     let aux = [];
     aux = this.state.config;
-    let a = 0;
+    let pointer = null;
     let b = 0;
 
+    this.state.config.map((beb) => {
+      beb.acompanha ? b++ : (b = b);
+    });
+
+    if (b > this.state.requisicao.capacidade) {
+      Toast("Capacidade máxima da máquina já atingida");
+      event.target.checked = false;
+      return;
+    }
+
     if (aux.length === 0) {
-      aux[0] = { ...bebida, acompanha: activate };
+      aux.push({ ...bebida, acompanha: activate });
     }
 
     for (let i = 0; i < aux.length; i++) {
       if (aux[i].Cod === bebida.Cod) {
-        //Se ele achar a bebida no array, vai atualizar o status
-        aux[i] = { ...aux[i], acompanha: activate };
-        a++;
+        pointer = i;
       }
     }
 
-    if (a === 0) {
+    if (pointer !== null) {
+      aux[pointer] = { ...bebida, acompanha: activate };
+    }
+
+    if (pointer === null) {
       aux.push({ ...bebida, acompanha: activate });
     }
 
-    this.setState({ config: aux });
+    b = 0;
+
     this.state.config.map((beb) => {
       beb.acompanha ? b++ : (b = b);
     });
+
+    this.setState({ config: aux });
+
     this.setState({ TotalBebidas: b });
+  }
+
+  //reformulado
+  // handleAtivarBebida(bebida, activate) {
+  //   let aux = [];
+  //   aux = this.state.config;
+  //   let a = 0;
+  //   let b = 0;
+
+  //   if (aux.length === 0) {
+  //     aux.push({
+  //       ...bebida,
+  //       acompanha: activate,
+  //       Selecao: this.state.TotalBebidas + 1,
+  //     });
+  //   }
+
+  //   for (let i = 0; i < aux.length; i++) {
+  //     if (aux[i].Cod === bebida.Cod && activate === true) {
+  //       //Se ele achar a bebida no array, vai atualizar o status
+  //       aux[i] = {
+  //         ...aux[i],
+  //         acompanha: activate,
+  //         Selecao: this.state.TotalBebidas + 1,
+  //       };
+  //       a++;
+  //     } else if (aux[i].Cod === bebida.Cod && activate === false) {
+  //       aux[i] = {
+  //         ...aux[i],
+  //         acompanha: activate,
+  //         Selecao: this.state.TotalBebidas - 1,
+  //       };
+  //       a++;
+  //     }
+  //   }
+
+  //   if (a === 0) {
+  //     aux.push({
+  //       ...bebida,
+  //       acompanha: activate,
+  //       Selecao: this.state.TotalBebidas + 1,
+  //     });
+  //   }
+
+  //   this.setState({ config: aux });
+
+  //   this.state.config.map((beb) => {
+  //     beb.acompanha ? b++ : (b = b);
+  //   });
+
+  //   this.setState({ TotalBebidas: b });
+
+  //   return;
+  // }
+
+  handleSisPagChange(sispag) {
+    const checks = document.querySelectorAll('input[type="checkbox"]');
+
+    for (let i = checks.length - 5; i < checks.length; i++) {
+      checks[i].checked = false;
+    }
+
+    if (sispag === "Validador") {
+      this.setState({ b: false });
+    } else {
+      this.setState({
+        b: true,
+        requisicao: { ...this.state.requisicao, validador: {} },
+      });
+    }
+    this.setState({
+      requisicao: {
+        ...this.state.requisicao,
+        sisPagamento: sispag,
+      },
+    });
+  }
+
+  handleActivateSwitch(value) {
+    const checks = document.querySelectorAll('input[type="checkbox"]');
+
+    for (let i = checks.length - 5; i < checks.length; i++) {
+      checks[i].checked = false;
+    }
+    this.setState({
+      c: value,
+      requisicao: {
+        ...this.state.requisicao,
+        TValidador: value ? "Ficha" : "Moeda",
+        validador: {},
+      },
+    });
+  }
+
+  handleMantValidador(valor, acao) {
+    let aux = this.state.requisicao.validador;
+    let valid = {};
+
+    if (this.state.c && acao) {
+      switch (valor) {
+        case "1":
+          valid = { ...aux, val1: valor };
+          break;
+        case "2":
+          valid = { ...aux, val2: valor };
+          break;
+        case "4":
+          valid = { ...aux, val3: valor };
+          break;
+        case "8":
+          valid = { ...aux, val4: valor };
+          break;
+        case "16":
+          valid = { ...aux, val5: valor };
+          break;
+        default:
+          valid = {};
+      }
+    } else if (!this.state.c && acao) {
+      switch (valor) {
+        case "0.05":
+          valid = { ...aux, val1: valor };
+          break;
+        case "0.10":
+          valid = { ...aux, val2: valor };
+          break;
+        case "0.25":
+          valid = { ...aux, val3: valor };
+          break;
+        case "0.50":
+          valid = { ...aux, val4: valor };
+          break;
+        case "1.00":
+          valid = { ...aux, val5: valor };
+          break;
+        default:
+          valid = {};
+      }
+    } else if (this.state.c && !acao) {
+      switch (valor) {
+        case "1":
+          valid = aux;
+          delete valid.val1;
+          break;
+        case "2":
+          valid = aux;
+          delete valid.val2;
+          break;
+        case "4":
+          valid = aux;
+          delete valid.val3;
+          break;
+        case "8":
+          valid = aux;
+          delete valid.val4;
+          break;
+        case "16":
+          valid = aux;
+          delete valid.val5;
+          break;
+        default:
+          valid = {};
+      }
+    } else {
+      switch (valor) {
+        case "0.05":
+          valid = aux;
+          delete valid.val1;
+          break;
+        case "0.10":
+          valid = aux;
+          delete valid.val2;
+          break;
+        case "0.25":
+          valid = aux;
+          delete valid.val3;
+          break;
+        case "0.50":
+          valid = aux;
+          delete valid.val4;
+          break;
+        case "1.00":
+          valid = aux;
+          delete valid.val5;
+          break;
+        default:
+          valid = {};
+      }
+    }
+
+    this.setState({
+      requisicao: { ...this.state.requisicao, validador: valid },
+    });
+  }
+
+  handleDefinirSelecao(z, selecao, event) {
+    let aux = [];
+    aux = this.state.config;
+
+    if (
+      typeof this.state.config[z] == "undefined" ||
+      this.state.config[z].acompanha === false
+    ) {
+      Toast("Ative a bebida antes de modificar o número da seleção");
+      event.target.value = "";
+      return;
+    }
+
+    if (aux.length === 0) {
+      Toast("Ative a bebida antes de modificar o número da seleção");
+      event.target.value = "";
+      return;
+    }
+
+    if (isNaN(Number(selecao))) {
+      Toast("Insira número entre 1 e 99");
+      event.target.value = this.state.config[z].Selecao;
+      return;
+    }
+
+    if (aux.length > 0 && selecao.length > 2) {
+      event.target.value = selecao.slice(0, 2);
+      Toast("Insira número entre 1 e 99");
+      return;
+    }
+
+    if (selecao === "") {
+      return;
+    }
+
+    for (let i = 0; i < aux.length; i++) {
+      if (aux[i].Cod === this.state.config[z].Cod) {
+        //Se ele achar a bebida no array, vai atualizar o status
+        aux[i] = { ...aux[i], Selecao: selecao };
+      }
+    }
+
+    this.setState({ config: aux });
 
     return;
+  }
+
+  handleChangeCost(z, cost, event) {
+    let aux = [];
+    aux = this.state.config;
+
+    if (aux.length === 0) {
+      Toast("Ative a bebida antes de modificar seu preço");
+      event.target.value = "";
+      return;
+    }
+
+    if (typeof this.state.config[z] == "undefined") {
+      Toast("Ative a bebida antes de modificar seu preço");
+      event.target.value = "";
+      return;
+    }
+
+    if (isNaN(Number(cost))) {
+      Toast("Insira apenas números");
+      event.target.value = this.state.config[z].PrecoMaq;
+      return;
+    }
+
+    if (Number(cost) === "") {
+      Toast("Aviso: você definiu o preço da bebida como R$ 0,00");
+    }
+
+    if (cost === "") {
+      return;
+    }
+
+    for (let i = 0; i < aux.length; i++) {
+      if (aux[i].Cod === this.state.config[z].Cod) {
+        //Se ele achar a bebida no array, vai atualizar o status
+        aux[i] = { ...aux[i], PrecoMaq: cost };
+      }
+    }
+
+    this.setState({ config: aux });
   }
 
   render() {
@@ -222,7 +523,6 @@ export default class Cadastro extends React.Component {
         >
           <div style={{ maxWidth: "20vw", minWidth: "300px" }}>
             <Card
-              actions={[]}
               header={
                 <CardTitle image={Imagem}>Solicitação de máquina</CardTitle>
               }
@@ -272,12 +572,14 @@ export default class Cadastro extends React.Component {
                     }
                   >
                     {this.state.a === true ? (
-                      <Table>
+                      <Table centered>
                         <thead>
                           <tr>
                             <th>Bebida</th>
                             <th>Medida</th>
                             <th>Acompanha?</th>
+                            <th>Seleção</th>
+                            <th>Preço de máquina</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -298,13 +600,53 @@ export default class Cadastro extends React.Component {
                               <td>
                                 <input
                                   type="checkbox"
-                                  onChange={(e) =>
-                                    this.handleAtivarBebida(
+                                  onChange={(e) => {
+                                    e.persist();
+                                    this.handleAtivarBebida2(
                                       bebida,
-                                      e.target.checked
-                                    )
+                                      e.target.checked,
+                                      e
+                                    );
+                                  }}
+                                />
+                              </td>
+                              <td>
+                                <TextInput
+                                  icon={<Icon small>dialpad</Icon>}
+                                  placeholder={
+                                    this.state.config[i] &&
+                                    this.state.config[i].Selecao !== "0"
+                                      ? this.state.config[i].Selecao
+                                      : 0
                                   }
-                                ></input>
+                                  style={{ width: "20px", textAlign: "center" }}
+                                  error="Digite números entre 1 e 99"
+                                  onChange={(e) => {
+                                    e.persist();
+                                    this.handleDefinirSelecao(
+                                      i,
+                                      e.target.value,
+                                      e
+                                    );
+                                  }}
+                                />
+                              </td>
+
+                              <td>
+                                <TextInput
+                                  icon={<Icon small>attach_money</Icon>}
+                                  placeholder={
+                                    this.state.config[i] &&
+                                    this.state.config[i].PrecoMaq !== "0"
+                                      ? this.state.config[i].PrecoMaq
+                                      : 0
+                                  }
+                                  style={{ width: "40px", textAlign: "center" }}
+                                  onChange={(e) => {
+                                    e.persist();
+                                    this.handleChangeCost(i, e.target.value, e);
+                                  }}
+                                />
                               </td>
                             </tr>
                           ))}
@@ -340,48 +682,7 @@ export default class Cadastro extends React.Component {
                 ) : (
                   <></>
                 )}
-                <Campo>
-                  <Rotulo>Abastecimento de Água:</Rotulo>
-                  <select
-                    className="DefaultSelect"
-                    onChange={(e) => {
-                      this.setState({
-                        requisicao: {
-                          ...this.state.requisicao,
-                          abastecimento: e.target.value,
-                        },
-                      });
-                    }}
-                  >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Galão">Galão</option>
-                    <option value="Ponto Hidrico">Ponto Hídrico</option>
-                  </select>
-                </Campo>
-                {/* <Campo>
-                  <Rotulo>Imagem:</Rotulo>
-                  <select
-                    className="DefaultSelect"
-                    onChange={(e) => {
-                      this.setState({
-                        requisicao: {
-                          ...this.state.requisicao,
-                          idVisual: e.target.value,
-                        },
-                      });
-                    }}
-                  >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sem Imagem">Sem Imagem</option>
-                    <option value="Pilão">Pilão</option>
-                    <option value="Café do Ponto">Café do Ponto</option>
-                    <option value="Damasco">Damasco</option>
-                  </select>
-                </Campo> */}
+
                 <Campo>
                   <Rotulo>Acompanha Gabinete?</Rotulo>
                   <select
@@ -398,8 +699,8 @@ export default class Cadastro extends React.Component {
                     <option selected hidden disabled value={null}>
                       Selecione...
                     </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <option value={true}>Sim</option>
+                    <option value={false}>Não</option>
                   </select>
                 </Campo>
               </div>
@@ -407,103 +708,188 @@ export default class Cadastro extends React.Component {
           </div>
           <div>
             <Card
-              actions={[]}
               className="blue-grey darken-1"
               textClassName="white-text"
               title="Detalhes da máquina"
             >
               <Campo>
-                {/* <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        estabilizador: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Estabilizador de Tensão"
-                />
-                <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        transformador: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Transformador (110v / 220v)"
-                />
-                <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        telemetria: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Telemetria"
-                />
-                <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        validador: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Validador"
-                />
-                <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        moedeiro: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Moedeiro"
-                />
-                <Checkbox
-                  filledIn
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        filtro: e.target.checked,
-                      },
-                    });
-                  }}
-                  label="Kit de filtro"
-                /> */}
-                <label>Sistema de pagamento: </label>
+                <Rotulo>Sistema de pagamento: </Rotulo>
                 <select
                   className="DefaultSelect"
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        sisPagamento: e.target.value,
-                      },
-                    });
-                  }}
+                  onChange={(e) => this.handleSisPagChange(e.target.value)}
                 >
                   <option selected hidden disabled value={null}>
                     Selecione...
                   </option>
                   <option value="Livre">Livre</option>
-                  <option value="Pin Pad - AMlabs">Pin Pad - AMlabs</option>
+                  <option value="Cartão">Cartão</option>
                   <option value="Validador">Validador</option>
                 </select>
+
+                <Modal
+                  actions={[<CloseButton />]}
+                  bottomSheet={false}
+                  fixedFooter={false}
+                  header="Detalhes do Sistema de Pagamento"
+                  id="pag"
+                  options={{
+                    dismissible: true,
+                    endingTop: "10%",
+                    inDuration: 250,
+                    onCloseEnd: null,
+                    onCloseStart: null,
+                    onOpenEnd: null,
+                    onOpenStart: null,
+                    opacity: 0.5,
+                    outDuration: 250,
+                    preventScrolling: true,
+                    startingTop: "4%",
+                  }}
+                  trigger={
+                    <Button
+                      disabled={this.state.b}
+                      style={{ marginTop: "10px" }}
+                    >
+                      Det. Validador<Icon left>settings</Icon>
+                    </Button>
+                  }
+                >
+                  <Switch
+                    id="Switch-11"
+                    offLabel="Moeda"
+                    onChange={(e) => {
+                      this.handleActivateSwitch(e.target.checked);
+                    }}
+                    onLabel="Ficha"
+                  />
+                  {this.state.c ? (
+                    <>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="1"
+                      />
+                      <Rotulo>1</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="2"
+                      />
+                      <Rotulo>2</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="4"
+                      />
+                      <Rotulo>4</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="8"
+                      />
+                      <Rotulo>8</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="16"
+                      />
+                      <Rotulo>16</Rotulo>
+                    </>
+                  ) : (
+                    <>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="0.05"
+                      />
+                      <Rotulo>R$ 0,05</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="0.10"
+                      />
+                      <Rotulo>R$ 0,10</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="0.25"
+                      />
+                      <Rotulo>R$ 0,25</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="0.50"
+                      />
+                      <Rotulo>R$ 0,50</Rotulo>
+                      <br />
+                      <input
+                        onChange={(e) =>
+                          this.handleMantValidador(
+                            e.target.value,
+                            e.target.checked
+                          )
+                        }
+                        type="checkbox"
+                        value="1.00"
+                      />
+                      <Rotulo>R$ 1,00</Rotulo>
+                    </>
+                  )}
+                </Modal>
 
                 <Rotulo>Tipo de Produto: </Rotulo>
                 <select
@@ -522,6 +908,25 @@ export default class Cadastro extends React.Component {
                   </option>
                   <option value="Mistura">Mistura</option>
                   <option value="Pronto">Pronto</option>
+                </select>
+
+                <Rotulo>Abastecimento de Água:</Rotulo>
+                <select
+                  className="DefaultSelect"
+                  onChange={(e) => {
+                    this.setState({
+                      requisicao: {
+                        ...this.state.requisicao,
+                        abastecimento: e.target.value,
+                      },
+                    });
+                  }}
+                >
+                  <option selected hidden disabled value={null}>
+                    Selecione...
+                  </option>
+                  <option value="Galão">Galão</option>
+                  <option value="Ponto Hidrico">Ponto Hídrico</option>
                 </select>
 
                 <Rotulo>Operadora do Chip de Telemetria: </Rotulo>
@@ -543,6 +948,8 @@ export default class Cadastro extends React.Component {
                   <option value="Tim">Tim</option>
                   <option value="Claro">Claro</option>
                   <option value="Vodafone">Vodafone</option>
+                  <option value="WiFi">WiFi</option>
+                  <option value="Antena Externa">Antena Externa</option>
                 </select>
               </Campo>
             </Card>
@@ -619,7 +1026,10 @@ export default class Cadastro extends React.Component {
                         }`,
                         CNPJ_Destino: this.state.endereços_entrega[
                           e.target.value
-                        ].CNPJss
+                        ].CNPJss,
+                        Cliente_Destino: this.state.endereços_entrega[
+                          e.target.value
+                        ].Nome_Fantasia,
                       },
                     });
                   }}
@@ -714,8 +1124,8 @@ export default class Cadastro extends React.Component {
                     maxDate: null,
                     minDate: new Date(
                       new Date().getFullYear(),
-                      new Date().getMonth(),
-                      new Date().getDate() + 7
+                      new Date().getMonth() + 1,
+                      new Date().getDate()
                     ),
                     onClose: null,
                     onDraw: null,
@@ -750,7 +1160,7 @@ export default class Cadastro extends React.Component {
                 />
               </Campo>
               <Campo>
-                <label>Observações:</label>
+                <Rotulo>Observações:</Rotulo>
                 <Textarea
                   icon={<Icon>arrow_forward</Icon>}
                   onChange={(e) =>
