@@ -17,11 +17,7 @@ export default class Logs extends React.Component {
 
   async componentDidMount() {
     try {
-      const response = await api.get('/equip/requests', {
-        params: {
-          token: sessionStorage.getItem('token')
-        }
-      })
+      const response = await api.get('/equip/requests')
 
       this.setState({ logs: response.data, loaded: true })
     } catch (err) {
@@ -50,20 +46,21 @@ export default class Logs extends React.Component {
     }
   }
 
+  //tava dando erro
   async checkView(ID) {
-    try {
-      //Insere a data de vizualização da ordem por X departamento
-      const response = await api.put('/equip/requests/check', {
-        token: sessionStorage.getItem('token'),
-        ID,
-        when: dateCheck()
-      })
+    return
+    // try {
+    //   //Insere a data de vizualização da ordem por X departamento
+    //   const response = await api.put('/equip/requests/check', {
+    //     ID,
+    //     when: dateCheck()
+    //   })
 
-      console.log(response.data)
-    } catch (err) {
-      console.log(err)
-      Toast('Falha ao linkar dados da OS', 'error')
-    }
+    //   console.log(response.data)
+    // } catch (err) {
+    //   console.log(err)
+    //   Toast('Falha ao linkar dados da OS', 'error')
+    // }
   }
 
   render() {
