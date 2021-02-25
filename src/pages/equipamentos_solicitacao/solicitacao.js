@@ -7,13 +7,13 @@ import {
   Icon,
   Modal,
   DatePicker,
-  Table,
   Card,
   CardTitle,
   Textarea,
   TextInput,
   Switch,
 } from "react-materialize";
+import { Table } from "../../components/table";
 import { Campo, Rotulo } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
 import { api } from "../../services/api";
@@ -36,6 +36,7 @@ export default class Cadastro extends React.Component {
       EmailA: null,
       CNPJ_Destino: null,
       Cliente_Destino: null,
+      Tel_Contato: null,
 
       // estabilizador: false,
       // transformador: false,
@@ -59,7 +60,6 @@ export default class Cadastro extends React.Component {
     a: false, //só um switch, pode dar um nome descente se quiser...
     b: true, //só um switch, pode dar um nome descente se quiser...
     c: false, //só um switch, pode dar um nome descente se quiser...
-    solicitado: false,
     loaded: false,
   };
 
@@ -81,19 +81,23 @@ export default class Cadastro extends React.Component {
   }
 
   //reformulado
-  async handleRequest() {
+  async handleRequest(event) {
+    event.target.disabled = true;
     if (this.state.requisicao.destino === null) {
       Toast("Preencha um destino para a solicitação");
+      event.target.disabled = false;
       return false;
     }
 
     if (this.state.requisicao.maquina === "") {
       Toast("Escolha um modelo de máquina");
+      event.target.disabled = false;
       return false;
     }
 
     if (this.state.config.length === 0) {
       Toast("Selecione pelo menos uma bebida para a máquina");
+      event.target.disabled = false;
       return false;
     }
 
@@ -102,6 +106,7 @@ export default class Cadastro extends React.Component {
       this.state.requisicao.abastecimento === null
     ) {
       Toast("Selecione o sistema de abastecimento da máquina");
+      event.target.disabled = false;
       return false;
     }
 
@@ -110,6 +115,7 @@ export default class Cadastro extends React.Component {
       this.state.requisicao.EmailA === ""
     ) {
       Toast("Preencha um email para receber atualizações sobre o pedido");
+      event.target.disabled = false;
       return false;
     }
 
@@ -118,21 +124,25 @@ export default class Cadastro extends React.Component {
       this.state.requisicao.sisPagamento === null
     ) {
       Toast("Selecione o meio de pagamento para a máquina");
+      event.target.disabled = false;
       return false;
     }
 
     if (this.state.requisicao.DtPretendida === null) {
       Toast("Preencha uma data conveniente para entrega");
+      event.target.disabled = false;
       return false;
     }
 
     if (this.state.requisicao.gabinete === null) {
       Toast("Especifique sua opção de gabinete");
+      event.target.disabled = false;
       return false;
     }
 
     if (this.state.requisicao.Tproduto === null) {
       Toast("Selecione o tipo de produto da máquina");
+      event.target.disabled = false;
       return false;
     }
 
@@ -140,6 +150,7 @@ export default class Cadastro extends React.Component {
       Toast(
         "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
       );
+      event.target.disabled = false;
       return false;
     }
 
@@ -151,7 +162,6 @@ export default class Cadastro extends React.Component {
       });
 
       if (response.status === 201) {
-        this.setState({ solicitado: true });
         Toast("Solicitação registrada com sucesso", "success");
         setTimeout(() => {
           window.location.reload();
@@ -161,10 +171,11 @@ export default class Cadastro extends React.Component {
         throw Error;
       }
     } catch (err) {
-      Toast("Falha ao realizar solicitação", "error");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      Toast(
+        "Falha ao concluir solicitação, por favor tente novamente",
+        "error"
+      );
+      event.target.disabled = false;
       return false;
     }
   }
@@ -189,10 +200,10 @@ export default class Cadastro extends React.Component {
     let b = 0;
 
     this.state.config.map((beb) => {
-      beb.acompanha ? b++ : (b = b);
+      if (beb.acompanha) b++
     });
 
-    if (b > this.state.requisicao.capacidade) {
+    if (b >= this.state.requisicao.capacidade && activate) {
       Toast("Capacidade máxima da máquina já atingida");
       event.target.checked = false;
       return;
@@ -219,12 +230,10 @@ export default class Cadastro extends React.Component {
     b = 0;
 
     this.state.config.map((beb) => {
-      beb.acompanha ? b++ : (b = b);
+      if (beb.acompanha) b++;
     });
 
-    this.setState({ config: aux });
-
-    this.setState({ TotalBebidas: b });
+    this.setState({ config: aux, TotalBebidas: b });
   }
 
   //reformulado
@@ -423,10 +432,17 @@ export default class Cadastro extends React.Component {
   handleDefinirSelecao(z, selecao, event) {
     let aux = [];
     aux = this.state.config;
+    let pointer = null;
+
+    for (let j = 0; j < aux.length; j++) {
+      if (aux[j].Cod === this.state.BebidasDisp[z].Cod) {
+        pointer = j;
+      }
+    }
 
     if (
-      typeof this.state.config[z] == "undefined" ||
-      this.state.config[z].acompanha === false
+      typeof this.state.config[pointer] == "undefined" ||
+      this.state.config[pointer].acompanha === false
     ) {
       Toast("Ative a bebida antes de modificar o número da seleção");
       event.target.value = "";
@@ -456,7 +472,7 @@ export default class Cadastro extends React.Component {
     }
 
     for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Cod === this.state.config[z].Cod) {
+      if (aux[i].Cod === this.state.config[pointer].Cod) {
         //Se ele achar a bebida no array, vai atualizar o status
         aux[i] = { ...aux[i], Selecao: selecao };
       }
@@ -464,12 +480,20 @@ export default class Cadastro extends React.Component {
 
     this.setState({ config: aux });
 
+    console.log(this.state.config);
     return;
   }
 
   handleChangeCost(z, cost, event) {
     let aux = [];
     aux = this.state.config;
+    let pointer = null;
+
+    for (let j = 0; j < aux.length; j++) {
+      if (aux[j].Cod === this.state.BebidasDisp[z].Cod) {
+        pointer = j;
+      }
+    }
 
     if (aux.length === 0) {
       Toast("Ative a bebida antes de modificar seu preço");
@@ -477,7 +501,10 @@ export default class Cadastro extends React.Component {
       return;
     }
 
-    if (typeof this.state.config[z] == "undefined") {
+    if (
+      typeof this.state.config[pointer] == "undefined" ||
+      this.state.config[pointer].acompanha === false
+    ) {
       Toast("Ative a bebida antes de modificar seu preço");
       event.target.value = "";
       return;
@@ -498,13 +525,14 @@ export default class Cadastro extends React.Component {
     }
 
     for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Cod === this.state.config[z].Cod) {
+      if (aux[i].Cod === this.state.config[pointer].Cod) {
         //Se ele achar a bebida no array, vai atualizar o status
         aux[i] = { ...aux[i], PrecoMaq: cost };
       }
     }
 
     this.setState({ config: aux });
+    console.log(this.state.config);
   }
 
   render() {
@@ -572,12 +600,12 @@ export default class Cadastro extends React.Component {
                     }
                   >
                     {this.state.a === true ? (
-                      <Table centered>
+                      <Table height={50} centered>
                         <thead>
                           <tr>
                             <th>Bebida</th>
                             <th>Medida</th>
-                            <th>Acompanha?</th>
+                            <th>Configura?</th>
                             <th>Seleção</th>
                             <th>Preço de máquina</th>
                           </tr>
@@ -589,9 +617,11 @@ export default class Cadastro extends React.Component {
                                 {`${bebida.Bebida}${
                                   bebida.Complemento !== null
                                     ? ` com ${bebida.Complemento}`
-                                    : " "
+                                    : ""
                                 }${
-                                  bebida.Medida !== null ? bebida.Medida : ""
+                                  bebida.Medida !== null
+                                    ? ` ${bebida.Medida}`
+                                    : ""
                                 }`}
                               </td>
                               <td>
@@ -599,6 +629,7 @@ export default class Cadastro extends React.Component {
                               </td>
                               <td>
                                 <input
+                                  style={{ position: "relative", zIndex: "0" }}
                                   type="checkbox"
                                   onChange={(e) => {
                                     e.persist();
@@ -611,8 +642,11 @@ export default class Cadastro extends React.Component {
                                 />
                               </td>
                               <td>
-                                <TextInput
-                                  icon={<Icon small>dialpad</Icon>}
+                                <Icon small left>
+                                  dialpad
+                                </Icon>
+                                <input
+                                  type="text"
                                   placeholder={
                                     this.state.config[i] &&
                                     this.state.config[i].Selecao !== "0"
@@ -620,7 +654,6 @@ export default class Cadastro extends React.Component {
                                       : 0
                                   }
                                   style={{ width: "20px", textAlign: "center" }}
-                                  error="Digite números entre 1 e 99"
                                   onChange={(e) => {
                                     e.persist();
                                     this.handleDefinirSelecao(
@@ -633,8 +666,11 @@ export default class Cadastro extends React.Component {
                               </td>
 
                               <td>
-                                <TextInput
-                                  icon={<Icon small>attach_money</Icon>}
+                                <Icon small left>
+                                  attach_money
+                                </Icon>
+                                <input
+                                  type="text"
                                   placeholder={
                                     this.state.config[i] &&
                                     this.state.config[i].PrecoMaq !== "0"
@@ -981,7 +1017,7 @@ export default class Cadastro extends React.Component {
                             : this.state.endereços_entrega[
                                 e.target.value
                               ].Logradouro.trim()
-                        }, numero: ${
+                        }, número: ${
                           this.state.endereços_entrega[e.target.value]
                             .Número === null
                             ? "NA"
@@ -1045,101 +1081,123 @@ export default class Cadastro extends React.Component {
                 </select>
               </Campo>
               <Campo>
-                <Rotulo>Data para entrega</Rotulo>
-                <DatePicker
-                  placeholder="Data desejada"
-                  style={{
-                    all: "unset",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: { ...this.state.requisicao, DtPretendida: e },
-                    });
-                  }}
-                  options={{
-                    autoClose: true,
-                    container: null,
-                    defaultDate: null,
-                    disableDayFn: null,
-                    disableWeekends: true,
-                    events: [],
-                    firstDay: 0,
-                    format: "mmm dd, yyyy",
-                    i18n: {
-                      cancel: "Cancelar",
-                      clear: "Limpar",
-                      done: "Confirmar",
-                      months: [
-                        "Janeiro",
-                        "Fevereiro",
-                        "Março",
-                        "Abril",
-                        "Maio",
-                        "Junho",
-                        "Julho",
-                        "Agosto",
-                        "Setembro",
-                        "Outubro",
-                        "Novembro",
-                        "Dezembro",
-                      ],
-                      monthsShort: [
-                        "Jan",
-                        "Fev",
-                        "Mar",
-                        "Abr",
-                        "Mai",
-                        "Jun",
-                        "Jul",
-                        "Ago",
-                        "Set",
-                        "Out",
-                        "Nov",
-                        "Dez",
-                      ],
-                      nextMonth: "›",
-                      previousMonth: "‹",
-                      weekdays: [
-                        "Domingo",
-                        "Segunda",
-                        "Terça",
-                        "Quarta",
-                        "Quinta",
-                        "Sexta",
-                        "Sábado",
-                      ],
-                      weekdaysAbbrev: ["D", "S", "T", "Q", "Q", "S", "S"],
-                      weekdaysShort: [
-                        "Dom",
-                        "Seg",
-                        "Ter",
-                        "Qua",
-                        "Qui",
-                        "Sex",
-                        "Sab",
-                      ],
-                    },
-                    isRTL: false,
-                    maxDate: null,
-                    minDate: new Date(
-                      new Date().getFullYear(),
-                      new Date().getMonth() + 1,
-                      new Date().getDate()
-                    ),
-                    onClose: null,
-                    onDraw: null,
-                    onOpen: null,
-                    onSelect: null,
-                    parse: null,
-                    setDefaultDate: false,
-                    showClearBtn: true,
-                    showDaysInNextAndPreviousMonths: false,
-                    showMonthAfterYear: false,
-                    yearRange: 1,
-                  }}
-                />
+                <label style={{ width: "20vw" }}>
+                  {this.state.requisicao.destino}
+                </label>
               </Campo>
+              <div className="XAlign">
+                <Campo>
+                  <Rotulo>Data mínima prevista(20D)</Rotulo>
+                  {
+                    new Date(
+                      new Date().getFullYear(),
+                      new Date().getMonth(),
+                      new Date().getDate() + 20
+                    )
+                      .toLocaleString()
+                      .split(" ")[0]
+                  }
+                </Campo>
+                <Campo>
+                  <Rotulo>Dt. Entrega Desejada</Rotulo>
+                  <DatePicker
+                    placeholder="Data desejada"
+                    style={{
+                      all: "unset",
+                      borderBottom: "1px solid #ccc",
+                    }}
+                    onChange={(e) => {
+                      this.setState({
+                        requisicao: {
+                          ...this.state.requisicao,
+                          DtPretendida: e,
+                        },
+                      });
+                    }}
+                    options={{
+                      autoClose: true,
+                      container: null,
+                      defaultDate: null,
+                      disableDayFn: null,
+                      disableWeekends: true,
+                      events: [],
+                      firstDay: 0,
+                      format: "mmm dd, yyyy",
+                      i18n: {
+                        cancel: "Cancelar",
+                        clear: "Limpar",
+                        done: "Confirmar",
+                        months: [
+                          "Janeiro",
+                          "Fevereiro",
+                          "Março",
+                          "Abril",
+                          "Maio",
+                          "Junho",
+                          "Julho",
+                          "Agosto",
+                          "Setembro",
+                          "Outubro",
+                          "Novembro",
+                          "Dezembro",
+                        ],
+                        monthsShort: [
+                          "Jan",
+                          "Fev",
+                          "Mar",
+                          "Abr",
+                          "Mai",
+                          "Jun",
+                          "Jul",
+                          "Ago",
+                          "Set",
+                          "Out",
+                          "Nov",
+                          "Dez",
+                        ],
+                        nextMonth: "›",
+                        previousMonth: "‹",
+                        weekdays: [
+                          "Domingo",
+                          "Segunda",
+                          "Terça",
+                          "Quarta",
+                          "Quinta",
+                          "Sexta",
+                          "Sábado",
+                        ],
+                        weekdaysAbbrev: ["D", "S", "T", "Q", "Q", "S", "S"],
+                        weekdaysShort: [
+                          "Dom",
+                          "Seg",
+                          "Ter",
+                          "Qua",
+                          "Qui",
+                          "Sex",
+                          "Sab",
+                        ],
+                      },
+                      isRTL: false,
+                      maxDate: null,
+                      minDate: new Date(
+                        new Date().getFullYear(),
+                        new Date().getMonth(),
+                        new Date().getDate() + 20
+                      ),
+                      onClose: null,
+                      onDraw: null,
+                      onOpen: null,
+                      onSelect: null,
+                      parse: null,
+                      setDefaultDate: false,
+                      showClearBtn: true,
+                      showDaysInNextAndPreviousMonths: false,
+                      showMonthAfterYear: false,
+                      yearRange: 1,
+                    }}
+                  />
+                </Campo>
+              </div>
               <Campo>
                 <Rotulo>Email para acompanhamento: </Rotulo>
                 <TextInput
@@ -1154,6 +1212,21 @@ export default class Cadastro extends React.Component {
                       requisicao: {
                         ...this.state.requisicao,
                         EmailA: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </Campo>
+              <Campo>
+                <Rotulo>Telefone para Contato: </Rotulo>
+                <TextInput
+                  icon={<Icon>contact_phone</Icon>}
+                  placeholder="(11) 12345-6789"
+                  onChange={(e) =>
+                    this.setState({
+                      requisicao: {
+                        ...this.state.requisicao,
+                        Tel_Contato: e.target.value,
                       },
                     })
                   }
@@ -1178,10 +1251,10 @@ export default class Cadastro extends React.Component {
           <Modal
             actions={[
               <Button
-                disabled={this.state.solicitado}
+                disabled={false}
                 onClick={(e) => {
                   e.persist();
-                  this.handleRequest();
+                  this.handleRequest(e);
                 }}
               >
                 <Icon left>check</Icon>

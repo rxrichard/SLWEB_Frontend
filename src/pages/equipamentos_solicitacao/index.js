@@ -47,17 +47,15 @@ class Solicitacao extends React.Component {
         <div className='XAlign'>
           <GoBack />
 
-          {sessionStorage.getItem('role') === 'Técnica Bianchi' ||
-          sessionStorage.getItem('role') === 'Sistema' ? (
+          {sessionStorage.getItem('role') !== 'Franqueado' ? (
+            
             <Button
               onClick={() => {
                 this.props.history.push('/equipamentos/solicitacao/management')
               }}
-              node='button'
               style={{
                 marginRight: '5px'
               }}
-              waves='light'
             >
               Gerenciar configurações
               <Icon left>edit</Icon>

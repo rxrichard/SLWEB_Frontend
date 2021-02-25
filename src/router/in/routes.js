@@ -9,6 +9,8 @@ import { Panel } from "../../components/commom_in";
 import Perfil from "../../pages/perfil/index";
 import Equipamentos from "../../pages/equipamentos/index";
 import AddEquipamentos from "../../pages/equipamentos_solicitacao/index";
+import GerenciarEquip from '../../pages/equipamentos_solicitacao/gerenciamento'
+import AdmFranquia from '../../pages/administracao/index'
 import graficos from "../../components/graficos";
 
 export default function Dashboard() {
@@ -28,6 +30,8 @@ export default function Dashboard() {
             <Route exact path="/" component={graficos} />
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/equipamentos" component={Equipamentos} />
+            <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
+            <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route
               exact
               path="/equipamentos/solicitacao"

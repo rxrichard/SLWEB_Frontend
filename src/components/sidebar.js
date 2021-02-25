@@ -82,6 +82,41 @@ export default (sidebar) => {
             </Link>
           </Dropdown>
         </Combobox>
+
+        {window.sessionStorage.getItem('role') === 'Sistema' || window.sessionStorage.getItem('role') === 'BackOffice' || window.sessionStorage.getItem('role') === 'Técnica Bianchi' || window.sessionStorage.getItem('role') === 'Técnica Pilão' || window.sessionStorage.getItem('role') === 'Jurídico'? (<Combobox>
+          <Dropdown
+            options={{
+              alignment: "center",
+              autoTrigger: false,
+              closeOnClick: true,
+              constrainWidth: true,
+              container: null,
+              coverTrigger: false,
+              hover: false,
+              inDuration: 150,
+              onCloseEnd: null,
+              onCloseStart: null,
+              onOpenEnd: null,
+              onOpenStart: null,
+              outDuration: 250,
+            }}
+            trigger={
+              <div className="Menu">
+                <a href="#!">
+                  <Icon left>supervisor_account</Icon>Administração
+                </a>
+              </div>
+            }
+          >
+            <Link to="/administracao/franquia">
+              <Icon center>recent_actors</Icon>Franquias
+            </Link>
+            <Link to="/equipamentos/solicitacao/management">
+              <Icon center>collections_bookmark</Icon>Solicitações
+            </Link>
+          </Dropdown>
+        </Combobox>) : null}
+        
         <Exit
           className="Menu"
           onClick={() => {

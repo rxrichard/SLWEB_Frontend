@@ -3,7 +3,8 @@ import { api } from '../../services/api'
 import { saveAs } from 'file-saver'
 
 import Loading from '../../components/loading_screen'
-import { Button, Modal, Icon, Table, Textarea } from 'react-materialize'
+import { Button, Modal, Icon, Textarea } from 'react-materialize'
+import { Table } from '../../components/table'
 import { ToastyContainer, Toast } from '../../components/toasty'
 import { dateCheck, convertData } from '../../components/commom_functions'
 import AdmModal from './modals/admModal'
@@ -48,19 +49,15 @@ export default class Logs extends React.Component {
 
   //tava dando erro
   async checkView(ID) {
-    return
-    // try {
-    //   //Insere a data de vizualização da ordem por X departamento
-    //   const response = await api.put('/equip/requests/check', {
-    //     ID,
-    //     when: dateCheck()
-    //   })
+    try {
+      //Insere a data de vizualização da ordem por X departamento
+      await api.put('/equip/requests/check', {
+        ID
+      })
 
-    //   console.log(response.data)
-    // } catch (err) {
-    //   console.log(err)
-    //   Toast('Falha ao linkar dados da OS', 'error')
-    // }
+    } catch (err) {
+      Toast('Falha ao linkar dados da OS', 'error')
+    }
   }
 
   render() {
@@ -78,6 +75,7 @@ export default class Logs extends React.Component {
             <th>Data estimada</th>
             <th>Destino</th>
             <th>Gerenciar</th>
+            <th>PDF</th>
           </tr>
         </thead>
         {this.state.logs.map((log, i) => (
@@ -94,6 +92,18 @@ export default class Logs extends React.Component {
               />
             </td>
             <td>
+            <Button
+                tooltip='Gerenciamento da Requisição'
+                tooltipOptions={{
+                  position: "top",
+                }}
+                className="modal-trigger"
+                href={`#modal${i}`}
+                node="button"
+
+              >
+                <Icon>settings</Icon>
+              </Button>
               <Modal
                 actions={[
                   <CloseButton />
@@ -101,7 +111,7 @@ export default class Logs extends React.Component {
                 bottomSheet={false}
                 fixedFooter={false}
                 header='Gerenciamento de solicitação'
-                id='modal10'
+                id={`modal${i}`}
                 options={{
                   dismissible: true,
                   endingTop: '10%',
@@ -115,18 +125,20 @@ export default class Logs extends React.Component {
                   preventScrolling: true,
                   startingTop: '4%'
                 }}
-                trigger={
-                  <Button
-                    style={{
-                      marginBottom: '10px'
-                    }}
-                  >
-                    <Icon>settings</Icon>
-                  </Button>
-                }
               >
                 <AdmModal LOGS={this.state.logs[i]} />
               </Modal>
+            </td>
+            <td>
+              <Button
+                tooltip="Baixar PDF"
+                tooltipOptions={{
+                  position: "right",
+                }}
+                onClick={() => this.handleRetrivePDF(this.state.logs[i].OSCId)}
+              >
+                <Icon>find_in_page</Icon>
+              </Button>
             </td>
           </tr>
         ))}

@@ -8,7 +8,7 @@ import {
   FAILED_UPDATE,
 } from "../../../components/messages";
 import { Button, TextInput, Icon, DatePicker } from "react-materialize";
-import { CancelButton, ConfirmButton } from "../../../components/buttons";
+import { CancelButton } from "../../../components/buttons";
 import { convertData } from "../../../components/commom_functions";
 
 export default class AdmModal extends React.Component {
@@ -79,7 +79,7 @@ export default class AdmModal extends React.Component {
   }
 
   //Função que envia as atualizações do Comercial, Tecnica e Expedição pro backend
-  async handleUpdateOS(status) {
+  async handleUpdateOS(status, event) {
     if (this.state.OS.OSCStatus === "Cancelado") {
       Toast(
         "A solicitação já foi fechada, não é possivel gerenciá-la",
@@ -93,6 +93,8 @@ export default class AdmModal extends React.Component {
       return;
     }
 
+    event.target.disabled = true;
+
     try {
       if (status === "OK") {
         const response = await api.put("/equip/requests/validate", {
@@ -103,7 +105,7 @@ export default class AdmModal extends React.Component {
           prev: this.state.previsao,
         });
 
-        if (response.data === 200) {
+        if (response.status === 200) {
           Toast("Status atualizado com sucesso", "success");
           setTimeout(() => {
             window.location.reload();
@@ -128,13 +130,13 @@ export default class AdmModal extends React.Component {
         }
       }
     } catch (err) {
+      event.target.disabled = false;
       Toast("Falha ao atualizar status da Ordem de serviço", "error");
     }
   }
 
   //Função que baixa o PDF da OS
   async handleRetrivePDF(OSID) {
-    console.log(OSID);
     try {
       const response = await api.get("/equip/requests/retrive", {
         params: {
@@ -158,15 +160,15 @@ export default class AdmModal extends React.Component {
     if (this.state.OS === null) return;
 
     if (
-      this.state.OS.OSCTecAceite === null &&
-      this.state.OS.OSCStatus === "Ativo"
-    ) {
-      return "Aguardando validação Técnica";
-    } else if (
       this.state.OS.OSCComAceite === null &&
       this.state.OS.OSCStatus === "Ativo"
     ) {
       return "Aguardando validação comercial";
+    } else if (
+      this.state.OS.OSCTecAceite === null &&
+      this.state.OS.OSCStatus === "Ativo"
+    ) {
+      return "Aguardando validação Técnica";
     } else if (
       this.state.OS.OSCExpDtPrevisao === null &&
       this.state.OS.OSCStatus === "Ativo"
@@ -185,22 +187,23 @@ export default class AdmModal extends React.Component {
   setValidState(OS) {
     if (OS === null) return;
 
-    if (OS.OSCTecAceite === null) {
-      this.setState({ validacao: 1 });
+    if (OS.OSCStatus === "Cancelado") {
+      this.setState({ validacao: 0 });
     } else if (OS.OSCComAceite === null) {
+      this.setState({ validacao: 1 });
+    } else if (OS.OSCTecAceite === null) {
       this.setState({ validacao: 2 });
     } else if (OS.OSCExpDtPrevisao === null) {
       this.setState({ validacao: 3 });
-    } else if (OS.OSCStatus !== "Ativo") {
-      this.setState({ validacao: 0 });
     } else {
       this.setState({ validacao: 4 });
     }
+
   }
 
   //Tela do fraqueado
   Franqueado = (validacao) => {
-    if (validacao <= 3) {
+    if (validacao === 4) {
       return (
         <div
           style={{
@@ -214,29 +217,23 @@ export default class AdmModal extends React.Component {
         >
           <p>Status: {this.showStatus()}</p>
           <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <Button
-              tooltip="Baixar PDF"
-              tooltipOptions={{
-                position: "right",
-              }}
-              style={{ marginRight: "1%" }}
-              onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-            >
-              Inspecionar OS
-              <Icon left>find_in_page</Icon>
-            </Button>
-
             <input
-              style={{ marginLeft: "20%" }}
-              type='checkbox'
+              style={{ marginLeft: "1vw" }}
+              type="checkbox"
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
             />
+            <p>Habilitar opções</p>
           </div>
           <div className="YAlign">
-            <ConfirmButton
+            <Button
+              tooltip="Confirma que sua máquina já foi entregue"
+              tooltipOptions={{
+                position: "right",
+              }}
               onClick={(e) => {
+                e.persist();
                 this.handleUpdateOS("OK");
                 e.target.disabled = true;
               }}
@@ -247,7 +244,7 @@ export default class AdmModal extends React.Component {
               }
             >
               Confirmar Recebimento
-            </ConfirmButton>
+            </Button>
 
             <CancelButton
               tooltip={REQUISICAO_DE_MAQUINA_WARNING}
@@ -285,17 +282,6 @@ export default class AdmModal extends React.Component {
             O dia previsto para entrega é:{" "}
             {convertData(this.state.OS.OSCExpDtPrevisao)}
           </p>
-
-          <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <Button
-              tooltip="Baixar PDF"
-              style={{ marginRight: "1%" }}
-              onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-            >
-              Inspecionar OS
-              <Icon left>find_in_page</Icon>
-            </Button>
-          </div>
         </div>
       );
     }
@@ -315,77 +301,70 @@ export default class AdmModal extends React.Component {
     >
       <p>Status: {this.showStatus()}</p>
       <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-        <Button
-          tooltip="Baixar PDF"
-          tooltipOptions={{
-            position: "top",
-          }}
-          style={{ marginRight: "1%" }}
-          onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-        >
-          Inspecionar OS
-          <Icon left>find_in_page</Icon>
-        </Button>
         <input
-        style={{ marginLeft: "20%" }}
+          style={{ marginLeft: "1vw" }}
           type="checkbox"
-
           onChange={(e) => {
             this.setState({ readed: e.target.checked });
           }}
         />
+        <p>Habilitar opções</p>
       </div>
-      <div className="XAlign" style={{ justifyContent: "space-evenly" }}>
+      <div
+        className="YAlign"
+        style={{ justifyContent: "space-between", marginTop: "1%" }}
+      >
         <Button
+          style={{ marginBottom: "5%", width: "100%" }}
           onClick={(e) => {
             this.handleSUDO("Cancelar", this.state.OS.OSCId);
             e.target.disabled = true;
           }}
           tooltip="Atribui status cancelado à OS"
           tooltipOptions={{
-            position: "top",
+            position: "right",
           }}
           disabled={!this.state.readed}
         >
           Cancelar ordem
         </Button>
-
         <Button
+          style={{ marginBottom: "5%", width: "100%" }}
           onClick={(e) => {
             this.handleSUDO("RT", this.state.OS.OSCId);
             e.target.disabled = true;
           }}
           tooltip="Remove a verificação e a previsão da Técnica da Bianchi"
           tooltipOptions={{
-            position: "top",
+            position: "right",
           }}
           disabled={!this.state.readed}
         >
           Remover Técnica
         </Button>
-
         <Button
+          style={{ marginBottom: "5%", width: "100%" }}
           onClick={(e) => {
             this.handleSUDO("RC", this.state.OS.OSCId);
             e.target.disabled = true;
           }}
           tooltip="Remove a verificação do Comercial"
           tooltipOptions={{
-            position: "top",
+            position: "right",
           }}
           disabled={!this.state.readed}
         >
           Remover Comercial
         </Button>
-
         <Button
+          style={{ marginBottom: "5%", width: "100%" }}
           onClick={(e) => {
             this.handleSUDO("RE", this.state.OS.OSCId);
             e.target.disabled = true;
           }}
           tooltip="Remove a verificação e a previsão da Expedição"
           tooltipOptions={{
-            position: "top",
+            position: "right",
           }}
           disabled={!this.state.readed}
         >
@@ -397,7 +376,7 @@ export default class AdmModal extends React.Component {
 
   //Tela dos tecnicos de máquina
   TecBianchi = (validacao) => {
-    if (validacao === 1) {
+    if (validacao === 2) {
       return (
         <div
           style={{
@@ -410,22 +389,15 @@ export default class AdmModal extends React.Component {
           }}
         >
           <p>Status: {this.showStatus()}</p>
-
           <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <Button
-              style={{ marginRight: "1%" }}
-              onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-            >
-              Inspecionar OS
-            </Button>
-
             <input
+              style={{ marginLeft: "1vw" }}
               type="checkbox"
-              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
             />
+            <p>Habilitar opções</p>
           </div>
 
           <div
@@ -445,8 +417,9 @@ export default class AdmModal extends React.Component {
                   ? false
                   : true
               }
-              onClick={() => {
-                this.handleUpdateOS("OK");
+              onClick={(e) => {
+                e.persist();
+                this.handleUpdateOS("OK", e);
               }}
             >
               Aceitar OS
@@ -567,8 +540,9 @@ export default class AdmModal extends React.Component {
                   ? false
                   : true
               }
-              onClick={() => {
-                this.handleUpdateOS("NOTOK");
+              onClick={(e) => {
+                e.persist();
+                this.handleUpdateOS("NOTOK", e);
               }}
             >
               Rejeitar OS
@@ -603,7 +577,7 @@ export default class AdmModal extends React.Component {
 
   //Tela do comercial
   Backoffice = (validacao) => {
-    if (validacao === 2) {
+    if (validacao === 1) {
       return (
         <div
           style={{
@@ -617,31 +591,30 @@ export default class AdmModal extends React.Component {
         >
           <p>Status: {this.showStatus()}</p>
           <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <Button
-              style={{ marginRight: "1%" }}
-              onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-            >
-              Inspecionar OS
-            </Button>
-
             <input
+              style={{ marginLeft: "1vw" }}
               type="checkbox"
-              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
             />
+            <p>Habilitar opções</p>
           </div>
 
           <Button
             style={{ marginTop: "3%" }}
+            tooltip="Confirma viabilidade da OS"
+            tooltipOptions={{
+              position: "right",
+            }}
             disabled={
               this.state.readed && this.state.RejectReason.length < 1
                 ? false
                 : true
             }
-            onClick={() => {
-              this.handleUpdateOS("OK");
+            onClick={(e) => {
+              e.persist();
+              this.handleUpdateOS("OK", e);
             }}
           >
             Aceitar OS
@@ -657,13 +630,18 @@ export default class AdmModal extends React.Component {
             }}
           >
             <Button
+              tooltip="Rejeita a viabilidade da OS"
+              tooltipOptions={{
+                position: "bottom",
+              }}
               disabled={
                 this.state.readed && this.state.RejectReason.length > 0
                   ? false
                   : true
               }
-              onClick={() => {
-                this.handleUpdateOS("NOTOK");
+              onClick={(e) => {
+                e.persist();
+                this.handleUpdateOS("NOTOK", e);
               }}
             >
               Rejeitar OS
@@ -710,22 +688,15 @@ export default class AdmModal extends React.Component {
           }}
         >
           <p>Status: {this.showStatus()}</p>
-
           <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <Button
-              style={{ marginRight: "1%" }}
-              onClick={() => this.handleRetrivePDF(this.state.OS.OSCId)}
-            >
-              Inspecionar OS
-            </Button>
-
             <input
+              style={{ marginLeft: "1vw" }}
               type="checkbox"
-              style={{ marginLeft: "20%" }}
               onChange={(e) => {
                 this.setState({ readed: e.target.checked });
               }}
             />
+            <p>Habilitar opções</p>
           </div>
 
           <div
@@ -740,8 +711,9 @@ export default class AdmModal extends React.Component {
               disabled={
                 this.state.readed && this.state.previsao !== null ? false : true
               }
-              onClick={() => {
-                this.handleUpdateOS("OK");
+              onClick={(e) => {
+                e.persist();
+                this.handleUpdateOS("OK", e);
               }}
             >
               Confirmar prazo

@@ -20,6 +20,7 @@ export default class LoginADM extends Component {
     adm_password: null,
     validADM: false,
     usersList: [],
+    usersListFiltered: [],
     user_code: null,
     user_name: null
   }
@@ -37,9 +38,9 @@ export default class LoginADM extends Component {
             admin_password: this.state.adm_password
           }
         })
-        if (typeof response.data != 'object') throw Error
+        if (response.status === 401) throw Error
         Toast('Autenticado', 'success')
-        this.setState({ usersList: response.data, validADM: true })
+        this.setState({ usersList: response.data, usersListFiltered: response.data, validADM: true })
       } catch (err) {
         Toast('Falha na autenticação', 'error')
         this.setState({ validADM: false })
@@ -67,6 +68,33 @@ export default class LoginADM extends Component {
     } catch (err) {
       Toast('Falha ao realizar o login', 'error')
     }
+  }
+
+  handleFilter(value, event) {
+    this.setState({ usersListFiltered: this.state.usersList })
+
+    if (value === '') {
+      this.setState({ usersListFiltered: this.state.usersList })
+      return
+    }
+
+    if (value.length > 4) {
+      event.target.value = value.slice(0, 4)
+      return
+    }
+
+    this.setState({ usersListFiltered: this.state.usersList })
+    let aux = []
+    let newArray = []
+    aux = this.state.usersList
+    
+    for (let i = 0; i < aux.length; i++) {
+      if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
+        newArray.push(aux[i])
+      }
+    }
+    
+    this.setState({ usersListFiltered: newArray })
   }
 
   render() {
@@ -100,6 +128,7 @@ export default class LoginADM extends Component {
 
           <Modal
             actions={[
+              <input onChange={e => this.handleFilter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' />,
               <Button
                 style={{ margin: '10px' }}
                 disabled={this.state.user_code === null ? true : false}
@@ -156,7 +185,7 @@ export default class LoginADM extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.usersList.map((user, i) => (
+                  {this.state.usersListFiltered.map((user, i) => (
                     <tr
                       className='Item'
                       onClick={e => {
