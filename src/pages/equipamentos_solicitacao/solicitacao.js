@@ -629,7 +629,6 @@ export default class Cadastro extends React.Component {
       TotalBebidas: aux.length - 1,
       ultimaSelecao: sub
     });
-    this.calcUltSelecao()
   }
 
   handleDefineDestino(e) {
@@ -853,7 +852,7 @@ export default class Cadastro extends React.Component {
 
     //se já tiver atingido a capacidade maxima
     if (b >= this.state.requisicao.capacidade) {
-      Toast("Capacidade máxima da máquina já atingida");
+      Toast("Capacidade máxima da máquina atingida");
       this.setState({ config: aux, TotalBebidas: aux.length });
       return;
     }
