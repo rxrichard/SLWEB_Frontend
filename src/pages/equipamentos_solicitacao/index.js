@@ -47,7 +47,7 @@ class Solicitacao extends React.Component {
         <div className='XAlign'>
           <GoBack />
 
-          {sessionStorage.getItem('role') !== 'Franqueado' ? (
+          {sessionStorage.getItem('role') !== 'Franquia' ? (
             
             <Button
               onClick={() => {

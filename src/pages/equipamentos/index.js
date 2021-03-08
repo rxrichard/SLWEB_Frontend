@@ -7,7 +7,6 @@ import { Button, Icon, Modal } from 'react-materialize'
 import { CloseButton } from '../../components/buttons'
 import { Table } from '../../components/table'
 import Loading from '../../components/loading_screen'
-import { FAILED_REQUEST } from '../../components/messages'
 
 class Equipamentos extends React.Component {
   state = {
@@ -321,6 +320,7 @@ class Equipamentos extends React.Component {
                     </tr>
                   )
                 }
+                return null
               })}
             </tbody>
           </Table>

@@ -28,42 +28,47 @@ export default class Cadastro extends React.Component {
       destino: null,
       abastecimento: null,
       inibCopos: null,
-      // idVisual: null,
       gabinete: null,
       DtPretendida: null,
-      Tproduto: null,
       Chip: null,
+      ExtAnt: null,
       EmailA: null,
       CNPJ_Destino: null,
       Cliente_Destino: null,
       Tel_Contato: null,
+      Contato: null,
 
-      // estabilizador: false,
-      // transformador: false,
-      // telemetria: false,
-
-      // validador: false,
-      // moedeiro: false,
       sisPagamento: null,
       TValidador: null,
-      validador: {},
-      filtro: false,
+      validador: [],
       observacoes: "",
     },
-    config: [],
+    config: [
+      {
+        Bebida: null,
+        Un: "",
+        Qtd: [],
+        Qtd_Def: null,
+        Medida: [],
+        Medida_Def: null,
+        configura: null,
+        Selecao: 0,
+        PrecoMaq: 0,
+        TProd: null,
+      },
+    ],
     endereços_entrega: [],
-    MaqsDisp: [], //Maquinas que ja possuem pelo menos uma configuração disponivel
+    MaqsDisp: [],
     BebidasDisp: [],
+    PadraoMaq: [],
     TotalBebidas: 0,
-    // ConfigMaquina: undefined,
-    // valorConfig: [],
+    ultimaSelecao: 0,
     a: false, //só um switch, pode dar um nome descente se quiser...
     b: true, //só um switch, pode dar um nome descente se quiser...
     c: false, //só um switch, pode dar um nome descente se quiser...
     loaded: false,
   };
 
-  //reformulado
   async componentDidMount() {
     try {
       //busca os endereços e modelos de maquina disponiveis
@@ -75,19 +80,14 @@ export default class Cadastro extends React.Component {
         BebidasDisp: response.data.BebidasNovo,
         loaded: true,
       });
+      this.calcUltSelecao();
     } catch (err) {
       Toast("Falha ao buscar endereços para entrega", "error");
     }
   }
 
-  //reformulado
   async handleRequest(event) {
     event.target.disabled = true;
-    if (this.state.requisicao.destino === null) {
-      Toast("Preencha um destino para a solicitação");
-      event.target.disabled = false;
-      return false;
-    }
 
     if (this.state.requisicao.maquina === "") {
       Toast("Escolha um modelo de máquina");
@@ -95,17 +95,69 @@ export default class Cadastro extends React.Component {
       return false;
     }
 
-    if (this.state.config.length === 0) {
+    if (this.state.config.length <= 1) {
       Toast("Selecione pelo menos uma bebida para a máquina");
       event.target.disabled = false;
       return false;
     }
 
+    if (this.state.requisicao.sisPagamento === null) {
+      Toast("Selecione o meio de pagamento para a máquina");
+      event.target.disabled = false;
+      return false;
+    }
+
     if (
-      this.state.requisicao.maquina !== "" &&
-      this.state.requisicao.abastecimento === null
+      (this.state.requisicao.sisPagamento === "Validador" ||
+        this.state.requisicao.sisPagamento === "Cartão e Validador") &&
+      this.state.requisicao.TValidador === "Ficha" &&
+      this.state.requisicao.validador.length === 0
     ) {
+      Toast("Especifique que moedas ou fichas o validador deve aceitar");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.gabinete === null) {
+      Toast("Selecione se deseja um gabinete acompanhando a máquina ou não");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.abastecimento === null) {
       Toast("Selecione o sistema de abastecimento da máquina");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.Chip === null) {
+      Toast(
+        "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+      );
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.ExtAnt === null) {
+      Toast("Informe se o a máquina deve acompanhar uma antena externa");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.destino === null) {
+      Toast("Preencha um destino para a solicitação");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.DtPretendida === null) {
+      Toast("Preencha uma data conveniente para entrega");
+      event.target.disabled = false;
+      return false;
+    }
+
+    if (this.state.requisicao.Contato === null) {
+      Toast("Informe o nome do contato para acompanhar a entrega da máquina");
       event.target.disabled = false;
       return false;
     }
@@ -119,36 +171,9 @@ export default class Cadastro extends React.Component {
       return false;
     }
 
-    if (
-      this.state.requisicao.maquina !== "" &&
-      this.state.requisicao.sisPagamento === null
-    ) {
-      Toast("Selecione o meio de pagamento para a máquina");
-      event.target.disabled = false;
-      return false;
-    }
-
-    if (this.state.requisicao.DtPretendida === null) {
-      Toast("Preencha uma data conveniente para entrega");
-      event.target.disabled = false;
-      return false;
-    }
-
-    if (this.state.requisicao.gabinete === null) {
-      Toast("Especifique sua opção de gabinete");
-      event.target.disabled = false;
-      return false;
-    }
-
-    if (this.state.requisicao.Tproduto === null) {
-      Toast("Selecione o tipo de produto da máquina");
-      event.target.disabled = false;
-      return false;
-    }
-
-    if (this.state.requisicao.Chip === null) {
+    if (this.state.requisicao.Tel_Contato === null) {
       Toast(
-        "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+        "Informe o número de telefone do contato que acompanhará a entrega da máquina"
       );
       event.target.disabled = false;
       return false;
@@ -163,6 +188,9 @@ export default class Cadastro extends React.Component {
 
       if (response.status === 201) {
         Toast("Solicitação registrada com sucesso", "success");
+        alert(
+          'Solicitação registrada com sucesso, por favor verifique o PDF gerado que pode ser encontrado no seu email ou na aba "Solicitações" desta mesma tela. Se encontrar qualquer inconformidade no PDF do pedido, por favor entre em contato imediatamente com suporte3@slaplic.com.br'
+        );
         setTimeout(() => {
           window.location.reload();
         }, 3000);
@@ -180,134 +208,93 @@ export default class Cadastro extends React.Component {
     }
   }
 
-  //reformulado
   async handleChangeTargetMaq(i) {
-    this.setState({
-      requisicao: {
-        ...this.state.requisicao,
-        maquina: this.state.MaqsDisp[i].MaqModelo,
-        maqid: this.state.MaqsDisp[i].MaqModId,
-        capacidade: this.state.MaqsDisp[i].MaqCapacidade,
-      },
-      a: true,
-    });
-  }
-
-  async handleAtivarBebida2(bebida, activate, event) {
     let aux = [];
-    aux = this.state.config;
-    let pointer = null;
-    let b = 0;
+    aux = this.resetaLinha(aux, -1);
 
-    this.state.config.map((beb) => {
-      if (beb.acompanha) b++
-    });
+    try {
+      const response = await api.get("/equip/default", {
+        params: {
+          MaqId: this.state.MaqsDisp[i].MaqModId,
+        },
+      });
 
-    if (b >= this.state.requisicao.capacidade && activate) {
-      Toast("Capacidade máxima da máquina já atingida");
-      event.target.checked = false;
-      return;
-    }
-
-    if (aux.length === 0) {
-      aux.push({ ...bebida, acompanha: activate });
-    }
-
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Cod === bebida.Cod) {
-        pointer = i;
+      if (response.status === 200) {
+        this.setState({
+          requisicao: {
+            ...this.state.requisicao,
+            maquina: this.state.MaqsDisp[i].MaqModelo,
+            maqid: this.state.MaqsDisp[i].MaqModId,
+            capacidade: this.state.MaqsDisp[i].MaqCapacidade,
+          },
+          config: aux,
+          PadraoMaq: response.data.configPadrao,
+          a: true,
+        });
+        this.handleLimparTabela();
+      } else {
+        throw Error;
       }
+    } catch (err) {
+      this.setState({
+        requisicao: {
+          ...this.state.requisicao,
+          maquina: this.state.MaqsDisp[i].MaqModelo,
+          maqid: this.state.MaqsDisp[i].MaqModId,
+          capacidade: this.state.MaqsDisp[i].MaqCapacidade,
+        },
+        config: aux,
+        PadraoMaq: [],
+        a: true,
+      });
+      Toast("Falha ao buscar configuração padrão da máquina", "error");
     }
-
-    if (pointer !== null) {
-      aux[pointer] = { ...bebida, acompanha: activate };
-    }
-
-    if (pointer === null) {
-      aux.push({ ...bebida, acompanha: activate });
-    }
-
-    b = 0;
-
-    this.state.config.map((beb) => {
-      if (beb.acompanha) b++;
-    });
-
-    this.setState({ config: aux, TotalBebidas: b });
   }
-
-  //reformulado
-  // handleAtivarBebida(bebida, activate) {
-  //   let aux = [];
-  //   aux = this.state.config;
-  //   let a = 0;
-  //   let b = 0;
-
-  //   if (aux.length === 0) {
-  //     aux.push({
-  //       ...bebida,
-  //       acompanha: activate,
-  //       Selecao: this.state.TotalBebidas + 1,
-  //     });
-  //   }
-
-  //   for (let i = 0; i < aux.length; i++) {
-  //     if (aux[i].Cod === bebida.Cod && activate === true) {
-  //       //Se ele achar a bebida no array, vai atualizar o status
-  //       aux[i] = {
-  //         ...aux[i],
-  //         acompanha: activate,
-  //         Selecao: this.state.TotalBebidas + 1,
-  //       };
-  //       a++;
-  //     } else if (aux[i].Cod === bebida.Cod && activate === false) {
-  //       aux[i] = {
-  //         ...aux[i],
-  //         acompanha: activate,
-  //         Selecao: this.state.TotalBebidas - 1,
-  //       };
-  //       a++;
-  //     }
-  //   }
-
-  //   if (a === 0) {
-  //     aux.push({
-  //       ...bebida,
-  //       acompanha: activate,
-  //       Selecao: this.state.TotalBebidas + 1,
-  //     });
-  //   }
-
-  //   this.setState({ config: aux });
-
-  //   this.state.config.map((beb) => {
-  //     beb.acompanha ? b++ : (b = b);
-  //   });
-
-  //   this.setState({ TotalBebidas: b });
-
-  //   return;
-  // }
 
   handleSisPagChange(sispag) {
     const checks = document.querySelectorAll('input[type="checkbox"]');
+    let achou = false;
+    let aux = [];
+    aux = [...this.state.config];
 
+    checks[checks.length - 6].checked = false;
     for (let i = checks.length - 5; i < checks.length; i++) {
-      checks[i].checked = false;
+      checks[i].checked = true;
+      checks[i].disabled = true;
     }
 
-    if (sispag === "Validador") {
-      this.setState({ b: false });
-    } else {
+    if (sispag === "Validador" || sispag === "Cartão e Validador") {
       this.setState({
-        b: true,
-        requisicao: { ...this.state.requisicao, validador: {} },
+        b: false,
+        requisicao: {
+          ...this.state.requisicao,
+          sisPagamento: sispag,
+          TValidador: "Moeda",
+          validador: ['0.05', '0.10', '0.25', '0.50', '1.00'],
+        },
       });
+      return;
+    } else if (sispag === "Livre") {
+      for (let i = 0; i < aux.length; i++) {
+        if (Number(aux[i].PrecoMaq) > 0) {
+          achou = true;
+        }
+      }
+
+      if (achou === true) {
+        alert(
+          "AVISO: Você definiu o sistema de pagamento como livre mas algumas seleções possuem preços configurados."
+        );
+      }
     }
+
     this.setState({
+      b: true,
       requisicao: {
         ...this.state.requisicao,
         sisPagamento: sispag,
+        TValidador: null,
+        validador: [],
       },
     });
   }
@@ -315,224 +302,600 @@ export default class Cadastro extends React.Component {
   handleActivateSwitch(value) {
     const checks = document.querySelectorAll('input[type="checkbox"]');
 
+    //redefino todos os check box para false
     for (let i = checks.length - 5; i < checks.length; i++) {
-      checks[i].checked = false;
+      if (value === false) {
+        checks[i].checked = true;
+      } else {
+        checks[i].checked = false;
+        checks[i].disabled = false;
+      }
     }
+
     this.setState({
       c: value,
       requisicao: {
         ...this.state.requisicao,
         TValidador: value ? "Ficha" : "Moeda",
-        validador: {},
+        validador: value ? [] : ['0.05', '0.10', '0.25', '0.50', '1.00'],
       },
     });
+
+    //busco algum valor de configuração que não seja compativel com o tipo de pagamento
+    for (let j = 0; j < this.state.config.length; j++) {
+      if (
+        value === true &&
+        !Number.isSafeInteger(Number(this.state.config[j].PrecoMaq))
+      ) {
+        Toast(
+          "Um ou mais preços de bebida não são compativeis com o pagamento por ficha"
+        );
+        return;
+      }
+    }
   }
 
-  handleMantValidador(valor, acao) {
+  handleMantValidador(valor) {
     let aux = this.state.requisicao.validador;
-    let valid = {};
 
-    if (this.state.c && acao) {
-      switch (valor) {
-        case "1":
-          valid = { ...aux, val1: valor };
-          break;
-        case "2":
-          valid = { ...aux, val2: valor };
-          break;
-        case "4":
-          valid = { ...aux, val3: valor };
-          break;
-        case "8":
-          valid = { ...aux, val4: valor };
-          break;
-        case "16":
-          valid = { ...aux, val5: valor };
-          break;
-        default:
-          valid = {};
-      }
-    } else if (!this.state.c && acao) {
-      switch (valor) {
-        case "0.05":
-          valid = { ...aux, val1: valor };
-          break;
-        case "0.10":
-          valid = { ...aux, val2: valor };
-          break;
-        case "0.25":
-          valid = { ...aux, val3: valor };
-          break;
-        case "0.50":
-          valid = { ...aux, val4: valor };
-          break;
-        case "1.00":
-          valid = { ...aux, val5: valor };
-          break;
-        default:
-          valid = {};
-      }
-    } else if (this.state.c && !acao) {
-      switch (valor) {
-        case "1":
-          valid = aux;
-          delete valid.val1;
-          break;
-        case "2":
-          valid = aux;
-          delete valid.val2;
-          break;
-        case "4":
-          valid = aux;
-          delete valid.val3;
-          break;
-        case "8":
-          valid = aux;
-          delete valid.val4;
-          break;
-        case "16":
-          valid = aux;
-          delete valid.val5;
-          break;
-        default:
-          valid = {};
-      }
+    if (aux.indexOf(Number(valor)) >= 0) {
+      aux.splice(aux.indexOf(Number(valor)), 1);
     } else {
-      switch (valor) {
-        case "0.05":
-          valid = aux;
-          delete valid.val1;
-          break;
-        case "0.10":
-          valid = aux;
-          delete valid.val2;
-          break;
-        case "0.25":
-          valid = aux;
-          delete valid.val3;
-          break;
-        case "0.50":
-          valid = aux;
-          delete valid.val4;
-          break;
-        case "1.00":
-          valid = aux;
-          delete valid.val5;
-          break;
-        default:
-          valid = {};
-      }
+      aux.push(Number(valor));
     }
 
     this.setState({
-      requisicao: { ...this.state.requisicao, validador: valid },
+      requisicao: { ...this.state.requisicao, validador: aux.sort() },
     });
   }
 
-  handleDefinirSelecao(z, selecao, event) {
+  handleAdicionaBebida(linha, arrayBebidas, tr) {
     let aux = [];
-    aux = this.state.config;
-    let pointer = null;
+    aux = [...this.state.config];
 
-    for (let j = 0; j < aux.length; j++) {
-      if (aux[j].Cod === this.state.BebidasDisp[z].Cod) {
-        pointer = j;
-      }
+    if (aux[linha].Bebida !== null) {
+      //redefino os campos da linha
+      tr.children[1].children[0].selectedIndex = 0;
+      tr.children[2].children[0].checked = false;
+      tr.children[3].children[1].value = "";
+      tr.children[4].children[1].value = "";
+      tr.children[5].children[0].selectedIndex = 0;
+      this.calcUltSelecao();
+    } else {
+      this.calcUltSelecao();
     }
 
-    if (
-      typeof this.state.config[pointer] == "undefined" ||
-      this.state.config[pointer].acompanha === false
-    ) {
-      Toast("Ative a bebida antes de modificar o número da seleção");
-      event.target.value = "";
-      return;
-    }
-
-    if (aux.length === 0) {
-      Toast("Ative a bebida antes de modificar o número da seleção");
-      event.target.value = "";
-      return;
-    }
-
-    if (isNaN(Number(selecao))) {
-      Toast("Insira número entre 1 e 99");
-      event.target.value = this.state.config[z].Selecao;
-      return;
-    }
-
-    if (aux.length > 0 && selecao.length > 2) {
-      event.target.value = selecao.slice(0, 2);
-      Toast("Insira número entre 1 e 99");
-      return;
-    }
-
-    if (selecao === "") {
-      return;
-    }
-
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Cod === this.state.config[pointer].Cod) {
-        //Se ele achar a bebida no array, vai atualizar o status
-        aux[i] = { ...aux[i], Selecao: selecao };
-      }
-    }
+    aux[linha] = {
+      ...this.state.BebidasDisp[arrayBebidas],
+      Selecao: Number(this.state.ultimaSelecao),
+    };
 
     this.setState({ config: aux });
-
-    console.log(this.state.config);
-    return;
+    this.checaBebida(linha);
   }
 
-  handleChangeCost(z, cost, event) {
+  handleSelectMedida(linha, config, valor) {
     let aux = [];
-    aux = this.state.config;
-    let pointer = null;
+    aux = [...this.state.config];
 
-    for (let j = 0; j < aux.length; j++) {
-      if (aux[j].Cod === this.state.BebidasDisp[z].Cod) {
-        pointer = j;
-      }
+    aux[linha].Qtd_Def = config.Qtd[valor];
+    aux[linha].Medida_Def = config.Medida[valor];
+
+    this.setState({ config: aux });
+    this.checaBebida(linha);
+  }
+
+  handleAtivaConfig(linha, ativa) {
+    let aux = [];
+    aux = [...this.state.config];
+
+    aux[linha].configura = ativa;
+
+    this.setState({ config: aux });
+    this.checaBebida(linha);
+  }
+
+  handleSelectSelecao(linha, valor, event) {
+    let aux = [];
+    aux = [...this.state.config];
+    let existe = false;
+
+    if (isNaN(Number(valor))) {
+      Toast("Insira número entre 1 e 99");
+      event.target.value = aux[linha].Selecao;
+      return;
+    } else if (!Number.isSafeInteger(Number(valor))) {
+      Toast("Insira um número inteiro para a seleção");
+      event.target.value = aux[linha].Selecao;
+      return;
     }
 
-    if (aux.length === 0) {
-      Toast("Ative a bebida antes de modificar seu preço");
+    if (valor > this.state.requisicao.capacidade) {
+      event.target.value = this.state.ultimaSelecao;
+      Toast(`Insira um número entre 1 e ${this.state.requisicao.capacidade}`);
+      return;
+    }
+
+    if (valor === "") return;
+
+    aux.map((bebida) => {
+      if (bebida.Selecao === Number(valor)) existe = true;
+      return null;
+    });
+
+    if (existe === false) {
+      aux[linha].Selecao = valor;
+    } else {
+      Toast("Esse numero já foi usado para seleção");
       event.target.value = "";
-      return;
-    }
-
-    if (
-      typeof this.state.config[pointer] == "undefined" ||
-      this.state.config[pointer].acompanha === false
-    ) {
-      Toast("Ative a bebida antes de modificar seu preço");
-      event.target.value = "";
-      return;
-    }
-
-    if (isNaN(Number(cost))) {
-      Toast("Insira apenas números");
-      event.target.value = this.state.config[z].PrecoMaq;
-      return;
-    }
-
-    if (Number(cost) === "") {
-      Toast("Aviso: você definiu o preço da bebida como R$ 0,00");
-    }
-
-    if (cost === "") {
-      return;
-    }
-
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Cod === this.state.config[pointer].Cod) {
-        //Se ele achar a bebida no array, vai atualizar o status
-        aux[i] = { ...aux[i], PrecoMaq: cost };
-      }
     }
 
     this.setState({ config: aux });
-    console.log(this.state.config);
+    this.checaBebida(linha);
+  }
+
+  handleDefineTipo(linha, tipo) {
+    let aux = [];
+    aux = [...this.state.config];
+
+    aux[linha].TProd = tipo;
+
+    this.setState({ config: aux });
+    this.checaBebida(linha);
+  }
+
+  handleDefinePreço(linha, valor, event) {
+    let aux = [];
+    aux = [...this.state.config];
+
+    if (
+      this.state.requisicao.sisPagamento === "Livre" &&
+      !isNaN(Number(valor.replace(/,/g, "."))) &&
+      Number(valor.replace(/,/g, ".")) !== 0 &&
+      Number(valor.replace(/,/g, ".")) !== ""
+    ) {
+      Toast("Você definiu o sistema de pagamento como Livre");
+    }
+
+    if (this.state.requisicao.sisPagamento === null) {
+      Toast("Você ainda não escolheu um sistema de pegamento");
+    }
+
+    //testes do validador
+    if (
+      this.state.requisicao.sisPagamento === "Validador" &&
+      this.state.requisicao.TValidador === "Ficha" &&
+      Number.isSafeInteger(Number(valor.replace(/,/g, ".")))
+    ) {
+      aux[linha].PrecoMaq = valor;
+
+      this.setState({ config: aux });
+      this.checaBebida(linha);
+    } else if (
+      this.state.requisicao.sisPagamento === "Validador" &&
+      this.state.requisicao.TValidador === "Ficha" &&
+      !Number.isSafeInteger(Number(valor.replace(/,/g, ".")))
+    ) {
+      Toast(
+        "O pagamento por fichas no validador só trabalha com numeros inteiros"
+      );
+      event.target.value = aux[linha].PrecoMaq;
+    } else if (
+      isNaN(Number(valor.replace(/,/g, "."))) &&
+      valor.replace(/,/g, ".") !== ""
+    ) {
+      Toast("Use apenas caractéres numéricos");
+      event.target.value = aux[linha].PrecoMaq;
+      return;
+    } else if (valor.replace(/,/g, ".") === "") {
+      event.target.value = aux[linha].PrecoMaq;
+    } else {
+      aux[linha].PrecoMaq = valor.replace(/,/g, ".");
+      event.target.value = valor.replace(/,/g, ".");
+    }
+
+    this.setState({ config: aux });
+    this.checaBebida(linha);
+  }
+
+  handleApagaLinha(linha, tr) {
+    let aux = [];
+    aux = [...this.state.config];
+    let sub = 0
+
+    const TLinha = tr;
+    const TBodyLinha = tr.children[0];
+
+    // DAQUI PRA BAIXO É UMA MANIPULAÇÃO F*DIDA DAS LINHAS DA TABELA, CUIDADO
+
+    if (aux.length <= 1 && aux[linha].Bebida === null) {
+      //Se tentar retirar uma linha ainda não completa
+      aux = this.resetaLinha(aux, -1, true);
+
+      Toast("Esta seleção não está salva, não é possivel apagar");
+      if (TLinha.tagName.toLowerCase() === "tr") {
+        TLinha.children[0].children[0].selectedIndex = 0;
+        TLinha.children[1].children[0].selectedIndex = 0;
+        TLinha.children[2].children[0].checked = false;
+        TLinha.children[3].children[1].value = "";
+        TLinha.children[4].children[1].value = "";
+        TLinha.children[5].children[0].selectedIndex = 0;
+      } else {
+        TBodyLinha.children[0].children[0].selectedIndex = 0;
+        TBodyLinha.children[1].children[0].selectedIndex = 0;
+        TBodyLinha.children[2].children[0].checked = false;
+        TBodyLinha.children[3].children[1].value = "";
+        TBodyLinha.children[4].children[1].value = "";
+        TBodyLinha.children[5].children[0].selectedIndex = 0;
+      }
+    } else if (linha === aux.length - 1) {
+      //Se tentar retirar a última linha
+      sub = aux[linha].Selecao
+      aux = this.resetaLinha(aux, linha);
+
+      if (TLinha.tagName.toLowerCase() === "tr") {
+        TLinha.children[0].children[0].selectedIndex = 0;
+        TLinha.children[1].children[0].selectedIndex = 0;
+        TLinha.children[2].children[0].checked = false;
+        TLinha.children[3].children[1].value = "";
+        TLinha.children[3].children[1].placeholder = 0;
+        TLinha.children[4].children[1].value = "";
+        TLinha.children[5].children[0].selectedIndex = 0;
+      } else {
+        TLinha.children[linha].children[0].children[0].selectedIndex = 0;
+        TLinha.children[linha].children[1].children[0].selectedIndex = 0;
+        TLinha.children[linha].children[2].children[0].checked = false;
+        TLinha.children[linha].children[3].children[1].value = "";
+        TLinha.children[linha].children[3].children[1].placeholder = 0;
+        TLinha.children[linha].children[4].children[1].value = "";
+        TLinha.children[linha].children[5].children[0].selectedIndex = 0;
+      }
+
+    } else if (aux.length <= 2 && aux[linha].Bebida !== null) {
+      //Se tentar retirar a unica linha salva e deixar a não salva
+      sub = aux[linha].Selecao
+      aux = this.resetaLinha(aux, linha, true);
+
+      if (TLinha.tagName.toLowerCase() === "tr") {
+        TLinha.children[0].children[0].selectedIndex = 0;
+        TLinha.children[1].children[0].selectedIndex = 0;
+        TLinha.children[2].children[0].checked = false;
+        TLinha.children[3].children[1].value = "";
+        TLinha.children[4].children[1].value = "";
+        TLinha.children[5].children[0].selectedIndex = 0;
+      } else {
+        TBodyLinha.children[0].children[0].selectedIndex = 0;
+        TBodyLinha.children[1].children[0].selectedIndex = 0;
+        TBodyLinha.children[2].children[0].checked = false;
+        TBodyLinha.children[3].children[1].value = "";
+        TBodyLinha.children[4].children[1].value = "";
+        TBodyLinha.children[5].children[0].selectedIndex = 0;
+      }
+    } else {
+      //Se tentar retirar um item da lista qualquer
+
+      sub = aux[linha].Selecao
+
+      aux.splice(linha, 1);
+      let tabela = null;
+
+      if (aux[aux.length - 1].Bebida !== null) {
+        aux.push({
+          Bebida: null,
+          Un: "",
+          Qtd: [],
+          Medida: [],
+          configura: null,
+          Selecao: 0,
+          PrecoMaq: 0,
+          TProd: null,
+        });
+      }
+
+      if (TLinha.tagName.toLowerCase() === "tr") {
+        tabela = TLinha.parentElement;
+      } else {
+        //passo os valores da linha seguinte para a atual
+        tabela = TLinha;
+      }
+
+      for (let i = linha; i < tabela.children.length; i++) {
+        if (typeof tabela.children[i + 1] != "undefined") {
+          tabela.children[i].children[0].children[0].selectedIndex =
+            tabela.children[i + 1].children[0].children[0].selectedIndex;
+          tabela.children[i].children[1].children[0].selectedIndex =
+            tabela.children[i + 1].children[1].children[0].selectedIndex;
+          tabela.children[i].children[2].children[0].checked =
+            tabela.children[i + 1].children[2].children[0].checked;
+          tabela.children[i].children[3].children[1].value =
+            tabela.children[i + 1].children[3].children[1].value;
+          tabela.children[i].children[4].children[1].value =
+            tabela.children[i + 1].children[4].children[1].value;
+          tabela.children[i].children[5].children[0].value =
+            tabela.children[i + 1].children[5].children[0].value;
+        } else {
+          tabela.children[i].children[0].children[0].selectedIndex = 0;
+          tabela.children[i].children[1].children[0].selectedIndex = 0;
+          tabela.children[i].children[2].children[0].checked = false;
+          tabela.children[i].children[3].children[1].value = "";
+          tabela.children[i].children[4].children[1].value = "";
+          tabela.children[i].children[5].children[0].selectedIndex = 0;
+        }
+      }
+    }
+    
+    this.setState({
+      config: aux,
+      TotalBebidas: aux.length - 1,
+      ultimaSelecao: sub
+    });
+    this.calcUltSelecao()
+  }
+
+  handleDefineDestino(e) {
+    let endereco = `${
+      this.state.endereços_entrega[e.target.value].Logradouro === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].Logradouro.trim()
+    }, número: ${
+      this.state.endereços_entrega[e.target.value].Número === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].Número.trim()
+    }, complemento: ${
+      this.state.endereços_entrega[e.target.value].Complemento === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].Complemento.trim()
+    }, bairro: ${
+      this.state.endereços_entrega[e.target.value].Bairro === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].Bairro.trim()
+    }, CEP: ${
+      this.state.endereços_entrega[e.target.value].CEP === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].CEP.trim()
+    }, ${
+      this.state.endereços_entrega[e.target.value].Município === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].Município.trim()
+    }, ${
+      this.state.endereços_entrega[e.target.value].UF === null
+        ? "NA"
+        : this.state.endereços_entrega[e.target.value].UF.trim()
+    }`;
+    this.setState({
+      requisicao: {
+        ...this.state.requisicao,
+        destino: endereco,
+        CNPJ_Destino: this.state.endereços_entrega[e.target.value].CNPJss,
+        Cliente_Destino: this.state.endereços_entrega[e.target.value]
+          .Nome_Fantasia,
+      },
+    });
+    const inputs = document.getElementById("enderecoEdit");
+    inputs.value = endereco;
+    inputs.disabled = false;
+  }
+
+  handleAplicaPadrao() {
+    let aux = [];
+    let Nomes = [];
+    let Bebidas = [];
+    let Medidas = [];
+    let tbody = document.querySelectorAll("table")[1]
+      ? document.querySelectorAll("table")[1].children[1]
+      : document.querySelectorAll("table")[0].children[1];
+
+    if (this.state.PadraoMaq.length === 0) {
+      return true;
+    }
+
+    this.setState({
+      config: [...this.state.PadraoMaq],
+      TotalBebidas: this.state.PadraoMaq.length,
+    });
+
+    aux = this.state.PadraoMaq;
+
+    //crio um array só com o nome das bebidas para buscar a posição delas com mais facilidade
+    this.state.BebidasDisp.map((bebida) => {
+      Nomes.push(bebida.Bebida);
+      return null;
+    });
+
+    //busco a posição das bebidas
+    for (let i = 0; i < aux.length; i++) {
+      Bebidas.push(Nomes.indexOf(aux[i].Bebida));
+    }
+
+    //busco as posições da Qtd e medida
+    for (let i = 0; i < aux.length; i++) {
+      for (let j = 1; j < this.state.BebidasDisp.length; j++) {
+        for (let k = 0; k < this.state.BebidasDisp[j].Medida.length; k++) {
+          if (
+            this.state.BebidasDisp[j].Bebida === aux[i].Bebida &&
+            this.state.BebidasDisp[j].Medida[k] === aux[i].Medida_Def
+          ) {
+            Medidas.push(this.state.BebidasDisp[j].Qtd.indexOf(aux[i].Qtd_Def));
+            k = this.state.BebidasDisp[j].Medida.length - 1;
+          }
+        }
+      }
+    }
+
+    //defino o index dos select e valores de outros campos
+    for (let i = 0; i < aux.length; i++) {
+      if (typeof tbody.children[i] != "undefined") {
+        tbody.children[i].children[0].children[0].selectedIndex =
+          Bebidas[i] + 1;
+        tbody.children[i].children[1].children[0].selectedIndex =
+          Medidas[i] + 1;
+        tbody.children[i].children[2].children[0].checked = true;
+        tbody.children[i].children[3].children[1].value = aux[i].Selecao;
+        tbody.children[i].children[3].children[1].placeholder = 0;
+        tbody.children[i].children[4].children[1].value = 0;
+        tbody.children[i].children[4].children[1].placeholder = 0;
+        tbody.children[i].children[5].children[0].value = aux[i].TProd;
+      }
+    }
+  }
+
+  handleLimparTabela() {
+    let tbody = document.querySelectorAll("table")[1]
+      ? document.querySelectorAll("table")[1].children[1]
+      : document.querySelectorAll("table")[0].children[1];
+
+    tbody.children[0].children[0].children[0].selectedIndex = 0;
+    tbody.children[0].children[1].children[0].selectedIndex = 0;
+    tbody.children[0].children[2].children[0].checked = false;
+    tbody.children[0].children[3].children[1].value = "";
+    tbody.children[0].children[3].children[1].placeholder = this.state.ultimaSelecao;
+    tbody.children[0].children[4].children[1].value = "";
+    tbody.children[0].children[4].children[1].placeholder = 0;
+    tbody.children[0].children[5].children[0].selectedIndex = 0;
+
+    this.setState({
+      config: [
+        {
+          Bebida: null,
+          Un: "",
+          Qtd: [],
+          Medida: [],
+          configura: null,
+          Selecao: 0,
+          PrecoMaq: 0,
+          TProd: null,
+        },
+      ],
+      TotalBebidas: 0,
+      ultimaSelecao: 1,
+    });
+  }
+
+  calcUltSelecao() {
+    let aux = [];
+    aux = [...this.state.config];
+
+    let arrayDeSeleções = [];
+    let SeleçõesRestantes = [];
+
+    //faço um array com todas as seleções já escolhidas
+    for (let j = 0; j < aux.length; j++) {
+      arrayDeSeleções.push(Number(aux[j].Selecao));
+    }
+
+    if (SeleçõesRestantes.length === 0 && arrayDeSeleções[0] === 0) {
+      //se a seleção for 0(inicio da tela) redefine para 1
+      this.setState({ ultimaSelecao: 1 });
+    } else if (
+      //se só tiver uma seleção e ela for 1 define a proxima para 2
+      SeleçõesRestantes.length === 0 &&
+      arrayDeSeleções.length === 1 &&
+      arrayDeSeleções[0] === 1
+    ) {
+      this.setState({ ultimaSelecao: 2 });
+    } else {
+      //calcula a proxima seleção com base nas que ainda não foram escolhidas
+      for (let i = 1; i <= arrayDeSeleções.length + 1; i++) {
+        if (arrayDeSeleções.indexOf(i) === -1) {
+          SeleçõesRestantes.push(i);
+        }
+      }
+      this.setState({ ultimaSelecao: SeleçõesRestantes[0] });
+    }
+  }
+
+  checaBebida(linha) {
+    let aux = [...this.state.config];
+    let b = 0;
+
+    //Primeiramente testo se não tem nada faltando na linha atual
+    if (!aux[linha]) return;
+    if (aux[linha].Bebida === null) return;
+    if (
+      !aux[linha].Qtd_Def ||
+      aux[linha].Qtd_Def === "" ||
+      aux[linha].Qtd_Def === null
+    )
+      return;
+    if (
+      aux[linha].Selecao === 0 ||
+      aux[linha].Selecao === "" ||
+      aux[linha].Selecao === null
+    )
+      return;
+    if (aux[linha].TProd === null) return;
+
+    //Limpo qualquer indice null do array(acredite, acontecia)
+    for (let i = 0; i < aux.length; i++) {
+      if (aux[i].Bebida === null) aux.splice(i, 1);
+    }
+
+    //Se uma linha nova tentar ser criada sem outra finalizar o preenchimento(acredite, acontecia tambem)
+    for (let i = 0; i < aux.length; i++) {
+      if (!aux[i]) return;
+      if (aux[i].Bebida === null) return;
+      if (!aux[i].Qtd_Def || aux[i].Qtd_Def === "" || aux[i].Qtd_Def === null)
+        return;
+      if (
+        aux[i].Selecao === 0 ||
+        aux[i].Selecao === "" ||
+        aux[i].Selecao === null
+      )
+        return;
+      if (aux[i].TProd === null) return;
+    }
+
+    //conto quantas bebidas já estão na máquina
+    this.state.config.map((beb) => {
+      if (beb.Bebida !== null) b++;
+      return null;
+    });
+
+    //se já tiver atingido a capacidade maxima
+    if (b >= this.state.requisicao.capacidade) {
+      Toast("Capacidade máxima da máquina já atingida");
+      this.setState({ config: aux, TotalBebidas: aux.length });
+      return;
+    }
+
+    this.calcUltSelecao();
+    this.setState({
+      config: this.resetaLinha(aux, -1),
+      TotalBebidas: aux.length - 1,
+    });
+  }
+
+  resetaLinha(aux, linha, sobrescreve = false) {
+    if (linha >= 0) {
+      aux.splice(linha, 1);
+    }
+
+    if (sobrescreve) {
+      return (aux = [
+        {
+          Bebida: null,
+          Un: "",
+          Qtd: [],
+          Medida: [],
+          configura: null,
+          Selecao: this.state.ultimaSelecao,
+          PrecoMaq: 0,
+          TProd: null,
+        },
+      ]);
+    } else {
+      aux.push({
+        Bebida: null,
+        Un: "",
+        Qtd: [],
+        Medida: [],
+        configura: null,
+        Selecao: 0,
+        PrecoMaq: 0,
+        TProd: null,
+      });
+      return aux;
+    }
   }
 
   render() {
@@ -584,10 +947,81 @@ export default class Cadastro extends React.Component {
                     </select>
                   </Campo>
                   <Modal
-                    actions={[<CloseButton />]}
+                    actions={[
+                      <div
+                        className="XAlign"
+                        style={{
+                          justifyContent: "flex-end",
+                          width: "100%",
+                        }}
+                      >
+                        <Button
+                          style={{ marginRight: "10px", marginLeft: "10px" }}
+                          onClick={() => {
+                            if (this.handleAplicaPadrao()) {
+                              Toast(
+                                "Essa máquina ainda não possui nenhuma configuração padrão registrada"
+                              );
+                            }
+                            alert("Configuração carregada.");
+                            this.handleAplicaPadrao();
+                          }}
+                        >
+                          <Icon left>art_track</Icon>
+                          PADRÃO
+                        </Button>
+                        <Button
+                          style={{ marginRight: "10px" }}
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Limpar toda a configuração atual? "
+                              )
+                            ) {
+                              this.handleLimparTabela();
+                            }
+                          }}
+                        >
+                          <Icon left>clear</Icon>
+                          Limpar
+                        </Button>
+
+                        <Rotulo style={{ marginTop: "0px" }}>
+                          Sistema de Pagamento:
+                        </Rotulo>
+                        <select
+                          style={{ maxWidth: "20vw", marginRight: "10px" }}
+                          className="DefaultSelect"
+                          required
+                          onChange={(e) =>
+                            this.handleSisPagChange(e.target.value)
+                          }
+                        >
+                          <option selected hidden disabled value={null}>
+                            Selecione...
+                          </option>
+                          <option value="Livre">Livre</option>
+                          <option value="Cartão">Cartão</option>
+                          <option value="Validador">Validador</option>
+                          <option value="Cartão e Validador">
+                            Cartão e Validador
+                          </option>
+                        </select>
+                        <Button
+                          className="modal-trigger"
+                          href="#valida"
+                          node="button"
+                          disabled={this.state.b}
+                          style={{ marginRight: "10px" }}
+                        >
+                          Det. Validador<Icon left>settings</Icon>
+                        </Button>
+                        <CloseButton />
+                      </div>,
+                    ]}
                     bottomSheet={false}
                     fixedFooter={true}
-                    header={`Bebidas (${this.state.TotalBebidas})`}
+                    header={`Bebidas (${this.state.TotalBebidas} Selecionadas)`}
                     trigger={
                       <Button
                         disabled={
@@ -608,37 +1042,82 @@ export default class Cadastro extends React.Component {
                             <th>Configura?</th>
                             <th>Seleção</th>
                             <th>Preço de máquina</th>
+                            <th>Produto Tipo</th>
+                            <th>Excluir</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {this.state.BebidasDisp.map((bebida, i) => (
+                          {this.state.config.map((config, i) => (
                             <tr>
                               <td>
-                                {`${bebida.Bebida}${
-                                  bebida.Complemento !== null
-                                    ? ` com ${bebida.Complemento}`
-                                    : ""
-                                }${
-                                  bebida.Medida !== null
-                                    ? ` ${bebida.Medida}`
-                                    : ""
-                                }`}
+                                <select
+                                  className="DefaultSelect"
+                                  onChange={(e) => {
+                                    e.persist();
+                                    this.handleAdicionaBebida(
+                                      i,
+                                      e.target.value,
+                                      e.target.parentElement.parentElement
+                                    );
+                                  }}
+                                >
+                                  <option selected hidden disabled value={null}>
+                                    Selecione...
+                                  </option>
+                                  {this.state.BebidasDisp.map((bebida, i) => (
+                                    <option value={i}>{bebida.Bebida}</option>
+                                  ))}
+                                  ))
+                                </select>
                               </td>
                               <td>
-                                {bebida.Qtd} {bebida.Un}
+                                <select
+                                  defaultValue={this.state.config[i].Qtd_Def}
+                                  style={{ width: "20vw" }}
+                                  disabled={
+                                    this.state.config[i].Bebida === null
+                                      ? true
+                                      : false
+                                  }
+                                  className="DefaultSelect"
+                                  onChange={(e) =>
+                                    this.handleSelectMedida(
+                                      i,
+                                      config,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option selected hidden disabled value={null}>
+                                    Selecione...
+                                  </option>
+                                  {this.state.config[i].Qtd.map(
+                                    (quantidade, j) => (
+                                      <option value={j}>
+                                        {`${quantidade} ${config.Un} ${
+                                          config.Medida[j]
+                                            ? config.Medida[j]
+                                            : ""
+                                        }`}
+                                      </option>
+                                    )
+                                  )}
+                                  ))
+                                </select>
                               </td>
                               <td>
                                 <input
+                                  checked={config.configura}
+                                  disabled={
+                                    this.state.config[i].Bebida === null
+                                      ? true
+                                      : false
+                                  }
                                   style={{ position: "relative", zIndex: "0" }}
                                   type="checkbox"
-                                  onChange={(e) => {
-                                    e.persist();
-                                    this.handleAtivarBebida2(
-                                      bebida,
-                                      e.target.checked,
-                                      e
-                                    );
-                                  }}
+                                  onChange={(e) =>
+                                    this.handleAtivaConfig(i, e.target.checked)
+                                  }
                                 />
                               </td>
                               <td>
@@ -646,17 +1125,17 @@ export default class Cadastro extends React.Component {
                                   dialpad
                                 </Icon>
                                 <input
-                                  type="text"
-                                  placeholder={
-                                    this.state.config[i] &&
-                                    this.state.config[i].Selecao !== "0"
-                                      ? this.state.config[i].Selecao
-                                      : 0
+                                  disabled={
+                                    this.state.config[i].Bebida === null
+                                      ? true
+                                      : false
                                   }
+                                  type="text"
+                                  placeholder={this.state.config[i].Selecao}
                                   style={{ width: "20px", textAlign: "center" }}
-                                  onChange={(e) => {
+                                  onBlur={(e) => {
                                     e.persist();
-                                    this.handleDefinirSelecao(
+                                    this.handleSelectSelecao(
                                       i,
                                       e.target.value,
                                       e
@@ -670,19 +1149,65 @@ export default class Cadastro extends React.Component {
                                   attach_money
                                 </Icon>
                                 <input
-                                  type="text"
-                                  placeholder={
-                                    this.state.config[i] &&
-                                    this.state.config[i].PrecoMaq !== "0"
-                                      ? this.state.config[i].PrecoMaq
-                                      : 0
+                                  disabled={
+                                    this.state.config[i].Bebida === null
+                                      ? true
+                                      : false
                                   }
+                                  type="text"
+                                  placeholder={this.state.config[i].PrecoMaq}
                                   style={{ width: "40px", textAlign: "center" }}
-                                  onChange={(e) => {
+                                  onBlur={(e) => {
                                     e.persist();
-                                    this.handleChangeCost(i, e.target.value, e);
+                                    this.handleDefinePreço(
+                                      i,
+                                      e.target.value,
+                                      e
+                                    );
                                   }}
                                 />
+                              </td>
+                              <td>
+                                <select
+                                  disabled={
+                                    this.state.config[i].Bebida === null
+                                      ? true
+                                      : false
+                                  }
+                                  className="DefaultSelect"
+                                  onChange={(e) =>
+                                    this.handleDefineTipo(i, e.target.value)
+                                  }
+                                >
+                                  <option selected hidden disabled value={null}>
+                                    Selecione...
+                                  </option>
+                                  {config.Mistura ? (
+                                    <option>Mistura</option>
+                                  ) : null}
+                                  {config.Pronto ? (
+                                    <option>Pronto</option>
+                                  ) : null}
+                                  {config.Bebida === "DESATIVADO" ? (
+                                    <option>DESATIVADO</option>
+                                  ) : null}
+                                  ))
+                                </select>
+                              </td>
+                              <td>
+                                <Button
+                                  onClick={(e) => {
+                                    this.handleApagaLinha(
+                                      i,
+                                      e.target.parentElement.parentElement
+                                        .parentElement
+                                    );
+                                  }}
+                                >
+                                  <Icon center small>
+                                    cancel
+                                  </Icon>
+                                </Button>
                               </td>
                             </tr>
                           ))}
@@ -718,27 +1243,6 @@ export default class Cadastro extends React.Component {
                 ) : (
                   <></>
                 )}
-
-                <Campo>
-                  <Rotulo>Acompanha Gabinete?</Rotulo>
-                  <select
-                    className="DefaultSelect"
-                    onChange={(e) => {
-                      this.setState({
-                        requisicao: {
-                          ...this.state.requisicao,
-                          gabinete: e.target.value,
-                        },
-                      });
-                    }}
-                  >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value={true}>Sim</option>
-                    <option value={false}>Não</option>
-                  </select>
-                </Campo>
               </div>
             </Card>
           </div>
@@ -749,192 +1253,14 @@ export default class Cadastro extends React.Component {
               title="Detalhes da máquina"
             >
               <Campo>
-                <Rotulo>Sistema de pagamento: </Rotulo>
-                <select
-                  className="DefaultSelect"
-                  onChange={(e) => this.handleSisPagChange(e.target.value)}
-                >
-                  <option selected hidden disabled value={null}>
-                    Selecione...
-                  </option>
-                  <option value="Livre">Livre</option>
-                  <option value="Cartão">Cartão</option>
-                  <option value="Validador">Validador</option>
-                </select>
-
-                <Modal
-                  actions={[<CloseButton />]}
-                  bottomSheet={false}
-                  fixedFooter={false}
-                  header="Detalhes do Sistema de Pagamento"
-                  id="pag"
-                  options={{
-                    dismissible: true,
-                    endingTop: "10%",
-                    inDuration: 250,
-                    onCloseEnd: null,
-                    onCloseStart: null,
-                    onOpenEnd: null,
-                    onOpenStart: null,
-                    opacity: 0.5,
-                    outDuration: 250,
-                    preventScrolling: true,
-                    startingTop: "4%",
-                  }}
-                  trigger={
-                    <Button
-                      disabled={this.state.b}
-                      style={{ marginTop: "10px" }}
-                    >
-                      Det. Validador<Icon left>settings</Icon>
-                    </Button>
-                  }
-                >
-                  <Switch
-                    id="Switch-11"
-                    offLabel="Moeda"
-                    onChange={(e) => {
-                      this.handleActivateSwitch(e.target.checked);
-                    }}
-                    onLabel="Ficha"
-                  />
-                  {this.state.c ? (
-                    <>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="1"
-                      />
-                      <Rotulo>1</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="2"
-                      />
-                      <Rotulo>2</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="4"
-                      />
-                      <Rotulo>4</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="8"
-                      />
-                      <Rotulo>8</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="16"
-                      />
-                      <Rotulo>16</Rotulo>
-                    </>
-                  ) : (
-                    <>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="0.05"
-                      />
-                      <Rotulo>R$ 0,05</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="0.10"
-                      />
-                      <Rotulo>R$ 0,10</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="0.25"
-                      />
-                      <Rotulo>R$ 0,25</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="0.50"
-                      />
-                      <Rotulo>R$ 0,50</Rotulo>
-                      <br />
-                      <input
-                        onChange={(e) =>
-                          this.handleMantValidador(
-                            e.target.value,
-                            e.target.checked
-                          )
-                        }
-                        type="checkbox"
-                        value="1.00"
-                      />
-                      <Rotulo>R$ 1,00</Rotulo>
-                    </>
-                  )}
-                </Modal>
-
-                <Rotulo>Tipo de Produto: </Rotulo>
+                <Rotulo>Acompanha Gabinete?</Rotulo>
                 <select
                   className="DefaultSelect"
                   onChange={(e) => {
                     this.setState({
                       requisicao: {
                         ...this.state.requisicao,
-                        Tproduto: e.target.value,
+                        gabinete: e.target.value,
                       },
                     });
                   }}
@@ -942,10 +1268,9 @@ export default class Cadastro extends React.Component {
                   <option selected hidden disabled value={null}>
                     Selecione...
                   </option>
-                  <option value="Mistura">Mistura</option>
-                  <option value="Pronto">Pronto</option>
+                  <option value='Sim'>Sim</option>
+                  <option value='Não'>Não</option>
                 </select>
-
                 <Rotulo>Abastecimento de Água:</Rotulo>
                 <select
                   className="DefaultSelect"
@@ -985,7 +1310,25 @@ export default class Cadastro extends React.Component {
                   <option value="Claro">Claro</option>
                   <option value="Vodafone">Vodafone</option>
                   <option value="WiFi">WiFi</option>
-                  <option value="Antena Externa">Antena Externa</option>
+                </select>
+
+                <Rotulo>Antena externa: </Rotulo>
+                <select
+                  className="DefaultSelect"
+                  onChange={(e) =>
+                    this.setState({
+                      requisicao: {
+                        ...this.state.requisicao,
+                        ExtAnt: e.target.value,
+                      },
+                    })
+                  }
+                >
+                  <option selected hidden disabled value={null}>
+                    Selecione...
+                  </option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </Campo>
             </Card>
@@ -1006,69 +1349,7 @@ export default class Cadastro extends React.Component {
                 <Rotulo>Local de entrega:</Rotulo>
                 <select
                   className="DefaultSelect"
-                  onChange={(e) => {
-                    this.setState({
-                      requisicao: {
-                        ...this.state.requisicao,
-                        destino: `${
-                          this.state.endereços_entrega[e.target.value]
-                            .Logradouro === null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].Logradouro.trim()
-                        }, número: ${
-                          this.state.endereços_entrega[e.target.value]
-                            .Número === null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].Número.trim()
-                        }, complemento: ${
-                          this.state.endereços_entrega[e.target.value]
-                            .Complemento === null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].Complemento.trim()
-                        }, bairro: ${
-                          this.state.endereços_entrega[e.target.value]
-                            .Bairro === null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].Bairro.trim()
-                        }, CEP: ${
-                          this.state.endereços_entrega[e.target.value].CEP ===
-                          null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].CEP.trim()
-                        }, ${
-                          this.state.endereços_entrega[e.target.value]
-                            .Município === null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].Município.trim()
-                        }, ${
-                          this.state.endereços_entrega[e.target.value].UF ===
-                          null
-                            ? "NA"
-                            : this.state.endereços_entrega[
-                                e.target.value
-                              ].UF.trim()
-                        }`,
-                        CNPJ_Destino: this.state.endereços_entrega[
-                          e.target.value
-                        ].CNPJss,
-                        Cliente_Destino: this.state.endereços_entrega[
-                          e.target.value
-                        ].Nome_Fantasia,
-                      },
-                    });
-                  }}
+                  onChange={(e) => this.handleDefineDestino(e)}
                 >
                   <option selected hidden disabled value={null}>
                     Selecione...
@@ -1081,9 +1362,20 @@ export default class Cadastro extends React.Component {
                 </select>
               </Campo>
               <Campo>
-                <label style={{ width: "20vw" }}>
-                  {this.state.requisicao.destino}
-                </label>
+                <input
+                  id="enderecoEdit"
+                  disabled={true}
+                  type="text"
+                  onChange={(e) => {
+                    this.setState({
+                      requisicao: {
+                        ...this.state.requisicao,
+                        destino: e.target.value,
+                      },
+                    });
+                  }}
+                  style={{ width: "20vw" }}
+                />
               </Campo>
               <div className="XAlign">
                 <Campo>
@@ -1199,14 +1491,28 @@ export default class Cadastro extends React.Component {
                 </Campo>
               </div>
               <Campo>
-                <Rotulo>Email para acompanhamento: </Rotulo>
+                <Rotulo>Contato para entrega: </Rotulo>
+                <TextInput
+                  icon={<Icon>person</Icon>}
+                  placeholder="Informe um contato..."
+                  onChange={(e) =>
+                    this.setState({
+                      requisicao: {
+                        ...this.state.requisicao,
+                        Contato: e.target.value,
+                      },
+                    })
+                  }
+                />
+                <Rotulo style={{ marginTop: "0px" }}>
+                  Email para acompanhamento:{" "}
+                </Rotulo>
                 <TextInput
                   email
                   error="email inválido"
                   icon={<Icon>email</Icon>}
                   success="OK!"
-                  placeholder="joao123@email.com.br"
-                  data-length={40}
+                  placeholder="Informe um email válido..."
                   onChange={(e) =>
                     this.setState({
                       requisicao: {
@@ -1216,12 +1522,12 @@ export default class Cadastro extends React.Component {
                     })
                   }
                 />
-              </Campo>
-              <Campo>
-                <Rotulo>Telefone para Contato: </Rotulo>
+                <Rotulo style={{ marginTop: "0px" }}>
+                  Telefone para Contato:{" "}
+                </Rotulo>
                 <TextInput
                   icon={<Icon>contact_phone</Icon>}
-                  placeholder="(11) 12345-6789"
+                  placeholder="(12) 34567-8910"
                   onChange={(e) =>
                     this.setState({
                       requisicao: {
@@ -1235,6 +1541,7 @@ export default class Cadastro extends React.Component {
               <Campo>
                 <Rotulo>Observações:</Rotulo>
                 <Textarea
+                  placeholder="Deixe uma observação..."
                   icon={<Icon>arrow_forward</Icon>}
                   onChange={(e) =>
                     this.setState({
@@ -1284,6 +1591,92 @@ export default class Cadastro extends React.Component {
               Após confirmar, custos poderão ser aplicados mesmo com o
               cancelamento da solicitação na tela de Solicitações
             </label>
+          </Modal>
+          <Modal
+            actions={[<CloseButton />]}
+            bottomSheet={false}
+            fixedFooter={false}
+            header="Detalhes do Sistema de Pagamento"
+            id="valida"
+            options={{
+              dismissible: true,
+              endingTop: "10%",
+              inDuration: 250,
+              onCloseEnd: null,
+              onCloseStart: null,
+              onOpenEnd: null,
+              onOpenStart: null,
+              opacity: 0.5,
+              outDuration: 250,
+              preventScrolling: true,
+              startingTop: "4%",
+            }}
+          >
+            <Switch
+              id="Switch-11"
+              offLabel="Moeda"
+              onChange={(e) => {
+                this.handleActivateSwitch(e.target.checked);
+              }}
+              onLabel="Ficha"
+            />
+            {this.state.c ? (
+              <>
+                <br />
+                <input
+                  onChange={(e) => this.handleMantValidador(e.target.value)}
+                  type="checkbox"
+                  value="1"
+                />
+                <Rotulo>Ficha de 1</Rotulo>
+                <br />
+                <input
+                  onChange={(e) => this.handleMantValidador(e.target.value)}
+                  type="checkbox"
+                  value="2"
+                />
+                <Rotulo>Ficha de 2</Rotulo>
+                <br />
+                <input
+                  onChange={(e) => this.handleMantValidador(e.target.value)}
+                  type="checkbox"
+                  value="3"
+                />
+                <Rotulo>Ficha de 3</Rotulo>
+                <br />
+                <input
+                  onChange={(e) => this.handleMantValidador(e.target.value)}
+                  type="checkbox"
+                  value="5"
+                />
+                <Rotulo>Ficha de 5</Rotulo>
+                <br />
+                <input
+                  onChange={(e) => this.handleMantValidador(e.target.value)}
+                  type="checkbox"
+                  value="7"
+                />
+                <Rotulo>Ficha de 7</Rotulo>
+              </>
+            ) : (
+              <>
+                <br />
+                <input disabled={true} type="checkbox" value="0.05" />
+                <Rotulo>R$ 0,05</Rotulo>
+                <br />
+                <input disabled={true} type="checkbox" value="0.10" />
+                <Rotulo>R$ 0,10</Rotulo>
+                <br />
+                <input disabled={true} type="checkbox" value="0.25" />
+                <Rotulo>R$ 0,25</Rotulo>
+                <br />
+                <input disabled={true} type="checkbox" value="0.50" />
+                <Rotulo>R$ 0,50</Rotulo>
+                <br />
+                <input disabled={true} type="checkbox" value="1.00" />
+                <Rotulo>R$ 1,00</Rotulo>
+              </>
+            )}
           </Modal>
         </div>
       </>

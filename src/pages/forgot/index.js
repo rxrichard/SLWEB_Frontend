@@ -23,7 +23,7 @@ export default class Forgot extends React.Component {
           user_code: this.state.user_code
         })
 
-        if (response.data === 200) {
+        if (response.status === 200) {
           Toast('.Sua senha foi enviada para seu e-mail', 'success')
           setTimeout(() => {
             this.props.history.push('/')

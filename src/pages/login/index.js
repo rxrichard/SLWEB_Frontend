@@ -11,7 +11,6 @@ import {
 } from '../../components/commom_out'
 import { TextInput, Icon, Button } from 'react-materialize'
 import { Toast, ToastyContainer } from '../../components/toasty'
-import { Go } from '../../components/commom_functions'
 
 class Login extends React.Component {
   state = {

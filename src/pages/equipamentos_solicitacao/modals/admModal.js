@@ -277,11 +277,6 @@ export default class AdmModal extends React.Component {
           }}
         >
           <p>Status: {this.showStatus()}</p>
-
-          <p>
-            O dia previsto para entrega é:{" "}
-            {convertData(this.state.OS.OSCExpDtPrevisao)}
-          </p>
         </div>
       );
     }

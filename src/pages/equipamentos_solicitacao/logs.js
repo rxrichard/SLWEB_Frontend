@@ -1,49 +1,49 @@
-import React from 'react'
-import { api } from '../../services/api'
-import { saveAs } from 'file-saver'
+import React from "react";
+import { api } from "../../services/api";
+import { saveAs } from "file-saver";
 
-import Loading from '../../components/loading_screen'
-import { Button, Modal, Icon, Textarea } from 'react-materialize'
-import { Table } from '../../components/table'
-import { ToastyContainer, Toast } from '../../components/toasty'
-import { dateCheck, convertData } from '../../components/commom_functions'
-import AdmModal from './modals/admModal'
-import { CloseButton } from '../../components/buttons'
+import Loading from "../../components/loading_screen";
+import { Button, Modal, Icon, Textarea } from "react-materialize";
+import { Table } from "../../components/table";
+import { ToastyContainer, Toast } from "../../components/toasty";
+import { dateCheck, convertData } from "../../components/commom_functions";
+import AdmModal from "./modals/admModal";
+import { CloseButton } from "../../components/buttons";
 
 export default class Logs extends React.Component {
   state = {
     logs: [],
-    loaded: false
-  }
+    loaded: false,
+  };
 
   async componentDidMount() {
     try {
-      const response = await api.get('/equip/requests')
+      const response = await api.get("/equip/requests");
 
-      this.setState({ logs: response.data, loaded: true })
+      this.setState({ logs: response.data, loaded: true });
     } catch (err) {
-
-      this.props.history.push('/')
+      console.log(err);
+      // window.location.assign('/')
     }
   }
 
   async handleRetrivePDF(OSID) {
     try {
-      const response = await api.get('/equip/requests/retrive', {
+      const response = await api.get("/equip/requests/retrive", {
         params: {
-          token: sessionStorage.getItem('token'),
-          OSID
+          token: sessionStorage.getItem("token"),
+          OSID,
         },
-        responseType: 'arraybuffer'
-      })
+        responseType: "arraybuffer",
+      });
 
       //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
-      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const blob = new Blob([response.data], { type: "application/pdf" });
 
       //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
-      saveAs(blob, `OS_${dateCheck()}.pdf`)
+      saveAs(blob, `OS_${dateCheck()}.pdf`);
     } catch (err) {
-      Toast('Falha ao recuperar PDF do servidor', 'error')
+      Toast("Falha ao recuperar PDF do servidor", "error");
     }
   }
 
@@ -51,12 +51,11 @@ export default class Logs extends React.Component {
   async checkView(ID) {
     try {
       //Insere a data de vizualização da ordem por X departamento
-      await api.put('/equip/requests/check', {
-        ID
-      })
-
+      await api.put("/equip/requests/check", {
+        ID,
+      });
     } catch (err) {
-      Toast('Falha ao linkar dados da OS', 'error')
+      Toast("Falha ao linkar dados da OS", "error");
     }
   }
 
@@ -80,54 +79,60 @@ export default class Logs extends React.Component {
         </thead>
         {this.state.logs.map((log, i) => (
           <tr>
-            <td align='center'>{log.OSCId}</td>
-            <td align='center'>{log.OSCStatus}</td>
-            <td align='center'>{convertData(log.OSCDtSolicita)}</td>
-            <td align='center'>{convertData(log.OSCDtPretendida)}</td>
-            <td align='center'>{log.OSCExpDtPrevisao !== '' ? convertData(log.OSCExpDtPrevisao) : ''}</td>
-            <td align='center'>
+            <td align="center">{log.OSCId}</td>
+            <td align="center">{log.OSCStatus}</td>
+            <td align="center">{convertData(log.OSCDtSolicita)}</td>
+            <td align="center">{convertData(log.OSCDtPretendida)}</td>
+            <td align="center">
+              {log.OSCExpDtPrevisao !== ""
+                ? convertData(log.OSCExpDtPrevisao)
+                : ""}
+            </td>
+            <td align="center">
               <Textarea
-                onChange={e => e.target.value = log.OSCDestino }
+                onChange={(e) => (e.target.value = log.OSCDestino)}
                 value={log.OSCDestino}
               />
             </td>
             <td>
-            <Button
-                tooltip='Gerenciamento da Requisição'
-                tooltipOptions={{
-                  position: "top",
-                }}
-                className="modal-trigger"
-                href={`#modal${i}`}
-                node="button"
-
-              >
-                <Icon>settings</Icon>
-              </Button>
-              <Modal
-                actions={[
-                  <CloseButton />
-                ]}
-                bottomSheet={false}
-                fixedFooter={false}
-                header='Gerenciamento de solicitação'
-                id={`modal${i}`}
-                options={{
-                  dismissible: true,
-                  endingTop: '10%',
-                  inDuration: 250,
-                  onCloseEnd: null,
-                  onCloseStart: null,
-                  onOpenEnd: null,
-                  onOpenStart: () => this.checkView(this.state.logs[i].OSCId),
-                  opacity: 0.5,
-                  outDuration: 250,
-                  preventScrolling: true,
-                  startingTop: '4%'
-                }}
-              >
-                <AdmModal LOGS={this.state.logs[i]} />
-              </Modal>
+              {this.state.loaded ? (
+                <>
+                  <Button
+                    tooltip="Gerenciamento da Requisição"
+                    tooltipOptions={{
+                      position: "top",
+                    }}
+                    className="modal-trigger"
+                    href={`#modal${i}`}
+                    node="button"
+                  >
+                    <Icon>settings</Icon>
+                  </Button>
+                  <Modal
+                    actions={[<CloseButton />]}
+                    bottomSheet={false}
+                    fixedFooter={false}
+                    header="Gerenciamento de solicitação"
+                    id={`modal${i}`}
+                    options={{
+                      dismissible: true,
+                      endingTop: "10%",
+                      inDuration: 250,
+                      onCloseEnd: null,
+                      onCloseStart: null,
+                      onOpenEnd: null,
+                      onOpenStart: () =>
+                        this.checkView(this.state.logs[i].OSCId),
+                      opacity: 0.5,
+                      outDuration: 250,
+                      preventScrolling: true,
+                      startingTop: "4%",
+                    }}
+                  >
+                    <AdmModal LOGS={this.state.logs[i]} />
+                  </Modal>
+                </>
+              ) : null}
             </td>
             <td>
               <Button
@@ -145,6 +150,6 @@ export default class Logs extends React.Component {
       </Table>
     ) : (
       <h3>Você ainda não fez nenhuma solicitação!</h3>
-    )
+    );
   }
 }
