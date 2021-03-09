@@ -47,7 +47,6 @@ export default class Logs extends React.Component {
     }
   }
 
-  //tava dando erro
   async checkView(ID) {
     try {
       //Insere a data de vizualização da ordem por X departamento

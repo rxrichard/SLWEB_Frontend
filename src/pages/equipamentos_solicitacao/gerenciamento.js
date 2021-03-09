@@ -28,10 +28,22 @@ export default class Management extends React.Component {
         throw Error;
       }
     } catch (err) {
+      console.log('recarrega a pagina')
       Toast("Falha trazer todas as Requisições", "error");
       setTimeout(() => {
         window.location.reload();
       }, 3000);
+    }
+  }
+
+  async checkView(ID) {
+    try {
+      //Insere a data de vizualização da ordem por X departamento
+      await api.put("/equip/requests/check", {
+        ID,
+      });
+    } catch (err) {
+      Toast("Falha ao linkar dados da OS", "error");
     }
   }
 
@@ -76,9 +88,10 @@ export default class Management extends React.Component {
       <Container>
         <Panel style={{ justifyContent: "flex-start" }}>
           <ToastyContainer />
-          <Table hoverable={true} responsive={true}>
+          <Table hoverable={true} responsive={true} centered>
             <thead>
               <th>Solicitação Nº</th>
+              <th>GrpVen</th>
               <th>Status</th>
               <th>Pendencia</th>
               <th>Data de solicitação</th>
@@ -92,6 +105,7 @@ export default class Management extends React.Component {
               {this.state.OSS.map((OS, i) => (
                 <tr>
                   <td align="center">{OS.OSCId}</td>
+                  <td align="center">{OS.GrpVen}</td>
                   <td align="center">{OS.OSCStatus}</td>
                   <td align="center">{this.showStatus(OS)}</td>
                   <td align="center">{convertData(OS.OSCDtSolicita)}</td>
@@ -124,7 +138,7 @@ export default class Management extends React.Component {
                         onCloseEnd: null,
                         onCloseStart: null,
                         onOpenEnd: null,
-                        onOpenStart: null,
+                        onOpenStart: () => this.checkView(this.state.OSS[i].OSCId),
                         opacity: 0.5,
                         outDuration: 250,
                         preventScrolling: true,
@@ -164,7 +178,7 @@ export default class Management extends React.Component {
                         startingTop: "4%",
                       }}
                     >
-                      <HistModal />
+                      <HistModal LOGS={OS} />
                     </Modal>
                   </td>
                   <td>

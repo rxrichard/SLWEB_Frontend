@@ -32,11 +32,17 @@ export default class AdmModal extends React.Component {
 
   async handleSUDO(action, OSID) {
     try {
-      api.put("/equip/requests/admin", {
+      const response = await api.put("/equip/requests/admin", {
         token: sessionStorage.getItem("token"),
         action,
         OSID,
       });
+
+      if (response.status === 200) {
+        Toast("OK", "success");
+      } else {
+        throw Error;
+      }
     } catch (err) {
       Toast(FAILED_UPDATE, "error");
     }
@@ -89,7 +95,7 @@ export default class AdmModal extends React.Component {
     }
 
     if (this.state.OS.OSCStatus === "Concluido") {
-      Toast("Não é possivel cancelar uma solicitação já concluída", "error");
+      Toast("Não é possivel gerenciar uma solicitação já concluída", "error");
       return;
     }
 
@@ -125,6 +131,9 @@ export default class AdmModal extends React.Component {
 
         if (response.status === 200) {
           Toast("Status atualizado com sucesso", "success");
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
         } else {
           throw Error;
         }
@@ -173,7 +182,7 @@ export default class AdmModal extends React.Component {
       this.state.OS.OSCExpDtPrevisao === null &&
       this.state.OS.OSCStatus === "Ativo"
     ) {
-      return "Aguardando previsão de transporte";
+      return "Aguardando transporte";
     } else if (this.state.OS.OSCStatus === "Cancelado") {
       return "Solicitação fechada.";
     } else if (this.state.OS.OSCStatus === "Concluido") {
@@ -198,88 +207,70 @@ export default class AdmModal extends React.Component {
     } else {
       this.setState({ validacao: 4 });
     }
-
   }
 
   //Tela do fraqueado
-  Franqueado = (validacao) => {
-    if (validacao === 4) {
-      return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <p>Status: {this.showStatus()}</p>
-          <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-            <input
-              style={{ marginLeft: "1vw" }}
-              type="checkbox"
-              onChange={(e) => {
-                this.setState({ readed: e.target.checked });
-              }}
-            />
-            <p>Habilitar opções</p>
-          </div>
-          <div className="YAlign">
-            <Button
-              tooltip="Confirma que sua máquina já foi entregue"
-              tooltipOptions={{
-                position: "right",
-              }}
-              onClick={(e) => {
-                e.persist();
-                this.handleUpdateOS("OK");
-                e.target.disabled = true;
-              }}
-              disabled={
-                this.state.readed && this.state.OS.OSCStaus !== "Cancelado"
-                  ? false
-                  : true
-              }
-            >
-              Confirmar Recebimento
-            </Button>
+  Franqueado = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
+          alignItems: "flex-start",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <p>Status: {this.showStatus()}</p>
+        <div className="XAlign" style={{ justifyContent: "flex-start" }}>
+          <input
+            style={{ marginLeft: "1vw" }}
+            type="checkbox"
+            onChange={(e) => {
+              this.setState({ readed: e.target.checked });
+            }}
+          />
+          <p>Habilitar opções</p>
+        </div>
+        <div className="YAlign">
+          <Button
+            tooltip="Confirma que sua máquina já foi entregue"
+            tooltipOptions={{
+              position: "right",
+            }}
+            onClick={(e) => {
+              e.persist();
+              this.handleUpdateOS("OK", e);
+              e.target.disabled = true;
+            }}
+            disabled={
+              this.state.readed && this.state.OS.OSCStaus !== "Cancelado"
+                ? false
+                : true
+            }
+          >
+            Confirmar Recebimento
+          </Button>
 
-            <CancelButton
-              tooltip={REQUISICAO_DE_MAQUINA_WARNING}
-              className="col l2 offset-l1 offset-s4 s4"
-              onClick={(e) => {
-                this.handleCancel(this.state.OS.OSCId);
-                e.target.disabled = true;
-              }}
-              disabled={
-                this.state.readed && this.state.OS.OSCStaus !== "Cancelado"
-                  ? false
-                  : true
-              }
-            >
-              Cancelar OS
-            </CancelButton>
-          </div>
+          <CancelButton
+            tooltip={REQUISICAO_DE_MAQUINA_WARNING}
+            className="col l2 offset-l1 offset-s4 s4"
+            onClick={(e) => {
+              this.handleCancel(this.state.OS.OSCId);
+              e.target.disabled = true;
+            }}
+            disabled={
+              this.state.readed && this.state.OS.OSCStaus !== "Cancelado"
+                ? false
+                : true
+            }
+          >
+            Cancelar OS
+          </CancelButton>
         </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <p>Status: {this.showStatus()}</p>
-        </div>
-      );
-    }
+      </div>
+    );
   };
 
   //Tela dos administradores
@@ -625,7 +616,7 @@ export default class AdmModal extends React.Component {
             }}
           >
             <Button
-              tooltip="Rejeita a viabilidade da OS"
+              tooltip="Nega a viabilidade da OS"
               tooltipOptions={{
                 position: "bottom",
               }}

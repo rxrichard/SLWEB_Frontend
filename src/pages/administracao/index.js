@@ -101,7 +101,7 @@ export default class Franquia extends React.Component {
                         </Table>
                     </Panel>
                     <GoBack />
-                    <input onChange={e => this.handleFilter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' />
+                    {/* <input onChange={e => this.handleFilter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' /> */}
                 </Container>
             )
     }

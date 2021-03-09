@@ -270,7 +270,7 @@ export default class Cadastro extends React.Component {
           ...this.state.requisicao,
           sisPagamento: sispag,
           TValidador: "Moeda",
-          validador: ['0.05', '0.10', '0.25', '0.50', '1.00'],
+          validador: ["0.05", "0.10", "0.25", "0.50", "1.00"],
         },
       });
       return;
@@ -317,7 +317,7 @@ export default class Cadastro extends React.Component {
       requisicao: {
         ...this.state.requisicao,
         TValidador: value ? "Ficha" : "Moeda",
-        validador: value ? [] : ['0.05', '0.10', '0.25', '0.50', '1.00'],
+        validador: value ? [] : ["0.05", "0.10", "0.25", "0.50", "1.00"],
       },
     });
 
@@ -501,7 +501,7 @@ export default class Cadastro extends React.Component {
   handleApagaLinha(linha, tr) {
     let aux = [];
     aux = [...this.state.config];
-    let sub = 0
+    let sub = 0;
 
     const TLinha = tr;
     const TBodyLinha = tr.children[0];
@@ -530,7 +530,7 @@ export default class Cadastro extends React.Component {
       }
     } else if (linha === aux.length - 1) {
       //Se tentar retirar a última linha
-      sub = aux[linha].Selecao
+      sub = aux[linha].Selecao;
       aux = this.resetaLinha(aux, linha);
 
       if (TLinha.tagName.toLowerCase() === "tr") {
@@ -550,10 +550,9 @@ export default class Cadastro extends React.Component {
         TLinha.children[linha].children[4].children[1].value = "";
         TLinha.children[linha].children[5].children[0].selectedIndex = 0;
       }
-
     } else if (aux.length <= 2 && aux[linha].Bebida !== null) {
       //Se tentar retirar a unica linha salva e deixar a não salva
-      sub = aux[linha].Selecao
+      sub = aux[linha].Selecao;
       aux = this.resetaLinha(aux, linha, true);
 
       if (TLinha.tagName.toLowerCase() === "tr") {
@@ -574,7 +573,7 @@ export default class Cadastro extends React.Component {
     } else {
       //Se tentar retirar um item da lista qualquer
 
-      sub = aux[linha].Selecao
+      sub = aux[linha].Selecao;
 
       aux.splice(linha, 1);
       let tabela = null;
@@ -623,11 +622,11 @@ export default class Cadastro extends React.Component {
         }
       }
     }
-    
+
     this.setState({
       config: aux,
       TotalBebidas: aux.length - 1,
-      ultimaSelecao: sub
+      ultimaSelecao: sub,
     });
   }
 
@@ -680,6 +679,7 @@ export default class Cadastro extends React.Component {
     let Nomes = [];
     let Bebidas = [];
     let Medidas = [];
+
     let tbody = document.querySelectorAll("table")[1]
       ? document.querySelectorAll("table")[1].children[1]
       : document.querySelectorAll("table")[0].children[1];
@@ -693,7 +693,7 @@ export default class Cadastro extends React.Component {
       TotalBebidas: this.state.PadraoMaq.length,
     });
 
-    aux = this.state.PadraoMaq;
+    aux = [...this.state.PadraoMaq];
 
     //crio um array só com o nome das bebidas para buscar a posição delas com mais facilidade
     this.state.BebidasDisp.map((bebida) => {
@@ -721,19 +721,23 @@ export default class Cadastro extends React.Component {
       }
     }
 
+    setTimeout(() => this.acertaSelect(tbody, aux, Bebidas, Medidas), 100);
+  }
+
+  acertaSelect(table, aux, Bebidas, Medidas) {
     //defino o index dos select e valores de outros campos
     for (let i = 0; i < aux.length; i++) {
-      if (typeof tbody.children[i] != "undefined") {
-        tbody.children[i].children[0].children[0].selectedIndex =
+      if (typeof table.children[i] != "undefined") {
+        table.children[i].children[0].children[0].selectedIndex =
           Bebidas[i] + 1;
-        tbody.children[i].children[1].children[0].selectedIndex =
+        table.children[i].children[1].children[0].selectedIndex =
           Medidas[i] + 1;
-        tbody.children[i].children[2].children[0].checked = true;
-        tbody.children[i].children[3].children[1].value = aux[i].Selecao;
-        tbody.children[i].children[3].children[1].placeholder = 0;
-        tbody.children[i].children[4].children[1].value = 0;
-        tbody.children[i].children[4].children[1].placeholder = 0;
-        tbody.children[i].children[5].children[0].value = aux[i].TProd;
+        table.children[i].children[2].children[0].checked = true;
+        table.children[i].children[3].children[1].value = aux[i].Selecao;
+        table.children[i].children[3].children[1].placeholder = 0;
+        table.children[i].children[4].children[1].value = 0;
+        table.children[i].children[4].children[1].placeholder = 0;
+        table.children[i].children[5].children[0].value = aux[i].TProd;
       }
     }
   }
@@ -962,8 +966,6 @@ export default class Cadastro extends React.Component {
                                 "Essa máquina ainda não possui nenhuma configuração padrão registrada"
                               );
                             }
-                            alert("Configuração carregada.");
-                            this.handleAplicaPadrao();
                           }}
                         >
                           <Icon left>art_track</Icon>
@@ -1267,8 +1269,8 @@ export default class Cadastro extends React.Component {
                   <option selected hidden disabled value={null}>
                     Selecione...
                   </option>
-                  <option value='Sim'>Sim</option>
-                  <option value='Não'>Não</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
                 <Rotulo>Abastecimento de Água:</Rotulo>
                 <select

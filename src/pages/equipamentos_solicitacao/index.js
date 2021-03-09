@@ -10,7 +10,7 @@ import { GoBack } from '../../components/buttons'
 class Solicitacao extends React.Component {
   render() {
     return (
-      <Panel style={{ overflow: 'hidden' }}>
+      <Panel style={{ overflow: 'hidden', alignContent: 'center' }}>
         <Tabs
           className='tab-demo z-depth-1'
           options={{
