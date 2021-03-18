@@ -10,8 +10,7 @@ export const Table = props => (
       maxHeight: '70vh',
       minWidth: '55%',
       border: '1px solid black',
-      fontSize: '0.8em',
-      
+      // fontSize: '0.8em',
     }}
   >
     <Tabela {...props}>

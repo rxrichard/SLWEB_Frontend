@@ -141,11 +141,12 @@ class Perfil extends React.Component {
             title={this.state.info.M0_FILIAL[0]}
           >
             <p>CNPJ: {maskCNPJ(this.state.info.M0_CGC[0])}</p>
-            <p>FILIAL: {this.state.info.Dominio}</p>
+            <p>FILIAL: {this.state.info.M0_CODFIL}</p>
             <p>IE: {this.state.info.M0_INSC}</p>
             <p>NIRE: {this.state.info.M0_NIRE}</p>
             <p>CNAE: {this.state.info.M0_CNAE}</p>
             <p>FPAS: {this.state.info.M0_FPAS}</p>
+            <p>Consultor: {this.state.info.Consultor}</p>
             <p>Natureza Jurídica: {this.state.info.M0_NATJUR}</p>
           </Card>
 

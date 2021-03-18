@@ -18,7 +18,6 @@ export default class AdmModal extends React.Component {
         throw Error;
       this.setState({ OS: this.props.LOGS, loaded: true });
     } catch (err) {
-      console.log(err);
       Toast("Falha ao linkar dados da OS", "error");
     }
   }

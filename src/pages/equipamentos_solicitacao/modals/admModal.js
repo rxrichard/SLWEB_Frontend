@@ -508,7 +508,7 @@ export default class AdmModal extends React.Component {
               }}
             />
 
-            <label>
+            <label style={{ all: "unset" }}>
               / Data esperada: {convertData(this.state.OS.OSCDtPretendida)}
             </label>
           </div>
@@ -536,6 +536,7 @@ export default class AdmModal extends React.Component {
             </Button>
 
             <TextInput
+              data-lenght={250}
               disabled={this.state.readed ? false : true}
               onChange={(e) => {
                 this.setState({ RejectReason: e.target.value });
@@ -634,6 +635,7 @@ export default class AdmModal extends React.Component {
               <Icon left>close</Icon>
             </Button>
             <TextInput
+              data-lenght={250}
               disabled={this.state.readed ? false : true}
               onChange={(e) => {
                 this.setState({ RejectReason: e.target.value });

@@ -1,6 +1,6 @@
 import Styled from 'styled-components'
 
-import background from '../assets/new_year.jpg'
+import background from '../assets/login_fig.png'
 
 export const Container = Styled.div`
     display: flex;
@@ -12,7 +12,7 @@ export const Container = Styled.div`
     
     background-image: url(${background});
     background-repeat: no-repeat;
-    background-size: 100vw;
+    background-size: 100vh;
 
 `
 

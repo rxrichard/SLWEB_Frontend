@@ -78,7 +78,7 @@ export default (sidebar) => {
             }
           >
             <Link to="/equipamentos/solicitacao">
-              <Icon center>kitchen</Icon>Solicitação
+              <Icon center>assignment</Icon>Solicitação
             </Link>
           </Dropdown>
         </Combobox>

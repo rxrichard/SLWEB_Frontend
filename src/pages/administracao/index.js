@@ -37,30 +37,34 @@ export default class Franquia extends React.Component {
 
     }
 
-    handleFilter(value, event) {
-        this.setState({ usersListFiltered: this.state.franqueados })
-
+    Filter(value, event) {
+        this.setState({ usersListFiltered: this.state.usersList })
+        event.target.value = value.toUpperCase()
+        value = value.toUpperCase()
+    
         if (value === '') {
-            this.setState({ usersListFiltered: this.state.franqueados })
-            return
+          this.setState({ usersListFiltered: this.state.usersList })
+          return
         }
-
+    
         if (value.length > 4) {
-            event.target.value = value.slice(0, 4)
-            return
+          event.target.value = value.slice(0, 4)
+          value = value.slice(0, 4)
         }
-
-        this.setState({ usersListFiltered: this.state.franqueados })
+    
+        this.setState({ usersListFiltered: this.state.usersList })
         let aux = []
         let newArray = []
-        aux = this.state.franqueados
-
+        aux = [...this.state.usersList]
+        
         for (let i = 0; i < aux.length; i++) {
-            if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
-                newArray.push(aux[i])
-            }
+          if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
+            newArray.push(aux[i])
+          }
         }
-    }
+        
+        this.setState({ usersListFiltered: newArray })
+      }
 
     render() {
         return !this.state.loaded ? (
@@ -101,7 +105,7 @@ export default class Franquia extends React.Component {
                         </Table>
                     </Panel>
                     <GoBack />
-                    {/* <input onChange={e => this.handleFilter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' /> */}
+                    {/* <input onChange={e => this.Filter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' /> */}
                 </Container>
             )
     }

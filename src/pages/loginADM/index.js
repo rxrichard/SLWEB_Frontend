@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import { api } from '../../services/api'
-import { Link } from 'react-router-dom'
+import React, { Component } from "react";
+import { api } from "../../services/api";
+import { Link } from "react-router-dom";
 
-import Image from '../../assets/logo_sl.PNG'
-import { Button, Icon, TextInput, Modal } from 'react-materialize'
-import { Toast, ToastyContainer } from '../../components/toasty'
+import Image from "../../assets/logo_sl.PNG";
+import { Button, Icon, TextInput, Modal } from "react-materialize";
+import { Toast, ToastyContainer } from "../../components/toasty";
 import {
   Container,
   Box,
   Logo,
-  LinkContainer
-} from '../../components/commom_out'
-import { Bright } from '../../components/commom_functions'
-import { CloseButton } from '../../components/buttons'
+  LinkContainer,
+} from "../../components/commom_out";
+import { Bright } from "../../components/commom_functions";
+import { CloseButton } from "../../components/buttons";
 
 export default class LoginADM extends Component {
   state = {
@@ -22,79 +22,82 @@ export default class LoginADM extends Component {
     usersList: [],
     usersListFiltered: [],
     user_code: null,
-    user_name: null
-  }
+    user_name: null,
+  };
 
   async handleAttempt() {
-    if (
-      this.state.adm_code !== null &&
-      this.state.adm_password !== null
-    ) {
-      Toast('Aguarde')
+    if (this.state.adm_code !== null && this.state.adm_password !== null) {
+      Toast("Aguarde");
       try {
-        const response = await api.get('/admAuth', {
+        const response = await api.get("/admAuth", {
           params: {
             admin_code: this.state.adm_code,
-            admin_password: this.state.adm_password
-          }
-        })
-        if (response.status === 401) throw Error
-        Toast('Autenticado', 'success')
-        this.setState({ usersList: response.data, usersListFiltered: response.data, validADM: true })
+            admin_password: this.state.adm_password,
+          },
+        });
+        if (response.status === 401) throw Error;
+        Toast("Autenticado", "success");
+        this.setState({
+          usersList: response.data,
+          usersListFiltered: response.data,
+          validADM: true,
+        });
       } catch (err) {
-        Toast('Falha na autenticação', 'error')
-        this.setState({ validADM: false })
+        Toast("Falha na autenticação", "error");
+        this.setState({ validADM: false });
       }
     } else {
-      Toast('Preencha todos os campo')
+      Toast("Preencha todos os campo");
     }
   }
 
   async handleLogin() {
     try {
-      const response = await api.post('/admAuth', {
+      const response = await api.post("/admAuth", {
         admin_code: this.state.adm_code,
         admin_password: this.state.adm_password,
-        user_code: this.state.user_code
-      })
+        user_code: this.state.user_code,
+      });
 
-      if (typeof response.data != 'object') throw Error
+      if (typeof response.data != "object") throw Error;
 
-      sessionStorage.setItem('token', response.data.token)
-      sessionStorage.setItem('role', response.data.role)
-      sessionStorage.setItem('usuario', response.data.nome)
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("usuario", response.data.nome);
 
-      window.location.assign('/')
+      window.location.assign("/");
     } catch (err) {
-      Toast('Falha ao realizar o login', 'error')
+      Toast("Falha ao realizar o login", "error");
     }
   }
 
-  handleFilter(value, event) {
-    this.setState({ usersListFiltered: this.state.usersList })
+  Filter(value, event) {
+    this.setState({ usersListFiltered: this.state.usersList });
+    event.target.value = value.toUpperCase();
+    value = value.toUpperCase();
 
-    if (value === '') {
-      this.setState({ usersListFiltered: this.state.usersList })
-      return
+    if (value === "") {
+      this.setState({ usersListFiltered: this.state.usersList });
+      return;
     }
 
     if (value.length > 4) {
-      event.target.value = value.slice(0, 4)
-      return
+      event.target.value = value.slice(0, 4);
+      value = value.slice(0, 4);
     }
 
-    this.setState({ usersListFiltered: this.state.usersList })
-    let aux = []
-    let newArray = []
-    aux = this.state.usersList
-    
+    this.setState({ usersListFiltered: this.state.usersList });
+    let aux = [];
+    let newArray = [];
+    aux = [...this.state.usersList];
+
     for (let i = 0; i < aux.length; i++) {
       if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
-        newArray.push(aux[i])
+        newArray.push(aux[i]);
       }
     }
-    
-    this.setState({ usersListFiltered: newArray })
+
+    this.setState({ usersListFiltered: newArray });
   }
 
   render() {
@@ -102,25 +105,32 @@ export default class LoginADM extends Component {
       <Container>
         <ToastyContainer />
         <Box>
-          <Logo src={Image} alt='Pilão professional' />
-          <TextInput
-            className='txt'
-            onChange={e => {
-              this.setState({ adm_code: e.target.value, validADM: false })
-            }}
-            label='Código de administrador'
-          />
-          <TextInput
-            className='txt'
-            password
-            onChange={e => {
-              this.setState({ adm_password: e.target.value, validADM: false })
-            }}
-            label='Senha de administrador'
-          />
+          <Logo src={Image} alt="Pilão professional" />
+          <div style={{ marginTop: "2vh" }}>
+            <TextInput
+              className="txt"
+              onChange={(e) => {
+                this.setState({ adm_code: e.target.value, validADM: false });
+              }}
+              label="Código de administrador"
+            />
+          </div>
+          <div style={{ marginTop: "2vh " }}>
+            <TextInput
+              className="txt"
+              password
+              onChange={(e) => {
+                this.setState({
+                  adm_password: e.target.value,
+                  validADM: false,
+                });
+              }}
+              label="Senha de administrador"
+            />
+          </div>
 
           <Button
-            style={{ margin: '10px' }}
+            style={{ margin: "10px" }}
             onClick={() => this.handleAttempt()}
           >
             <Icon left>cast</Icon>Validar Credenciais
@@ -128,28 +138,33 @@ export default class LoginADM extends Component {
 
           <Modal
             actions={[
-              <input onChange={e => this.handleFilter(e.target.value, e)} type='text' style={{ width: '50px' }} placeholder='Filial...' />,
+              <input
+                onChange={(e) => this.Filter(e.target.value, e)}
+                type="text"
+                style={{ width: "50px" }}
+                placeholder="Filial..."
+              />,
               <Button
-                style={{ margin: '10px' }}
+                style={{ margin: "10px" }}
                 disabled={this.state.user_code === null ? true : false}
                 onClick={() => this.handleLogin()}
               >
                 Acessar
                 <Icon left>lock_outline</Icon>
               </Button>,
-              <CloseButton />
+              <CloseButton />,
             ]}
             bottomSheet={false}
             fixedFooter={false}
             header={
               this.state.user_name !== null
                 ? `Franqueado: ${this.state.user_name}`
-                : 'Escolher Filial'
+                : "Escolher Filial"
             }
-            id='modal-0'
+            id="modal-0"
             options={{
               dismissible: true,
-              endingTop: '10%',
+              endingTop: "10%",
               inDuration: 250,
               onCloseEnd: null,
               onCloseStart: null,
@@ -158,11 +173,11 @@ export default class LoginADM extends Component {
               opacity: 0.5,
               outDuration: 250,
               preventScrolling: true,
-              startingTop: '4%'
+              startingTop: "4%",
             }}
             trigger={
               <Button
-                style={{ margin: '10px' }}
+                style={{ margin: "10px" }}
                 disabled={!this.state.validADM}
               >
                 Selecionar Franqueado<Icon left>person</Icon>
@@ -170,10 +185,10 @@ export default class LoginADM extends Component {
             }
           >
             <div
-              className='tableFixHead'
+              className="tableFixHead"
               style={{
-                height: '50vh',
-                width: '100%'
+                height: "50vh",
+                width: "100%",
               }}
             >
               <table>
@@ -187,14 +202,14 @@ export default class LoginADM extends Component {
                 <tbody>
                   {this.state.usersListFiltered.map((user, i) => (
                     <tr
-                      className='Item'
-                      onClick={e => {
+                      className="Item"
+                      onClick={(e) => {
                         this.setState({
                           user_code: user.M0_CODFIL,
-                          user_name: user.GrupoVenda
-                        })
+                          user_name: user.GrupoVenda,
+                        });
 
-                        Bright(e)
+                        Bright(e);
                       }}
                       key={user.M0_CODFIL}
                       value={i}
@@ -209,12 +224,12 @@ export default class LoginADM extends Component {
             </div>
           </Modal>
         </Box>
-        <Link to='/'>
+        <Link to="/">
           <LinkContainer>
             <Icon left>tag_faces</Icon>Franqueados
           </LinkContainer>
         </Link>
       </Container>
-    )
+    );
   }
 }

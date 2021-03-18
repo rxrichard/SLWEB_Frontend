@@ -28,7 +28,6 @@ export default class Management extends React.Component {
         throw Error;
       }
     } catch (err) {
-      console.log('recarrega a pagina')
       Toast("Falha trazer todas as Requisições", "error");
       setTimeout(() => {
         window.location.reload();
@@ -43,7 +42,7 @@ export default class Management extends React.Component {
         ID,
       });
     } catch (err) {
-      Toast("Falha ao linkar dados da OS", "error");
+      console.log(err)
     }
   }
 

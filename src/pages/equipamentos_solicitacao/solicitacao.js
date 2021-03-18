@@ -1347,7 +1347,7 @@ export default class Cadastro extends React.Component {
               title="Detalhes da entrega"
             >
               <Campo>
-                <Rotulo>Local de entrega:</Rotulo>
+                <Rotulo>Cliente destino:</Rotulo>
                 <select
                   className="DefaultSelect"
                   onChange={(e) => this.handleDefineDestino(e)}
