@@ -11,7 +11,7 @@ import Equipamentos from "../../pages/equipamentos/index";
 import AddEquipamentos from "../../pages/equipamentos_solicitacao/index";
 import GerenciarEquip from '../../pages/equipamentos_solicitacao/gerenciamento'
 import AdmFranquia from '../../pages/administracao/index'
-import graficos from "../../components/graficos";
+import Home from "../../components/Home";
 
 export default function Dashboard() {
   return (
@@ -27,7 +27,7 @@ export default function Dashboard() {
         <SideBar width={250} pageWrapId="App" outerContainerId="outer" />
         <div id="App">
           <Switch>
-            <Route exact path="/" component={graficos} />
+            <Route exact path="/" component={Home} />
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/equipamentos" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
