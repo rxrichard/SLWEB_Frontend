@@ -114,6 +114,9 @@ export default (sidebar) => {
             <Link to="/equipamentos/solicitacao/management">
               <Icon center>collections_bookmark</Icon>Solicitações
             </Link>
+            <Link to="/administracao/formularios">
+              <Icon center>import_contacts</Icon>Formulários
+            </Link>
           </Dropdown>
         </Combobox>) : null}
         
