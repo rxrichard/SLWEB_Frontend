@@ -12,6 +12,7 @@ import AddEquipamentos from "../../pages/equipamentos_solicitacao/index";
 import GerenciarEquip from '../../pages/equipamentos_solicitacao/gerenciamento'
 import AdmFranquia from '../../pages/administracao/index'
 import Home from "../../components/Home";
+import FormsAcompanhamento from '../../pages/formulários_cadastrados'
 
 export default function Dashboard() {
   return (
@@ -32,6 +33,7 @@ export default function Dashboard() {
             <Route exact path="/equipamentos" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
             <Route exact path="/administracao/franquia" component={AdmFranquia} />
+            <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
             <Route
               exact
               path="/equipamentos/solicitacao"

@@ -3,12 +3,22 @@ import Loading from "react-loading";
 
 //Meio de comunicação
 import { api } from "../../services/api";
+import { saveAs } from "file-saver";
+
 //"Placeholder" da página enquanto dados são carregados no
-import { Button, TextInput, Textarea, Select } from "react-materialize";
+import {
+  Button,
+  TextInput,
+  Textarea,
+  Select,
+  Icon,
+  Modal,
+} from "react-materialize";
 
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
+import { CloseButton } from "../../components/buttons";
 
 export default class Formulario extends React.Component {
   state = {
@@ -104,12 +114,33 @@ export default class Formulario extends React.Component {
     }
   }
 
+  async handleSolicitaCodigo(event) {
+    event.target.disabled = true;
+
+    const email = document.getElementById('email_solicitacao').value
+
+    if (
+      email === "" ||
+      email === null
+    )
+      throw Error;
+
+    try {
+      await api.post("/form/solicitacao", {
+        email,
+      });
+      Toast("Verifique o código de acesso enviado para seu email", 'success')
+    } catch (err) {
+      Toast("Falha ao enviar email com código", "error");
+      event.target.disabled = false;
+    }
+  }
+
   async handleSubmit(event) {
     if (this.verificaCampos()) {
       return;
     }
     event.target.disabled = true;
-    console.log(this.state.form);
 
     //Pega todos inputs do tipo arquivos
     const arquivos = document.getElementsByClassName("files");
@@ -139,7 +170,7 @@ export default class Formulario extends React.Component {
       );
     } catch (err) {
       Toast("Falha ao salvar os dados do seu formulário", "error");
-      console.log(err);
+      return;
     }
 
     //faz o upload das fotos
@@ -152,67 +183,66 @@ export default class Formulario extends React.Component {
       });
     } catch (err) {
       Toast("Erro ao fazer o upload dos seus arquivos", "error");
-      console.log(err);
+      return;
     }
 
-    // setTimeout(() => window.location.reload(), 3000);
+    setTimeout(() => window.location.reload(), 3000);
   }
 
+  //essa função ta gigante, por em outro lugar
   verificaCampos() {
     let aux = { ...this.state.form };
 
     // INICIO DA VALIDAÇÃO DE DADOS BÁSICOS
     if (aux.Nome_Completo === null || aux.Nome_Completo === "") {
-      Toast("Preencha seu nome completo");
+      Toast("(1).Preencha seu nome completo");
       return true;
     }
     if (aux.DtNascimento === null || aux.DtNascimento === "") {
-      Toast("Preencha sua data de nascimento");
+      Toast("(2).Preencha sua data de nascimento");
       return true;
     }
     if (aux.RG === null || aux.RG === "") {
-      Toast("Preencha seu RG");
+      Toast("(3).Preencha seu RG");
       return true;
     }
     if (aux.CPF === null || aux.CPF === "") {
-      Toast("Preencha seu CPF");
+      Toast("(4).Preencha seu CPF");
       return true;
     }
     if (aux.Logradouro === null || aux.Logradouro === "") {
-      Toast("Preencha seu endereço");
+      Toast("(5).Preencha seu endereço");
       return true;
     }
     if (aux.Número === null || aux.Número === "") {
-      Toast("Preencha o número do seu endereço");
+      Toast("(6).Preencha o número do seu endereço");
       return true;
     }
     if (aux.Bairro === null || aux.Bairro === "") {
-      Toast("Preencha o bairro");
+      Toast("(8).Preencha o bairro");
       return true;
     }
     if (aux.Municipio === null || aux.Municipio === "") {
-      Toast("Preencha o município");
+      Toast("(9).Preencha o município");
       return true;
     }
     if (aux.Estado === null || aux.Estado === "") {
-      Toast("Preencha seu estado");
+      Toast("(10).Preencha seu estado");
       return true;
     }
     if (aux.CEP === null || aux.CEP === "") {
-      Toast("Preencha seu CEP");
+      Toast("(11).Preencha seu CEP");
       return true;
     }
     if (aux.Email === null || aux.Email === "") {
-      Toast("Preencha seu email");
+      Toast("(12).Preencha seu email");
       return true;
     }
     if (
-      aux.Tel_Residencial === null ||
-      aux.Tel_Residencial === "" ||
-      aux.Celular === null ||
-      aux.Celular === ""
+      (aux.Tel_Residencial === null || aux.Tel_Residencial === "") &&
+      (aux.Celular === null || aux.Celular === "")
     ) {
-      Toast("Informe pelo menos um número de Telefone ou Celular");
+      Toast("(13/14).Informe pelo menos um número de Telefone ou Celular");
       return true;
     }
 
@@ -221,7 +251,7 @@ export default class Formulario extends React.Component {
     // VALIDAÇÃO DO PRIMEIRO LADO
     //verificar se o estado civil foi marcado ou se foi marcado como casado sem os dados do conjuge
     if (aux.Est_Civil === null) {
-      Toast("Informe seu estado civil");
+      Toast("(15).Informe seu estado civil");
       return true;
     }
     if (
@@ -239,12 +269,12 @@ export default class Formulario extends React.Component {
         aux.TUnião === null ||
         aux.TUnião === "")
     ) {
-      Toast("Revise os dados do seu conjuge");
+      Toast("(16 a 21).Revise os dados do seu conjuge");
       return true;
     }
 
     if (aux.CLT === null) {
-      Toast("Informe se é CLT ou não");
+      Toast("(22).Informe se é CLT ou não");
       return true;
     }
 
@@ -252,12 +282,12 @@ export default class Formulario extends React.Component {
       aux.CLT === "Sim" &&
       (aux.Rend_Mensal === null || aux.Rend_Mensal === "")
     ) {
-      Toast("Você não informou seu rendimento mensal como CLT");
+      Toast("(23).Você não informou seu rendimento mensal como CLT");
       return true;
     }
 
     if (aux.Tem_filhos === null) {
-      Toast("Informe se possui filhos");
+      Toast("(24).Informe se possui filhos");
       return true;
     }
 
@@ -268,12 +298,12 @@ export default class Formulario extends React.Component {
         aux.Idd_filhos === null ||
         aux.Idd_filhos === "")
     ) {
-      Toast("Preencha corretamente quantos filhos e suas idades");
+      Toast("(25 e 26).Preencha corretamente quantos filhos e suas idades");
       return true;
     }
 
     if (aux.T_Residencia === null) {
-      Toast("Informe qual o tipo da sua residência atual");
+      Toast("(27).Informe qual o tipo da sua residência atual");
       return true;
     }
 
@@ -281,29 +311,31 @@ export default class Formulario extends React.Component {
       (aux.T_Residencia === "Alugada" || aux.T_Residencia === "Financiada") &&
       (aux.Residencia_Mensal === null || aux.Residencia_Mensal === "")
     ) {
-      Toast("Informe a quantia gasta por mês com sua residência");
+      Toast("(28).Informe a quantia gasta por mês com sua residência");
       return true;
     }
 
     if (aux.P_Veiculo === null || aux.P_Veiculo === "") {
-      Toast("Informe se possui veículo");
+      Toast("(29).Informe se possui veículo");
       return true;
     }
 
     if (aux.P_Imovel === null || aux.P_Imovel === "") {
-      Toast("Informe se possui imóvel");
+      Toast("(30).Informe se possui imóvel");
       return true;
     }
 
     if (aux.Expect === null) {
       Toast(
-        "Informe a margem de tempo em que deseja receber o retorno para seu investimento"
+        "(31).Informe a margem de tempo em que deseja receber o retorno para seu investimento"
       );
       return true;
     }
 
     if (aux.Recolhimento === null) {
-      Toast("Informe se houve recolhimento de imposto de renda no último ano");
+      Toast(
+        "(32).Informe se houve recolhimento de imposto de renda no último ano"
+      );
       return true;
     }
 
@@ -311,54 +343,54 @@ export default class Formulario extends React.Component {
       aux.Recolhimento === "Sim" &&
       (aux.Recolhimento_QTD === null || aux.Recolhimento_QTD === "")
     ) {
-      Toast("Informe a quantia recolhida pelo imposto de renda");
+      Toast("(33).Informe a quantia recolhida pelo imposto de renda");
       return true;
     }
 
     if (aux.Origem_Capital === null || aux.Origem_Capital === "") {
       Toast(
-        "Informe a origem do capital destinado à abertura do negócio junto à Pilão"
+        "(34).Informe a origem do capital destinado à abertura do negócio junto à Pilão"
       );
       return true;
     }
 
     if (aux.Renda_Familiar === null || aux.Renda_Familiar === "") {
-      Toast("Informe sua renda familiar");
+      Toast("(35).Informe sua renda familiar");
       return true;
     }
 
     if (aux.Renda_Composta === null || aux.Renda_Composta === "") {
-      Toast("Especifique como sua renda familiar é composta");
+      Toast("(36).Especifique como sua renda familiar é composta");
       return true;
     }
     if (aux.Disp_Invest === null || aux.Disp_Invest === "") {
-      Toast("Informe a quantia disponivel para investimento no negócio");
+      Toast("(37).Informe a quantia disponivel para investimento no negócio");
       return true;
     }
     if (aux.T_Empresa === null) {
-      Toast("Informe se já teve uma empresa própria");
+      Toast("(38).Informe se já teve uma empresa própria");
       return true;
     }
     if (
       aux.T_Empresa === "Sim" &&
       (aux.Detalhes_Atividade === null || aux.Detalhes_Atividade === "")
     ) {
-      Toast("Detalhe as atividades da sua empresa");
+      Toast("(39).Detalhe as atividades da sua empresa");
       return true;
     }
     if (aux.Form_Escolar === null || aux.Form_Escolar === "") {
-      Toast("Informe sua formação escolar");
+      Toast("(40).Informe sua formação escolar");
       return true;
     }
     if (aux.Ult_exp === null || aux.Ult_exp === "") {
-      Toast("Conte sobre suas últimas experiencias profissionais");
+      Toast("(41).Conte sobre suas últimas experiencias profissionais");
       return true;
     }
     //FIM DA VALIDAÇÃO DO PRIMEIRO LADO
 
     //INICIO DA VALIDAÇÃO DO SEGUNDO LADO
     if (aux.Sociedade === null) {
-      Toast("Informe se haverá um sócio na franquia");
+      Toast("(42).Informe se haverá um sócio na franquia");
       return true;
     }
     if (
@@ -378,13 +410,13 @@ export default class Formulario extends React.Component {
           (aux.Prop_Invest === null || aux.Prop_Invest === "")))
     ) {
       Toast(
-        "Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas"
+        "(43 a 49).Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas"
       );
       return true;
     }
 
     if (aux.T_Empreendimento === null) {
-      Toast("Informe se já teve um empreendimento em sociedade antes");
+      Toast("(50).Informe se já teve um empreendimento em sociedade antes");
       return true;
     }
 
@@ -392,48 +424,50 @@ export default class Formulario extends React.Component {
       aux.T_Empreendimento === "Sim" &&
       (aux.Exp_Sociedade === null || aux.Exp_Sociedade === "")
     ) {
-      Toast("Conte sobre sua experiencia em sociedade");
+      Toast("(51).Conte sobre sua experiencia em sociedade");
       return true;
     }
 
     if (aux.Cob_Desp === null) {
       Toast(
-        "Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia"
+        "(52).Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia"
       );
       return true;
     }
 
     if (aux.Conhece_Pilao === null || aux.Conhece_Pilao === "") {
-      Toast("Nos conte como conheceu a Pilão");
+      Toast("(53).Nos conte como conheceu a Pilão");
       return true;
     }
 
     for (let i = 0; i < aux.Prioridade.length; i++) {
       if (typeof aux.Prioridade[i] == "undefined") {
-        Toast("Avalie cada uma das afirmações da questão .42");
+        Toast("(54).Avalie cada uma das afirmações da questão .42");
         return true;
       }
     }
 
     if (aux.Caracteristica_Peso === null || aux.Caracteristica_Peso === "") {
       Toast(
-        "Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional"
+        "(55).Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional"
       );
       return true;
     }
 
     if (aux.Com_Regra === null) {
-      Toast("Informe se está disposto à cumprir as regras da franqueadora");
+      Toast(
+        "(56).Informe se está disposto à cumprir as regras da franqueadora"
+      );
       return true;
     }
 
     if (aux.Com_Med === null) {
-      Toast("Informe se está ciente da média mensal inicial");
+      Toast("(57).Informe se está ciente da média mensal inicial");
       return true;
     }
 
     if (aux.Com_Inf === null) {
-      Toast("Informe se concorda em fornecer informações à franqueadora");
+      Toast("(58).Informe se concorda em fornecer informações à franqueadora");
       return true;
     }
 
@@ -497,6 +531,24 @@ export default class Formulario extends React.Component {
     this.setState({ form: { ...this.state.form, Prioridade: aux } });
   }
 
+  //baixa form word da rede
+  async handleRetriveWORD(event) {
+    event.target.disabled = true;
+    try {
+      const response = await api.get("/form/original", {
+        responseType: "arraybuffer",
+      });
+
+      const blob = new Blob([response.data], { type: "application/msword" });
+
+      saveAs(blob, `Questionário de Perfil.doc`);
+      event.target.disabled = false;
+    } catch (err) {
+      Toast("Falha ao recuperar questionário do servidor", "error");
+      event.target.disabled = false;
+    }
+  }
+
   render() {
     return (
       <Container
@@ -511,7 +563,7 @@ export default class Formulario extends React.Component {
         <Panel
           style={{
             justifyContent: "flex-start",
-            marginTop: "10%",
+            marginTop: "10vh",
             maxWidth: "90vw",
             minHeight: "65vh",
             flexDirection: "column",
@@ -536,12 +588,56 @@ export default class Formulario extends React.Component {
                   fontSize: "2vw",
                 }}
                 type="text"
-                placeholder="Código de cadastro"
+                placeholder="Código de acesso"
               />
-              <p>
-                *Esse código será fornecido por um de nossos consultores para
-                que você possa preencher o formulário à seguir.
-              </p>
+              <div style={divStyle}>
+                <p style={{ marginRight: "10px" }}>Não possui um código?</p>
+                <Button className="modal-trigger" href="#solicitar">
+                  Clique aqui
+                  <Icon right small>
+                    contact_mail
+                  </Icon>
+                </Button>
+
+                <Modal
+                  actions={[
+                    <Button
+                      style={{ marginRight: "10px" }}
+                      onClick={(e) => this.handleSolicitaCodigo(e)}
+                    >
+                      <Icon left>send</Icon>Solicitar
+                    </Button>,
+                    <CloseButton />,
+                  ]}
+                  bottomSheet={false}
+                  fixedFooter={false}
+                  header="Solicitar código de acesso"
+                  id="solicitar"
+                  open={false}
+                  options={{
+                    dismissible: false,
+                    endingTop: "10%",
+                    inDuration: 250,
+                    onCloseEnd: null,
+                    onCloseStart: null,
+                    onOpenEnd: null,
+                    onOpenStart: null,
+                    opacity: 0.5,
+                    outDuration: 250,
+                    preventScrolling: true,
+                    startingTop: "4%",
+                  }}
+                >
+                  <TextInput
+                    id='email_solicitacao'
+                    placeholder="Email"
+                    data-length={50}
+                    error='Email inválido'
+                    email
+                    validate
+                  />
+                </Modal>
+              </div>
             </div>
           ) : null}
 
@@ -588,7 +684,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    label="Nome completo"
+                    label="1. Nome completo"
                   />
                   <TextInput
                     validate
@@ -602,7 +698,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    label="Dt. de nascimento"
+                    label="2. Dt. de nascimento"
                   />
                   <TextInput
                     validate
@@ -613,7 +709,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, RG: e.target.value },
                       })
                     }
-                    label="RG"
+                    label="3. RG"
                   />
                   <TextInput
                     validate
@@ -624,7 +720,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, CPF: e.target.value },
                       })
                     }
-                    label="CPF"
+                    label="4. CPF"
                   />
                 </div>
 
@@ -641,7 +737,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    label="Logradouro"
+                    label="5. Logradouro"
                   />
 
                   <TextInput
@@ -653,7 +749,7 @@ export default class Formulario extends React.Component {
                       })
                     }
                     style={{ fontSize: "1.20rem" }}
-                    label="Número"
+                    label="6. Número"
                   />
                   <TextInput
                     validate
@@ -667,7 +763,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    label="Complemento"
+                    label="7. Complemento"
                   />
                 </div>
 
@@ -681,7 +777,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Bairro: e.target.value },
                       })
                     }
-                    label="Bairro"
+                    label="8. Bairro"
                   />
                   <TextInput
                     validate
@@ -692,7 +788,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Municipio: e.target.value },
                       })
                     }
-                    label="Município"
+                    label="9. Município"
                   />
                   <TextInput
                     validate
@@ -703,7 +799,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Estado: e.target.value },
                       })
                     }
-                    label="Estado"
+                    label="10. Estado"
                   />
                   <TextInput
                     validate
@@ -714,7 +810,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, CEP: e.target.value },
                       })
                     }
-                    label="CEP"
+                    label="11. CEP"
                   />
                 </div>
 
@@ -729,7 +825,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Email: e.target.value },
                       })
                     }
-                    label="Email"
+                    label="12. Email"
                   />
                   <TextInput
                     validate
@@ -743,7 +839,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    label="Telefone residencial"
+                    label="13. Telefone residencial"
                   />
                   <TextInput
                     validate
@@ -754,15 +850,22 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Celular: e.target.value },
                       })
                     }
-                    label="Celular"
+                    label="14. Celular"
                   />
                 </div>
               </div>
 
               {/* INICIO DO FORMULARIO */}
               <div style={{ display: "flex", flexDirection: "row" }}>
-                <div style={divAlinha}>
-                  <p>Estado Civil:</p>
+                <div
+                  style={{
+                    ...divAlinha,
+                    borderRight: "1px solid #c1c1c1",
+                    borderBottom: "1px solid #c1c1c1",
+                    paddingRight: "calc(1vw - 1px)",
+                  }}
+                >
+                  <p>15. Estado Civil:</p>
                   <div style={divStyle}>
                     <input
                       type="checkbox"
@@ -857,7 +960,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Nome do(a) cônjuge"
+                          label="16. Nome do(a) cônjuge"
                         />
                         <TextInput
                           validate
@@ -871,7 +974,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Data de Nascimento"
+                          label="17. Data de Nascimento"
                         />
                       </div>
                       <div style={divStyle}>
@@ -887,7 +990,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="CPF"
+                          label="18. CPF"
                         />
                         <TextInput
                           validate
@@ -901,7 +1004,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="RG"
+                          label="19. RG"
                         />
                       </div>
                       <div style={divStyle}>
@@ -917,7 +1020,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Tempo de união"
+                          label="20. Tempo de união"
                         />
                         <TextInput
                           validate
@@ -931,12 +1034,12 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Rendimento mensal"
+                          label="21. Rendimento mensal"
                         />
                       </div>
                     </>
                   ) : null}
-                  <p>CLT?</p>
+                  <p>22. CLT?</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -963,10 +1066,10 @@ export default class Formulario extends React.Component {
                           },
                         })
                       }
-                      label="Rendimento mensal"
+                      label="23. Rendimento mensal"
                     />
                   ) : null}
-                  <p>Possui filhos?</p>
+                  <p>24. Possui filhos?</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -997,7 +1100,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        label="Quantos:"
+                        label="25. Quantos:"
                       />
                       <TextInput
                         validate
@@ -1011,12 +1114,12 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        label="Idades:"
+                        label="26. Idades:"
                       />
                     </div>
                   ) : null}
 
-                  <p>Residencia:</p>
+                  <p>27. Residencia:</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1050,11 +1153,11 @@ export default class Formulario extends React.Component {
                           },
                         })
                       }
-                      label="Valor mensal"
+                      label="28. Valor mensal"
                     />
                   ) : null}
 
-                  <p>Possui veículo?</p>
+                  <p>29. Possui veículo?</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1068,7 +1171,7 @@ export default class Formulario extends React.Component {
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
                   </Select>
-                  <p>Possui Imóvel?</p>
+                  <p>30. Possui Imóvel?</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1083,7 +1186,9 @@ export default class Formulario extends React.Component {
                     <option value="Não">Não</option>
                   </Select>
 
-                  <p>Qual sua expectativa de retorno para esse investimento?</p>
+                  <p>
+                    31. Qual sua expectativa de retorno para esse investimento?
+                  </p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1099,7 +1204,9 @@ export default class Formulario extends React.Component {
                     <option value="30+">30+ meses</option>
                   </Select>
 
-                  <p>Teve recolhimento de imposto de renda no ultimo ano?</p>
+                  <p>
+                    32. Teve recolhimento de imposto de renda no ultimo ano?
+                  </p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1130,14 +1237,14 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        placeholder="Quantia:"
+                        placeholder="33. Quantia:"
                       />
                       <p>*Sem considerar eventual valor restituído</p>
                     </div>
                   ) : null}
 
                   <p>
-                    Qual a origem do capital disponível para a abertura do
+                    34. Qual a origem do capital disponível para a abertura do
                     negócio com a Pilão Professional?
                   </p>
                   <Textarea
@@ -1153,7 +1260,7 @@ export default class Formulario extends React.Component {
                     }
                     placeholder="Especifique..."
                   />
-                  <p>Qual sua renda familiar?</p>
+                  <p>35. Qual sua renda familiar?</p>
                   <TextInput
                     validate
                     style={{ fontSize: "1.20rem" }}
@@ -1168,7 +1275,7 @@ export default class Formulario extends React.Component {
                     placeholder="Especifique..."
                   />
 
-                  <p>Como é composta sua renda familiar?</p>
+                  <p>36. Como é composta sua renda familiar?</p>
                   <Textarea
                     style={{ fontSize: "1.20rem" }}
                     data-length={250}
@@ -1184,7 +1291,7 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>
-                    Qual a disponibilidade para investimento na franquia, em
+                    37. Qual a disponibilidade para investimento na franquia, em
                     dinheiro, sem considerar empréstimos ou linhas de crédito?
                   </p>
                   <TextInput
@@ -1202,7 +1309,7 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>
-                    Tem/Teve empresa própria e/ou tem experiencia como
+                    38. Tem/Teve empresa própria e/ou tem experiencia como
                     profissional autônomo?
                   </p>
                   <Select
@@ -1221,13 +1328,13 @@ export default class Formulario extends React.Component {
                   {this.state.form.T_Empresa === "Sim" ? (
                     <>
                       <p>
-                        Especifique detalhadamente qual a atividade, se existiam
-                        sócios, quais os rendimentos mensais, qual a quantidade
-                        de horas de trabalho por dia em média e qual o capital
-                        social: No caso do negócio não mais existir, especificar
-                        detalhadamente quais os motivos que ocasionaram o
-                        encerramento, se na ocasião houve prejuízo ou lucro e se
-                        houve a ocorrência de dívidas pendentes
+                        39. Especifique detalhadamente qual a atividade, se
+                        existiam sócios, quais os rendimentos mensais, qual a
+                        quantidade de horas de trabalho por dia em média e qual
+                        o capital social: No caso do negócio não mais existir,
+                        especificar detalhadamente quais os motivos que
+                        ocasionaram o encerramento, se na ocasião houve prejuízo
+                        ou lucro e se houve a ocorrência de dívidas pendentes
                       </p>
                       <Textarea
                         style={{ fontSize: "1.20rem" }}
@@ -1246,8 +1353,8 @@ export default class Formulario extends React.Component {
                   ) : null}
 
                   <p>
-                    Qual a sua formação escolar/acadêmica (especificar grau e
-                    área se houver)?
+                    40. Qual a sua formação escolar/acadêmica (especificar grau
+                    e área se houver)?
                   </p>
                   <Textarea
                     style={{ fontSize: "1.20rem" }}
@@ -1264,7 +1371,7 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>
-                    De forma simplificada, nos conte sobre suas últimas
+                    41. De forma simplificada, nos conte sobre suas últimas
                     experiências profissionais.
                   </p>
                   <Textarea
@@ -1278,8 +1385,15 @@ export default class Formulario extends React.Component {
                     placeholder="Especifique..."
                   />
                 </div>
-                <div style={divAlinha}>
-                  <p>Haverá sociedade neste negócio?</p>
+                <div
+                  style={{
+                    ...divAlinha,
+                    borderLeft: "1px solid #c1c1c1",
+                    borderBottom: "1px solid #c1c1c1",
+                    paddingLeft: "calc(1vw - 1px)",
+                  }}
+                >
+                  <p>42. Haverá sociedade neste negócio?</p>
                   <Select
                     onChange={(e) =>
                       this.setState({
@@ -1309,7 +1423,7 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Nome do sócio"
+                          label="43. Nome do sócio"
                         />
                         <TextInput
                           validate
@@ -1323,10 +1437,10 @@ export default class Formulario extends React.Component {
                               },
                             })
                           }
-                          label="Grau de parentesco ou vínculo"
+                          label="44. Tipo de vinculo"
                         />
                       </div>
-                      <p>Há quanto tempo se conhecem?</p>
+                      <p>45. Há quanto tempo se conhecem?</p>
                       <TextInput
                         validate
                         style={{ fontSize: "1.20rem" }}
@@ -1341,7 +1455,7 @@ export default class Formulario extends React.Component {
                         }
                         placeholder="Especifique..."
                       />
-                      <p>O que já realizaram juntos?</p>
+                      <p>46. O que já realizaram juntos?</p>
                       <Textarea
                         style={{ fontSize: "1.20rem" }}
                         data-length={250}
@@ -1357,10 +1471,10 @@ export default class Formulario extends React.Component {
                       />
 
                       <p>
-                        Essa pessoa vai ser sócia no contrato de concessão da
-                        franquia ou apenas vai participar no contrato da empresa
-                        (pessoa jurídica) que vai operar a franquia? Especificar
-                        em que condições e em qual proporção
+                        47. Essa pessoa vai ser sócia no contrato de concessão
+                        da franquia ou apenas vai participar no contrato da
+                        empresa (pessoa jurídica) que vai operar a franquia?
+                        Especificar em que condições e em qual proporção
                       </p>
                       <Textarea
                         style={{ fontSize: "1.20rem" }}
@@ -1376,7 +1490,7 @@ export default class Formulario extends React.Component {
                         placeholder="Especifique...   "
                       />
                       <p>
-                        Havendo sociedada, essa pessoa participará do
+                        48. Havendo sociedada, essa pessoa participará do
                         investimento?
                       </p>
                       <Select
@@ -1397,7 +1511,7 @@ export default class Formulario extends React.Component {
                       </Select>
                       {this.state.form.Part_invest === "Sim" ? (
                         <>
-                          <p>Em qual proporção?</p>
+                          <p>49. Em qual proporção?</p>
                           <TextInput
                             validate
                             style={{ fontSize: "1.20rem" }}
@@ -1418,7 +1532,8 @@ export default class Formulario extends React.Component {
                   ) : null}
 
                   <p>
-                    Você já teve algum empreendimento em sociedade com alguém?
+                    50. Você já teve algum empreendimento em sociedade com
+                    alguém?
                   </p>
                   <Select
                     onChange={(e) =>
@@ -1439,7 +1554,7 @@ export default class Formulario extends React.Component {
 
                   {this.state.form.T_Empreendimento === "Sim" ? (
                     <>
-                      <p>Como foi a experiência?</p>
+                      <p>51. Como foi a experiência?</p>
                       <Textarea
                         style={{ fontSize: "1.20rem" }}
                         data-length={250}
@@ -1457,7 +1572,7 @@ export default class Formulario extends React.Component {
                   ) : null}
 
                   <p>
-                    Na fase inicial, eventualmente, faz-se necessária uma
+                    52. Na fase inicial, eventualmente, faz-se necessária uma
                     cobertura dos custos fixos da franquia, por motivo do
                     negócio ainda não atingir uma maturidade suficiente. Nesse
                     caso, existe disponibilidade de capital para um eventual
@@ -1481,7 +1596,7 @@ export default class Formulario extends React.Component {
                     <option value="Não">Não</option>
                   </Select>
 
-                  <p>Como você conheceu a Pilão Professional?</p>
+                  <p>53. Como você conheceu a Pilão Professional?</p>
                   <Textarea
                     style={{ fontSize: "1.20rem" }}
                     data-length={250}
@@ -1497,11 +1612,11 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>
-                    Seguindo a sua opinião pessoal, por favor, numere por ordem
-                    de sua preferência, os motivos que o fizeram decidir pela
-                    franquia Pilão Professional (colocando o número 01 para o
-                    mais importante – primeiro - e respectivamente numerando até
-                    o 11 para o menos importante - último). Leia todas as
+                    54. Seguindo a sua opinião pessoal, por favor, numere por
+                    ordem de sua preferência, os motivos que o fizeram decidir
+                    pela franquia Pilão Professional (colocando o número 01 para
+                    o mais importante – primeiro - e respectivamente numerando
+                    até o 11 para o menos importante - último). Leia todas as
                     alternativas antes de começar a responder
                   </p>
                   <div style={divStyle}>
@@ -1731,7 +1846,7 @@ export default class Formulario extends React.Component {
                   </div>
 
                   <p>
-                    Qual foi a característica do negócio que mais pesou na
+                    55. Qual foi a característica do negócio que mais pesou na
                     escolha da Pilão Professional?
                   </p>
                   <Textarea
@@ -1749,7 +1864,7 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>
-                    Numa franquia, a padronização é algo muito importante.
+                    56. Numa franquia, a padronização é algo muito importante.
                     Acrescenta-se ainda que a franqueadora tem sob sua
                     responsabilidade a organização da rede em geral, bem como o
                     cuidado com a manutenção da competitividade do negócio. Por
@@ -1777,7 +1892,7 @@ export default class Formulario extends React.Component {
                   </Select>
 
                   <p>
-                    No que se refere ao lucro líquido que uma franquia pode
+                    57. No que se refere ao lucro líquido que uma franquia pode
                     oferecer, por mês em média (ao final de um ano, o lucro
                     médio por mês), no total (no caso de existirem sócios, o
                     lucro total, não a parte de cada sócio), existem alguns
@@ -1804,15 +1919,15 @@ export default class Formulario extends React.Component {
                   </Select>
 
                   <p>
-                    Devido à natureza da relação, rotineiramente a franquia deve
-                    fornecer as mais diversas informações para a franqueadora.
-                    Por exemplo, no que se refere aos resultados financeiros,
-                    existe o acompanhamento do desempenho de todas as máquinas,
-                    isso com o objetivo de planejar as políticas estratégicas da
-                    rede como um todo, e também para detectar eventuais
-                    problemas de gestão e potencial na unidade. São diversas
-                    informações, sobre diversos campos do negócio. Você se
-                    compromete a informar a franqueadora sobre o que for
+                    58. Devido à natureza da relação, rotineiramente a franquia
+                    deve fornecer as mais diversas informações para a
+                    franqueadora. Por exemplo, no que se refere aos resultados
+                    financeiros, existe o acompanhamento do desempenho de todas
+                    as máquinas, isso com o objetivo de planejar as políticas
+                    estratégicas da rede como um todo, e também para detectar
+                    eventuais problemas de gestão e potencial na unidade. São
+                    diversas informações, sobre diversos campos do negócio. Você
+                    se compromete a informar a franqueadora sobre o que for
                     solicitado, desde que pertinente ao negócio?
                   </p>
                   <Select
@@ -1836,59 +1951,89 @@ export default class Formulario extends React.Component {
 
               {/* FIM DO FORMULÁRIO */}
               <div style={divAlinha}>
-                <div style={divStyle}>
-                  <p>Comprovante de disponibilidade do capital declarado</p>
-                  <input
+                <div style={{ ...divAlinha, marginTop: "10px" }}>
+                  <label style={labels}>
+                    Comprovante de disponibilidade do capital declarado
+                  </label>
+                  <TextInput
                     className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
+                    label={<Icon>attach_file</Icon>}
                   />
                 </div>
-                <div style={divStyle}>
-                  <p>
+                <div style={{ ...divAlinha, marginTop: "10px" }}>
+                  <label style={labels}>
                     Cópias do CPF e RG de quem está apresentando o questionário
-                  </p>
-                  <input
-                    className="files"
+                  </label>
+                  <TextInput
                     multiple
+                    className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
+                    label={<Icon>attach_file</Icon>}
                   />
                 </div>
                 {this.state.form.Est_Civil < 4 &&
                 this.state.form.Est_Civil !== null ? (
-                  <div style={divStyle}>
-                    <p>Cópias do CPF e RG do(a) cônjuge ou semelhante</p>
-                    <input
-                      className="files"
+                  <div style={{ ...divAlinha, marginTop: "10px" }}>
+                    <label style={labels}>
+                      Cópias do CPF e RG do(a) cônjuge ou semelhante
+                    </label>
+                    <TextInput
                       multiple
+                      className="files"
                       type="file"
                       name="upload"
                       accept="application/pdf,image/png, image/jpeg"
+                      label={<Icon>attach_file</Icon>}
                     />
                   </div>
                 ) : null}
 
-                <div style={divStyle}>
-                  <p>Cópia e da última declaração de imposto de renda</p>
-                  <input
+                <div style={{ ...divAlinha, marginTop: "10px" }}>
+                  <label style={labels}>
+                    Cópia e da última declaração de imposto de renda
+                  </label>
+                  <TextInput
                     className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
+                    label={<Icon>attach_file</Icon>}
                   />
                 </div>
               </div>
-              <Button
-                onClick={(e) => {
-                  e.persist();
-                  this.handleSubmit(e);
-                }}
-              >
-                enviar
-              </Button>
+              <div style={{ ...divStyle, justifyContent: "flex-end" }}>
+                <Button
+                  onClick={(e) => {
+                    e.persist();
+                    this.handleSubmit(e);
+                  }}
+                  tooltipOptions={{
+                    position: "top",
+                  }}
+                  tooltip="Confirmar e enviar à Pilão Professional"
+                >
+                  <Icon left>send</Icon>Enviar
+                </Button>
+                <Button
+                  style={{ marginLeft: "10px" }}
+                  onClick={(e) => {
+                    e.persist();
+                    this.handleRetriveWORD(e);
+                  }}
+                  tooltipOptions={{
+                    position: "top",
+                  }}
+                  tooltip="Se preferir, faça o download do formulário e abra com o Microsoft Word"
+                >
+                  <Icon left>file_download</Icon>
+                  Formulário WORD
+                </Button>
+              </div>
             </div>
           ) : null}
         </Panel>

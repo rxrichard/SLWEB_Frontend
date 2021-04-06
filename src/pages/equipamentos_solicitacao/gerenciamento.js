@@ -30,7 +30,7 @@ export default class Management extends React.Component {
     } catch (err) {
       Toast("Falha trazer todas as Requisições", "error");
       setTimeout(() => {
-        window.location.reload();
+        window.location.assign('/');
       }, 3000);
     }
   }
