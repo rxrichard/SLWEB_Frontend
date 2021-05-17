@@ -317,7 +317,7 @@ export default class Modalzinho extends React.Component {
             </div>
             <div style={divMetade}>
               <h5>Arquivos</h5>
-              <Button>Baixar documentos</Button>
+              <Button disabled>Baixar documentos</Button>
             </div>
           </div>
         </div>

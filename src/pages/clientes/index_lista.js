@@ -195,7 +195,7 @@ export default class Cliente extends React.Component {
             header='Dados do Cliente'
             id='Dados'
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: '10%',
               inDuration: 250,
               onCloseEnd: null,

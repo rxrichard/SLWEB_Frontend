@@ -1,70 +1,40 @@
-import React from 'react'
+import React from "react";
 
-import Cadastro from './solicitacao'
-import Logs from './logs'
+import Cadastro from "./solicitacao";
+import Logs from "./logs";
 
-import { Tabs, Tab, Button, Icon } from 'react-materialize'
-import { Panel } from '../../components/commom_in'
-import { GoBack } from '../../components/buttons'
+import MenuAbas from "../../components/materialComponents/PainelAbas";
+import Segmentos from "../../components/materialComponents/PainelSegmentado";
+import { Button, Icon } from "react-materialize";
+import { Panel } from "../../components/commom_in";
+import { GoBack } from "../../components/buttons";
 
 class Solicitacao extends React.Component {
   render() {
     return (
-      <Panel style={{ overflow: 'hidden', alignContent: 'center' }}>
-        <Tabs
-          className='tab-demo z-depth-1'
-          options={{
-            swipeable: false
-          }}
-        >
-          <Tab
-            active
-            options={{
-              duration: 300,
-              onShow: null,
-              responsiveThreshold: Infinity,
-              swipeable: false
-            }}
-            title='Solicitação'
-          >
-            <Cadastro />
-          </Tab>
+      <Panel style={{ overflow: "hidden", alignContent: "center", padding: '0px' }}>
+        <MenuAbas titles={['Solicitar', 'Solicitações']}>
+          <Segmentos />
+          <Logs />
+        </MenuAbas>
+        <GoBack />
 
-          <Tab
-            options={{
-              duration: 300,
-              onShow: null,
-              responsiveThreshold: Infinity,
-              swipeable: false
+        {sessionStorage.getItem("role") !== "Franquia" ? (
+          <Button
+            onClick={() => {
+              this.props.history.push("/equipamentos/solicitacao/management");
             }}
-            title='Solicitações'
+            style={{
+              marginRight: "5px",
+            }}
           >
-            <Logs />
-          </Tab>
-        </Tabs>
-        <div style={{ width: '100vw', backgroundColor: '#000' }} />
-        {/* Não sei porquê, mas se tirar essa div, as tabs param de mostrar o conteudo */}
-        <div className='XAlign'>
-          <GoBack />
-
-          {sessionStorage.getItem('role') !== 'Franquia' ? (
-            
-            <Button
-              onClick={() => {
-                this.props.history.push('/equipamentos/solicitacao/management')
-              }}
-              style={{
-                marginRight: '5px'
-              }}
-            >
-              Gerenciar configurações
-              <Icon left>edit</Icon>
-            </Button>
-          ) : null}
-        </div>
+            Gerenciar configurações
+            <Icon left>edit</Icon>
+          </Button>
+        ) : null}
       </Panel>
-    )
+    );
   }
 }
 
-export default Solicitacao
+export default Solicitacao;

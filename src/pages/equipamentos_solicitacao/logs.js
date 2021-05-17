@@ -114,7 +114,7 @@ export default class Logs extends React.Component {
                     header="Gerenciamento de solicitação"
                     id={`modal${i}`}
                     options={{
-                      dismissible: true,
+                      dismissible: false,
                       endingTop: "10%",
                       inDuration: 250,
                       onCloseEnd: null,

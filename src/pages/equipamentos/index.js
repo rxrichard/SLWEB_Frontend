@@ -39,7 +39,7 @@ class Equipamentos extends React.Component {
         loaded: true
       })
     } catch (err) {
-      this.state.history.push('/')
+      window.location.assign('/')
     }
   }
 
@@ -221,7 +221,7 @@ class Equipamentos extends React.Component {
           header='Atribuir à'
           id='atribuir'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,
@@ -266,7 +266,7 @@ class Equipamentos extends React.Component {
           header='Informar erro de cadastro'
           id='modalerro'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,

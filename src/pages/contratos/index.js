@@ -175,7 +175,7 @@ class Contratos extends React.Component {
             header='Dados do Contrato'
             id='Dados'
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: '10%',
               inDuration: 250,
               onCloseEnd: null,

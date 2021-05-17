@@ -102,7 +102,7 @@ export default class PedidosConcluidos extends Component {
           header='Items do Pedido'
           id='modal2'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,

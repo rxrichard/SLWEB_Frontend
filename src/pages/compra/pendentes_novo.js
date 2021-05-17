@@ -136,7 +136,7 @@ export default class PedidosPendentes extends Component {
           header='Items do Pedido'
           id='modal1'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,

@@ -267,7 +267,7 @@ export default class Configuracoes extends React.Component {
           header='Editar configuração'
           id='produtos'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,
@@ -418,7 +418,7 @@ export default class Configuracoes extends React.Component {
           header='Adicionar configuração'
           id='modalAdd'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,

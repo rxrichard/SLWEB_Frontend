@@ -1258,9 +1258,10 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    validate
                     placeholder="Especifique..."
                   />
-                  <p>35. Qual sua renda familiar?</p>
+                  <p>35. Qual sua renda familiar mensal?</p>
                   <TextInput
                     validate
                     style={{ fontSize: "1.20rem" }}

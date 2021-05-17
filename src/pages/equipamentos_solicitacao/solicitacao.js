@@ -1,6 +1,7 @@
 ﻿import React from "react";
 import Loading from "../../components/loading_screen";
 
+import { Select } from "@material-ui/core";
 import Imagem from "../../assets/Capturar.JPG";
 import {
   Button,
@@ -665,8 +666,8 @@ export default class Cadastro extends React.Component {
         ...this.state.requisicao,
         destino: endereco,
         CNPJ_Destino: this.state.endereços_entrega[e.target.value].CNPJss,
-        Cliente_Destino: this.state.endereços_entrega[e.target.value]
-          .Nome_Fantasia,
+        Cliente_Destino:
+          this.state.endereços_entrega[e.target.value].Nome_Fantasia,
       },
     });
     const inputs = document.getElementById("enderecoEdit");
@@ -751,7 +752,8 @@ export default class Cadastro extends React.Component {
     tbody.children[0].children[1].children[0].selectedIndex = 0;
     tbody.children[0].children[2].children[0].checked = false;
     tbody.children[0].children[3].children[1].value = "";
-    tbody.children[0].children[3].children[1].placeholder = this.state.ultimaSelecao;
+    tbody.children[0].children[3].children[1].placeholder =
+      this.state.ultimaSelecao;
     tbody.children[0].children[4].children[1].value = "";
     tbody.children[0].children[4].children[1].placeholder = 0;
     tbody.children[0].children[5].children[0].selectedIndex = 0;
@@ -913,6 +915,7 @@ export default class Cadastro extends React.Component {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-evenly",
+            flexWrap: 'wrap'
           }}
         >
           <div style={{ maxWidth: "20vw", minWidth: "300px" }}>
@@ -1051,44 +1054,57 @@ export default class Cadastro extends React.Component {
                           {this.state.config.map((config, i) => (
                             <tr>
                               <td>
-                                <select
-                                  className="DefaultSelect"
-                                  onChange={(e) => {
-                                    e.persist();
-                                    this.handleAdicionaBebida(
-                                      i,
-                                      e.target.value,
-                                      e.target.parentElement.parentElement
-                                    );
-                                  }}
-                                >
-                                  <option selected hidden disabled value={null}>
-                                    Selecione...
-                                  </option>
-                                  {this.state.BebidasDisp.map((bebida, i) => (
-                                    <option value={i}>{bebida.Bebida}</option>
-                                  ))}
-                                  ))
-                                </select>
+                                  <Select
+                                    native
+                                    value="Selecione..."
+                                    label="Bebida"
+                                    inputProps={{
+                                      name: "Bebida",
+                                      id: "outlined-age-native-simple",
+                                    }}
+                                    onChange={(e) => {
+                                      // e.persist();
+                                      // this.handleAdicionaBebida(
+                                      //   i,
+                                      //   e.target.value,
+                                      //   e.target.parentElement.parentElement
+                                      // );
+                                    }}
+                                  >
+                                    <option
+                                      selected
+                                      hidden
+                                      disabled
+                                      value={null}
+                                    >
+                                      Selecione...
+                                    </option>
+                                    {this.state.BebidasDisp.map((bebida, i) => (
+                                      <option value={i}>{bebida.Bebida}</option>
+                                    ))}
+                                    ))
+                                  </Select>
                               </td>
                               <td>
-                                <select
-                                  defaultValue={this.state.config[i].Qtd_Def}
-                                  style={{ width: "20vw" }}
-                                  disabled={
-                                    this.state.config[i].Bebida === null
-                                      ? true
-                                      : false
-                                  }
-                                  className="DefaultSelect"
-                                  onChange={(e) =>
-                                    this.handleSelectMedida(
+                              <Select
+                                    native
+                                    value={this.state.config[i].Qtd_Def}
+                                    disabled={
+                                      this.state.config[i].Bebida === null
+                                        ? true
+                                        : false
+                                    }
+                                    label="Bebida"
+                                    inputProps={{
+                                      name: "Bebida",
+                                      id: "outlined-age-native-simple",
+                                    }}
+                                    onChange={(e) => this.handleSelectMedida(
                                       i,
                                       config,
                                       e.target.value
-                                    )
-                                  }
-                                >
+                                    )}
+                                  >
                                   <option selected hidden disabled value={null}>
                                     Selecione...
                                   </option>
@@ -1104,7 +1120,7 @@ export default class Cadastro extends React.Component {
                                     )
                                   )}
                                   ))
-                                </select>
+                                </Select>
                               </td>
                               <td>
                                 <input
@@ -1575,7 +1591,7 @@ export default class Cadastro extends React.Component {
             header="Confirmar solicitação?"
             id="confirm"
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: "10%",
               inDuration: 250,
               onCloseEnd: null,
@@ -1600,7 +1616,7 @@ export default class Cadastro extends React.Component {
             header="Detalhes do Sistema de Pagamento"
             id="valida"
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: "10%",
               inDuration: 250,
               onCloseEnd: null,

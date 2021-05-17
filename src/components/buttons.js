@@ -7,6 +7,7 @@ import {
   GOBACK_BUTTON_COLOR
 } from './colors'
 
+//Botão que se desativa após pressionado, com aspecto de "confirmar(é verde)"
 export const ConfirmButton = props => (
   <Button
     {...props}
@@ -24,6 +25,7 @@ export const ConfirmButton = props => (
   </Button>
 )
 
+//Botão que se desativa após pressionado, com aspecto de "perigo(é vermelho)"
 export const CancelButton = props => (
   <Button
     {...props}
@@ -41,6 +43,7 @@ export const CancelButton = props => (
   </Button>
 )
 
+//Botão comum, mas tem aspecto de "segurança(é amarelo)"
 export const SafeButton = props => (
   <Button
     {...props}
@@ -53,6 +56,7 @@ export const SafeButton = props => (
   </Button>
 )
 
+//Volta pra última pagina sem perder histórico
 export const GoBack = props => (
   <Button
     {...props}
@@ -70,6 +74,7 @@ export const GoBack = props => (
   </Button>
 )
 
+//Só funciona para modal
 export const CloseButton = props => (
   <Button
     modal='close'

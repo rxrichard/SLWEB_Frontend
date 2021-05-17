@@ -318,7 +318,7 @@ export default class VenderItems extends Component {
             header='Confirmar venda'
             id='modal-0'
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: '10%',
               inDuration: 250,
               onCloseEnd: null,

@@ -388,7 +388,7 @@ class AddCliente extends React.Component {
             header='Aviso'
             id='modal-0'
             options={{
-              dismissible: true,
+              dismissible: false,
               endingTop: '10%',
               inDuration: 250,
               onCloseEnd: null,

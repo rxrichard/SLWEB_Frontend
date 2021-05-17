@@ -241,7 +241,7 @@ class Perfil extends React.Component {
           header='Trocar senha'
           id='newPassword'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,
@@ -316,7 +316,7 @@ class Perfil extends React.Component {
           header='Email para recebimento de NF'
           id='newEmail'
           options={{
-            dismissible: true,
+            dismissible: false,
             endingTop: '10%',
             inDuration: 250,
             onCloseEnd: null,

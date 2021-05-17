@@ -251,7 +251,7 @@ export default class Historico extends Component {
                 header='Confirmação'
                 id='modal1'
                 options={{
-                  dismissible: true,
+                  dismissible: false,
                   endingTop: '10%',
                   inDuration: 250,
                   onCloseEnd: null,

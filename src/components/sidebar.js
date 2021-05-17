@@ -117,6 +117,9 @@ export default (sidebar) => {
             <Link to="/administracao/formularios">
               <Icon center>import_contacts</Icon>Formulários
             </Link>
+            <Link to="/administracao/emails">
+              <Icon center>email</Icon>Emails
+            </Link>
           </Dropdown>
         </Combobox>) : null}
         

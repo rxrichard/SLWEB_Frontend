@@ -370,7 +370,7 @@ export default class AddAnexo extends Component {
               header='Confirmação'
               id='modal-0'
               options={{
-                dismissible: true,
+                dismissible: false,
                 endingTop: '10%',
                 inDuration: 250,
                 onCloseEnd: null,

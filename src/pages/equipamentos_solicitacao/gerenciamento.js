@@ -131,7 +131,7 @@ export default class Management extends React.Component {
                       id={`modal${i}`}
                       open={false}
                       options={{
-                        dismissible: true,
+                        dismissible: false,
                         endingTop: "10%",
                         inDuration: 250,
                         onCloseEnd: null,
@@ -164,7 +164,7 @@ export default class Management extends React.Component {
                       id={`modal-hist${i}`}
                       open={false}
                       options={{
-                        dismissible: true,
+                        dismissible: false,
                         endingTop: "10%",
                         inDuration: 250,
                         onCloseEnd: null,
