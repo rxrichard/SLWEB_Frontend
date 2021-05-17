@@ -9,6 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import { connect } from 'react-redux';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -22,12 +23,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DialogSelect() {
+function DialogSelect(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selecao, setSelecao] = React.useState("");
   const [bebida, setBebida] = React.useState("");
   const [medida, setMedida] = React.useState("");
+
+  const { newValue } = props;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,6 +67,7 @@ export default function DialogSelect() {
                   <em>Nenhuma</em>
                 </MenuItem>
                 <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={newValue}>{newValue}</MenuItem>
               </Select>
             </FormControl>
 
@@ -138,3 +142,9 @@ export default function DialogSelect() {
     </div>
   );
 }
+
+const mapStateToProps = store => ({
+  newValue: store.clickState.newValue
+});
+
+export default connect(mapStateToProps)(DialogSelect);
