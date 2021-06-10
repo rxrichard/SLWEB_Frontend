@@ -3,12 +3,13 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 import Loading from "../../components/loading_screen";
-import { Button, Modal, Icon, Textarea } from "react-materialize";
+import { Button, Modal, Icon } from "react-materialize";
 import { Table } from "../../components/table";
 import { ToastyContainer, Toast } from "../../components/toasty";
 import { dateCheck, convertData } from "../../components/commom_functions";
 import AdmModal from "./modals/admModal";
 import { CloseButton } from "../../components/buttons";
+import TextField from "@material-ui/core/TextField";
 
 export default class Logs extends React.Component {
   state = {
@@ -22,7 +23,6 @@ export default class Logs extends React.Component {
 
       this.setState({ logs: response.data, loaded: true });
     } catch (err) {
-      console.log(err);
       // window.location.assign('/')
     }
   }
@@ -87,16 +87,21 @@ export default class Logs extends React.Component {
                 ? convertData(log.OSCExpDtPrevisao)
                 : ""}
             </td>
-            <td align="center">
-              <Textarea
-                onChange={(e) => (e.target.value = log.OSCDestino)}
+            <td align="center" style={{ padding: "0" }}>
+              <TextField
+                id="outlined-multiline-flexible"
+                multiline
+                rowsMax={1}
                 value={log.OSCDestino}
+                onChange={(e) => (e.target.value = log.OSCDestino)}
+                variant="standard"
               />
             </td>
-            <td>
+            <td align="center" style={{ padding: "0", textAlign: "center" }}>
               {this.state.loaded ? (
                 <>
                   <Button
+                    style={{ margin: "0", textAlign: "center" }}
                     tooltip="Gerenciamento da Requisição"
                     tooltipOptions={{
                       position: "top",
@@ -133,8 +138,9 @@ export default class Logs extends React.Component {
                 </>
               ) : null}
             </td>
-            <td>
+            <td align="center" style={{ padding: "0", textAlign: "center" }}>
               <Button
+                style={{ margin: "0" }}
                 tooltip="Baixar PDF"
                 tooltipOptions={{
                   position: "right",
@@ -148,7 +154,7 @@ export default class Logs extends React.Component {
         ))}
       </Table>
     ) : (
-      <h3>Você ainda não fez nenhuma solicitação!</h3>
+      <h5>Você ainda não fez nenhuma solicitação!</h5>
     );
   }
 }

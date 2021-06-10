@@ -41,7 +41,6 @@ class AddContrato extends React.Component {
       })
       this.setState({ clientes: response.data, loaded: true })
     } catch (err) {
-      console.log(err)
     }
   }
 

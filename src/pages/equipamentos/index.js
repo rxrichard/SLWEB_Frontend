@@ -27,7 +27,6 @@ class Equipamentos extends React.Component {
         }
       })
 
-      console.log(response.data)
       if (response.data.maquinas.length < 1) throw Error
 
       this.setState({

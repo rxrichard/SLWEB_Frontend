@@ -19,7 +19,6 @@ export default class extends React.Component {
           token: sessionStorage.getItem('token')
         }
       })
-      console.log(response.data)
       if (response.data === 400) throw Error
 
       this.setState({

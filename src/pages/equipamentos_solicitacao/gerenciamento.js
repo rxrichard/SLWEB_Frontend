@@ -42,7 +42,6 @@ export default class Management extends React.Component {
         ID,
       });
     } catch (err) {
-      console.log(err)
     }
   }
 

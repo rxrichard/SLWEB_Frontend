@@ -20,7 +20,6 @@ export default class Historico extends Component {
         vendas: this.props.vendas
       })
 
-      console.log(this.props.vendas)
     } catch (err) {
       Toast('Falha ao comunicar com o servidor', 'error')
     }
@@ -50,8 +49,6 @@ export default class Historico extends Component {
           NF: this.state.vendas[i].PvcID
         }
       })
-
-      console.log(response.data)
 
       this.setState({
         pedido: response.data.prodList,

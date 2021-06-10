@@ -53,7 +53,6 @@ export default function PainelAbas(props) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    console.log(props);
   };
 
   return (

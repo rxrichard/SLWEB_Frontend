@@ -85,7 +85,6 @@ class Perfil extends React.Component {
       })
 
       if (response.data === 400) throw Error
-      console.log(response.data)
       Toast('Email atualizado com sucesso', 'success')
     } catch (err) {
       Toast(FAILED_REQUEST, 'error')

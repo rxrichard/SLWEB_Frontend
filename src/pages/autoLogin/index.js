@@ -18,8 +18,6 @@ export default class autoLogin extends Component {
         code
       });
 
-      console.log(response.data)
-
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("usuario", response.data.nome);

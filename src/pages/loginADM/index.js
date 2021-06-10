@@ -108,6 +108,7 @@ export default class LoginADM extends Component {
           <Logo src={Image} alt="Pilão professional" />
           <div style={{ marginTop: "2vh" }}>
             <TextInput
+              style={{ borderBottom: "1px solid #9e9e9e", margin: "0px" }}
               className="txt"
               onChange={(e) => {
                 this.setState({ adm_code: e.target.value, validADM: false });
@@ -180,7 +181,7 @@ export default class LoginADM extends Component {
                 style={{ margin: "10px" }}
                 disabled={!this.state.validADM}
               >
-                Selecionar Franqueado<Icon left>person</Icon>
+                Selecionar Filial<Icon left>person</Icon>
               </Button>
             }
           >

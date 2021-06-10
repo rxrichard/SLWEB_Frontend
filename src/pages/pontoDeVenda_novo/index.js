@@ -49,7 +49,6 @@ export default class PDV_novo extends Component {
       })
       this.setState({ loaded: true })
     } catch (err) {
-      console.log(err)
     }
   }
   async handleSubmit() {

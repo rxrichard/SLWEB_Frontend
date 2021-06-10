@@ -1,9 +1,10 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Select from "@material-ui/core/Select";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -15,32 +16,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleSelect() {
+export default function SimpleSelect(props) {
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
+  const [variable, setVariable] = useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setVariable(event.target.value);
+    props.onChange(event);
   };
+
+  useEffect(() => {
+    setVariable(props.value);
+  }, [props.value]);
 
   return (
     <div>
-      <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+      <FormControl
+        style={{ minWidth: props.width ? props.width : "120px" }}
+        variant="outlined"
+        className={classes.formControl}
+        disabled={props.disabled}
+      >
+        <InputLabel id="demo-simple-select-outlined-label">
+          {props.label}
+        </InputLabel>
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          value={age}
+          value={variable}
           onChange={handleChange}
-          label="Age"
+          label={props.label}
         >
           <MenuItem value="">
-            <em>None</em>
+            <em>Nenhuma</em>
           </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {props.children}
         </Select>
+        {props.condicao && props.disabled ? (
+          <FormHelperText>{props.condicao}</FormHelperText>
+        ) : (
+          ""
+        )}
       </FormControl>
     </div>
   );

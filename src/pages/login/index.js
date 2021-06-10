@@ -53,6 +53,7 @@ class Login extends React.Component {
           <Logo src={Image} alt="Pilão professional" />
           <div style={{ marginTop: "2vh" }}>
             <TextInput
+              style={{ borderBottom: "1px solid #9e9e9e", margin: "0px" }}
               className="txt"
               label="Filial"
               onChange={(e) => {
