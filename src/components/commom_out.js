@@ -13,21 +13,6 @@ export const Container = Styled.div`
     background-image: url(${background});
     background-repeat: no-repeat;
     background-size: 100vh;
-
-`
-
-export const LinkContainer = Styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgb(120, 28, 29) none repeat scroll 0% 0%;
-    height: 36px;
-    width: 200px;
-    text-decoration: none;
-    color: #fff;
-    letter-spacing: .5px;
-    cursor: pointer;
-    border-radius: 2px;
 `
 
 export const Box = Styled.div`
@@ -35,7 +20,7 @@ export const Box = Styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(207, 8, 41, 1);
+    background-color: #FFFFFF;
     width: 25vw;
     margin-right: 10vw;
     margin-bottom: calc(10% - 36px);

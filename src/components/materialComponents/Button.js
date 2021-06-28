@@ -1,16 +1,15 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import Settings from '@material-ui/icons/Settings';
 
   export default function IconLabelButtons(props) {
   
     return (
         <Button
+        {...props}
         variant="contained"
         color="default"
         size="large"
-        startIcon={<Settings />}
-
+        startIcon={props.icon}
         className={props.className}
         href={props.href}
         disabled={props.disabled}

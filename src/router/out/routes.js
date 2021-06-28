@@ -6,7 +6,7 @@ import Login from '../../pages/login/index'
 import LoginADM from '../../pages/loginADM/index'
 import Forgot from '../../pages/forgot'
 import Formulario from '../../pages/formulario'
-import XRoute from '../../pages/unauthorized/index'
+import XRoute from '../../pages/1_UNAUTHORIZED/index'
 import autoLogin from '../../pages/autoLogin'
 
 export default class Out extends React.Component {

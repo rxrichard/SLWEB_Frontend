@@ -11,9 +11,9 @@ import { convertData } from "../../components/commom_functions";
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
-import { Icon, Button, Modal } from "react-materialize";
+import { Icon, Button } from "react-materialize";
 import { Table } from "../../components/table";
-import { CloseButton } from "../../components/buttons";
+import Modal from "../../components/modal";
 
 import Modalzinho from "./modal/index";
 
@@ -67,18 +67,12 @@ export default class FormsAcompanhamento extends React.Component {
                   </td>
                   <td>{form.NomeCompleto}</td>
                   <td>
-                    <Button
-                      className="modal-trigger"
-                      href={`#${form.CodCandidato}`}
-                    >
-                      <Icon center>visibility</Icon>
-                    </Button>
-
                     <Modal
-                      actions={[<CloseButton />]}
                       header={`Formulário ${form.CodCandidato}`}
-                      id={`${form.CodCandidato}`}
-                      open={false}
+                      trigger={<Button
+                      >
+                        <Icon center>visibility</Icon>
+                      </Button>}
                     >
                       <Modalzinho form={form} />
                     </Modal>

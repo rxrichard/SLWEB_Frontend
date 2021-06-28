@@ -11,7 +11,7 @@ import {
   ChooseAbastecimento,
   ChooseChip,
   ChooseAntena,
-} from "../../../global/actions/index";
+} from "../../../global/actions/SolicitacaoAction";
 
 import Selecao from "../../../components/materialComponents/Select";
 
@@ -33,6 +33,7 @@ function Detalhes(props) {
     Chip,
     AntExt,
     Maquina,
+    PermiteGab
   } = props.State;
 
   return (
@@ -66,7 +67,7 @@ function Detalhes(props) {
         condicao="*Esta máquina não é compativel com gabinete"
         label="Acompanha Gabinete?"
         value={Gabinete}
-        disabled={shouldAcompanharGabinete(Maquina)}
+        disabled={!PermiteGab}
         onChange={(e) => ChooseGabinete(e.target.value)}
       >
         <MenuItem value={true}>Sim</MenuItem>
@@ -149,21 +150,7 @@ const shouldInibirCopos = (Maquina) => {
     case "LEI 600":
       return true;
     default:
-      return true;
+      return false;
   }
 };
 
-const shouldAcompanharGabinete = (Maquina) => {
-  switch (Maquina) {
-    case "LEI SA":
-      return false;
-    case "LEI 200":
-      return false;
-    case "LEI 400":
-      return false;
-    case "LEI 600":
-      return false;
-    default:
-      return false;
-  }
-};

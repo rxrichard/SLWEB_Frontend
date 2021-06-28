@@ -13,8 +13,9 @@ import Add from "@material-ui/icons/Add";
 
 import Input from "./_InputValor";
 import { Toast, ToastyContainer } from "../../../components/toasty";
-import { clickButton } from "../../../global/actions/index";
+import { clickButton } from "../../../global/actions/SolicitacaoAction";
 import Select from "../../../components/materialComponents/Select";
+import { RED_PRIMARY } from '../../../components/colors'
 
 function DialogSelect(props) {
   const classes = useStyles();
@@ -28,6 +29,7 @@ function DialogSelect(props) {
   const [contenedor, setContenedor] = useState("");
   const [configura, setconfigura] = useState("");
   const [valor, setValor] = useState("");
+  const [valor2, setValor2] = useState("");
 
   const [bebidaSelecionada, setBebidaSelecionada] = useState(null);
   const [BebidasDisponiveisFiltradas, setBebidasDisponiveisFiltradas] =
@@ -60,6 +62,7 @@ function DialogSelect(props) {
     setTipo("");
     setconfigura("");
     setValor("");
+    setValor2("");
   };
 
   const chooseBebida = (e) => {
@@ -90,7 +93,7 @@ function DialogSelect(props) {
       medida === "" ||
       tipo === "" ||
       configura === "" ||
-      (Pagamento !== "Livre" && valor === "")
+      (Pagamento !== "Livre" && (valor === "" || String(valor) === String(0) || typeof valor == 'undefined'))
     ) {
       Toast("Selecione todos os campos");
       return;
@@ -104,6 +107,7 @@ function DialogSelect(props) {
       contenedor,
       configura,
       valor: Number(valor.replace(/,/g, ".")),
+      valor2: Number(valor2.replace(/,/g, ".")),
     };
     clickButton(linha);
     handleClose();
@@ -114,6 +118,7 @@ function DialogSelect(props) {
       <ToastyContainer />
       <Button
         variant="contained"
+        disabled={props.disabled}
         color="secondary"
         size="large"
         className={classes.button}
@@ -191,9 +196,15 @@ function DialogSelect(props) {
             </Select>
 
             <Input
-              disabled={Pagamento === "Livre" ? true : false}
               onChange={(e) => setValor(e.target.value)}
-              label="Valor da Bebida"
+              label="Valor Real"
+              value={valor}
+              />
+
+            <Input
+              onChange={(e) => setValor2(e.target.value)}
+              label="Valor Repasse"
+              value={valor2}
             />
           </form>
         </DialogContent>
@@ -230,6 +241,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(1),
+    backgroundColor: RED_PRIMARY,
+    height: '54px'
   },
 }));
 

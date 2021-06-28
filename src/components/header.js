@@ -1,5 +1,5 @@
 import Styled from 'styled-components'
-import { PRIMARY_ORANGE } from './colors'
+import { RED_PRIMARY, GREY_SECONDARY } from './colors'
 
 export const Header = Styled.div`
     display: flex;
@@ -12,5 +12,5 @@ export const Header = Styled.div`
     top: 0;
     left: 0;
     z-index: 1000;
-    background-color: ${PRIMARY_ORANGE};
+    background-color: ${sessionStorage.getItem('role') === 'Franquia' ? RED_PRIMARY:GREY_SECONDARY };
 `

@@ -6,7 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-
+import { GREY_PRIMARY } from '../../components/colors'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: theme.palette.background.paper,
   },
+  header: {
+    backgroundColor: GREY_PRIMARY
+  }
 }));
 
 export default function PainelAbas(props) {
@@ -59,9 +62,9 @@ export default function PainelAbas(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs
+          className={classes.header}
           value={value}
           onChange={handleChange}
-          aria-label="simple tabs example"
           variant="fullWidth"
         >
           {props.titles.map((title, i) => (

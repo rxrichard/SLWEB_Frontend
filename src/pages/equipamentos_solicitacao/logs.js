@@ -3,12 +3,12 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 import Loading from "../../components/loading_screen";
-import { Button, Modal, Icon } from "react-materialize";
+import { Button, Icon } from "react-materialize";
 import { Table } from "../../components/table";
 import { ToastyContainer, Toast } from "../../components/toasty";
 import { dateCheck, convertData } from "../../components/commom_functions";
 import AdmModal from "./modals/admModal";
-import { CloseButton } from "../../components/buttons";
+import Modal from "../../components/modal";
 import TextField from "@material-ui/core/TextField";
 
 export default class Logs extends React.Component {
@@ -100,38 +100,19 @@ export default class Logs extends React.Component {
             <td align="center" style={{ padding: "0", textAlign: "center" }}>
               {this.state.loaded ? (
                 <>
-                  <Button
-                    style={{ margin: "0", textAlign: "center" }}
-                    tooltip="Gerenciamento da Requisição"
-                    tooltipOptions={{
-                      position: "top",
-                    }}
-                    className="modal-trigger"
-                    href={`#modal${i}`}
-                    node="button"
-                  >
-                    <Icon>settings</Icon>
-                  </Button>
+                  
                   <Modal
-                    actions={[<CloseButton />]}
-                    bottomSheet={false}
-                    fixedFooter={false}
                     header="Gerenciamento de solicitação"
-                    id={`modal${i}`}
-                    options={{
-                      dismissible: false,
-                      endingTop: "10%",
-                      inDuration: 250,
-                      onCloseEnd: null,
-                      onCloseStart: null,
-                      onOpenEnd: null,
-                      onOpenStart: () =>
-                        this.checkView(this.state.logs[i].OSCId),
-                      opacity: 0.5,
-                      outDuration: 250,
-                      preventScrolling: true,
-                      startingTop: "4%",
-                    }}
+                    onOpenStart={() => this.checkView(this.state.logs[i].OSCId)}
+                    trigger={<Button
+                      style={{ margin: "0", textAlign: "center" }}
+                      tooltip="Gerenciamento da Requisição"
+                      tooltipOptions={{
+                        position: "top",
+                      }}
+                    >
+                      <Icon>settings</Icon>
+                    </Button>}
                   >
                     <AdmModal LOGS={this.state.logs[i]} />
                   </Modal>
@@ -154,7 +135,10 @@ export default class Logs extends React.Component {
         ))}
       </Table>
     ) : (
-      <h5>Você ainda não fez nenhuma solicitação!</h5>
+      <div style={{ display: 'flex',  justifyContent: 'center', alignContent: 'center'}}>
+
+        <h5>Você ainda não fez nenhuma solicitação!</h5>
+      </div>
     );
   }
 }

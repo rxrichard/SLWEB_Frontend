@@ -164,6 +164,17 @@ body {
   flex-wrap: wrap;
 }
 
+/* outline do select Material UI */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{
+  border-color: #930D18 !important;
+  border-width: 2px !important;
+}
+
+/* Titulo em cima do select */
+.MuiFormLabel-root.Mui-focused{
+  color: #930D18 !important
+}
+
 .TextBold {
   all: 'unset' !important;
   font-weight: bold !important;
@@ -178,17 +189,45 @@ body {
 /* Estilo aplicado na sidebar */
 .Menu i {
   margin-left: 5%;
+  color: #FFFFFF
 }
 
 .Menu a {
   display: flex;
   align-items: center;
   min-width: 200px;
+  color: #FFFFFF
 }
 
 .Menu:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: #FFF;
   transition-duration: 0.5s;
+}
+
+.Menu a:hover{
+  color: #C8102E;
+  box-shadow: 0px 3px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+}
+
+.Menu a:hover i{
+  color: #C8102E;
+}
+
+.dropdown-content li > a{
+  color: #333333
+}
+.dropdown-content li > a > i{
+  margin-left: 10%;
+  color: #8A8A8A
+}
+
+.dropdown-content li > a:hover{
+  color: #C8102E;
+  background-color: #FFF;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+}
+.dropdown-content li > a:hover > i{
+  color: #C8102E
 }
 
 .Menu:not(:hover) {
@@ -196,77 +235,30 @@ body {
   transition-duration: 0.5s;
 }
 
-/* Inputs style */
-
-.t1 {
-  height: 200px;
-}
-.twenty {
-  grid-column: span 20;
-}
-/* nineteen = neth a regra é a 1 e ultima letra da "palavra" nine = ne teen = tn*/
-.neth {
-  grid-column: span 19;
-}
-.ehtn {
-  grid-column: span 18;
-}
-.sntn {
-  grid-column: span 17;
-}
-.sxtn {
-  grid-column: span 16;
-}
-.fftn {
-  grid-column: span 15;
-}
-.frtn {
-  grid-column: span 14;
-}
-.thtn {
-  grid-column: span 13;
-}
-.twv {
-  grid-column: span 12;
-}
-.onc {
-  grid-column: span 11;
-}
-.dez {
-  grid-column: span 10;
-}
-.nono {
-  grid-column: span 9;
-}
-.oct {
-  grid-column: span 8;
-}
-.set {
-  grid-column: span 7;
-}
-.six {
-  grid-column: span 6;
-}
-.five {
-  grid-column: span 5;
-}
-.quad {
-  grid-column: span 4;
-}
-.triple {
-  grid-column: span 3;
-}
-.double {
-  grid-column: span 2;
-}
-
 /* Outros... */
+
+#App {
+  font-family: sans-serif;
+
+  /* Give app full page to work with */
+  height: 100vh;
+}
 
 #page-wrap {
   text-align: center;
 
   /* Prevent sidebar from showing a scrollbar on page */
   overflow: hidden !important;
+}
+
+#outer {
+  height: 100vh;
+  overflow: auto;
+}
+
+/* Change color on hover */
+.bm-item:hover {
+  color: white;
 }
 
 .exit {

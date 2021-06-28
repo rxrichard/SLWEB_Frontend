@@ -7,8 +7,6 @@ import In from './in/routes'
 import 'materialize-css'
 import '../style/materialize.css'
 import '../style/MainStyle.css'
-import '../style/BurgerMenu.css'
-
 export default class Main extends Component {
   render() {
     return sessionStorage.getItem('token') ? <In /> : <Out />

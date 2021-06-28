@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -20,13 +20,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import { Toast } from "../../../components/toasty";
-import { clickButton, clearConfig } from "../../../global/actions/index";
+import {
+  clickButton,
+  clearConfig,
+} from "../../../global/actions/SolicitacaoAction";
 import Selecao from "../../../components/materialComponents/Select";
 import Input from "./_InputValor";
+import { GREY_SECONDARY } from "../../../components/colors";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
+    backgroundColor: GREY_SECONDARY,
   },
   title: {
     marginLeft: theme.spacing(2),
@@ -34,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(1),
+    color: GREY_SECONDARY,
+    height: "54px",
+    border: `1px solid ${GREY_SECONDARY}`,
+    "&:hover": {
+      border: `1px solid ${GREY_SECONDARY}`,
+    },
   },
 }));
 
@@ -41,28 +52,46 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FullScreenDialog({ Padrao, State, clickButton, clearConfig }) {
+function FullScreenDialog({
+  Padrao,
+  State,
+  clickButton,
+  clearConfig,
+  disabled,
+}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [PSelecionado, setPSelecionado] = React.useState([]);
+  const [Padroes, setPadroes] = React.useState([]);
 
   const { Pagamento } = State;
 
   const setValor = (Selecionado, indice, valor) => {
     let ConfigAux = [...Selecionado];
 
-    ConfigAux[indice].Valor = Number(valor);
+    ConfigAux[indice].Valor = valor;
+    setPSelecionado(ConfigAux);
+    return;
+  };
+
+
+  const setValor2 = (Selecionado, indice, valor) => {
+    let ConfigAux = [...Selecionado];
+
+    ConfigAux[indice].Valor2 = valor;
     setPSelecionado(ConfigAux);
     return;
   };
 
   const handleClickOpen = () => {
+    setPadroes(Padrao)
+    setPSelecionado([]);
     setOpen(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
     setPSelecionado([]);
+    setOpen(false);
   };
 
   const handleConfirm = () => {
@@ -72,7 +101,7 @@ function FullScreenDialog({ Padrao, State, clickButton, clearConfig }) {
       return;
     }
     PSelecionado.map((selec) => {
-      if (typeof selec.Valor == "undefined" && Pagamento !== "Livre") {
+      if ((typeof selec.Valor == "undefined" || String(selec.Valor) === String(0) || selec.Valor === 0) && Pagamento !== "Livre") {
         valid = true;
       }
       return null;
@@ -94,24 +123,26 @@ function FullScreenDialog({ Padrao, State, clickButton, clearConfig }) {
         tipo: confg.TProd,
         contenedor: confg.Contenedor,
         configura: true,
-        valor: Pagamento === "Livre" ? "0" : confg.Valor,
+        valor: typeof confg.Valor != 'undefined' ? Number(confg.Valor.replace(/,/g, ".")) : '0', 
+        valor2: typeof confg.Valor2 != 'undefined' ? Number(confg.Valor2.replace(/,/g, ".")) : '0',
       });
-      return null
+      return null;
     });
 
-    setOpen(false);
     setPSelecionado([]);
+    setOpen(false);
   };
 
   return (
     <div>
       <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
         size="large"
         className={classes.button}
         startIcon={<ImportExport />}
         onClick={handleClickOpen}
+        disabled={disabled}
       >
         Carregar Padrão
       </Button>
@@ -143,9 +174,11 @@ function FullScreenDialog({ Padrao, State, clickButton, clearConfig }) {
           width="200px"
           label="Configuração"
           value=""
-          onChange={(e) => setPSelecionado(e.target.value)}
+          onChange={(e) => {
+            setPSelecionado(e.target.value);
+          }}
         >
-          {Padrao.map((config) => (
+          {Padroes.map((config) => (
             <MenuItem value={config}>{config[0].MaqConfigNome}</MenuItem>
           ))}
         </Selecao>
@@ -153,22 +186,28 @@ function FullScreenDialog({ Padrao, State, clickButton, clearConfig }) {
           <Divider />
           {PSelecionado.map((selecao, i) => (
             <>
-              <ListItem>
+              <ListItem key={selecao.Cod}>
                 <ListItemText
                   primary={`${selecao.Selecao}. ${selecao.Bebida}`}
                   secondary={`${selecao.Qtd_Def}ML, ${selecao.TProd}`}
                 />
                 <ListItemSecondaryAction>
-                  {Pagamento === "Livre" ? (
-                    <h6>Livre</h6>
-                  ) : (
+                  <div className="XAlign">
                     <Input
                       onChange={(e) =>
                         setValor(PSelecionado, i, e.target.value)
                       }
-                      label="Valor da Bebida"
+                      label="Valor Real"
+                      value={typeof selecao.Valor != 'undefined' ? selecao.Valor : null}
+                      />
+                    <Input
+                      onChange={(e) =>
+                        setValor2(PSelecionado, i, e.target.value)
+                      }
+                      label="Valor Repasse"
+                      value={typeof selecao.Valor2 != 'undefined' ? selecao.Valor2 : null}
                     />
-                  )}
+                  </div>
                 </ListItemSecondaryAction>
               </ListItem>
               <Divider />

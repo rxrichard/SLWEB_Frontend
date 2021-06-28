@@ -1,87 +1,69 @@
-import React from 'react'
-import { Button, Icon } from 'react-materialize'
-import {
-  CONFIRM_BUTTON_COLOR,
-  CANCEL_BUTTON_COLOR,
-  SAFE_BUTTON_COLOR,
-  GOBACK_BUTTON_COLOR
-} from './colors'
+import React from "react";
+import Button from "@material-ui/core/Button";
+import CloseIcon from "@material-ui/icons/Close";
+import CheckIcon from "@material-ui/icons/Check";
+import ArrowBack from "@material-ui/icons/ArrowBack";
 
 //Botão que se desativa após pressionado, com aspecto de "confirmar(é verde)"
-export const ConfirmButton = props => (
+export const ConfirmButton = (props) => (
   <Button
-    {...props}
-    onClick={e => {
-      e.target.disabled = true
-      props.onClick(e)
-    }}
-    style={{
-      backgroundColor: CONFIRM_BUTTON_COLOR,
-      margin: '10px'
-    }}
+    variant="contained"
+    color="default"
+    size="large"
+    startIcon={<CheckIcon />}
+    className={props.className}
+    href={props.href}
+    disabled={props.disabled}
+    onClick={props.onClick}
   >
-    <Icon left>check</Icon>
     {props.children}
   </Button>
-)
+);
 
 //Botão que se desativa após pressionado, com aspecto de "perigo(é vermelho)"
-export const CancelButton = props => (
+export const CancelButton = (props) => (
   <Button
-    {...props}
-    onClick={e => {
-      e.target.disabled = true
-      props.onClick(e)
-    }}
-    style={{
-      backgroundColor: CANCEL_BUTTON_COLOR,
-      margin: '10px 10px 10px 0px'
-    }}
+    variant="contained"
+    color="default"
+    size="large"
+    startIcon={<CloseIcon />}
+    className={props.className}
+    href={props.href}
+    disabled={props.disabled}
+    onClick={props.onClick}
   >
-    <Icon left>close</Icon>
     {props.children}
   </Button>
-)
+);
 
 //Botão comum, mas tem aspecto de "segurança(é amarelo)"
-export const SafeButton = props => (
-  <Button
-    {...props}
-    onClick={e => {
-      props.onClick(e)
-    }}
-    style={{ backgroundColor: SAFE_BUTTON_COLOR, margin: '10px' }}
-  >
-    {props.children}
-  </Button>
-)
+// export const SafeButton = props => (
+//   <Button
+//     {...props}
+//     onClick={e => {
+//       props.onClick(e)
+//     }}
+//     style={{ backgroundColor: SAFE_BUTTON_COLOR, margin: '10px' }}
+//   >
+//     {props.children}
+//   </Button>
+// )
 
 //Volta pra última pagina sem perder histórico
-export const GoBack = props => (
+export const GoBack = (props) => (
   <Button
-    {...props}
+    variant="contained"
+    color="default"
+    size="large"
+    startIcon={<ArrowBack />}
+    className={props.className}
+    href={props.href}
+    disabled={props.disabled}
     onClick={() => {
-      window.history.back()
-    }}
-    style={{
-      backgroundColor: GOBACK_BUTTON_COLOR,
-      margin: '10px',
-      color: '#000'
+      window.history.back();
     }}
   >
-    <Icon left>arrow_back</Icon>
     Voltar
   </Button>
-)
+);
 
-//Só funciona para modal
-export const CloseButton = props => (
-  <Button
-    modal='close'
-    {...props}
-    style={{ backgroundColor: GOBACK_BUTTON_COLOR, color: '#000' }}
-  >
-    <Icon left>close</Icon>
-    Fechar
-  </Button>
-)

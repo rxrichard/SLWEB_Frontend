@@ -9,20 +9,29 @@ import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { green } from '@material-ui/core/colors';
-import Icon from '@material-ui/core/Icon';
+import { green } from "@material-ui/core/colors";
+import Icon from "@material-ui/core/Icon";
+import Fab from "@material-ui/core/Fab";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Draggable from "react-draggable";
 
 import Requisicao from "./solicitacao/_Maquina";
 import Detalhes from "./solicitacao/_Detalhes";
 import Entrega from "./solicitacao/_Entrega";
 import { api } from "../../services/api";
 import { Toast, ToastyContainer } from "../../components/toasty";
+import { RED_SECONDARY } from "../../components/colors";
 
 function VerticalLinearStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [desativar, setDesativar] = React.useState(false);
   const steps = getSteps();
+  const [open, setOpen] = React.useState(false);
 
   const {
     MaquinaId,
@@ -80,13 +89,21 @@ function VerticalLinearStepper(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className={classes.root}>
       <ToastyContainer />
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel className={classes.Circle}>{label}</StepLabel>
             <StepContent>
               <Typography>{getStepContent(index)}</Typography>
               <div className={classes.actionsContainer}>
@@ -94,20 +111,50 @@ function VerticalLinearStepper(props) {
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    className={classes.button}
+                    className={classes.buttonWhite}
                   >
-                    Voltar
+                    Anterior
                   </Button>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleNext}
-                    className={classes.button}
+                    className={classes.buttonTheme}
                   >
                     {activeStep === steps.length - 1 ? "Finalizar" : "Próximo"}
                   </Button>
                 </div>
               </div>
+              <Fab
+                className={classes.fab}
+                color="primary"
+                onClick={handleClickOpen}
+              >
+                ?
+              </Fab>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperComponent={PaperComponent}
+                aria-labelledby="draggable-dialog-title"
+              >
+                <DialogTitle
+                  style={{ cursor: "move" }}
+                  id="draggable-dialog-title"
+                >
+                  Ajuda
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {wichHelpShow(activeStep, Maquina)}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} color="primary">
+                    Fechar
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </StepContent>
           </Step>
         ))}
@@ -118,9 +165,9 @@ function VerticalLinearStepper(props) {
           <Button
             disabled={activeStep === 0}
             onClick={handleBack}
-            className={classes.button}
+            className={classes.buttonWhite}
           >
-            Voltar
+            Anterior
           </Button>
           <Button
             disabled={desativar}
@@ -128,7 +175,7 @@ function VerticalLinearStepper(props) {
             className={classes.altButton}
             endIcon={<Icon>send</Icon>}
           >
-            {desativar ? 'Validando...': 'Solicitar'}
+            {desativar ? "Validando..." : "Solicitar"}
           </Button>
         </Paper>
       )}
@@ -140,16 +187,26 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
-  button: {
+  buttonTheme: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
+    backgroundColor: RED_SECONDARY,
+
+    "&:hover": {
+      backgroundColor: RED_SECONDARY,
+    },
+  },
+  buttonWhite: {
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    backgroundColor: "#FFFFFF",
   },
   altButton: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
     color: theme.palette.getContrastText(green[500]),
     backgroundColor: green[500],
-    '&:hover': {
+    "&:hover": {
       backgroundColor: green[700],
     },
   },
@@ -159,13 +216,26 @@ const useStyles = makeStyles((theme) => ({
   resetContainer: {
     padding: theme.spacing(3),
   },
+  fab: {
+    position: "absolute",
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  Circle: {
+    "& > span svg circle": {
+      color: RED_SECONDARY,
+    },
+    "& > span svg path": {
+      color: RED_SECONDARY,
+    },
+  },
 }));
 
 function getSteps() {
   return ["Máquina e Configuração", "Detalhes", "Entrega"];
 }
 
-function getStepContent(step, test, setTest) {
+function getStepContent(step) {
   switch (step) {
     case 0:
       return <Requisicao />;
@@ -182,6 +252,144 @@ const mapStateToProps = (store) => ({
 });
 
 export default connect(mapStateToProps)(VerticalLinearStepper);
+
+function PaperComponent(props) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+
+const wichHelpShow = (step, Maquina) => {
+  switch (step) {
+    case 0:
+      return (
+        <ul>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Máquina:</strong> Cada modelo de máquina possui uma
+              capacidade de bebidas, compos e contenedores para guardar os
+              insumos.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Pagamento livre:</strong> A máquina não cobrará pelas
+              doses consumidas.
+              <br />
+              <strong>Pagamento por cartão:</strong> Esse sistema de pagamento
+              acompanha uma máquina de cartões digital.
+              <br />
+              <strong>Pagamento por validador:</strong> O validador pode ser
+              configurado para aceitar moedas, fichas ou ambos simultaneamente.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Valor Real:</strong> Preço que deve ser cobrado pela dose
+              na máquina, definir esse valor como R$ 0 torna a bebida livre.
+              <br />
+              <strong>Valor Repasse(Não obrigatório):</strong> Preço que deve
+              ser pago pelo cliente ao franqueado por dose.
+            </div>
+          </li>
+        </ul>
+      );
+    case 1:
+      return (
+        <ul>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Máquina Corporativa:</strong> A máquina corporativa usa
+              menos insumo na composição da dose.
+            </div>
+          </li>
+          {Maquina !== "LEI SA" && Maquina !== "" ? (
+            <li style={{ marginBottom: "10px" }}>
+              <div>
+                <strong>Inibir copos:</strong> Algumas máquinas podem inibir o
+                copo durante a produção da dose, um recepiente deve ser
+                fornecido externamente pelo consumidor.
+              </div>
+            </li>
+          ) : (
+            ""
+          )}
+
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Acompanha gabinete:</strong> Marque se a máquina vai
+              precisar de um gabinete para ser instalada no cliente.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Abastecimento hídrico:</strong> Por qual fonte a máquina
+              deve receber água.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Chip de telemetria:</strong> Qual Chip seria conveniente
+              acompanhar o aparelho de telemetria(baseado na intencidade do
+              sinal de operadoras no local de instalação da máquina).
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Antena externa:</strong> Caso o sinal das operadoras de
+              Chip seja muito fraco na região você pode solicitar uma antena
+              exterior à máquina para ajudar na comunicação com a internet.
+            </div>
+          </li>
+        </ul>
+      );
+    case 2:
+      return <ul>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Cliente:</strong> Informe qual cliente receberá a máquina, caso ele não esteja cadastrado ainda no SLAplic você pode selecionar à sí proprio e alterar o endereço de entrega.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Endereço:</strong> Preenchido automaticamente baseado no cliente selecionado mas pode ser alterado, a máquina será enviada para esse endereço.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Data de entrega desejada:</strong> À partir da data mínima, selecione uma data conveniente para a entrega.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Contato:</strong> Com quem se deve entrar em contato para fazer a entrega no cliente.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Email:</strong> Email para acompanhamento da produção e entrega da máquina.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Telefone:</strong> Telefone para entrar em contato durante a entrega da máquina.
+        </div>
+      </li>
+      <li style={{ marginBottom: "10px" }}>
+        <div>
+          <strong>Observações:</strong> Qualquer detalher adicional à ser informado para a equipe técnica ou transporte.
+        </div>
+      </li>
+    </ul>
+    default:
+      return "Ajuda não encontrada para esse passo";
+  }
+};
 
 const handleSubmit = async (Solicitacao, setDesativar) => {
   setDesativar(true);

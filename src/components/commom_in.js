@@ -76,7 +76,7 @@ export const Option = Styled.div`
 export const Panel = Styled.div`
     margin-top: 64px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
     flex-direction: column;

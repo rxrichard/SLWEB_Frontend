@@ -5,12 +5,13 @@ import { api } from "../../services/api";
 import Loading from "../../components/loading_screen";
 import { Toast, ToastyContainer } from "../../components/toasty";
 import { Panel, Container } from "../../components/commom_in";
-import { Modal, Button, Icon } from "react-materialize";
+import { Button, Icon } from "react-materialize";
 import { Table } from "../../components/table";
-import { CloseButton, GoBack } from "../../components/buttons";
+import { GoBack } from "../../components/buttons";
 import { convertData, dateCheck } from "../../components/commom_functions";
 import AdmModal from "./modals/admModal";
 import HistModal from "./modals/historyModal";
+import Modal from "../../components/modal";
 
 export default class Management extends React.Component {
   state = {
@@ -30,7 +31,7 @@ export default class Management extends React.Component {
     } catch (err) {
       Toast("Falha trazer todas as Requisições", "error");
       setTimeout(() => {
-        window.location.assign('/');
+        window.location.assign("/");
       }, 3000);
     }
   }
@@ -41,8 +42,7 @@ export default class Management extends React.Component {
       await api.put("/equip/requests/check", {
         ID,
       });
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   async handleRetrivePDF(OSID) {
@@ -114,67 +114,25 @@ export default class Management extends React.Component {
                       : "NA"}
                   </td>
                   <td align="center">
-                    <Button
-                      style={{ marginBottom: "0px" }}
-                      className="modal-trigger"
-                      href={`#modal${i}`}
-                      node="button"
-                    >
-                      <Icon>settings</Icon>
-                    </Button>
                     <Modal
-                      actions={[<CloseButton />]}
-                      bottomSheet={false}
-                      fixedFooter={false}
                       header="Gerenciamento de solicitação"
-                      id={`modal${i}`}
-                      open={false}
-                      options={{
-                        dismissible: false,
-                        endingTop: "10%",
-                        inDuration: 250,
-                        onCloseEnd: null,
-                        onCloseStart: null,
-                        onOpenEnd: null,
-                        onOpenStart: () => this.checkView(this.state.OSS[i].OSCId),
-                        opacity: 0.5,
-                        outDuration: 250,
-                        preventScrolling: true,
-                        startingTop: "4%",
-                      }}
+                      trigger={
+                        <Button style={{ marginBottom: "0px" }}>
+                          <Icon>settings</Icon>
+                        </Button>
+                      }
                     >
                       <AdmModal LOGS={OS} />
                     </Modal>
                   </td>
                   <td>
-                    <Button
-                      style={{ marginBottom: "0px" }}
-                      className="modal-trigger"
-                      href={`#modal-hist${i}`}
-                      node="button"
-                    >
-                      <Icon>history</Icon>
-                    </Button>
                     <Modal
-                      actions={[<CloseButton />]}
-                      bottomSheet={false}
-                      fixedFooter={false}
                       header="Histórico de gerenciamento"
-                      id={`modal-hist${i}`}
-                      open={false}
-                      options={{
-                        dismissible: false,
-                        endingTop: "10%",
-                        inDuration: 250,
-                        onCloseEnd: null,
-                        onCloseStart: null,
-                        onOpenEnd: null,
-                        onOpenStart: null,
-                        opacity: 0.5,
-                        outDuration: 250,
-                        preventScrolling: true,
-                        startingTop: "4%",
-                      }}
+                      trigger={
+                        <Button style={{ marginBottom: "0px" }}>
+                          <Icon>history</Icon>
+                        </Button>
+                      }
                     >
                       <HistModal LOGS={OS} />
                     </Modal>

@@ -20,7 +20,7 @@ export default function BasicTextFields(props) {
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
-      <TextField id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
+      <TextField type={props.type} id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
     </form>
   );
 }

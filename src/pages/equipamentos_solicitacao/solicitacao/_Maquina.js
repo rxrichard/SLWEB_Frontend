@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Modal, Switch } from "react-materialize";
 import { api } from "../../../services/api";
 
+import Settings from "@material-ui/icons/Settings";
+import ThreeSixty from "@material-ui/icons/ThreeSixty";
 import MenuItem from "@material-ui/core/MenuItem";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 
 import Bebidas from "./_Configuracao";
 import Dialog from "../../../components/materialComponents/Dialog";
 import Selecao from "../../../components/materialComponents/Select";
 import OpenSelect from "./_AddBebida";
 import Button from "../../../components/materialComponents/Button";
-import { CloseButton } from "../../../components/buttons";
+import Modal from "../../../components/modal";
 import { Rotulo } from "../../../components/commom_in";
 import PadraoMod from "./_Padrao";
 
@@ -24,11 +29,11 @@ import {
   LoadConfigPadrao,
   ChangeMaquina,
   ChangeValidadorFichas,
-} from "../../../global/actions/index";
+  LoadMinDDL,
+  clearConfig,
+} from "../../../global/actions/SolicitacaoAction";
 
 function Requisicao(props) {
-  const [ativar, setAtivar] = useState(false);
-
   const {
     Pagamento,
     Maquina,
@@ -52,23 +57,16 @@ function Requisicao(props) {
     LoadBebidas,
     ChangeValidadorFichas,
     LoadConfigPadrao,
+    LoadMinDDL,
+    clearConfig,
   } = props;
-
-  useEffect(() => {
-    Pagamento === "Validador" || Pagamento === "Cartão e Validador"
-      ? setAtivar(false)
-      : setAtivar(true);
-  }, [Pagamento]);
-
-  useEffect(() => {
-    Configuracao.length > 0 ? setAtivar(true) : setAtivar(false);
-  }, [Configuracao]);
 
   useEffect(() => {
     api.get("/equip/adresses").then((response) => {
       LoadAtivos(response.data.MaquinasDisponiveis);
       LoadBebidas(response.data.BebidasNovo);
       LoadClientesEnderecos(response.data.endereços);
+      LoadMinDDL(response.data.MinDDL);
     });
   }, []);
 
@@ -95,7 +93,7 @@ function Requisicao(props) {
     >
       <Selecao
         width="200px"
-        condicao="*Limpe a configuração para alterar"
+        // condicao="*Limpe a configuração para alterar"
         label="Máquina"
         value={Maquina}
         disabled={Configuracao.length > 0 ? true : false}
@@ -108,7 +106,7 @@ function Requisicao(props) {
 
       <Selecao
         width="200px"
-        condicao="*Limpe a configuração para alterar"
+        // condicao="*Limpe a configuração para alterar"
         label="Pagamento"
         value={Pagamento}
         disabled={Configuracao.length > 0 ? true : false}
@@ -120,97 +118,102 @@ function Requisicao(props) {
         <MenuItem value="Cartão e Validador">Cartão e Validador</MenuItem>
       </Selecao>
 
-      {Pagamento === "Validador" || Pagamento === "Cartão e Validador" ? (
-        <Button
-          style={{ margin: "8px !important" }}
-          className="modal-trigger"
-          href="#valida"
-          node="button"
-          disabled={ativar}
+      <div style={{ marginTop: "8px" }}>
+        <Modal
+          header="Detalhes do Validador"
+          trigger={
+            <Button
+              style={{ marginLeft: "8px", height: "54px" }}
+              icon={<Settings />}
+              disabled={!shouldShowValidador(Pagamento, Configuracao)}
+            >
+              Validador
+            </Button>
+          }
         >
-          Validador
-        </Button>
-      ) : null}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignContent: "center",
+            }}
+          >
+            <FormControl component="fieldset">
+              <RadioGroup
+                value={TipoValidador}
+                onChange={(e) => {
+                  ChangeValidador(e.target.value);
+                }}
+              >
+                <FormControlLabel
+                  value="Moeda"
+                  control={<Radio />}
+                  label="Moeda"
+                />
+                <FormControlLabel
+                  value="Ficha"
+                  control={<Radio />}
+                  label="Ficha"
+                />
+                <FormControlLabel
+                  value="Moeda e Ficha"
+                  control={<Radio />}
+                  label="Moeda e Ficha"
+                />
+              </RadioGroup>
+            </FormControl>
 
-      {shouldShowAddBebida(Pagamento, Maquina, Configuracao, Capacidade) ? (
-        <OpenSelect />
-      ) : null}
-      {shouldShowInfo(Pagamento, Maquina) ? (
-        <>
-          <PadraoMod Padrao={Padrao} />
-          <div className="YAlign">
-            <p style={{ margin: "8px 0px 0px 8px" }}>
-              {Configuracao.length}/<strong>{Capacidade}</strong> Bebidas
-              adicionadas
-            </p>
-            <p style={{ margin: "8px 0px 0px 8px" }}>
-              {Contenedor.length}/<strong>{MaxContenedores}</strong>{" "}
-              Contenedores em uso
-            </p>
+            <div className="YAlign">
+              {returnValidadorOption(TipoValidador, Validador, ChangeValidadorFichas)}
+            </div>
           </div>
-          <Dialog botao="?" title="Contenedores em uso">
-            {Contenedor.map((cont) => (
-              <p>{defineContenedor(cont)}</p>
-            ))}
-          </Dialog>
-        </>
-      ) : null}
+        </Modal>
+      </div>
 
-      {/* Modal de detalhes do validador */}
-      <Modal
-        actions={[<CloseButton />]}
-        bottomSheet={false}
-        fixedFooter={false}
-        header="Detalhes do Validador"
-        id="valida"
-        options={{
-          dismissible: false,
-          endingTop: "10%",
-          inDuration: 250,
-          onCloseEnd: null,
-          onCloseStart: null,
-          onOpenEnd: null,
-          onOpenStart: null,
-          opacity: 0.5,
-          outDuration: 250,
-          preventScrolling: true,
-          startingTop: "4%",
+      <PadraoMod
+        disabled={!shouldShowInfo(Pagamento, Maquina)}
+        Padrao={Padrao}
+      />
+      <OpenSelect
+        disabled={
+          !shouldShowAddBebida(Pagamento, Maquina, Configuracao, Capacidade)
+        }
+      />
+      <Button
+        style={{ margin: "8px 0px 0px 8px", height: "54px" }}
+        onClick={() => clearConfig()}
+        icon={<ThreeSixty />}
+        disabled={Configuracao.length > 0 ? false : true}
+      >
+        Limpar config.
+      </Button>
+      <div
+        className="YAlign"
+        style={{
+          margin: "8px 0px 0px 8px",
+          height: "54px",
+          justifyContent: "center",
+          flex: "unset",
         }}
       >
-        <Switch
-          checked={TipoValidador === "Ficha" ? true : false}
-          id="Switch-11"
-          offLabel="Moeda"
-          onChange={(e) => {
-            ChangeValidador(e.target.checked);
-          }}
-          onLabel="Ficha"
-        />
+        <p style={{ margin: "0px" }}>
+          {Configuracao.length}/<strong>{Capacidade}</strong> Bebidas
+          adicionadas
+        </p>
+        <p style={{ margin: "0px" }}>
+          {Contenedor.length}/<strong>{MaxContenedores}</strong> Contenedores em
+          uso
+        </p>
+      </div>
 
-        {TipoValidador === "Ficha"
-          ? opcoesValidador[0].map((item) => (
-              <>
-                <br />
-                <input
-                  checked={shouldBeChecked(item, Validador)}
-                  onChange={(e) => {
-                    ChangeValidadorFichas(e.target.value);
-                  }}
-                  type="checkbox"
-                  value={item}
-                  key={item}
-                />
-                <Rotulo>Ficha de {item}</Rotulo>
-              </>
-            ))
-          : opcoesValidador[1].map((item) => (
-              <>
-                <br />
-                <input disabled={true} type="checkbox" value={item} checked />
-                <Rotulo>R$ {item}</Rotulo>
-              </>
-            ))}
-      </Modal>
+      <div style={{ margin: "8px 0px 0px 8px" }}>
+        <Dialog botao="Contenedores" title="Contenedores em uso">
+          {Contenedor.map((cont) => (
+            <p>{defineContenedor(cont)}</p>
+          ))}
+        </Dialog>
+      </div>
       {Configuracao.length > 0 ? <Bebidas /> : null}
     </div>
   );
@@ -231,6 +234,8 @@ const mapDispatchToProps = (dispatch) =>
       LoadBebidas,
       LoadConfigPadrao,
       ChangeValidadorFichas,
+      LoadMinDDL,
+      clearConfig,
     },
     dispatch
   );
@@ -259,6 +264,7 @@ const defineContenedor = (cont) => {
 const opcoesValidador = [
   ["1", "2", "3", "4", "5"], //Fichas
   ["0.05", "0.10", "0.25", "0.50", "1.00"], //Moedas
+  ["0.05", "0.10", "0.25", "0.50", "1.00", "1", "2", "3", "4", "5"], //Moeda e Ficha
 ];
 
 const shouldShowAddBebida = (Pagamento, Maquina, Configuracao, Capacidade) => {
@@ -280,3 +286,68 @@ const shouldBeChecked = (item, Validador) => {
     return true;
   }
 };
+
+const shouldShowValidador = (Pagamento, Configuracao) => {
+  if (
+    (Pagamento === "Validador" || Pagamento === "Cartão e Validador") &&
+    Configuracao.length < 1
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const returnValidadorOption = (tipo, Validador, ChangeValidadorFichas) => {
+  switch(tipo){
+    case 'Ficha':
+      return (
+        opcoesValidador[0].map((item) => (
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
+            <input
+              checked={shouldBeChecked(item, Validador)}
+              onChange={(e) => {
+                ChangeValidadorFichas(e.target.value);
+              }}
+              type="checkbox"
+              value={item}
+              key={item}
+            />
+            <Rotulo style={{ margin: '0px'}}>Ficha de {item}</Rotulo>
+          </div>
+        ))
+      )
+    case 'Moeda':
+      return (
+        opcoesValidador[1].map((item) => (
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
+              <input
+                checked={shouldBeChecked(item, Validador)}
+                type="checkbox"
+                value={item}
+              />
+              <Rotulo style={{ margin: '0px'}}>R$ {item}</Rotulo>
+            </div>
+          ))
+      )
+      case 'Moeda e Ficha':
+      return (
+        opcoesValidador[2].map((item) => (
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
+              <input
+                type="checkbox"
+                value={item}
+                checked={shouldBeChecked(item, Validador)}
+                onChange={(e) => {
+                  ChangeValidadorFichas(e.target.value);
+                }}
+                key={item}
+              />
+              <Rotulo style={{ margin: '0px'}}>R$ {item}</Rotulo>
+            </div>
+          ))
+      )
+      default:
+      return null
+  }
+}

@@ -6,19 +6,12 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 //"Placeholder" da página enquanto dados são carregados no
-import {
-  Button,
-  TextInput,
-  Textarea,
-  Select,
-  Icon,
-  Modal,
-} from "react-materialize";
+import { Button, TextInput, Textarea, Select, Icon } from "react-materialize";
 
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
-import { CloseButton } from "../../components/buttons";
+import Modal from "../../components/modal";
 
 export default class Formulario extends React.Component {
   state = {
@@ -117,19 +110,15 @@ export default class Formulario extends React.Component {
   async handleSolicitaCodigo(event) {
     event.target.disabled = true;
 
-    const email = document.getElementById('email_solicitacao').value
+    const email = document.getElementById("email_solicitacao").value;
 
-    if (
-      email === "" ||
-      email === null
-    )
-      throw Error;
+    if (email === "" || email === null) throw Error;
 
     try {
       await api.post("/form/solicitacao", {
         email,
       });
-      Toast("Verifique o código de acesso enviado para seu email", 'success')
+      Toast("Verifique o código de acesso enviado para seu email", "success");
     } catch (err) {
       Toast("Falha ao enviar email com código", "error");
       event.target.disabled = false;
@@ -592,47 +581,31 @@ export default class Formulario extends React.Component {
               />
               <div style={divStyle}>
                 <p style={{ marginRight: "10px" }}>Não possui um código?</p>
-                <Button className="modal-trigger" href="#solicitar">
-                  Clique aqui
-                  <Icon right small>
-                    contact_mail
-                  </Icon>
-                </Button>
 
                 <Modal
-                  actions={[
+                  actions={
                     <Button
                       style={{ marginRight: "10px" }}
                       onClick={(e) => this.handleSolicitaCodigo(e)}
                     >
                       <Icon left>send</Icon>Solicitar
-                    </Button>,
-                    <CloseButton />,
-                  ]}
-                  bottomSheet={false}
-                  fixedFooter={false}
+                    </Button>
+                  }
                   header="Solicitar código de acesso"
-                  id="solicitar"
-                  open={false}
-                  options={{
-                    dismissible: false,
-                    endingTop: "10%",
-                    inDuration: 250,
-                    onCloseEnd: null,
-                    onCloseStart: null,
-                    onOpenEnd: null,
-                    onOpenStart: null,
-                    opacity: 0.5,
-                    outDuration: 250,
-                    preventScrolling: true,
-                    startingTop: "4%",
-                  }}
+                  trigger={
+                    <Button>
+                      Clique aqui
+                      <Icon right small>
+                        contact_mail
+                      </Icon>
+                    </Button>
+                  }
                 >
                   <TextInput
-                    id='email_solicitacao'
+                    id="email_solicitacao"
                     placeholder="Email"
                     data-length={50}
-                    error='Email inválido'
+                    error="Email inválido"
                     email
                     validate
                   />

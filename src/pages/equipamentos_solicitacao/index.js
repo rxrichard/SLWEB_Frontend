@@ -12,7 +12,7 @@ class Solicitacao extends React.Component {
   render() {
     return (
       <Panel
-        style={{ overflow: "hidden", alignContent: "center", padding: "0px" }}
+        style={{ overflow: "hidden", alignContent: "center", padding: "0px", justifyContent: 'flex-start' }}
       >
         <MenuAbas titles={["Solicitar", "Solicitações"]}>
           <Segmentos />
@@ -20,8 +20,6 @@ class Solicitacao extends React.Component {
           <Logs />
         </MenuAbas>
         <div className="XAlign">
-          <GoBack />
-
           {sessionStorage.getItem("role") !== "Franquia" ? (
             <Button
               onClick={() => {

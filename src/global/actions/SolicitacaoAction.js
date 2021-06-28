@@ -3,6 +3,7 @@ import {
   LOAD_BEBIDAS_DISPONIVEIS,
   LOAD_CLIENTES_ENDERECOS,
   LOAD_CONFIGURACOES_PADRAO,
+  LOAD_MIN_DDL_PARA_ENVIO,
 
   CHANGE_MAQUINA,
   CHANGE_PAG_TIPO,
@@ -27,7 +28,7 @@ import {
   CHOOSE_EMAIL_ACOMPANHAMENTO,
   CHOOSE_TELEFONE_CONTATO,
   SET_OBSERVACAO
-} from "./actionTypes";
+} from "./SolicitacaoActionTypes";
 
 export const clickButton = (value) => ({
   type: CLICK_ADD_BEBIDA,
@@ -76,6 +77,10 @@ export const LoadClientesEnderecos = (value) => ({
 export const LoadConfigPadrao = (value) => ({
   type: LOAD_CONFIGURACOES_PADRAO,
   ConfigPadrao: value,
+});
+export const LoadMinDDL = (value) => ({
+  type: LOAD_MIN_DDL_PARA_ENVIO,
+  DDL: value,
 });
 
 export const ChangeMaquina = (value) => ({

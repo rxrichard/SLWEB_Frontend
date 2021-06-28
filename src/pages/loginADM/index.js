@@ -1,62 +1,60 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { api } from "../../services/api";
 import { Link } from "react-router-dom";
 
 import Image from "../../assets/logo_sl.PNG";
-import { Button, Icon, TextInput, Modal } from "react-materialize";
 import { Toast, ToastyContainer } from "../../components/toasty";
-import {
-  Container,
-  Box,
-  Logo,
-  LinkContainer,
-} from "../../components/commom_out";
+import { Container, Box, Logo } from "../../components/commom_out";
 import { Bright } from "../../components/commom_functions";
-import { CloseButton } from "../../components/buttons";
+import Modal from "../../components/modal";
+import Button from "../../components/materialComponents/Button";
+import Input from "../../components/materialComponents/InputUnderline";
+import { Cast, LockOutlined, Person, TagFaces } from "@material-ui/icons";
+import {
+  GREY_PRIMARY,
+  RED_PRIMARY,
+  GREY_SECONDARY,
+} from "../../components/colors";
 
-export default class LoginADM extends Component {
-  state = {
-    adm_code: null,
-    adm_password: null,
-    validADM: false,
-    usersList: [],
-    usersListFiltered: [],
-    user_code: null,
-    user_name: null,
-  };
+export default function LoginADM() {
+  const [adm_code, setAdmCode] = useState(null);
+  const [adm_password, setAdmPassword] = useState(null);
+  const [validADM, setValidAdm] = useState(false);
+  const [usersList, setUserList] = useState([]);
+  const [usersListFiltered, setUserFiltered] = useState([]);
+  const [user_code, setUserCode] = useState(null);
+  const [user_name, setUserName] = useState(null);
 
-  async handleAttempt() {
-    if (this.state.adm_code !== null && this.state.adm_password !== null) {
+  const handleAttempt = async () => {
+    if (adm_code !== null && adm_password !== null) {
       Toast("Aguarde");
       try {
         const response = await api.get("/admAuth", {
           params: {
-            admin_code: this.state.adm_code,
-            admin_password: this.state.adm_password,
+            admin_code: adm_code,
+            admin_password: adm_password,
           },
         });
         if (response.status === 401) throw Error;
         Toast("Autenticado", "success");
-        this.setState({
-          usersList: response.data,
-          usersListFiltered: response.data,
-          validADM: true,
-        });
+        setUserList(response.data);
+        setUserFiltered(response.data);
+        setValidAdm(true);
       } catch (err) {
         Toast("Falha na autenticação", "error");
-        this.setState({ validADM: false });
+        setValidAdm(false);
       }
     } else {
       Toast("Preencha todos os campo");
     }
-  }
+  };
 
-  async handleLogin() {
+  const handleLogin = async () => {
     try {
       const response = await api.post("/admAuth", {
-        admin_code: this.state.adm_code,
-        admin_password: this.state.adm_password,
-        user_code: this.state.user_code,
+        admin_code: adm_code,
+        admin_password: adm_password,
+        user_code: user_code,
       });
 
       if (typeof response.data != "object") throw Error;
@@ -69,15 +67,15 @@ export default class LoginADM extends Component {
     } catch (err) {
       Toast("Falha ao realizar o login", "error");
     }
-  }
+  };
 
-  Filter(value, event) {
-    this.setState({ usersListFiltered: this.state.usersList });
+  const Filter = (value, event) => {
+    setUserFiltered(usersList);
     event.target.value = value.toUpperCase();
     value = value.toUpperCase();
 
     if (value === "") {
-      this.setState({ usersListFiltered: this.state.usersList });
+      setUserFiltered(usersList);
       return;
     }
 
@@ -86,10 +84,10 @@ export default class LoginADM extends Component {
       value = value.slice(0, 4);
     }
 
-    this.setState({ usersListFiltered: this.state.usersList });
+    setUserFiltered(usersList);
     let aux = [];
     let newArray = [];
-    aux = [...this.state.usersList];
+    aux = [...usersList];
 
     for (let i = 0; i < aux.length; i++) {
       if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
@@ -97,140 +95,124 @@ export default class LoginADM extends Component {
       }
     }
 
-    this.setState({ usersListFiltered: newArray });
-  }
+    setUserFiltered(newArray);
+  };
 
-  render() {
-    return (
-      <Container>
-        <ToastyContainer />
-        <Box>
-          <Logo src={Image} alt="Pilão professional" />
-          <div style={{ marginTop: "2vh" }}>
-            <TextInput
-              style={{ borderBottom: "1px solid #9e9e9e", margin: "0px" }}
-              className="txt"
-              onChange={(e) => {
-                this.setState({ adm_code: e.target.value, validADM: false });
-              }}
-              label="Código de administrador"
-            />
-          </div>
-          <div style={{ marginTop: "2vh " }}>
-            <TextInput
-              className="txt"
-              password
-              onChange={(e) => {
-                this.setState({
-                  adm_password: e.target.value,
-                  validADM: false,
-                });
-              }}
-              label="Senha de administrador"
-            />
-          </div>
+  return (
+    <Container style={{ backgroundColor: GREY_PRIMARY }}>
+      <ToastyContainer />
+      <Box>
+        <Logo src={Image} alt="Pilão professional" />
+        <Input
+          onChange={(e) => {
+            setAdmCode(e);
+            setValidAdm(false);
+          }}
+          label="Código de administrador"
+        />
+        <Input
+          type="password"
+          onChange={(e) => {
+            setAdmPassword(e);
+            setValidAdm(false);
+          }}
+          label="Senha de administrador"
+        />
 
-          <Button
-            style={{ margin: "10px" }}
-            onClick={() => this.handleAttempt()}
-          >
-            <Icon left>cast</Icon>Validar Credenciais
-          </Button>
+        <Button
+          style={{
+            minWidth: "60%",
+            marginBottom: "8px",
+            backgroundColor: RED_PRIMARY,
+            color: "#FFFFFF",
+          }}
+          icon={<Cast />}
+          onClick={() => handleAttempt()}
+        >
+          Validar Credenciais
+        </Button>
 
-          <Modal
-            actions={[
+        <Modal
+          actions={
+            <>
               <input
-                onChange={(e) => this.Filter(e.target.value, e)}
+                onChange={(e) => Filter(e.target.value, e)}
                 type="text"
-                style={{ width: "50px" }}
+                style={{ width: "70px", borderBottom: '1px solid #555555' }}
                 placeholder="Filial..."
-              />,
+              />
               <Button
-                style={{ margin: "10px" }}
-                disabled={this.state.user_code === null ? true : false}
-                onClick={() => this.handleLogin()}
+                style={{
+                  marginRight: "8px",
+                  backgroundColor: RED_PRIMARY,
+                  color: "#FFFFFF",
+                }}
+                icon={<LockOutlined />}
+                disabled={user_code === null ? true : false}
+                onClick={() => handleLogin()}
               >
                 Acessar
-                <Icon left>lock_outline</Icon>
-              </Button>,
-              <CloseButton />,
-            ]}
-            bottomSheet={false}
-            fixedFooter={false}
-            header={
-              this.state.user_name !== null
-                ? `Franqueado: ${this.state.user_name}`
-                : "Escolher Filial"
-            }
-            id="modal-0"
-            options={{
-              dismissible: false,
-              endingTop: "10%",
-              inDuration: 250,
-              onCloseEnd: null,
-              onCloseStart: null,
-              onOpenEnd: null,
-              onOpenStart: null,
-              opacity: 0.5,
-              outDuration: 250,
-              preventScrolling: true,
-              startingTop: "4%",
-            }}
-            trigger={
-              <Button
-                style={{ margin: "10px" }}
-                disabled={!this.state.validADM}
-              >
-                Selecionar Filial<Icon left>person</Icon>
               </Button>
-            }
-          >
-            <div
-              className="tableFixHead"
+            </>
+          }
+          header={
+            user_name !== null ? `Franqueado: ${user_name}` : "Escolher Filial"
+          }
+          trigger={
+            <Button
               style={{
-                height: "50vh",
-                width: "100%",
+                minWidth: "60%",
+                marginBottom: "8px",
+                backgroundColor: GREY_SECONDARY,
+                color: "#FFFFFF",
               }}
+              icon={<Person />}
+              disabled={!validADM}
             >
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nº</th>
-                    <th>Filial</th>
-                    <th>Franqueado</th>
+              Selecionar Filial
+            </Button>
+          }
+        >
+          <div
+            className="tableFixHead"
+            style={{
+              height: "50vh",
+              width: "100%",
+            }}
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº</th>
+                  <th>Filial</th>
+                  <th>Franqueado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usersListFiltered.map((user, i) => (
+                  <tr
+                    className="Item"
+                    onClick={(e) => {
+                      setUserCode(user.M0_CODFIL);
+                      setUserName(user.GrupoVenda);
+                      Bright(e);
+                    }}
+                    key={user.M0_CODFIL}
+                    value={i}
+                  >
+                    <td>{i + 1}</td>
+                    <td>{user.M0_CODFIL}</td>
+                    <td>{user.GrupoVenda}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {this.state.usersListFiltered.map((user, i) => (
-                    <tr
-                      className="Item"
-                      onClick={(e) => {
-                        this.setState({
-                          user_code: user.M0_CODFIL,
-                          user_name: user.GrupoVenda,
-                        });
-
-                        Bright(e);
-                      }}
-                      key={user.M0_CODFIL}
-                      value={i}
-                    >
-                      <td>{i + 1}</td>
-                      <td>{user.M0_CODFIL}</td>
-                      <td>{user.GrupoVenda}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Modal>
-        </Box>
-        <Link to="/">
-          <LinkContainer>
-            <Icon left>tag_faces</Icon>Franqueados
-          </LinkContainer>
-        </Link>
-      </Container>
-    );
-  }
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+      </Box>
+      <Link to="/">
+        <Button icon={<TagFaces />}>Franqueados</Button>
+      </Link>
+    </Container>
+  );
 }

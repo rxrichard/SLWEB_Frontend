@@ -16,7 +16,7 @@ import {
   ChooseTelefone,
   ChooseEmail,
   DefineOBS,
-} from "../../../global/actions/index";
+} from "../../../global/actions/SolicitacaoAction";
 
 function Entrega(props) {
   const classes = useStyles();
@@ -41,7 +41,14 @@ function Entrega(props) {
     Observacao,
     Data_Entrega_Desejada,
     Contato,
+    MinDDLEnvio,
   } = props.State;
+
+  const dataMinimaSolicitacao = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate() + MinDDLEnvio
+  );
 
   useEffect(() => {
     setClientes(props.State.ClientesEnderecos);
@@ -86,7 +93,7 @@ function Entrega(props) {
       <form className={classes.root} noValidate autoComplete="off">
         <div>
           <TextField
-          style={{ width: '400px' }}
+            style={{ width: "400px" }}
             id="outlined-multiline-flexible"
             label="Endereço de entrega"
             helperText={Cliente_Destino === "" ? "*Selecione um cliente" : null}
@@ -102,8 +109,8 @@ function Entrega(props) {
 
       <div className="XAlign" style={{ justifyContent: "flex-start" }}>
         <Campo>
-          <Rotulo>Data mínima possivel(20D)</Rotulo>
-          {dataMinima}
+          <Rotulo>Data mínima possivel({MinDDLEnvio}D)</Rotulo>
+          {dataMinima(MinDDLEnvio)}
         </Campo>
 
         <Campo>
@@ -288,19 +295,15 @@ const datepickerconfig = {
   weekdaysShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
 };
 
-const dataMinimaSolicitacao = new Date(
-  new Date().getFullYear(),
-  new Date().getMonth(),
-  new Date().getDate() + 20
-);
-
-const dataMinima = new Date(
-  new Date().getFullYear(),
-  new Date().getMonth(),
-  new Date().getDate() + 20
-)
-  .toLocaleString()
-  .split(" ")[0];
+const dataMinima = (DDL = 0) => {
+  return new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate() + DDL
+  )
+    .toLocaleString()
+    .split(" ")[0];
+};
 
 const enderecoEntrega = (cliente) => {
   return `${

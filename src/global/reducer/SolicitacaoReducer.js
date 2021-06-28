@@ -3,6 +3,7 @@ import {
   LOAD_BEBIDAS_DISPONIVEIS,
   LOAD_CLIENTES_ENDERECOS,
   LOAD_CONFIGURACOES_PADRAO,
+  LOAD_MIN_DDL_PARA_ENVIO,
   CHANGE_MAQUINA,
   CHANGE_PAG_TIPO,
   CHANGE_VALIDADOR_TIPO,
@@ -23,16 +24,18 @@ import {
   CHOOSE_TELEFONE_CONTATO,
   CHOOSE_EMAIL_ACOMPANHAMENTO,
   SET_OBSERVACAO,
-} from "../actions/actionTypes";
+} from "../actions/SolicitacaoActionTypes";
 
 const initialState = {
   AtivosDisponiveis: [],
   BebidasDisponiveis: [],
   ClientesEnderecos: [],
   ConfiguracoesPadrao: [],
+  MinDDLEnvio: 0,
 
   MaquinaId: "",
   Maquina: "",
+  PermiteGab: false,
   Capacidade: 0,
   MaxContenedores: 0,
 
@@ -59,7 +62,7 @@ const initialState = {
   Observacao: "",
 };
 
-export const otherReducer = (state = initialState, action) => {
+export const SolicitacaoReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_ATIVOS_DISPONIVEIS:
       return {
@@ -81,12 +84,18 @@ export const otherReducer = (state = initialState, action) => {
         ...state,
         ConfiguracoesPadrao: action.ConfigPadrao,
       };
+    case LOAD_MIN_DDL_PARA_ENVIO:
+      return {
+        ...state,
+        MinDDLEnvio: action.DDL,
+      };
 
     case CHANGE_MAQUINA:
       return {
         ...state,
         MaquinaId: action.MaquinaSelecionada.MaqModId,
         Maquina: action.MaquinaSelecionada.MaqModelo,
+        PermiteGab: action.MaquinaSelecionada.PerGab,
         Capacidade: action.MaquinaSelecionada.MaqCapacidade,
         MaxContenedores: action.MaquinaSelecionada.Contenedores,
       };
@@ -199,16 +208,19 @@ export const otherReducer = (state = initialState, action) => {
           action.PagType === "Cartão e Validador"
             ? "Moeda"
             : null,
+        Validador: action.PagType === "Validador" ||
+        action.PagType === "Cartão e Validador" ? ["0.05", "0.10", "0.25", "0.50", "1.00"] : []
       };
 
     case CHANGE_VALIDADOR_TIPO:
       return {
         ...state,
-        TipoValidador: action.TipoValidador ? "Ficha" : "Moeda",
-        Validador: action.TipoValidador
+        TipoValidador: action.TipoValidador,
+        Validador: action.TipoValidador === 'Ficha'
           ? []
           : ["0.05", "0.10", "0.25", "0.50", "1.00"],
       };
+
     case CHANGE_VALIDADOR_FICHAS:
       if (state.Validador.indexOf(action.Ficha) < 0) {
         state.Validador.push(action.Ficha);

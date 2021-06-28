@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 import { Link } from "react-router-dom";
 
@@ -7,29 +7,29 @@ import {
   Container,
   Box,
   Logo,
-  LinkContainer,
 } from "../../components/commom_out";
-import { TextInput, Icon, Button } from "react-materialize";
+import { Input, LockOutlined, Work } from "@material-ui/icons/";
 import { Toast, ToastyContainer } from "../../components/toasty";
+import Button from "../../components/materialComponents/Button";
+import InputUnderline from "../../components/materialComponents/InputUnderline";
+import { RED_PRIMARY } from '../../components/colors'
 
-class Login extends React.Component {
-  state = {
-    user_code: "",
-    password: "",
-  };
+function Login() {
+  const [user_code, setUser] = useState("");
+  const [password, setPassword] = useState("");
 
-  componentDidMount() {
+  useEffect(() => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("usuario");
-  }
+  }, []);
 
-  async handleLogin() {
+  const handleLogin = async () => {
     Toast("...Autenticando");
 
     try {
       const response = await api.post("/auth/", {
-        user_code: this.state.user_code,
-        password: this.state.password,
+        user_code: user_code,
+        password: password,
       });
 
       if (response.data.token) {
@@ -44,72 +44,49 @@ class Login extends React.Component {
     } catch (err) {
       Toast("Falha na conexão", "error");
     }
-  }
-  render() {
-    return (
-      <Container>
-        <ToastyContainer />
-        <Box>
-          <Logo src={Image} alt="Pilão professional" />
-          <div style={{ marginTop: "2vh" }}>
-            <TextInput
-              style={{ borderBottom: "1px solid #9e9e9e", margin: "0px" }}
-              className="txt"
-              label="Filial"
-              onChange={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-                this.setState({ user_code: e.target.value });
-              }}
-            />
-          </div>
-          <div style={{ marginTop: "2vh" }}>
-            <TextInput
-              className="txt"
-              password
-              label="Senha"
-              onChange={(e) => {
-                this.setState({
-                  password: e.target.value,
-                });
-              }}
-            />
-          </div>
+  };
+  return (
+    <Container style={{ backgroundColor: RED_PRIMARY }}>
+      <ToastyContainer />
+      <Box>
+        <Logo src={Image} alt="Pilão professional" />
+        <InputUnderline
+          label="Filial"
+          onChange={(e) => {
+            e = e.toUpperCase();
+            setUser(e);
+          }}
+        />
+        <InputUnderline
+          type="password"
+          label="Senha"
+          onChange={(e) => {
+            setPassword(e);
+          }}
+        />
+        <Button
+          style={{ minWidth: "60%", marginBottom: "8px", backgroundColor: RED_PRIMARY, color: '#FFFFFF' }}
+          icon={<Input />}
+          onClick={() => {
+            handleLogin();
+          }}
+        >
+          Acessar
+        </Button>
+        <Link to="/forgot">
           <Button
-            type="submit"
-            style={{
-              background: "rgba(120,28,29,1)",
-              marginTop: "2%",
-              width: "200px",
-            }}
-            onClick={() => {
-              this.handleLogin();
-            }}
+            style={{ minWidth: "60%", marginBottom: "8px",  backgroundColor: '#FFFFFF', boxShadow: 'none' }}
+            icon={<LockOutlined />}
           >
-            <Icon left>input</Icon>
-            Acessar
+            Recuperar senha
           </Button>
-          <Link to="/forgot">
-            <Button
-              type="submit"
-              style={{
-                background: "rgba(120,28,29,1)",
-                marginTop: "2%",
-                width: "200px",
-              }}
-            >
-              <Icon left>lock_outline</Icon>
-              Recuperar senha
-            </Button>
-          </Link>
-        </Box>
-        <Link to="/PILAO">
-          <LinkContainer>
-            <Icon left>work</Icon>Internos
-          </LinkContainer>
         </Link>
-      </Container>
-    );
-  }
+      </Box>
+      <Link to="/PILAO">
+        <Button icon={<Work />}>Colaboradores</Button>
+      </Link>
+    </Container>
+  );
 }
 
 export default Login;

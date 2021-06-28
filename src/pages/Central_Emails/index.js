@@ -10,11 +10,11 @@ import { convertData } from "../../components/commom_functions";
 import Emissao from './modal/index'
 
 //import de elementos visuais
-import { TextInput, Modal, Button } from "react-materialize";
+import { TextInput, Button } from "react-materialize";
 import { Panel, Container } from "../../components/commom_in";
 import { Toast, ToastyContainer } from "../../components/toasty";
 import { Table } from "../../components/table";
-import { CloseButton } from "../../components/buttons";
+import Modal from "../../components/modal";
 
 export default class CentralEmails extends React.Component {
   state = {
@@ -120,25 +120,8 @@ export default class CentralEmails extends React.Component {
                 placeholder="Filtrar por filial"
               />
               <Modal
-                actions={[<Button>Enviar</Button>, <CloseButton />]}
-                bottomSheet={false}
-                fixedFooter={false}
+                actions={<Button>Enviar</Button>}
                 header="Disparar Email"
-                id="Modal-0"
-                open={false}
-                options={{
-                  dismissible: false,
-                  endingTop: "10%",
-                  inDuration: 250,
-                  onCloseEnd: null,
-                  onCloseStart: null,
-                  onOpenEnd: null,
-                  onOpenStart: null,
-                  opacity: 0.5,
-                  outDuration: 250,
-                  preventScrolling: true,
-                  startingTop: "4%",
-                }}
                 trigger={
                   <Button style={{ marginTop: "10px" }} node="button">
                     Disparar emails

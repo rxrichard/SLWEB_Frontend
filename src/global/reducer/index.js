@@ -1,7 +1,9 @@
-import { otherReducer } from './SolicitacaoReducer'
+import { SolicitacaoReducer } from './SolicitacaoReducer'
+import { EtcReducer } from './EtcReducer'
 
 import { combineReducers } from 'redux';
 
 export const Reducers = combineReducers({
-  solicitacaoState: otherReducer
+  solicitacaoState: SolicitacaoReducer,
+  EtcState: EtcReducer
 });

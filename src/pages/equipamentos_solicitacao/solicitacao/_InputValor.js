@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
   textField: {
-    width: "25ch",
+    width: "15ch",
     "& #outlined-start-adornment": {
       border: "none",
       borderBottom: "none",
@@ -38,28 +38,47 @@ function InputAdornments(props) {
   const { TipoValidador, Pagamento } = props.State;
 
   const handleChange = (event) => {
+    // event.target.value =
+    //   event.target.value.indexOf(",") < 0 && event.target.value.indexOf(".") < 0
+    //     ? event.target.value
+    //     : event.target.value + "0";
     const entrada = event.target.value;
 
-    if(TipoValidador === 'Ficha' && Number.isSafeInteger(Number(entrada.replace(/,/g, ".")))){
-      //testa se o pagamento é por validador ficha e o valor inserido é inteiro
+    console.log(event.target.value)
+
+
+    if (
+      TipoValidador === "Ficha" &&
+      Number.isSafeInteger(Number(entrada.replace(/,/g, ".")))
+    ) {
+      //testa se o pagamento é valido por ficha(Número inteiro)
       props.onChange(event);
       return;
-    }else if(TipoValidador === 'Moeda' && (!isNaN(Number(entrada.replace(/,/g, "."))) &&
-    entrada.replace(/,/g, ".") !== "")){
-      //testa se o pagamento é validador moeda e se apenas foram inseridos números
+    } else if (
+      TipoValidador === "Moeda" &&
+      !isNaN(Number(entrada.replace(/,/g, "."))) &&
+      entrada.replace(/,/g, ".") !== ""
+    ) {
+      //testa se o valor é valido para pagamento por moeda(Número com ponto flutuante => double ou float)
       props.onChange(event);
       return;
-    } else if(TipoValidador === null && (!isNaN(Number(entrada.replace(/,/g, "."))) &&
-    entrada.replace(/,/g, ".") !== "")){
-      //testa se apenas foram inseridos números
+    } else if (
+      !isNaN(
+        Number(entrada.replace(/,/g, ".")) && entrada.replace(/,/g, ".") !== ""
+      )
+    ) {
+      //testa se o valor é valido por pagamento que não seja validador(semelhante ao teste de validador por moeda, Número com ponto flutuante => double ou float)
       props.onChange(event);
       return;
-    }else if (entrada.replace(/,/g, ".") === "") {
+    } else if (entrada.replace(/,/g, ".") === "") {
       //se o campo for limpo
       props.onChange(event);
-    }else{
+    } else {
       //se o valor for invalido, apagar caractére
-      event.target.value = event.target.value.substring(0, event.target.value.length - 1);
+      event.target.value = event.target.value.substring(
+        0,
+        event.target.value.length - 1
+      );
       Toast("Valor inválido");
       return;
     }
@@ -71,7 +90,6 @@ function InputAdornments(props) {
         <TextField
           label={props.label}
           disabled={props.disabled}
-          helperText={Pagamento === 'Livre' ? '*Pagamento Livre' : null}
           id="outlined-start-adornment"
           className={clsx(classes.margin, classes.textField)}
           onChange={handleChange}
@@ -83,6 +101,11 @@ function InputAdornments(props) {
             ),
           }}
           variant="outlined"
+          value={
+            typeof props.value != "undefined" && props.value !== null
+              ? props.value
+              : ""
+          }
         />
       </div>
     </div>
@@ -98,6 +121,8 @@ export default connect(mapStateToProps)(InputAdornments);
 const defineDecorator = (TipoValidador) => {
   if (TipoValidador === "Ficha") {
     return "Ficha";
+  } else if (TipoValidador === "Moeda e Ficha") {
+    return "R$/Fch.";
   } else {
     return "R$";
   }

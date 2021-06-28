@@ -29,7 +29,7 @@ export default function DraggableDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button style={{ height: '54px' }} variant="outlined" color="primary" onClick={handleClickOpen}>
         {props.botao}
       </Button>
       <Dialog

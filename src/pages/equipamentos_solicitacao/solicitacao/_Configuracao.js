@@ -13,11 +13,12 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Close from "@material-ui/icons/Close";
 
-import { clickRemove } from '../../../global/actions/index'
+import { clickRemove } from '../../../global/actions/SolicitacaoAction'
 
 //estilo
 const useStyles = makeStyles({
   table: {
+    marginTop: '8px',
     minWidth: 700,
   },
 });
@@ -42,7 +43,8 @@ function CustomizedTable(props) {
             <StyledTableCell>Seleção</StyledTableCell>
             <StyledTableCell>Bebida</StyledTableCell>
             <StyledTableCell>Medida</StyledTableCell>
-            <StyledTableCell>Preço</StyledTableCell>
+            <StyledTableCell>Valor Real</StyledTableCell>
+            <StyledTableCell>Valor Repasse</StyledTableCell>
             <StyledTableCell>Tipo</StyledTableCell>
             <StyledTableCell>Ativa</StyledTableCell>
             <StyledTableCell></StyledTableCell>
@@ -57,7 +59,8 @@ function CustomizedTable(props) {
               </StyledTableCell>
 
               <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
-              <StyledTableCell>{formataPreço(row.valor, TipoValidador, Pagamento)}</StyledTableCell>
+              <StyledTableCell>{formataPreço(row.valor, TipoValidador)}</StyledTableCell>
+              <StyledTableCell>{formataPreço(row.valor2, TipoValidador)}</StyledTableCell>
               <StyledTableCell>{row.tipo}</StyledTableCell>
               <StyledTableCell>{row.configura ? "Sim":"Não"}</StyledTableCell>
               <StyledTableCell>
@@ -109,12 +112,10 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const formataPreço = (valor, TipoValidador, Pagamento) => {
-  if(Pagamento === 'Livre'){
-    return 'LIVRE'
-  }else if(TipoValidador === 'Ficha'){
-    return `${valor} Ficha`
+const formataPreço = (valor, TipoValidador) => {
+  if(TipoValidador === 'Ficha'){
+    return `${typeof valor == 'undefined' ? '0' : valor} Ficha`
   }else{
-    return `R$ ${valor}`
+    return `R$ ${typeof valor == 'undefined' ? '0' : valor}`
   }
 }
