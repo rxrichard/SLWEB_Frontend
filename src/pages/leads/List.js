@@ -21,7 +21,7 @@ import Dialog from "../../components/materialComponents/Dialog";
 import Button from "../../components/materialComponents/Button";
 import { RED_SECONDARY, GREY_SECONDARY } from "../../components/colors";
 import { Toast } from "../../components/toasty";
-import Input from '../../components/materialComponents/InputMultline'
+import Input from "../../components/materialComponents/InputMultline";
 
 const Accordion = withStyles({
   root: {
@@ -49,7 +49,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 function CustomizedAccordions(props) {
   const [leads, setLeads] = useState([]);
-  const [motivo, setMotivo] = useState('');
+  const [motivo, setMotivo] = useState("");
 
   const { AddLimite, SubLimite, MoveLinha } = props;
   const { Limites } = props.State;
@@ -61,19 +61,17 @@ function CustomizedAccordions(props) {
   }, [props.Leads]);
 
   const handleRequestAdress = async (id, index, type) => {
-
-    if(type === 'release' && motivo.trim() === ''){
-
+    if (type === "release" && motivo.trim() === "") {
       Toast("Informe o motivo da desistencia");
-      return
+      return;
     }
-    
+
     try {
       const response = await api
-      .put("/leads", {
-        ID: id,
-        type: type,
-        motivo: motivo
+        .put("/leads", {
+          ID: id,
+          type: type,
+          motivo: motivo,
         })
         .catch((err) => {
           if (err.response.status === 401) {
@@ -115,9 +113,14 @@ function CustomizedAccordions(props) {
       {leads.map((le, i) => (
         <Accordion square key={le.Id} id={le.Id}>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
+            <div>
+            <Typography variant="subtitle2" gutterBottom>
+              <strong>{moment(le.Insercao).fromNow(false)}</strong>
+            </Typography>
             <Typography variant="subtitle1" gutterBottom>
               {mountString(le)}
             </Typography>
+            </div>
             <Dialog
               disabled={le.close}
               shoulClose={le.close}
@@ -188,7 +191,11 @@ function CustomizedAccordions(props) {
                     para fechar com o cliente ou desistir do Lead
                   </Typography>
 
-                  <Input style={{ width: '100%' }} label='Motivo da desistência' onChange={e => setMotivo(e.target.value)}/>
+                  <Input
+                    style={{ width: "100%" }}
+                    label="Motivo da desistência"
+                    onChange={(e) => setMotivo(e.target.value)}
+                  />
                 </>
               ) : (
                 "Você ainda não tem acesso ao contato desse lead"
@@ -243,7 +250,7 @@ const shouldShowAdress = (lead) => {
 };
 
 const mountString = (dados) => {
-  let variavel = "";
+  let variavel = ``;
 
   if (dados.Nome_Fantasia !== "") {
     variavel += dados.Nome_Fantasia;
