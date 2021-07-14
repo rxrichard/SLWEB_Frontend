@@ -175,6 +175,22 @@ body {
   color: #930D18 !important
 }
 
+/* Underline input underline*/
+.MuiInput-underline::after{
+  border-bottom: 2px solid #930D18 !important;
+}
+
+/* Dialog close button*/
+.MuiButton-textPrimary{
+  color: #930D18 !important;
+}
+
+/* Button bg when focus(after click) */
+button:focus {
+  outline: none;
+  background-color: #CCC;
+}
+
 .TextBold {
   all: 'unset' !important;
   font-weight: bold !important;

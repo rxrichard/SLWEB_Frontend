@@ -8,7 +8,7 @@ export const CANCEL_BUTTON_COLOR = 'red'
 
 export const SAFE_BUTTON_COLOR = 'blue'
 
-export const GOBACK_BUTTON_COLOR = '#FFFFFF'
+export const GOBACK_BUTTON_COLOR = '#FAFAFA'
 
 export const RED_PRIMARY = '#C8102E'
 export const RED_SECONDARY = '#930D18'

@@ -2,7 +2,7 @@ import React from "react";
 
 import Loading from "../../../components/loading_screen";
 import { Campo } from "../../../components/commom_in";
-import { Toast, ToastyContainer } from "../../../components/toasty";
+import { Toast } from "../../../components/toasty";
 import { convertData } from "../../../components/commom_functions";
 
 export default class AdmModal extends React.Component {
@@ -45,7 +45,6 @@ export default class AdmModal extends React.Component {
       <Loading />
     ) : (
       <>
-        <ToastyContainer />
         <Campo>
           <label style={{ all: "unset" }}>
             {this.convertData(this.state.OS.OSCDtSolicita)}

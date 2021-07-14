@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { api } from '../../services/api'
 
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
@@ -9,7 +10,6 @@ import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { green } from "@material-ui/core/colors";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
 import Dialog from "@material-ui/core/Dialog";
@@ -22,8 +22,7 @@ import Draggable from "react-draggable";
 import Requisicao from "./solicitacao/_Maquina";
 import Detalhes from "./solicitacao/_Detalhes";
 import Entrega from "./solicitacao/_Entrega";
-import { api } from "../../services/api";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { RED_SECONDARY } from "../../components/colors";
 
 function VerticalLinearStepper(props) {
@@ -99,7 +98,6 @@ function VerticalLinearStepper(props) {
 
   return (
     <div className={classes.root}>
-      <ToastyContainer />
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
@@ -183,6 +181,12 @@ function VerticalLinearStepper(props) {
   );
 }
 
+const mapStateToProps = (store) => ({
+  State: store.solicitacaoState,
+});
+
+export default connect(mapStateToProps)(VerticalLinearStepper);
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -204,10 +208,10 @@ const useStyles = makeStyles((theme) => ({
   altButton: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
-    color: theme.palette.getContrastText(green[500]),
-    backgroundColor: green[500],
+    color: '#FFFFFF',
+    backgroundColor: RED_SECONDARY,
     "&:hover": {
-      backgroundColor: green[700],
+      backgroundColor: RED_SECONDARY,
     },
   },
   actionsContainer: {
@@ -247,11 +251,7 @@ function getStepContent(step) {
       return "Unknown step";
   }
 }
-const mapStateToProps = (store) => ({
-  State: store.solicitacaoState,
-});
 
-export default connect(mapStateToProps)(VerticalLinearStepper);
 
 function PaperComponent(props) {
   return (
@@ -272,7 +272,7 @@ const wichHelpShow = (step, Maquina) => {
           <li style={{ marginBottom: "10px" }}>
             <div>
               <strong>Máquina:</strong> Cada modelo de máquina possui uma
-              capacidade de bebidas, compos e contenedores para guardar os
+              capacidade de bebidas, copos e contenedores para guardar os
               insumos.
             </div>
           </li>

@@ -33,13 +33,15 @@ function Detalhes(props) {
     Chip,
     AntExt,
     Maquina,
-    PermiteGab
+    PermiteGab,
   } = props.State;
 
   return (
     <>
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao="*Limpe a configuração para alterar"
         label="Máquina Corporativa?"
         value={Corporativa}
@@ -53,6 +55,8 @@ function Detalhes(props) {
       {shouldInibirCopos(Maquina) ? (
         <Selecao
           width="200px"
+          MLeft="8px"
+          MBottom="8px"
           label="Inibir Copos?"
           value={InibirCopos}
           onChange={(e) => ChooseInibCopos(e.target.value)}
@@ -64,6 +68,8 @@ function Detalhes(props) {
 
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao="*Esta máquina não é compativel com gabinete"
         label="Acompanha Gabinete?"
         value={Gabinete}
@@ -76,6 +82,8 @@ function Detalhes(props) {
 
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao=""
         label="Abastecimento Hídrico"
         value={Abastecimento}
@@ -88,6 +96,8 @@ function Detalhes(props) {
 
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao=""
         label="Chip de Telemetria"
         value={Chip}
@@ -101,6 +111,8 @@ function Detalhes(props) {
 
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao=""
         label="Antena Externa?"
         value={AntExt}
@@ -153,4 +165,3 @@ const shouldInibirCopos = (Maquina) => {
       return false;
   }
 };
-

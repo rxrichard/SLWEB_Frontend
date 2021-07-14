@@ -8,6 +8,7 @@ import SideBar from "../../components/sidebar";
 //import de telas
 import notFound from "../../pages/1_NOT_FOUND/index";
 import Perfil from "../../pages/perfil/index";
+import Leads from "../../pages/leads/index";
 import Ajuda from "../../pages/ajuda/index";
 import AddEquipamentos from "../../pages/equipamentos_solicitacao/index";
 import GerenciarEquip from "../../pages/equipamentos_solicitacao/gerenciamento";
@@ -32,6 +33,7 @@ function Dashboard(props) {
         <div id="App">
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/leads" component={Leads} />
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/ajuda" component={Ajuda} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />

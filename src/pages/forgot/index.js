@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { api } from "../../services/api";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { Link } from "react-router-dom";
 
 import { Container, Box, Logo } from "../../components/commom_out";
@@ -43,7 +43,6 @@ export default function Forgot() {
 
   return (
     <Container style={{ backgroundColor: RED_PRIMARY }}>
-      <ToastyContainer />
       <Box>
         <Logo src={Image} alt="SLAPLIC WEB" />
         <InputUnderline

@@ -10,7 +10,7 @@ import { convertData } from "../../components/commom_functions";
 
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { Icon, Button } from "react-materialize";
 import { Table } from "../../components/table";
 import Modal from "../../components/modal";
@@ -43,7 +43,6 @@ export default class FormsAcompanhamento extends React.Component {
       <Loading />
     ) : (
       <Container>
-        <ToastyContainer />
         <Panel>
           <Table>
             <thead>

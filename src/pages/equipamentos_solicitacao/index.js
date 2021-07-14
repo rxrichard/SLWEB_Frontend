@@ -9,6 +9,9 @@ import { Panel } from "../../components/commom_in";
 import { GoBack } from "../../components/buttons";
 
 class Solicitacao extends React.Component {
+  componentDidMount(){
+    alert('Em Desenvolvimento!')
+  }
   render() {
     return (
       <Panel

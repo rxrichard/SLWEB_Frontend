@@ -49,7 +49,7 @@ export const maskCEP = cep => {
 }
 
 //Valida o valor de um input
-export const valueCheck = (value, event) => {
+export const valueCheck = (value) => {
   if (!isNaN(parseFloat(value))) {
     if (
       value.charAt(value.length - 1) === '.' ||
@@ -60,10 +60,10 @@ export const valueCheck = (value, event) => {
     return parseFloat(value)
   } else {
     if (value.length > 1) {
-      event.target.value = event.target.value.slice(-1)
+      value = value.slice(-1)
       return value.slice(-1)
     } else {
-      event.target.value = 0
+      value = 0
       return 0
     }
   }

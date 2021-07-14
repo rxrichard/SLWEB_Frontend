@@ -12,7 +12,7 @@ import Emissao from './modal/index'
 //import de elementos visuais
 import { TextInput, Button } from "react-materialize";
 import { Panel, Container } from "../../components/commom_in";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { Table } from "../../components/table";
 import Modal from "../../components/modal";
 
@@ -78,7 +78,6 @@ export default class CentralEmails extends React.Component {
       <Loading />
     ) : (
       <Container>
-        <ToastyContainer />
         <Panel>
           <div
             className="XAlign"

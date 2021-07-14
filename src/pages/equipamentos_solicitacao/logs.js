@@ -5,7 +5,7 @@ import { saveAs } from "file-saver";
 import Loading from "../../components/loading_screen";
 import { Button, Icon } from "react-materialize";
 import { Table } from "../../components/table";
-import { ToastyContainer, Toast } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { dateCheck, convertData } from "../../components/commom_functions";
 import AdmModal from "./modals/admModal";
 import Modal from "../../components/modal";
@@ -63,7 +63,6 @@ export default class Logs extends React.Component {
       <Loading />
     ) : this.state.logs.length > 0 ? ( //Se nao tiver nenhum log, nem mostra a estrutura da tabela
       <Table centered hoverable>
-        <ToastyContainer />
         <thead>
           <tr>
             <th>Solicitação Nº</th>

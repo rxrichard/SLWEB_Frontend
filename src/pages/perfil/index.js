@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 
 import { Panel } from "../../components/commom_in";
@@ -7,53 +7,61 @@ import {
   maskCEP,
   valueCheck,
 } from "../../components/commom_functions";
-import { Toast, ToastyContainer } from "../../components/toasty";
-import { Card, Icon, Button, TextInput } from "react-materialize";
+import { Toast } from "../../components/toasty";
 import { FAILED_REQUEST } from "../../components/messages";
 import Loading from "../../components/loading_screen";
-import { ConfirmButton } from "../../components/buttons";
-import Modal from "../../components/modal";
 
-class Perfil extends React.Component {
-  state = {
-    info: {},
-    password: {},
-    newEmail: null,
-    newTaxa: {},
-    loaded: false,
-  };
+import Card from "../../components/materialComponents/Card";
+import Dialog from "../../components/materialComponents/Dialog";
+import InputUnderline from "../../components/materialComponents/InputUnderline";
+import Button from "../../components/materialComponents/Button";
+import Check from "@material-ui/icons/Check";
+import Settings from "@material-ui/icons/Settings";
+import VpnKey from "@material-ui/icons/VpnKey";
+import Typography from "@material-ui/core/Typography";
+import { RED_SECONDARY } from "../../components/colors";
+import Select from "../../components/materialComponents/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
-  async componentDidMount() {
-    try {
-      const response = await api.get("/profile", {
-        params: {
-          token: sessionStorage.getItem("token"),
-        },
-      });
+function Perfil() {
+  const [info, setInfo] = useState({});
+  const [password, setPassword] = useState({});
+  const [newEmail, setNewEmail] = useState(null);
+  const [newTaxa, setNewTaxa] = useState({});
+  const [loaded, setLoaded] = useState(false);
 
-      if (response.data === 400) throw Error;
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await api.get("/profile", {
+          params: {
+            token: sessionStorage.getItem("token"),
+          },
+        });
 
-      this.setState({
-        info: response.data,
-        loaded: true,
-        newTaxa: {
+        if (response.data === 400) throw Error;
+
+        setInfo(response.data);
+        setLoaded(true);
+        setNewTaxa({
           tipo: response.data.ParamTxt,
-          valor: response.data.ParamVlr,
-        },
-      });
-    } catch (err) {
-      Toast(FAILED_REQUEST, "error");
+          valor: response.data.ParamVlr * 100,
+        });
+      } catch (err) {
+        Toast(FAILED_REQUEST, "error");
+      }
     }
-  }
+    loadData();
+  }, []);
 
-  async handleChangePassword() {
+  const handleChangePassword = async () => {
     try {
       const response = await api.put("/profile/password", {
         token: sessionStorage.getItem("token"),
-        password: this.state.password,
+        password: password,
       });
 
-      switch (response.data) {
+      switch (response.status) {
         case 409:
           Toast("A nova senha diverge da confirmação", "error");
           break;
@@ -79,243 +87,213 @@ class Perfil extends React.Component {
     } catch (err) {
       Toast(FAILED_REQUEST, "error");
     }
-  }
+  };
 
-  async handleChangeEmail() {
+  const handleChangeEmail = async () => {
+    if (
+      newEmail === "" ||
+      newEmail === null ||
+      typeof newEmail == "undefined"
+    ) {
+      Toast("Preencha um email valido");
+      return;
+    }
+
     try {
       const response = await api.put("/profile/email", {
         token: sessionStorage.getItem("token"),
-        email: this.state.newEmail,
+        email: newEmail,
       });
 
-      if (response.data === 400) throw Error;
+      if (response.status === 400) throw Error;
       Toast("Email atualizado com sucesso", "success");
     } catch (err) {
       Toast(FAILED_REQUEST, "error");
     }
-  }
+  };
 
-  async handleChangeTax() {
+  const handleChangeTax = async () => {
     try {
       const response = await api.put("/profile/tax", {
         token: sessionStorage.getItem("token"),
-        newTax: this.state.newTaxa,
+        newTax: newTaxa,
       });
 
-      if (response.data === 400) throw Error;
+      if (response.status === 400) throw Error;
     } catch (err) {
       Toast(FAILED_REQUEST, "error");
     }
-  }
+  };
 
-  wichColor() {
-    if (
-      typeof this.state.password.nova == "undefined" ||
-      this.state.password.nova === "" ||
-      typeof this.state.password.confirmacao == "undefined" ||
-      this.state.password.confirmacao === ""
-    )
-      return "1px solid #9e9e9e";
-    if (this.state.password.nova === this.state.password.confirmacao)
-      return "1px solid green";
-    if (this.state.password.nova !== this.state.password.confirmacao)
-      return "1px solid red";
-  }
-
-  render() {
-    return !this.state.loaded ? (
-      <Loading />
-    ) : (
-      <Panel>
-        <ToastyContainer />
-        <div
-          className="XAlign"
-          style={{ justifyContent: "space-evenly", flexWrap: "wrap" }}
-        >
-          <Card
-            actions={[
-              <Modal
-                actions={
-                  <ConfirmButton
-                    disabled={
-                      typeof this.state.newEmail != "undefined" &&
-                      this.state.newEmail !== "" &&
-                      this.state.newEmail !== null
-                        ? false
-                        : true
-                    }
-                    onClick={() => this.handleChangeEmail()}
-                  >
-                    Atualizar email
-                  </ConfirmButton>
-                }
-                header="Email para recebimento de NF"
-                trigger={
-                  <Button>
-                    <Icon left>email</Icon>Alterar email
-                  </Button>
-                }
-              >
-                <TextInput
-                  email
-                  validate
-                  placeholder={`Atual: ${this.state.info.Email.trim()}`}
-                  onChange={(e) => this.setState({ newEmail: e.target.value })}
-                />
-              </Modal>,
-            ]}
-            className="blue-grey darken-1"
-            textClassName="white-text"
-            title={this.state.info.M0_FILIAL[0]}
-          >
-            <p>CNPJ: {maskCNPJ(this.state.info.M0_CGC[0])}</p>
-            <p>FILIAL: {this.state.info.M0_CODFIL}</p>
-            <p>IE: {this.state.info.M0_INSC}</p>
-            <p>NIRE: {this.state.info.M0_NIRE}</p>
-            <p>CNAE: {this.state.info.M0_CNAE}</p>
-            <p>FPAS: {this.state.info.M0_FPAS}</p>
-            <p>Consultor: {this.state.info.Consultor}</p>
-            <p>Natureza Jurídica: {this.state.info.M0_NATJUR}</p>
-          </Card>
-
-          <Card
-            actions={[
-              <Modal
-                actions={
-                  <ConfirmButton
-                    disabled={
-                      typeof this.state.password.atual != "undefined" &&
-                      typeof this.state.password.nova != "undefined" &&
-                      typeof this.state.password.confirmacao != "undefined" &&
-                      this.state.password.atual !== "" &&
-                      this.state.password.nova !== "" &&
-                      this.state.password.confirmacao !== ""
-                        ? false
-                        : true
-                    }
-                    onClick={() => this.handleChangePassword()}
-                  >
-                    Salvar senha
-                  </ConfirmButton>
-                }
-                header="Trocar senha"
-                trigger={
-                  <Button>
-                    <Icon left>vpn_key</Icon>Alterar senha
-                  </Button>
-                  
-                }
-              >
-                <TextInput
-                  password
-                  data-length={6}
-                  label="Senha atual"
-                  onChange={(e) =>
-                    this.setState({
-                      password: {
-                        ...this.state.password,
-                        atual: e.target.value,
-                      },
-                    })
-                  }
-                />
-                <TextInput
-                  password
-                  style={{
-                    borderBottom: this.wichColor(),
-                  }}
-                  data-length={6}
-                  label="Nova senha"
-                  onChange={(e) =>
-                    this.setState({
-                      password: {
-                        ...this.state.password,
-                        nova: e.target.value,
-                      },
-                    })
-                  }
-                />
-                <TextInput
-                  password
-                  style={{
-                    borderBottom: this.wichColor(),
-                  }}
-                  data-length={6}
-                  label="Confirmar nova senha"
-                  onChange={(e) =>
-                    this.setState({
-                      password: {
-                        ...this.state.password,
-                        confirmacao: e.target.value,
-                      },
-                    })
-                  }
-                />
-              </Modal>,
-            ]}
-            className="blue-grey darken-1"
-            textClassName="white-text"
-            title="CONTATO"
-          >
-            <p>Email: {this.state.info.Email.trim()}</p>
-            <p>Endereço: {this.state.info.M0_ENDCOB}</p>
-            <p>CEP: {maskCEP(this.state.info.M0_CEPCOB)}</p>
-            <p>Estado: {this.state.info.M0_ESTCOB}</p>
-            <p>Município: {this.state.info.M0_CIDCOB}</p>
-          </Card>
-
-          <Card
-            actions={[
-              <Button
-                onClick={() => this.handleChangeTax()}
-                disabled={
-                  this.state.info.ParamTxt !== this.state.newTaxa.tipo ||
-                  this.state.info.ParamVlr !== this.state.newTaxa.valor
-                    ? false
-                    : true
-                }
-              >
-                Salvar<Icon left>save</Icon>
-              </Button>,
-            ]}
-            className="blue-grey darken-1"
-            textClassName="white-text"
-            title="TAXAS"
-          >
-            <label>TIPO</label>
-            <select
-              onChange={(e) => {
-                this.setState({ newTaxa: { tipo: e.target.value, valor: 0 } });
-                const i = document.querySelectorAll("input");
-
-                i[0].value = "";
-              }}
-              style={{ display: "inline" }}
-              defaultValue={this.state.info.ParamTxt}
-            >
-              <option value="PERCENTUAL">Imposto</option>
-              <option value="VALOR FIXO">Valor fixo</option>
-            </select>
-            <TextInput
-              onChange={(e) => {
-                e.target.value = valueCheck(e.target.value, e);
-
-                this.setState({
-                  newTaxa: { ...this.state.newTaxa, valor: e.target.value },
-                });
-              }}
-              icon={<Icon left>attach_money</Icon>}
-              placeholder={
-                this.state.newTaxa.tipo === "PERCENTUAL"
-                  ? `${parseFloat(this.state.newTaxa.valor) * 100}%`
-                  : `R$ ${this.state.newTaxa.valor}`
+  return !loaded ? (
+    <Loading />
+  ) : (
+    <Panel>
+      <div
+        className="XAlign"
+        style={{
+          justifyContent: "space-evenly",
+          flexWrap: "wrap",
+          alignItems: "flex-start",
+        }}
+      >
+        <Card
+          action={
+            <Dialog
+              title="Alterar Senha"
+              botao="Alterar Senha"
+              icone={<VpnKey />}
+              action={
+                <Button
+                  style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
+                  icon={<Check />}
+                  disabled={false}
+                  onClick={() => handleChangePassword()}
+                >
+                  Salvar
+                </Button>
               }
-            />
-          </Card>
-        </div>
-      </Panel>
-    );
-  }
+            >
+              <InputUnderline
+                type="password"
+                label="Senha atual"
+                onChange={(e) => setPassword({ ...password, atual: e })}
+              />
+
+              <InputUnderline
+                type="password"
+                label="Nova senha"
+                onChange={(e) => setPassword({ ...password, nova: e })}
+              />
+
+              <InputUnderline
+                type="password"
+                label="Confirmar nova senha"
+                onChange={(e) => setPassword({ ...password, confirmacao: e })}
+              />
+            </Dialog>
+          }
+        >
+          <Typography variant="h5" component="h2">
+            {info.M0_FILIAL[0]}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            CNPJ: {maskCNPJ(info.M0_CGC[0])}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            FILIAL: {info.M0_CODFIL[0]}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            IE: {info.M0_INSC}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            NIRE: {info.M0_NIRE}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            CNAE: {info.M0_CNAE}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            FPAS: {info.M0_FPAS}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Consultor: {info.Consultor}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Natureza Jurídica: {info.M0_NATJUR}
+          </Typography>
+        </Card>
+
+        <Card
+          action={
+            <Dialog
+              title="Alterar Email Principal"
+              botao="Alterar Email"
+              icone={<Settings />}
+              action={
+                <Button
+                  style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
+                  icon={<Check />}
+                  disabled={false}
+                  onClick={() => handleChangeEmail()}
+                >
+                  Salvar
+                </Button>
+              }
+            >
+              <InputUnderline
+                type="text"
+                label={`Atual: ${info.Email.trim()}`}
+                onChange={(e) => setNewEmail(e)}
+              />
+            </Dialog>
+          }
+        >
+          <Typography variant="h5" component="h2">
+            CONTATO
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Email: {info.Email.trim()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Endereço: {info.M0_ENDCOB}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Bairro: {info.M0_BAIRCOB}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            CEP: {maskCEP(info.M0_CEPCOB)}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Estado: {info.M0_ESTCOB}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Município: {info.M0_CIDCOB}
+          </Typography>
+        </Card>
+
+        <Card
+          action={
+            <Button
+              style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
+              icon={<Check />}
+              disabled={false}
+              onClick={() => handleChangeTax()}
+            >
+              Salvar
+            </Button>
+          }
+        >
+          <Typography variant="h5" component="h2">
+            TAXAS
+          </Typography>
+          <Select
+            label="Tipo"
+            value={newTaxa.tipo}
+            onChange={(e) => {
+              setNewTaxa({ tipo: e.target.value, valor: 0 });
+              const i = document.querySelectorAll("input");
+
+              i[0].value = "";
+            }}
+          >
+            <MenuItem value="PERCENTUAL">Imposto</MenuItem>
+            <MenuItem value="VALOR FIXO">Valor fixo</MenuItem>
+          </Select>
+          <InputUnderline
+            value={newTaxa.valor}
+            type="text"
+            label={
+              newTaxa.tipo === "PERCENTUAL" ? "Porcentagem(%)" : "Valor(R$)"
+            }
+            onChange={(e) => {
+              e = valueCheck(e);
+              setNewTaxa({ ...newTaxa, valor: e });
+            }}
+          />
+        </Card>
+      </div>
+    </Panel>
+  );
 }
 
 export default Perfil;

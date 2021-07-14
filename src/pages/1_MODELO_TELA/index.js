@@ -7,7 +7,7 @@ import Loading from "../../components/loading_screen";
 
 //import de elementos visuais
 import { Panel, Container } from '../../components/commom_in'
-import { Toast, ToastyContainer } from '../../components/toasty'
+import { Toast } from '../../components/toasty'
 
 export default class Exemplo extends React.Component {
 
@@ -38,7 +38,6 @@ export default class Exemplo extends React.Component {
             <Loading />
         ) : (
                 <Container>
-                    <ToastyContainer />
                     <Panel>
 
                     </Panel>

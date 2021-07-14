@@ -1,18 +1,19 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 export default function MultilineTextFields(props) {
-  const [value, setValue] = React.useState('Controlled');
+  const [value, setValue] = React.useState('');
 
   const handleChange = (event) => {
     setValue(event.target.value);
+    props.onChange(event);
   };
 
   return (
     <form noValidate autoComplete="off">
       <div>
         <TextField
+          {...props}
           id="outlined-multiline-flexible"
           label={props.label}
           multiline

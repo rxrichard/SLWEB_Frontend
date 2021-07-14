@@ -103,8 +103,12 @@ export const SolicitacaoReducer = (state = initialState, action) => {
     case CLICK_ADD_BEBIDA:
       let novoContenedor = null;
       if (action.Configuracao.bebida === "ÁGUA QUENTE") {
+        //se a bebida for agua quente é só ignorar o contenedor
         novoContenedor = [...state.Contenedor];
       } else if (action.Configuracao.tipo === "Mistura") {
+        //se a bebida for do tipo mistura
+
+        //aqui eu separo os contenedores que a bebida usa, ex cont = '105' = [1, 5]
         novoContenedor = [...state.Contenedor].concat(
           JSON.parse(
             "[" +
@@ -112,6 +116,8 @@ export const SolicitacaoReducer = (state = initialState, action) => {
               "]"
           )
         );
+
+        //aqui eu "somo" dois arrays sem duplicar elementos, ex: [1, 5, 9] + [1, 3, 7] = [1, 3, 5, 7 ,9]
         novoContenedor = [
           ...new Set([
             ...state.Contenedor,
@@ -123,15 +129,29 @@ export const SolicitacaoReducer = (state = initialState, action) => {
           ]),
         ];
       } else if (state.Contenedor.indexOf(action.Configuracao.contenedor) < 0) {
+        //aqui é se a bebida for pronta e o contenedor ainda não estiver configurado
         novoContenedor = [...state.Contenedor];
         novoContenedor.push(action.Configuracao.contenedor);
       } else {
+        //aqui é se a bebida pronta já tiver o contenedor configurado
         novoContenedor = [...state.Contenedor];
       }
+
+      //ordenação da configuração
+      let auxiliar = [...state.Configuracao, action.Configuracao];
+      let novaConfiguracao = new Array();
+      auxiliar.map((config) => {
+        novaConfiguracao[config.selecao] = config;
+        return null;
+      });
+      let Filtrado = novaConfiguracao.filter(function (el) {
+        return el != null;
+      });
+
       return {
         ...state,
         Contenedor: novoContenedor,
-        Configuracao: [...state.Configuracao, action.Configuracao],
+        Configuracao: Filtrado,
       };
     case CLICK_REMOVE_BEBIDA:
       const removedBebida = state.Configuracao[action.index];
@@ -208,17 +228,21 @@ export const SolicitacaoReducer = (state = initialState, action) => {
           action.PagType === "Cartão e Validador"
             ? "Moeda"
             : null,
-        Validador: action.PagType === "Validador" ||
-        action.PagType === "Cartão e Validador" ? ["0.05", "0.10", "0.25", "0.50", "1.00"] : []
+        Validador:
+          action.PagType === "Validador" ||
+          action.PagType === "Cartão e Validador"
+            ? ["0.05", "0.10", "0.25", "0.50", "1.00"]
+            : [],
       };
 
     case CHANGE_VALIDADOR_TIPO:
       return {
         ...state,
         TipoValidador: action.TipoValidador,
-        Validador: action.TipoValidador === 'Ficha'
-          ? []
-          : ["0.05", "0.10", "0.25", "0.50", "1.00"],
+        Validador:
+          action.TipoValidador === "Ficha"
+            ? []
+            : ["0.05", "0.10", "0.25", "0.50", "1.00"],
       };
 
     case CHANGE_VALIDADOR_FICHAS:

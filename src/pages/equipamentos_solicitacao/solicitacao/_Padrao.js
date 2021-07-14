@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   button: {
-    margin: theme.spacing(1),
+    marginLeft: '8px',
+    marginBottom: '8px',
     color: GREY_SECONDARY,
     height: "54px",
     border: `1px solid ${GREY_SECONDARY}`,

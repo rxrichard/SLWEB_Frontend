@@ -19,6 +19,7 @@ import Button from "../../../components/materialComponents/Button";
 import Modal from "../../../components/modal";
 import { Rotulo } from "../../../components/commom_in";
 import PadraoMod from "./_Padrao";
+import { Toast } from "../../../components/toasty";
 
 import {
   ChangePagamento,
@@ -62,12 +63,22 @@ function Requisicao(props) {
   } = props;
 
   useEffect(() => {
-    api.get("/equip/adresses").then((response) => {
-      LoadAtivos(response.data.MaquinasDisponiveis);
-      LoadBebidas(response.data.BebidasNovo);
-      LoadClientesEnderecos(response.data.endereços);
-      LoadMinDDL(response.data.MinDDL);
-    });
+    async function loadData() {
+      try {
+        const response = await api.get("/equip/adresses");
+
+        LoadAtivos(response.data.MaquinasDisponiveis);
+        LoadBebidas(response.data.BebidasNovo);
+        LoadClientesEnderecos(response.data.endereços);
+        LoadMinDDL(response.data.MinDDL);
+      } catch (err) {
+        Toast(
+          "Não foi possivel carregar as informações iniciais de bebidas e máquinas",
+          "error"
+        );
+      }
+    }
+    loadData();
   }, []);
 
   const chooseMaquina = (maq) => {
@@ -93,6 +104,8 @@ function Requisicao(props) {
     >
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         // condicao="*Limpe a configuração para alterar"
         label="Máquina"
         value={Maquina}
@@ -106,6 +119,8 @@ function Requisicao(props) {
 
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         // condicao="*Limpe a configuração para alterar"
         label="Pagamento"
         value={Pagamento}
@@ -118,12 +133,12 @@ function Requisicao(props) {
         <MenuItem value="Cartão e Validador">Cartão e Validador</MenuItem>
       </Selecao>
 
-      <div style={{ marginTop: "8px" }}>
+      <div>
         <Modal
           header="Detalhes do Validador"
           trigger={
             <Button
-              style={{ marginLeft: "8px", height: "54px" }}
+              style={{ marginLeft: "8px", marginBottom: "8px", height: "54px" }}
               icon={<Settings />}
               disabled={!shouldShowValidador(Pagamento, Configuracao)}
             >
@@ -165,7 +180,11 @@ function Requisicao(props) {
             </FormControl>
 
             <div className="YAlign">
-              {returnValidadorOption(TipoValidador, Validador, ChangeValidadorFichas)}
+              {returnValidadorOption(
+                TipoValidador,
+                Validador,
+                ChangeValidadorFichas
+              )}
             </div>
           </div>
         </Modal>
@@ -181,7 +200,7 @@ function Requisicao(props) {
         }
       />
       <Button
-        style={{ margin: "8px 0px 0px 8px", height: "54px" }}
+        style={{ margin: "0px 0px 8px 8px", height: "54px" }}
         onClick={() => clearConfig()}
         icon={<ThreeSixty />}
         disabled={Configuracao.length > 0 ? false : true}
@@ -299,55 +318,73 @@ const shouldShowValidador = (Pagamento, Configuracao) => {
 };
 
 const returnValidadorOption = (tipo, Validador, ChangeValidadorFichas) => {
-  switch(tipo){
-    case 'Ficha':
-      return (
-        opcoesValidador[0].map((item) => (
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
-            <input
-              checked={shouldBeChecked(item, Validador)}
-              onChange={(e) => {
-                ChangeValidadorFichas(e.target.value);
-              }}
-              type="checkbox"
-              value={item}
-              key={item}
-            />
-            <Rotulo style={{ margin: '0px'}}>Ficha de {item}</Rotulo>
-          </div>
-        ))
-      )
-    case 'Moeda':
-      return (
-        opcoesValidador[1].map((item) => (
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
-              <input
-                checked={shouldBeChecked(item, Validador)}
-                type="checkbox"
-                value={item}
-              />
-              <Rotulo style={{ margin: '0px'}}>R$ {item}</Rotulo>
-            </div>
-          ))
-      )
-      case 'Moeda e Ficha':
-      return (
-        opcoesValidador[2].map((item) => (
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center', marginTop: '8px' }}>
-              <input
-                type="checkbox"
-                value={item}
-                checked={shouldBeChecked(item, Validador)}
-                onChange={(e) => {
-                  ChangeValidadorFichas(e.target.value);
-                }}
-                key={item}
-              />
-              <Rotulo style={{ margin: '0px'}}>R$ {item}</Rotulo>
-            </div>
-          ))
-      )
-      default:
-      return null
+  switch (tipo) {
+    case "Ficha":
+      return opcoesValidador[0].map((item) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignContent: "center",
+            marginTop: "8px",
+          }}
+        >
+          <input
+            checked={shouldBeChecked(item, Validador)}
+            onChange={(e) => {
+              ChangeValidadorFichas(e.target.value);
+            }}
+            type="checkbox"
+            value={item}
+            key={item}
+          />
+          <Rotulo style={{ margin: "0px" }}>Ficha de {item}</Rotulo>
+        </div>
+      ));
+    case "Moeda":
+      return opcoesValidador[1].map((item) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignContent: "center",
+            marginTop: "8px",
+          }}
+        >
+          <input
+            checked={shouldBeChecked(item, Validador)}
+            type="checkbox"
+            value={item}
+          />
+          <Rotulo style={{ margin: "0px" }}>R$ {item}</Rotulo>
+        </div>
+      ));
+    case "Moeda e Ficha":
+      return opcoesValidador[2].map((item) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignContent: "center",
+            marginTop: "8px",
+          }}
+        >
+          <input
+            type="checkbox"
+            value={item}
+            checked={shouldBeChecked(item, Validador)}
+            onChange={(e) => {
+              ChangeValidadorFichas(e.target.value);
+            }}
+            key={item}
+          />
+          <Rotulo style={{ margin: "0px" }}>R$ {item}</Rotulo>
+        </div>
+      ));
+    default:
+      return null;
   }
-}
+};

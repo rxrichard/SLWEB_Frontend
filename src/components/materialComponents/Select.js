@@ -26,13 +26,23 @@ export default function SimpleSelect(props) {
   };
 
   useEffect(() => {
-    setVariable(props.value);
+    setVariable(
+      props.value !== null && typeof props.value != "undefined"
+        ? props.value
+        : ""
+    );
   }, [props.value]);
 
   return (
     <div>
       <FormControl
-        style={{ minWidth: props.width ? props.width : "120px" }}
+        style={{
+          minWidth: props.width ? props.width : "120px",
+          marginLeft: props.MLeft ? props.MLeft : "0px",
+          marginTop: props.MTop ? props.MTop : "0px",
+          marginRight: props.MRight ? props.MRight : "0px",
+          marginBottom: props.MBottom ? props.MBottom : "0px",
+        }}
         variant="outlined"
         className={classes.formControl}
         disabled={props.disabled}

@@ -3,7 +3,7 @@ import { api } from "../../services/api";
 import { Link } from "react-router-dom";
 
 import Image from "../../assets/logo_sl.PNG";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { Container, Box, Logo } from "../../components/commom_out";
 import { Bright } from "../../components/commom_functions";
 import Modal from "../../components/modal";
@@ -100,7 +100,6 @@ export default function LoginADM() {
 
   return (
     <Container style={{ backgroundColor: GREY_PRIMARY }}>
-      <ToastyContainer />
       <Box>
         <Logo src={Image} alt="Pilão professional" />
         <Input

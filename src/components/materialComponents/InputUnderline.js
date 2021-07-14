@@ -14,13 +14,13 @@ const useStyles = makeStyles((theme) => ({
 export default function BasicTextFields(props) {
   const classes = useStyles();
 
-  const handleChange = (e) => {
-    props.onChange(e.target.value)
+  const handleChange = (event) => {
+    props.onChange(event.target.value)
   }
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
-      <TextField type={props.type} id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
+      <TextField style={props.style} value={props.value} type={props.type} id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
     </form>
   );
 }

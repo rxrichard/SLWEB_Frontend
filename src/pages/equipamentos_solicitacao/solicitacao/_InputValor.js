@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import NumberFormat from "react-number-format";
 import clsx from "clsx";
 import { connect } from "react-redux";
 
@@ -32,82 +34,78 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator="."
+      decimalSeparator=","
+      decimalScale={4}
+      fixedDecimalScale={true}
+      isNumericString
+      prefix=""
+    />
+  );
+}
+
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
 function InputAdornments(props) {
   const classes = useStyles();
+  const [values, setValues] = React.useState({
+    numberformat: "1320",
+  });
 
   const { TipoValidador, Pagamento } = props.State;
 
   const handleChange = (event) => {
-    // event.target.value =
-    //   event.target.value.indexOf(",") < 0 && event.target.value.indexOf(".") < 0
-    //     ? event.target.value
-    //     : event.target.value + "0";
-    const entrada = event.target.value;
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
 
-    console.log(event.target.value)
-
-
-    if (
-      TipoValidador === "Ficha" &&
-      Number.isSafeInteger(Number(entrada.replace(/,/g, ".")))
-    ) {
-      //testa se o pagamento é valido por ficha(Número inteiro)
-      props.onChange(event);
-      return;
-    } else if (
-      TipoValidador === "Moeda" &&
-      !isNaN(Number(entrada.replace(/,/g, "."))) &&
-      entrada.replace(/,/g, ".") !== ""
-    ) {
-      //testa se o valor é valido para pagamento por moeda(Número com ponto flutuante => double ou float)
-      props.onChange(event);
-      return;
-    } else if (
-      !isNaN(
-        Number(entrada.replace(/,/g, ".")) && entrada.replace(/,/g, ".") !== ""
-      )
-    ) {
-      //testa se o valor é valido por pagamento que não seja validador(semelhante ao teste de validador por moeda, Número com ponto flutuante => double ou float)
-      props.onChange(event);
-      return;
-    } else if (entrada.replace(/,/g, ".") === "") {
-      //se o campo for limpo
-      props.onChange(event);
-    } else {
-      //se o valor for invalido, apagar caractére
-      event.target.value = event.target.value.substring(
-        0,
-        event.target.value.length - 1
-      );
-      Toast("Valor inválido");
-      return;
-    }
+    props.onChange(event);
   };
 
   return (
     <div className={classes.root}>
-      <div>
-        <TextField
-          label={props.label}
-          disabled={props.disabled}
-          id="outlined-start-adornment"
-          className={clsx(classes.margin, classes.textField)}
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                {`${defineDecorator(TipoValidador)}:`}
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          value={
-            typeof props.value != "undefined" && props.value !== null
-              ? props.value
-              : ""
-          }
-        />
-      </div>
+      <TextField
+        name="numberformat"
+        id="formatted-numberformat-input"
+        label={props.label}
+        disabled={props.disabled}
+        className={clsx(classes.margin, classes.textField)}
+        onChange={handleChange}
+        InputProps={{
+          inputComponent: NumberFormatCustom,
+          startAdornment: (
+            <InputAdornment position="start">
+              {`${defineDecorator(TipoValidador)}:`}
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        value={
+          typeof props.value != "undefined" && props.value !== null
+            ? props.value
+            : ""
+        }
+      />
     </div>
   );
 }
@@ -125,5 +123,24 @@ const defineDecorator = (TipoValidador) => {
     return "R$/Fch.";
   } else {
     return "R$";
+  }
+};
+
+const validaEntrada = (fieldValue, Pagamento, TValidador) => {
+  switch (Pagamento) {
+    case "Livre":
+      break;
+
+    case "Cartão":
+      break;
+
+    case "Validador":
+      break;
+
+    case "Cartão e Validador":
+      break;
+
+    default:
+      break;
   }
 };

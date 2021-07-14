@@ -9,7 +9,7 @@ import Loading from "../../components/loading_screen";
 import { Panel, Container } from '../../components/commom_in'
 import { Table } from '../../components/table'
 import { GoBack } from '../../components/buttons'
-import { Toast, ToastyContainer } from '../../components/toasty'
+import { Toast } from '../../components/toasty'
 
 export default class Franquia extends React.Component {
 
@@ -71,7 +71,6 @@ export default class Franquia extends React.Component {
             <Loading />
         ) : (
                 <Container>
-                    <ToastyContainer />
                     <Panel>
                         <Table>
                             <thead>

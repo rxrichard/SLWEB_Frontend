@@ -6,16 +6,21 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 //"Placeholder" da página enquanto dados são carregados no
-import { Button, TextInput, Textarea, Select, Icon } from "react-materialize";
+import { Button, TextInput, Icon } from "react-materialize";
+import Input from "../../components/materialComponents/InputUnderline";
+import InputMultline from "../../components/materialComponents/InputMultline";
 
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import Modal from "../../components/modal";
+import Select from "../../components/materialComponents/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 export default class Formulario extends React.Component {
   state = {
     cod_candidato: null,
+    email: "",
     loading: false, //switch pra ativar a animação de loading
     vadidado: false, //se o candidato já foi reconhecido
     form: {
@@ -107,16 +112,18 @@ export default class Formulario extends React.Component {
     }
   }
 
+  handleChangeEmail(value) {
+    this.setState({ email: value });
+  }
+
   async handleSolicitaCodigo(event) {
     event.target.disabled = true;
 
-    const email = document.getElementById("email_solicitacao").value;
-
-    if (email === "" || email === null) throw Error;
+    if (this.state.email === "" || this.state.email === null) throw Error;
 
     try {
       await api.post("/form/solicitacao", {
-        email,
+        email: this.state.email,
       });
       Toast("Verifique o código de acesso enviado para seu email", "success");
     } catch (err) {
@@ -548,7 +555,6 @@ export default class Formulario extends React.Component {
         }}
       >
         <h4>Questionário para Análise de Perfil</h4>
-        <ToastyContainer />
         <Panel
           style={{
             justifyContent: "flex-start",
@@ -601,13 +607,10 @@ export default class Formulario extends React.Component {
                     </Button>
                   }
                 >
-                  <TextInput
-                    id="email_solicitacao"
-                    placeholder="Email"
-                    data-length={50}
-                    error="Email inválido"
-                    email
-                    validate
+                  <Input
+                    style={{ width: '100%' }}
+                    onChange={(e) => this.handleChangeEmail(e)}
+                    Label="Email"
                   />
                 </Modal>
               </div>
@@ -645,52 +648,40 @@ export default class Formulario extends React.Component {
               </p>
               <div style={divBorder}>
                 <div style={divStyle2}>
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={120}
+                  <Input
+                    label="1. Nome completo"
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Nome_Completo: e.target.value,
+                          Nome_Completo: e,
                         },
                       })
                     }
-                    label="1. Nome completo"
                   />
-                  <TextInput
-                    validate
-                    data-length={10}
-                    style={{ fontSize: "1.20rem" }}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          DtNascimento: e.target.value,
+                          DtNascimento: e,
                         },
                       })
                     }
                     label="2. Dt. de nascimento"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={20}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, RG: e.target.value },
+                        form: { ...this.state.form, RG: e },
                       })
                     }
                     label="3. RG"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={20}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, CPF: e.target.value },
+                        form: { ...this.state.form, CPF: e },
                       })
                     }
                     label="4. CPF"
@@ -698,41 +689,32 @@ export default class Formulario extends React.Component {
                 </div>
 
                 <div style={divStyle}>
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={100}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Logradouro: e.target.value,
+                          Logradouro: e,
                         },
                       })
                     }
                     label="5. Logradouro"
                   />
 
-                  <TextInput
-                    data-length={4}
-                    validate
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Número: e.target.value },
+                        form: { ...this.state.form, Número: e },
                       })
                     }
-                    style={{ fontSize: "1.20rem" }}
                     label="6. Número"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={100}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Complemento: e.target.value,
+                          Complemento: e,
                         },
                       })
                     }
@@ -741,46 +723,34 @@ export default class Formulario extends React.Component {
                 </div>
 
                 <div style={divStyle2}>
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={50}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Bairro: e.target.value },
+                        form: { ...this.state.form, Bairro: e },
                       })
                     }
                     label="8. Bairro"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={50}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Municipio: e.target.value },
+                        form: { ...this.state.form, Municipio: e },
                       })
                     }
                     label="9. Município"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={50}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Estado: e.target.value },
+                        form: { ...this.state.form, Estado: e },
                       })
                     }
                     label="10. Estado"
                   />
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={20}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, CEP: e.target.value },
+                        form: { ...this.state.form, CEP: e },
                       })
                     }
                     label="11. CEP"
@@ -788,39 +758,29 @@ export default class Formulario extends React.Component {
                 </div>
 
                 <div style={divStyle2}>
-                  <TextInput
-                    validate
-                    email
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={100}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Email: e.target.value },
+                        form: { ...this.state.form, Email: e },
                       })
                     }
                     label="12. Email"
                   />
-                  <TextInput
-                    validate
-                    data-length={20}
-                    style={{ fontSize: "1.20rem" }}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Tel_Residencial: e.target.value,
+                          Tel_Residencial: e,
                         },
                       })
                     }
                     label="13. Telefone residencial"
                   />
-                  <TextInput
-                    validate
-                    data-length={20}
-                    style={{ fontSize: "1.20rem" }}
+                  <Input
                     onChange={(e) =>
                       this.setState({
-                        form: { ...this.state.form, Celular: e.target.value },
+                        form: { ...this.state.form, Celular: e },
                       })
                     }
                     label="14. Celular"
@@ -921,29 +881,23 @@ export default class Formulario extends React.Component {
                   this.state.form.Est_Civil !== null ? (
                     <>
                       <div style={divStyle}>
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={120}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Conj_Nome: e.target.value,
+                                Conj_Nome: e,
                               },
                             })
                           }
                           label="16. Nome do(a) cônjuge"
                         />
-                        <TextInput
-                          validate
-                          data-length={10}
-                          style={{ fontSize: "1.20rem" }}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Conj_DtNascimento: e.target.value,
+                                Conj_DtNascimento: e,
                               },
                             })
                           }
@@ -951,29 +905,23 @@ export default class Formulario extends React.Component {
                         />
                       </div>
                       <div style={divStyle}>
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={20}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Conj_CPF: e.target.value,
+                                Conj_CPF: e,
                               },
                             })
                           }
                           label="18. CPF"
                         />
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={20}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Conj_RG: e.target.value,
+                                Conj_RG: e,
                               },
                             })
                           }
@@ -981,29 +929,23 @@ export default class Formulario extends React.Component {
                         />
                       </div>
                       <div style={divStyle}>
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={50}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                TUnião: e.target.value,
+                                TUnião: e,
                               },
                             })
                           }
                           label="20. Tempo de união"
                         />
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={50}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Conj_RendMensal: e.target.value,
+                                Conj_RendMensal: e,
                               },
                             })
                           }
@@ -1014,28 +956,25 @@ export default class Formulario extends React.Component {
                   ) : null}
                   <p>22. CLT?</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
+                    value={this.state.form.CLT}
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, CLT: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
                   {this.state.form.CLT === "Sim" ? (
-                    <TextInput
-                      validate
-                      style={{ fontSize: "1.20rem" }}
-                      data-length={50}
+                    <Input
                       onChange={(e) =>
                         this.setState({
                           form: {
                             ...this.state.form,
-                            Rend_Mensal: e.target.value,
+                            Rend_Mensal: e,
                           },
                         })
                       }
@@ -1044,6 +983,8 @@ export default class Formulario extends React.Component {
                   ) : null}
                   <p>24. Possui filhos?</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1053,37 +994,28 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
                   {this.state.form.Tem_filhos === "Sim" ? (
                     <div style={divStyle}>
-                      <TextInput
-                        validate
-                        data-length={20}
-                        style={{ fontSize: "1.20rem" }}
+                      <Input
                         onChange={(e) =>
                           this.setState({
                             form: {
                               ...this.state.form,
-                              Qtd_filhos: e.target.value,
+                              Qtd_filhos: e,
                             },
                           })
                         }
                         label="25. Quantos:"
                       />
-                      <TextInput
-                        validate
-                        data-length={50}
-                        style={{ fontSize: "1.20rem" }}
+                      <Input
                         onChange={(e) =>
                           this.setState({
                             form: {
                               ...this.state.form,
-                              Idd_filhos: e.target.value,
+                              Idd_filhos: e,
                             },
                           })
                         }
@@ -1094,6 +1026,8 @@ export default class Formulario extends React.Component {
 
                   <p>27. Residencia:</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1103,26 +1037,21 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Própria">Própria</option>
-                    <option value="Alugada">Alugada</option>
-                    <option value="Financiada">Financiada</option>
-                    <option value="Emprestada">Emprestada</option>
-                    <option value="Outros">Outros</option>
+                    <MenuItem value="Própria">Própria</MenuItem>
+                    <MenuItem value="Alugada">Alugada</MenuItem>
+                    <MenuItem value="Financiada">Financiada</MenuItem>
+                    <MenuItem value="Emprestada">Emprestada</MenuItem>
+                    <MenuItem value="Outros">Outros</MenuItem>
                   </Select>
 
                   {this.state.form.T_Residencia === "Alugada" ||
                   this.state.form.T_Residencia === "Financiada" ? (
-                    <TextInput
-                      validate
-                      style={{ fontSize: "1.20rem" }}
+                    <Input
                       onChange={(e) =>
                         this.setState({
                           form: {
                             ...this.state.form,
-                            Residencia_Mensal: e.target.value,
+                            Residencia_Mensal: e,
                           },
                         })
                       }
@@ -1132,55 +1061,54 @@ export default class Formulario extends React.Component {
 
                   <p>29. Possui veículo?</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, P_Veiculo: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
                   <p>30. Possui Imóvel?</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, P_Imovel: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   <p>
                     31. Qual sua expectativa de retorno para esse investimento?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, Expect: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="10/20">10 a 20 meses</option>
-                    <option value="20/30">20 a 30 meses</option>
-                    <option value="30+">30+ meses</option>
+                    <MenuItem value="10/20">10 a 20 meses</MenuItem>
+                    <MenuItem value="20/30">20 a 30 meses</MenuItem>
+                    <MenuItem value="30+">30+ meses</MenuItem>
                   </Select>
 
                   <p>
                     32. Teve recolhimento de imposto de renda no ultimo ano?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1190,23 +1118,18 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   {this.state.form.Recolhimento === "Sim" ? (
                     <div style={divStyle}>
-                      <TextInput
-                        validate
-                        style={{ fontSize: "1.20rem" }}
+                      <Input
                         onChange={(e) =>
                           this.setState({
                             form: {
                               ...this.state.form,
-                              Recolhimento_QTD: e.target.value,
+                              Recolhimento_QTD: e,
                             },
                           })
                         }
@@ -1220,9 +1143,7 @@ export default class Formulario extends React.Component {
                     34. Qual a origem do capital disponível para a abertura do
                     negócio com a Pilão Professional?
                   </p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={250}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1231,18 +1152,15 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    validate
-                    placeholder="Especifique..."
+                    label="Especifique..."
                   />
                   <p>35. Qual sua renda familiar mensal?</p>
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Renda_Familiar: e.target.value,
+                          Renda_Familiar: e,
                         },
                       })
                     }
@@ -1250,9 +1168,7 @@ export default class Formulario extends React.Component {
                   />
 
                   <p>36. Como é composta sua renda familiar?</p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={250}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1261,21 +1177,19 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    placeholder="Especifique..."
+                    label="Especifique..."
                   />
 
                   <p>
                     37. Qual a disponibilidade para investimento na franquia, em
                     dinheiro, sem considerar empréstimos ou linhas de crédito?
                   </p>
-                  <TextInput
-                    validate
-                    style={{ fontSize: "1.20rem" }}
+                  <Input
                     onChange={(e) =>
                       this.setState({
                         form: {
                           ...this.state.form,
-                          Disp_Invest: e.target.value,
+                          Disp_Invest: e,
                         },
                       })
                     }
@@ -1287,17 +1201,16 @@ export default class Formulario extends React.Component {
                     profissional autônomo?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, T_Empresa: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
                   {this.state.form.T_Empresa === "Sim" ? (
                     <>
@@ -1310,9 +1223,7 @@ export default class Formulario extends React.Component {
                         ocasionaram o encerramento, se na ocasião houve prejuízo
                         ou lucro e se houve a ocorrência de dívidas pendentes
                       </p>
-                      <Textarea
-                        style={{ fontSize: "1.20rem" }}
-                        data-length={250}
+                      <InputMultline
                         onChange={(e) =>
                           this.setState({
                             form: {
@@ -1321,7 +1232,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        placeholder="Especifique..."
+                        label="Especifique..."
                       />
                     </>
                   ) : null}
@@ -1330,9 +1241,7 @@ export default class Formulario extends React.Component {
                     40. Qual a sua formação escolar/acadêmica (especificar grau
                     e área se houver)?
                   </p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={50}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1341,22 +1250,20 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    placeholder="Especifique..."
+                    label="Especifique..."
                   />
 
                   <p>
                     41. De forma simplificada, nos conte sobre suas últimas
                     experiências profissionais.
                   </p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={250}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, Ult_exp: e.target.value },
                       })
                     }
-                    placeholder="Especifique..."
+                    lable="Especifique..."
                   />
                 </div>
                 <div
@@ -1369,45 +1276,38 @@ export default class Formulario extends React.Component {
                 >
                   <p>42. Haverá sociedade neste negócio?</p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: { ...this.state.form, Sociedade: e.target.value },
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   {this.state.form.Sociedade === "Sim" ? (
                     <>
                       <div style={divStyle}>
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={120}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Nome_Socio: e.target.value,
+                                Nome_Socio: e,
                               },
                             })
                           }
                           label="43. Nome do sócio"
                         />
-                        <TextInput
-                          validate
-                          style={{ fontSize: "1.20rem" }}
-                          data-length={50}
+                        <Input
                           onChange={(e) =>
                             this.setState({
                               form: {
                                 ...this.state.form,
-                                Socio_Vinculo: e.target.value,
+                                Socio_Vinculo: e,
                               },
                             })
                           }
@@ -1415,24 +1315,19 @@ export default class Formulario extends React.Component {
                         />
                       </div>
                       <p>45. Há quanto tempo se conhecem?</p>
-                      <TextInput
-                        validate
-                        style={{ fontSize: "1.20rem" }}
-                        data-length={50}
+                      <Input
                         onChange={(e) =>
                           this.setState({
                             form: {
                               ...this.state.form,
-                              Tempo_ConheceSocio: e.target.value,
+                              Tempo_ConheceSocio: e,
                             },
                           })
                         }
                         placeholder="Especifique..."
                       />
                       <p>46. O que já realizaram juntos?</p>
-                      <Textarea
-                        style={{ fontSize: "1.20rem" }}
-                        data-length={250}
+                      <InputMultline
                         onChange={(e) =>
                           this.setState({
                             form: {
@@ -1441,7 +1336,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        placeholder="Especifique..."
+                        label="Especifique..."
                       />
 
                       <p>
@@ -1450,9 +1345,7 @@ export default class Formulario extends React.Component {
                         empresa (pessoa jurídica) que vai operar a franquia?
                         Especificar em que condições e em qual proporção
                       </p>
-                      <Textarea
-                        style={{ fontSize: "1.20rem" }}
-                        data-length={250}
+                      <InputMultline
                         onChange={(e) =>
                           this.setState({
                             form: {
@@ -1461,13 +1354,15 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        placeholder="Especifique...   "
+                        label="Especifique...   "
                       />
                       <p>
                         48. Havendo sociedada, essa pessoa participará do
                         investimento?
                       </p>
                       <Select
+                        width="200px"
+                        label="Selecione..."
                         onChange={(e) =>
                           this.setState({
                             form: {
@@ -1477,24 +1372,18 @@ export default class Formulario extends React.Component {
                           })
                         }
                       >
-                        <option selected hidden disabled value={null}>
-                          Selecione...
-                        </option>
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
+                        <MenuItem value="Sim">Sim</MenuItem>
+                        <MenuItem value="Não">Não</MenuItem>
                       </Select>
                       {this.state.form.Part_invest === "Sim" ? (
                         <>
                           <p>49. Em qual proporção?</p>
-                          <TextInput
-                            validate
-                            style={{ fontSize: "1.20rem" }}
-                            data-length={50}
+                          <Input
                             onChange={(e) =>
                               this.setState({
                                 form: {
                                   ...this.state.form,
-                                  Prop_Invest: e.target.value,
+                                  Prop_Invest: e,
                                 },
                               })
                             }
@@ -1510,6 +1399,8 @@ export default class Formulario extends React.Component {
                     alguém?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1519,19 +1410,14 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   {this.state.form.T_Empreendimento === "Sim" ? (
                     <>
                       <p>51. Como foi a experiência?</p>
-                      <Textarea
-                        style={{ fontSize: "1.20rem" }}
-                        data-length={250}
+                      <InputMultline
                         onChange={(e) =>
                           this.setState({
                             form: {
@@ -1540,7 +1426,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
-                        placeholder="Especifique...   "
+                        label="Especifique...   "
                       />
                     </>
                   ) : null}
@@ -1554,6 +1440,8 @@ export default class Formulario extends React.Component {
                     franquia?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1563,17 +1451,12 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   <p>53. Como você conheceu a Pilão Professional?</p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={250}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1582,7 +1465,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    placeholder="Especifique..."
+                    label="Especifique..."
                   />
 
                   <p>
@@ -1823,9 +1706,7 @@ export default class Formulario extends React.Component {
                     55. Qual foi a característica do negócio que mais pesou na
                     escolha da Pilão Professional?
                   </p>
-                  <Textarea
-                    style={{ fontSize: "1.20rem" }}
-                    data-length={250}
+                  <InputMultline
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1834,7 +1715,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
-                    placeholder="Especifique...   "
+                    label="Especifique...   "
                   />
 
                   <p>
@@ -1849,6 +1730,8 @@ export default class Formulario extends React.Component {
                     franqueadora.
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1858,11 +1741,8 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   <p>
@@ -1876,6 +1756,8 @@ export default class Formulario extends React.Component {
                     negócio?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1885,11 +1767,8 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
                   <p>
@@ -1905,6 +1784,8 @@ export default class Formulario extends React.Component {
                     solicitado, desde que pertinente ao negócio?
                   </p>
                   <Select
+                    width="200px"
+                    label="Selecione..."
                     onChange={(e) =>
                       this.setState({
                         form: {
@@ -1914,11 +1795,8 @@ export default class Formulario extends React.Component {
                       })
                     }
                   >
-                    <option selected hidden disabled value={null}>
-                      Selecione...
-                    </option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                    <MenuItem value="Sim">Sim</MenuItem>
+                    <MenuItem value="Não">Não</MenuItem>
                   </Select>
                 </div>
               </div>
@@ -1986,7 +1864,7 @@ export default class Formulario extends React.Component {
                     e.persist();
                     this.handleSubmit(e);
                   }}
-                  tooltipOptions={{
+                  tooltipMenuItems={{
                     position: "top",
                   }}
                   tooltip="Confirmar e enviar à Pilão Professional"
@@ -1999,7 +1877,7 @@ export default class Formulario extends React.Component {
                     e.persist();
                     this.handleRetriveWORD(e);
                   }}
-                  tooltipOptions={{
+                  tooltipMenuItems={{
                     position: "top",
                   }}
                   tooltip="Se preferir, faça o download do formulário e abra com o Microsoft Word"

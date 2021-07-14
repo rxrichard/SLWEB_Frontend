@@ -9,7 +9,7 @@ import {
   Logo,
 } from "../../components/commom_out";
 import { Input, LockOutlined, Work } from "@material-ui/icons/";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import Button from "../../components/materialComponents/Button";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import { RED_PRIMARY } from '../../components/colors'
@@ -47,7 +47,6 @@ function Login() {
   };
   return (
     <Container style={{ backgroundColor: RED_PRIMARY }}>
-      <ToastyContainer />
       <Box>
         <Logo src={Image} alt="Pilão professional" />
         <InputUnderline

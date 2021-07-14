@@ -12,10 +12,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Add from "@material-ui/icons/Add";
 
 import Input from "./_InputValor";
-import { Toast, ToastyContainer } from "../../../components/toasty";
+import { Toast } from "../../../components/toasty";
 import { clickButton } from "../../../global/actions/SolicitacaoAction";
 import Select from "../../../components/materialComponents/Select";
-import { RED_PRIMARY } from '../../../components/colors'
+import { RED_PRIMARY } from "../../../components/colors";
 
 function DialogSelect(props) {
   const classes = useStyles();
@@ -93,7 +93,10 @@ function DialogSelect(props) {
       medida === "" ||
       tipo === "" ||
       configura === "" ||
-      (Pagamento !== "Livre" && (valor === "" || String(valor) === String(0) || typeof valor == 'undefined'))
+      (Pagamento !== "Livre" &&
+        (valor === "" ||
+          String(valor) === String(0) ||
+          typeof valor == "undefined"))
     ) {
       Toast("Selecione todos os campos");
       return;
@@ -115,7 +118,6 @@ function DialogSelect(props) {
 
   return (
     <div>
-      <ToastyContainer />
       <Button
         variant="contained"
         disabled={props.disabled}
@@ -199,7 +201,7 @@ function DialogSelect(props) {
               onChange={(e) => setValor(e.target.value)}
               label="Valor Real"
               value={valor}
-              />
+            />
 
             <Input
               onChange={(e) => setValor2(e.target.value)}
@@ -240,9 +242,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
   },
   button: {
-    margin: theme.spacing(1),
+    marginLeft: "8px",
+    marginBottom: "8px",
     backgroundColor: RED_PRIMARY,
-    height: '54px'
+    height: "54px",
   },
 }));
 
@@ -275,34 +278,48 @@ const showBebidaDisponivel = (
     //retornar uma lista das bebidas e medidas q podem ser feitas com todos contenedores já em uso
     BebidasDisponiveis.map((bebida) => {
       if (bebida.Bebida === "ÁGUA QUENTE") {
+        //agua quente é automaticamente adicionada ao array porque não necessita de contenedor
         BebidasFiltradas.push(bebida);
         return null;
       }
 
-      if (Contenedor.indexOf(bebida.ContPronto) < 0) {
+      //verifico se o contenedor para a bebida pronta já está configurado, se sim ativo a opção pronto
+      if (
+        Contenedor.indexOf(bebida.ContPronto) < 0 ||
+        bebida.ContPronto === null
+      ) {
         bebida.Pronto = false;
-      }else{
+      } else {
         bebida.Pronto = true;
       }
+
+      //passo os contenedores pra bebida em mistura de ex: '105' para [1, 5]
       contenedoresNecessários = JSON.parse(
         "[" + String(bebida.ContMist).replace(/0/g, ",") + "]"
       );
 
+      //verifico se os contenedores para a bebida mistura já estão ambos configurados no contenedor
+      //se um dos contenedores necessarios não estiver cadastrado, define a variavel requisitos para false
       contenedoresNecessários.map((req) => {
         if (req !== null && Contenedor.indexOf(req) < 0) {
           requisitos = false;
         }
         return null;
       });
+
+      //se a variavel requisitos for falsa define a opção mistura da bebida para false tambem
       if (!requisitos) {
         bebida.Mistura = false;
       }
 
+      //reseto a variavel requisitos para ser usada novamente
       requisitos = true;
 
       if (!bebida.Mistura && !bebida.Pronto) {
+        //se nem a bebida pronta ou a mistura estiverem disponiveis, nem adiciona a bebida ao Array de retorno
         return null;
       } else {
+        //se ao menos uma opção da bebida estiver disponivel, retorno ela no array de retorno
         BebidasFiltradas.push(bebida);
         return null;
       }
@@ -311,15 +328,21 @@ const showBebidaDisponivel = (
     //retorna a lista de bebidas e medidas que podem ser feitas adicionando ou não mais contenedores
     BebidasDisponiveis.map((bebida) => {
       if (bebida.Bebida === "ÁGUA QUENTE") {
+        //agua quente é automaticamente adicionada ao array porque não necessita de contenedor
         BebidasFiltradas.push(bebida);
         return null;
       }
+
+      //passo os contenedores pra bebida em mistura de ex: '105' para [1, 5]
       contenedoresNecessários = JSON.parse(
         "[" + String(bebida.ContMist).replace(/0/g, ",") + "]"
       );
 
+      //verifico se os contenedores para a bebida mistura já estão ambos configurados no contenedor
+      //se um dos contenedores necessarios não estiver cadastrado, define a variavel requisitos para false
       contenedoresNecessários.map((req) => {
         if (req !== null && Contenedor.indexOf(req) < 0) {
+          //conto se faltam contenedores e quantos são
           contador++;
           requisitos = false;
         } else if (req === null) {
@@ -330,19 +353,29 @@ const showBebidaDisponivel = (
       });
 
       if (requisitos) {
+        //se requisitos for true(não falta nenhum contenedor pra bebida), ativa a opção mistura
         bebida.Mistura = true;
       } else if (contador <= ContenedoresDisponiveis) {
+        //se a quantidade de contenedores necessarios(contador) for menor ou igual à disponivel ativa a opção mistura
         bebida.Mistura = true;
       } else {
+        //desativa a opção mistura
         bebida.Mistura = false;
+      }
+
+      if (bebida.ContPronto !== null) {
+        //se existir um contenedor pronto pra bebida, ativa a opção pronto
+        bebida.Pronto = true;
       }
 
       contador = 0;
       requisitos = true;
 
       if (!bebida.Mistura && !bebida.Pronto) {
+        //se nem a bebida pronta ou a mistura estiverem disponiveis, nem adiciona a bebida ao Array de retorno
         return null;
       } else {
+        //se ao menos uma opção da bebida estiver disponivel, retorno ela no array de retorno
         BebidasFiltradas.push(bebida);
         return null;
       }

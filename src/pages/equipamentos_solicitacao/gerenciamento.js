@@ -3,7 +3,7 @@ import { saveAs } from "file-saver";
 import { api } from "../../services/api";
 
 import Loading from "../../components/loading_screen";
-import { Toast, ToastyContainer } from "../../components/toasty";
+import { Toast } from "../../components/toasty";
 import { Panel, Container } from "../../components/commom_in";
 import { Button, Icon } from "react-materialize";
 import { Table } from "../../components/table";
@@ -85,7 +85,6 @@ export default class Management extends React.Component {
     ) : (
       <Container>
         <Panel style={{ justifyContent: "flex-start" }}>
-          <ToastyContainer />
           <Table hoverable={true} responsive={true} centered>
             <thead>
               <th>Solicitação Nº</th>

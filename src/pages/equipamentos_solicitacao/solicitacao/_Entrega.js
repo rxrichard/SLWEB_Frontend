@@ -77,6 +77,8 @@ function Entrega(props) {
     <>
       <Selecao
         width="200px"
+        MLeft="8px"
+        MBottom="8px"
         condicao="*Nenhum cliente encontrado"
         label="Cliente"
         value={CNPJ_Destino}

@@ -59,12 +59,16 @@ function Sidebar(props) {
             }
           >
             <Link to="/">
-              <Icon center>description</Icon>
+              <Icon center>home</Icon>
               Inicio
             </Link>
             <Link to="/perfil">
               <Icon center>person</Icon>
               Perfil
+            </Link>
+            <Link to="/leads">
+              <Icon center>person_pin_circle</Icon>
+              Leads
             </Link>
             <Link to="/ajuda">
               <Icon center>help_outline</Icon>
