@@ -127,7 +127,7 @@ function Requisicao(props) {
         disabled={Configuracao.length > 0 ? true : false}
         onChange={(e) => ChangePagamento(e.target.value)}
       >
-        <MenuItem value="Livre">Livre</MenuItem>
+        <MenuItem value="Sem Pagamento">Sem Pagamento</MenuItem>
         <MenuItem value="Cartão">Cartão</MenuItem>
         <MenuItem value="Validador">Validador</MenuItem>
         <MenuItem value="Cartão e Validador">Cartão e Validador</MenuItem>

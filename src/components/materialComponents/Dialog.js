@@ -34,10 +34,10 @@ export default function DraggableDialog(props) {
   };
 
   useEffect(() => {
-    if (typeof props.shoulClose != "undefined") {
-      setOpen(!props.shoulClose);
+    if (typeof props.shouldClose != "undefined") {
+      setOpen(!props.shouldClose);
     }
-  }, [props.shoulClose]);
+  }, [props.shouldClose]);
 
   return (
     <div>

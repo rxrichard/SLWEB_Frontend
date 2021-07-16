@@ -93,7 +93,7 @@ function DialogSelect(props) {
       medida === "" ||
       tipo === "" ||
       configura === "" ||
-      (Pagamento !== "Livre" &&
+      (Pagamento !== "Sem Pagamento" &&
         (valor === "" ||
           String(valor) === String(0) ||
           typeof valor == "undefined"))
@@ -139,19 +139,28 @@ function DialogSelect(props) {
         <DialogContent>
           <form className={classes.container}>
             <Select
+              MLeft="8px"
+              MBottom="8px"
               onChange={(e) => setSelecao(e.target.value)}
               label="Seleção"
             >
               {createSelecoes(Capacidade, Configuracao)}
             </Select>
 
-            <Select onChange={(e) => chooseBebida(e)} label="Bebida">
+            <Select
+              MLeft="8px"
+              MBottom="8px"
+              onChange={(e) => chooseBebida(e)}
+              label="Bebida"
+            >
               {BebidasDisponiveisFiltradas.map((bebida, i) => (
                 <MenuItem value={i}>{bebida.Bebida}</MenuItem>
               ))}
             </Select>
 
             <Select
+              MLeft="8px"
+              MBottom="8px"
               value={medida}
               disabled={bebida === "" ? true : false}
               onChange={(e) => setMedida(e.target.value)}
@@ -164,6 +173,8 @@ function DialogSelect(props) {
                 : null}
             </Select>
             <Select
+              MLeft="8px"
+              MBottom="8px"
               value={tipo}
               disabled={bebida === "" ? true : false}
               onChange={(e) => {
@@ -189,6 +200,8 @@ function DialogSelect(props) {
             </Select>
 
             <Select
+              MLeft="8px"
+              MBottom="8px"
               label="Ativa?"
               value={configura}
               onChange={(e) => setconfigura(e.target.value)}
@@ -205,7 +218,7 @@ function DialogSelect(props) {
 
             <Input
               onChange={(e) => setValor2(e.target.value)}
-              label="Valor Repasse"
+              label="Valor Complementar"
               value={valor2}
             />
           </form>

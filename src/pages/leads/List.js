@@ -4,11 +4,7 @@ import "moment/locale/pt-br";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import {
-  AddLimite,
-  SubLimite,
-  MoveLinha,
-} from "../../global/actions/LeadAction";
+import { AddLimite, MoveLinha } from "../../global/actions/LeadAction";
 import { api } from "../../services/api";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -51,7 +47,7 @@ function CustomizedAccordions(props) {
   const [leads, setLeads] = useState([]);
   const [motivo, setMotivo] = useState("");
 
-  const { AddLimite, SubLimite, MoveLinha } = props;
+  const { AddLimite, MoveLinha } = props;
   const { Limites } = props.State;
 
   useEffect(() => {
@@ -86,7 +82,6 @@ function CustomizedAccordions(props) {
 
       if (type === "release") {
         aux[index] = Object.assign(aux[index], { close: true });
-        SubLimite();
       } else {
         aux[index] = Object.assign(aux[index], response.data[0]);
         aux[index] = Object.assign(aux[index], { close: false });
@@ -112,21 +107,28 @@ function CustomizedAccordions(props) {
     <div style={{ width: "100%" }}>
       {leads.map((le, i) => (
         <Accordion square key={le.Id} id={le.Id}>
-          <div className="XAlign" style={{ justifyContent: "space-between" }}>
+          <div
+            className="XAlign"
+            style={{
+              justifyContent: "space-between",
+              borderBottom: "1px solid #CCCCCC",
+              paddingBottom: "8px",
+            }}
+          >
             <div>
-            <Typography variant="subtitle2" gutterBottom>
-              <strong>{moment(le.Insercao).fromNow(false)}</strong>
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              {mountString(le)}
-            </Typography>
+              <Typography variant="subtitle2" gutterBottom>
+                <strong>{moment(le.Insercao).fromNow(false)}</strong>
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                {mountString(le)}
+              </Typography>
             </div>
             <Dialog
-              disabled={le.close}
-              shoulClose={le.close}
+              disabled={shouldClose(le)}
+              shouldClose={shouldClose(le)}
               icone={<ContactPhone />}
               botao={
-                le.close
+                shouldClose(le)
                   ? "Desistiu"
                   : shouldShowAdress(le)
                   ? "Contato Lead"
@@ -221,7 +223,6 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       AddLimite,
-      SubLimite,
       MoveLinha,
     },
     dispatch
@@ -284,5 +285,15 @@ const returnTime = (dados, addtime, max) => {
   } else {
     final = moment(dados.DataHora).utc().format("LLLL");
     return final;
+  }
+};
+
+const shouldClose = (dados) => {
+  if (typeof dados.close != "undefined") {
+    return dados.close;
+  }
+
+  if (dados.Ativo === false && dados.DataFechamento !== null) {
+    return true;
   }
 };

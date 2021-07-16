@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import NumberFormat from "react-number-format";
 import clsx from "clsx";
@@ -7,8 +7,6 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
-
-import { Toast } from "../../../components/toasty";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let Decimais = 4;
+
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
 
@@ -48,10 +48,11 @@ function NumberFormatCustom(props) {
             value: values.value,
           },
         });
+        console.log(props);
       }}
+      decimalScale={Decimais}
       thousandSeparator="."
       decimalSeparator=","
-      decimalScale={4}
       fixedDecimalScale={true}
       isNumericString
       prefix=""
@@ -72,6 +73,10 @@ function InputAdornments(props) {
   });
 
   const { TipoValidador, Pagamento } = props.State;
+
+  useEffect(() => {
+    Decimais = validaEntrada(Pagamento, TipoValidador);
+  }, [TipoValidador, Pagamento]);
 
   const handleChange = (event) => {
     setValues({
@@ -126,21 +131,21 @@ const defineDecorator = (TipoValidador) => {
   }
 };
 
-const validaEntrada = (fieldValue, Pagamento, TValidador) => {
+const validaEntrada = (Pagamento, TValidador) => {
   switch (Pagamento) {
-    case "Livre":
-      break;
-
+    case "Sem Pagamento":
+      return 4;
     case "Cartão":
-      break;
-
+      return 4;
     case "Validador":
-      break;
-
+      if (TValidador === "Ficha") {
+        return 0;
+      } else {
+        return 4;
+      }
     case "Cartão e Validador":
-      break;
-
+      return 4;
     default:
-      break;
+      return 4;
   }
 };

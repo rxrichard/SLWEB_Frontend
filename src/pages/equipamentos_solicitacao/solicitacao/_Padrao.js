@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -102,7 +102,7 @@ function FullScreenDialog({
       return;
     }
     PSelecionado.map((selec) => {
-      if ((typeof selec.Valor == "undefined" || String(selec.Valor) === String(0) || selec.Valor === 0) && Pagamento !== "Livre") {
+      if ((typeof selec.Valor == "undefined" || String(selec.Valor) === String(0) || selec.Valor === 0) && Pagamento !== "Sem Pagamento") {
         valid = true;
       }
       return null;
@@ -172,6 +172,8 @@ function FullScreenDialog({
           </Toolbar>
         </AppBar>
         <Selecao
+          MLeft='8px'
+          MTop='8px'
           width="200px"
           label="Configuração"
           value=""
@@ -205,7 +207,7 @@ function FullScreenDialog({
                       onChange={(e) =>
                         setValor2(PSelecionado, i, e.target.value)
                       }
-                      label="Valor Repasse"
+                      label="Valor Complementar"
                       value={typeof selecao.Valor2 != 'undefined' ? selecao.Valor2 : null}
                     />
                   </div>

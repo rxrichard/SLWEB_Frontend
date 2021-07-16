@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { api } from '../../services/api'
+import { api } from "../../services/api";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
@@ -32,52 +32,30 @@ function VerticalLinearStepper(props) {
   const steps = getSteps();
   const [open, setOpen] = React.useState(false);
 
-  const {
-    MaquinaId,
-    Maquina,
-    Contenedor,
-    Configuracao,
-    Pagamento,
-    Validador,
-    TipoValidador,
-    InibirCopos,
-    Corporativa,
-    Gabinete,
-    Abastecimento,
-    Chip,
-    AntExt,
-    Cliente_Destino,
-    CNPJ_Destino,
-    Endereço_Entrega,
-    Data_Entrega_Desejada,
-    Contato,
-    Email_Acompanhamento,
-    Telefone_Contato,
-    Observacao,
-  } = props.State;
+  const { Maquina } = props.State;
 
   const Solicitacao = {
-    MaquinaId,
-    Maquina,
-    Contenedor,
-    Configuracao,
-    Pagamento,
-    Validador,
-    TipoValidador,
-    InibirCopos,
-    Corporativa,
-    Gabinete,
-    Abastecimento,
-    Chip,
-    AntExt,
-    Cliente_Destino,
-    CNPJ_Destino,
-    Endereço_Entrega,
-    Data_Entrega_Desejada,
-    Contato,
-    Email_Acompanhamento,
-    Telefone_Contato,
-    Observacao,
+    MaquinaId: props.State.MaquinaId,
+    Maquina: props.State.Maquina,
+    Contenedor: props.State.Contenedor,
+    Configuracao: props.State.Configuracao,
+    Pagamento: props.State.Pagamento,
+    Validador: props.State.Validador,
+    TipoValidador: props.State.TipoValidador,
+    InibirCopos: props.State.InibirCopos,
+    Corporativa: props.State.Corporativa,
+    Gabinete: props.State.Gabinete,
+    Abastecimento: props.State.Abastecimento,
+    Chip: props.State.Chip,
+    AntExt: props.State.AntExt,
+    Cliente_Destino: props.State.Cliente_Destino,
+    CNPJ_Destino: props.State.CNPJ_Destino,
+    Endereço_Entrega: props.State.Endereço_Entrega,
+    Data_Entrega_Desejada: props.State.Data_Entrega_Desejada,
+    Contato: props.State.Contato,
+    Email_Acompanhamento: props.State.Email_Acompanhamento,
+    Telefone_Contato: props.State.Telefone_Contato,
+    Observacao: props.State.Observacao,
   };
 
   const handleNext = () => {
@@ -208,7 +186,7 @@ const useStyles = makeStyles((theme) => ({
   altButton: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     backgroundColor: RED_SECONDARY,
     "&:hover": {
       backgroundColor: RED_SECONDARY,
@@ -252,7 +230,6 @@ function getStepContent(step) {
   }
 }
 
-
 function PaperComponent(props) {
   return (
     <Draggable
@@ -278,8 +255,7 @@ const wichHelpShow = (step, Maquina) => {
           </li>
           <li style={{ marginBottom: "10px" }}>
             <div>
-              <strong>Pagamento livre:</strong> A máquina não cobrará pelas
-              doses consumidas.
+              <strong>Sem Pagamento:</strong> A máquina não acompanhará nenhum sistema de pagamento.
               <br />
               <strong>Pagamento por cartão:</strong> Esse sistema de pagamento
               acompanha uma máquina de cartões digital.
@@ -293,7 +269,7 @@ const wichHelpShow = (step, Maquina) => {
               <strong>Valor Real:</strong> Preço que deve ser cobrado pela dose
               na máquina, definir esse valor como R$ 0 torna a bebida livre.
               <br />
-              <strong>Valor Repasse(Não obrigatório):</strong> Preço que deve
+              <strong>Valor Complementar(Não obrigatório):</strong> Preço que deve
               ser pago pelo cliente ao franqueado por dose.
             </div>
           </li>
@@ -349,43 +325,54 @@ const wichHelpShow = (step, Maquina) => {
         </ul>
       );
     case 2:
-      return <ul>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Cliente:</strong> Informe qual cliente receberá a máquina, caso ele não esteja cadastrado ainda no SLAplic você pode selecionar à sí proprio e alterar o endereço de entrega.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Endereço:</strong> Preenchido automaticamente baseado no cliente selecionado mas pode ser alterado, a máquina será enviada para esse endereço.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Data de entrega desejada:</strong> À partir da data mínima, selecione uma data conveniente para a entrega.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Contato:</strong> Com quem se deve entrar em contato para fazer a entrega no cliente.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Email:</strong> Email para acompanhamento da produção e entrega da máquina.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Telefone:</strong> Telefone para entrar em contato durante a entrega da máquina.
-        </div>
-      </li>
-      <li style={{ marginBottom: "10px" }}>
-        <div>
-          <strong>Observações:</strong> Qualquer detalher adicional à ser informado para a equipe técnica ou transporte.
-        </div>
-      </li>
-    </ul>
+      return (
+        <ul>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Cliente:</strong> Informe qual cliente receberá a máquina,
+              caso ele não esteja cadastrado ainda no SLAplic você pode
+              selecionar à sí proprio e alterar o endereço de entrega.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Endereço:</strong> Preenchido automaticamente baseado no
+              cliente selecionado mas pode ser alterado, a máquina será enviada
+              para esse endereço.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Data de entrega desejada:</strong> À partir da data
+              mínima, selecione uma data conveniente para a entrega.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Contato:</strong> Com quem se deve entrar em contato para
+              fazer a entrega no cliente.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Email:</strong> Email para acompanhamento da produção e
+              entrega da máquina.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Telefone:</strong> Telefone para entrar em contato durante
+              a entrega da máquina.
+            </div>
+          </li>
+          <li style={{ marginBottom: "10px" }}>
+            <div>
+              <strong>Observações:</strong> Qualquer detalher adicional à ser
+              informado para a equipe técnica ou transporte.
+            </div>
+          </li>
+        </ul>
+      );
     default:
       return "Ajuda não encontrada para esse passo";
   }
@@ -441,13 +428,14 @@ const handleSubmit = async (Solicitacao, setDesativar) => {
     return;
   }
 
-  if (Solicitacao.Chip === "") {
-    Toast(
-      "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
-    );
-    setDesativar(false);
-    return;
-  }
+  // Verificação desativada por solicitação do Alberto
+  // if (Solicitacao.Chip === "") {
+  //   Toast(
+  //     "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+  //   );
+  //   setDesativar(false);
+  //   return;
+  // }
 
   if (Solicitacao.AntExt === "") {
     Toast("Informe se o a máquina deve acompanhar uma antena externa");

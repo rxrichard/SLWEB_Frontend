@@ -44,7 +44,7 @@ function CustomizedTable(props) {
             <StyledTableCell>Bebida</StyledTableCell>
             <StyledTableCell>Medida</StyledTableCell>
             <StyledTableCell>Valor Real</StyledTableCell>
-            <StyledTableCell>Valor Repasse</StyledTableCell>
+            <StyledTableCell>Valor Complementar</StyledTableCell>
             <StyledTableCell>Tipo</StyledTableCell>
             <StyledTableCell>Ativa</StyledTableCell>
             <StyledTableCell></StyledTableCell>
