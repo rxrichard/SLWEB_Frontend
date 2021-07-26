@@ -25,12 +25,9 @@ import {
   ChangePagamento,
   ChangeValidador,
   LoadAtivos,
-  LoadBebidas,
-  LoadClientesEnderecos,
   LoadConfigPadrao,
   ChangeMaquina,
   ChangeValidadorFichas,
-  LoadMinDDL,
   clearConfig,
 } from "../../../global/actions/SolicitacaoAction";
 
@@ -52,34 +49,11 @@ function Requisicao(props) {
   const {
     ChangePagamento,
     ChangeValidador,
-    LoadAtivos,
     ChangeMaquina,
-    LoadClientesEnderecos,
-    LoadBebidas,
     ChangeValidadorFichas,
     LoadConfigPadrao,
-    LoadMinDDL,
     clearConfig,
   } = props;
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const response = await api.get("/equip/adresses");
-
-        LoadAtivos(response.data.MaquinasDisponiveis);
-        LoadBebidas(response.data.BebidasNovo);
-        LoadClientesEnderecos(response.data.endereços);
-        LoadMinDDL(response.data.MinDDL);
-      } catch (err) {
-        Toast(
-          "Não foi possivel carregar as informações iniciais de bebidas e máquinas",
-          "error"
-        );
-      }
-    }
-    loadData();
-  }, []);
 
   const chooseMaquina = (maq) => {
     if (maq === "") {
@@ -249,11 +223,8 @@ const mapDispatchToProps = (dispatch) =>
       ChangeValidador,
       LoadAtivos,
       ChangeMaquina,
-      LoadClientesEnderecos,
-      LoadBebidas,
       LoadConfigPadrao,
       ChangeValidadorFichas,
-      LoadMinDDL,
       clearConfig,
     },
     dispatch
@@ -281,9 +252,9 @@ const defineContenedor = (cont) => {
 };
 
 const opcoesValidador = [
-  ["1", "2", "3", "4", "5"], //Fichas
+  ["F1", "F2", "F3", "F4", "F5"], //Fichas
   ["0.05", "0.10", "0.25", "0.50", "1.00"], //Moedas
-  ["0.05", "0.10", "0.25", "0.50", "1.00", "1", "2", "3", "4", "5"], //Moeda e Ficha
+  ["0.05", "0.10", "0.25", "0.50", "1.00", "F1", "F2", "F3", "F4", "F5"], //Moeda e Ficha
 ];
 
 const shouldShowAddBebida = (Pagamento, Maquina, Configuracao, Capacidade) => {
@@ -327,19 +298,18 @@ const returnValidadorOption = (tipo, Validador, ChangeValidadorFichas) => {
             flexDirection: "row",
             justifyContent: "flex-start",
             alignContent: "center",
-            marginTop: "8px",
           }}
         >
-          <input
+          <FormControlLabel
+            key={item}
             checked={shouldBeChecked(item, Validador)}
             onChange={(e) => {
               ChangeValidadorFichas(e.target.value);
             }}
-            type="checkbox"
             value={item}
-            key={item}
+            control={<Radio />}
+            label={item.replace("F", "")}
           />
-          <Rotulo style={{ margin: "0px" }}>Ficha de {item}</Rotulo>
         </div>
       ));
     case "Moeda":
@@ -357,6 +327,9 @@ const returnValidadorOption = (tipo, Validador, ChangeValidadorFichas) => {
             checked={shouldBeChecked(item, Validador)}
             type="checkbox"
             value={item}
+            onChange={(e) => {
+              ChangeValidadorFichas(e.target.value);
+            }}
           />
           <Rotulo style={{ margin: "0px" }}>R$ {item}</Rotulo>
         </div>
@@ -369,19 +342,33 @@ const returnValidadorOption = (tipo, Validador, ChangeValidadorFichas) => {
             flexDirection: "row",
             justifyContent: "flex-start",
             alignContent: "center",
-            marginTop: "8px",
           }}
         >
-          <input
-            type="checkbox"
-            value={item}
-            checked={shouldBeChecked(item, Validador)}
-            onChange={(e) => {
-              ChangeValidadorFichas(e.target.value);
-            }}
-            key={item}
-          />
-          <Rotulo style={{ margin: "0px" }}>R$ {item}</Rotulo>
+          {!isNaN(Number(item.charAt(0))) ? (
+            <div style={{ marginTop: "8px" }}>
+              <input
+                type="checkbox"
+                value={item}
+                checked={shouldBeChecked(item, Validador)}
+                onChange={(e) => {
+                  ChangeValidadorFichas(e.target.value);
+                }}
+                key={item}
+              />
+              <Rotulo style={{ margin: "0px" }}>R$ {item}</Rotulo>
+            </div>
+          ) : (
+            <FormControlLabel
+              key={item}
+              checked={shouldBeChecked(item, Validador)}
+              onChange={(e) => {
+                ChangeValidadorFichas(e.target.value);
+              }}
+              value={item}
+              control={<Radio />}
+              label={item.replace("F", "")}
+            />
+          )}
         </div>
       ));
     default:

@@ -48,7 +48,6 @@ function NumberFormatCustom(props) {
             value: values.value,
           },
         });
-        console.log(props);
       }}
       decimalScale={Decimais}
       thousandSeparator="."
@@ -122,16 +121,21 @@ const mapStateToProps = (store) => ({
 export default connect(mapStateToProps)(InputAdornments);
 
 const defineDecorator = (TipoValidador) => {
+  /*no fim das contas os preços pagos em ficha ainda contam como R$ 
+    então não tem necessidade de exibir uma unidade monetária 'F$'*/
   if (TipoValidador === "Ficha") {
-    return "Ficha";
+    return "R$";
+    // return "Ficha";
   } else if (TipoValidador === "Moeda e Ficha") {
-    return "R$/Fch.";
+    return "R$";
+    // return "$/F";
   } else {
     return "R$";
   }
 };
 
 const validaEntrada = (Pagamento, TValidador) => {
+  //retorno as casas decimais que o campo deve aceitar
   switch (Pagamento) {
     case "Sem Pagamento":
       return 4;

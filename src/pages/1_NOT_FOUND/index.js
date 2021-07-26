@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Panel } from "../../components/commom_in";
 
-export default class PAGE_404 extends React.Component {
-  render() {
+function PAGE_404 () {
     return (
       <Panel>
         <h5>Desculpe, não foi possivel te levar até a pagina desejada...</h5>
@@ -13,5 +12,6 @@ export default class PAGE_404 extends React.Component {
         </p>
       </Panel>
     );
-  }
 }
+
+export default PAGE_404

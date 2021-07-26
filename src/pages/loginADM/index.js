@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Image from "../../assets/logo_sl.PNG";
 import { Toast } from "../../components/toasty";
 import { Container, Box, Logo } from "../../components/commom_out";
-import { Bright } from "../../components/commom_functions";
+import { Bright } from "../../misc/commom_functions";
 import Modal from "../../components/modal";
 import Button from "../../components/materialComponents/Button";
 import Input from "../../components/materialComponents/InputUnderline";
@@ -14,7 +14,7 @@ import {
   GREY_PRIMARY,
   RED_PRIMARY,
   GREY_SECONDARY,
-} from "../../components/colors";
+} from "../../misc/colors";
 
 export default function LoginADM() {
   const [adm_code, setAdmCode] = useState(null);

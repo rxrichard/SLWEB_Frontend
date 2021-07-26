@@ -15,7 +15,7 @@ import ContactPhone from "@material-ui/icons/ContactPhone";
 
 import Dialog from "../../components/materialComponents/Dialog";
 import Button from "../../components/materialComponents/Button";
-import { RED_SECONDARY, GREY_SECONDARY } from "../../components/colors";
+import { RED_SECONDARY, GREY_SECONDARY } from "../../misc/colors";
 import { Toast } from "../../components/toasty";
 import Input from "../../components/materialComponents/InputMultline";
 
@@ -70,12 +70,7 @@ function CustomizedAccordions(props) {
           motivo: motivo,
         })
         .catch((err) => {
-          if (err.response.status === 401) {
-            throw new Error(401);
-          } else if (err.response.status === 409) {
-            throw new Error(409);
-          }
-          throw err;
+          throw new Error(err.response.status);
         });
 
       const aux = [...leads];

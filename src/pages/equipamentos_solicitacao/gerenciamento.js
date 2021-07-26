@@ -2,21 +2,24 @@ import React from "react";
 import { saveAs } from "file-saver";
 import { api } from "../../services/api";
 
+import FindInPage from "@material-ui/icons/FindInPage";
+import Typography from "@material-ui/core/Typography";
+
 import Loading from "../../components/loading_screen";
 import { Toast } from "../../components/toasty";
 import { Panel, Container } from "../../components/commom_in";
-import { Button, Icon } from "react-materialize";
+import Button from "../../components/materialComponents/Button";
 import { Table } from "../../components/table";
-import { GoBack } from "../../components/buttons";
-import { convertData, dateCheck } from "../../components/commom_functions";
-import AdmModal from "./modals/admModal";
-import HistModal from "./modals/historyModal";
-import Modal from "../../components/modal";
+import { convertData, dateCheck } from "../../misc/commom_functions";
+import AdmDialog from "./modals/admDialog";
+import HistDialog from "./modals/historyDialog";
+import { RED_SECONDARY } from "../../misc/colors";
 
 export default class Management extends React.Component {
   state = {
     OSS: [],
     loaded: false,
+    switch: false,
   };
 
   async componentDidMount() {
@@ -30,19 +33,7 @@ export default class Management extends React.Component {
       }
     } catch (err) {
       Toast("Falha trazer todas as Requisições", "error");
-      setTimeout(() => {
-        window.location.assign("/");
-      }, 3000);
     }
-  }
-
-  async checkView(ID) {
-    try {
-      //Insere a data de vizualização da ordem por X departamento
-      await api.put("/equip/requests/check", {
-        ID,
-      });
-    } catch (err) {}
   }
 
   async handleRetrivePDF(OSID) {
@@ -68,14 +59,22 @@ export default class Management extends React.Component {
   showStatus(OS) {
     if (OS === null) return;
 
-    if (OS.OSCComAceite === null && OS.OSCStatus === "Ativo") {
+    if (OS.OSCComAceite === false || OS.OSCTecAceite === false) {
+      return "Supervisão";
+    } else if (OS.OSCComAceite === null && OS.OSCStatus === "Ativo") {
       return "Comercial";
     } else if (OS.OSCTecAceite === null && OS.OSCStatus === "Ativo") {
       return "Técnica";
     } else if (OS.OSCExpDtPrevisao === null && OS.OSCStatus === "Ativo") {
       return "Transporte";
+    } else if (OS.OSCExpDtPrevisao !== null && OS.OSCStatus === "Ativo") {
+      return "Entrega";
     } else if (OS.OSCStatus === "Cancelado") {
       return "Nenhuma";
+    } else if (OS.OSCStatus === "Concluido") {
+      return "Nenhuma";
+    } else {
+      return "Desconhecido";
     }
   }
 
@@ -84,75 +83,67 @@ export default class Management extends React.Component {
       <Loading />
     ) : (
       <Container>
-        <Panel style={{ justifyContent: "flex-start" }}>
+        <Panel style={{ justifyContent: "flex-start", alignItems: "center" }}>
+          <Typography variant="h6" gutterBottom>
+            Solicitações
+          </Typography>
           <Table hoverable={true} responsive={true} centered>
             <thead>
               <th>Solicitação Nº</th>
               <th>GrpVen</th>
               <th>Status</th>
-              <th>Pendencia</th>
+              <th>Pendência</th>
               <th>Data de solicitação</th>
               <th>Data pretendida</th>
-              <th>Data estimada</th>
+              <th>Previsão Tec.</th>
+              <th>Previsão Exp.</th>
               <th>Gerenciar</th>
               <th>Histórico</th>
               <th>PDF</th>
             </thead>
             <tbody>
-              {this.state.OSS.map((OS, i) => (
-                <tr>
-                  <td align="center">{OS.OSCId}</td>
-                  <td align="center">{OS.GrpVen}</td>
-                  <td align="center">{OS.OSCStatus}</td>
-                  <td align="center">{this.showStatus(OS)}</td>
-                  <td align="center">{convertData(OS.OSCDtSolicita)}</td>
-                  <td align="center">{convertData(OS.OSCDtPretendida)}</td>
-                  <td align="center">
-                    {OS.OSCExpDtPrevisao !== ""
-                      ? convertData(OS.OSCExpDtPrevisao)
-                      : "NA"}
-                  </td>
-                  <td align="center">
-                    <Modal
-                      header="Gerenciamento de solicitação"
-                      trigger={
-                        <Button style={{ marginBottom: "0px" }}>
-                          <Icon>settings</Icon>
-                        </Button>
-                      }
-                    >
-                      <AdmModal LOGS={OS} />
-                    </Modal>
-                  </td>
-                  <td>
-                    <Modal
-                      header="Histórico de gerenciamento"
-                      trigger={
-                        <Button style={{ marginBottom: "0px" }}>
-                          <Icon>history</Icon>
-                        </Button>
-                      }
-                    >
-                      <HistModal LOGS={OS} />
-                    </Modal>
-                  </td>
-                  <td>
-                    <Button
-                      tooltip="Baixar PDF"
-                      tooltipOptions={{
-                        position: "right",
-                      }}
-                      onClick={() => this.handleRetrivePDF(OS.OSCId)}
-                    >
-                      <Icon>find_in_page</Icon>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {this.state.OSS.filter((Sol) => Sol.OSCStatus !== null).map(
+                (OS) => (
+                  <tr>
+                    <td align="center">{OS.OSCId}</td>
+                    <td align="center">{OS.GrpVen}</td>
+                    <td align="center">{OS.OSCStatus}</td>
+                    <td align="center">{this.showStatus(OS)}</td>
+                    <td align="center">{convertData(OS.OSCDtSolicita)}</td>
+                    <td align="center">{convertData(OS.OSCDtPretendida)}</td>
+                    <td align="center">
+                      {OS.OSCTecDtPrevisao !== ""
+                        ? convertData(OS.OSCTecDtPrevisao)
+                        : "NA"}
+                    </td>
+                    <td align="center">
+                      {OS.OSCExpDtPrevisao !== ""
+                        ? convertData(OS.OSCExpDtPrevisao)
+                        : "NA"}
+                    </td>
+                    <td align="center">
+                      <AdmDialog Req={OS} />
+                    </td>
+                    <td>
+                      <HistDialog Req={OS} />
+                    </td>
+                    <td>
+                      <Button
+                        style={{
+                          color: "#FFFFFF",
+                          backgroundColor: RED_SECONDARY,
+                        }}
+                        onClick={() => this.handleRetrivePDF(OS.OSCId)}
+                      >
+                        <FindInPage />
+                      </Button>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </Table>
         </Panel>
-        <GoBack />
       </Container>
     );
   }

@@ -7,8 +7,7 @@ import red from "../assets/abstract_coffe_red.png";
 import yellow from "../assets/abstract_coffe_yellow.png";
 import slide1 from "../assets/slide_1.jpg";
 
-class Home extends React.Component {
-  render() {
+function Home () {
     return (
       <Panel>
         <Slider
@@ -56,7 +55,6 @@ class Home extends React.Component {
         </Slider>
       </Panel>
     );
-  }
 }
 
 export default Home;

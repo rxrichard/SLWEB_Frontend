@@ -8,7 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Paper from "@material-ui/core/Paper";
 import Draggable from "react-draggable";
 
-import { GREY_LIGHT, RED_SECONDARY } from '../colors'
+import { GREY_LIGHT, RED_SECONDARY } from '../../misc/colors'
 
 function PaperComponent(props) {
   return (

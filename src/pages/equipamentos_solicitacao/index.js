@@ -3,40 +3,30 @@ import React from "react";
 import MenuAbas from "./PainelAbas";
 import Logs from "./Logs";
 import Segmentos from "./Solicitacao";
+import Edit from "@material-ui/icons/Edit";
 
-import { Button, Icon } from "react-materialize";
+import Button from "../../components/materialComponents/Button";
 import { Panel } from "../../components/commom_in";
-import { GoBack } from "../../components/buttons";
+import { roleLevel } from "../../misc/commom_functions";
+import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
+import { GREY_SECONDARY } from "../../misc/colors";
 
 class Solicitacao extends React.Component {
-  componentDidMount(){
-    alert('Em Desenvolvimento!')
-  }
   render() {
     return (
       <Panel
-        style={{ overflow: "hidden", alignContent: "center", padding: "0px", justifyContent: 'flex-start' }}
+        style={{
+          overflow: "hidden",
+          alignContent: "center",
+          padding: "0px",
+          justifyContent: "flex-start",
+        }}
       >
         <MenuAbas titles={["Solicitar", "Solicitações"]}>
           <Segmentos />
           {/* <Cadastro /> */}
           <Logs />
         </MenuAbas>
-        <div className="XAlign">
-          {sessionStorage.getItem("role") !== "Franquia" ? (
-            <Button
-              onClick={() => {
-                this.props.history.push("/equipamentos/solicitacao/management");
-              }}
-              style={{
-                marginRight: "5px",
-              }}
-            >
-              Gerenciar configurações
-              <Icon left>edit</Icon>
-            </Button>
-          ) : null}
-        </div>
       </Panel>
     );
   }

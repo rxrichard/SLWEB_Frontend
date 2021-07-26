@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 
 import { Panel } from "../../components/commom_in";
-import {
-  maskCNPJ,
-  maskCEP,
-  valueCheck,
-} from "../../components/commom_functions";
+import { maskCNPJ, maskCEP, valueCheck } from "../../misc/commom_functions";
 import { Toast } from "../../components/toasty";
-import { FAILED_REQUEST } from "../../components/messages";
+import { FAILED_REQUEST } from "../../misc/messages";
 import Loading from "../../components/loading_screen";
 
 import Card from "../../components/materialComponents/Card";
@@ -19,7 +15,7 @@ import Check from "@material-ui/icons/Check";
 import Settings from "@material-ui/icons/Settings";
 import VpnKey from "@material-ui/icons/VpnKey";
 import Typography from "@material-ui/core/Typography";
-import { RED_SECONDARY } from "../../components/colors";
+import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
 import Select from "../../components/materialComponents/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -29,6 +25,7 @@ function Perfil() {
   const [newEmail, setNewEmail] = useState(null);
   const [newTaxa, setNewTaxa] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [wait, setWait] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -55,37 +52,50 @@ function Perfil() {
   }, []);
 
   const handleChangePassword = async () => {
+    setWait(true);
     try {
-      const response = await api.put("/profile/password", {
-        token: sessionStorage.getItem("token"),
-        password: password,
-      });
+      await api
+        .put("/profile/password", {
+          token: sessionStorage.getItem("token"),
+          password: password,
+        })
+        .catch((error) => {
+          throw new Error(error.response.status);
+        });
 
-      switch (response.status) {
+      Toast("Senha atualizada com sucesso", "success");
+      setWait(false);
+      setPassword({
+        atual: "",
+        nova: "",
+        confirmacao: "",
+      });
+    } catch (err) {
+      switch (Number(err.message)) {
         case 409:
           Toast("A nova senha diverge da confirmação", "error");
+          setWait(false);
           break;
         case 406:
           Toast("A senha deve possuir no máximo seis caractéres", "error");
+          setWait(false);
           break;
         case 405:
           Toast("A senha atual não está correta", "error");
+          setWait(false);
           break;
         case 304:
           Toast("Nova senha e atual são identicas", "error");
+          setWait(false);
           break;
-        case 400:
+        default:
           Toast(
             "Não foi possivel alterar sua senha, contate o suporte",
             "error"
           );
-          break;
-        default:
-          Toast("Senha atualizada com sucesso", "success");
+          setWait(false);
           break;
       }
-    } catch (err) {
-      Toast(FAILED_REQUEST, "error");
     }
   };
 
@@ -99,16 +109,20 @@ function Perfil() {
       return;
     }
 
+    setWait(true);
     try {
       const response = await api.put("/profile/email", {
-        token: sessionStorage.getItem("token"),
         email: newEmail,
       });
 
       if (response.status === 400) throw Error;
+
       Toast("Email atualizado com sucesso", "success");
+      setWait(false);
+      setInfo({ ...info, Email: newEmail });
     } catch (err) {
       Toast(FAILED_REQUEST, "error");
+      setWait(false);
     }
   };
 
@@ -138,6 +152,7 @@ function Perfil() {
         }}
       >
         <Card
+          style={{ marginBottom: "8px" }}
           action={
             <Dialog
               title="Alterar Senha"
@@ -145,9 +160,12 @@ function Perfil() {
               icone={<VpnKey />}
               action={
                 <Button
-                  style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
+                  style={{
+                    backgroundColor: wait ? GREY_LIGHT : RED_SECONDARY,
+                    color: "#FFFFFF",
+                  }}
                   icon={<Check />}
-                  disabled={false}
+                  disabled={wait}
                   onClick={() => handleChangePassword()}
                 >
                   Salvar
@@ -155,18 +173,21 @@ function Perfil() {
               }
             >
               <InputUnderline
+                value={password.atual}
                 type="password"
                 label="Senha atual"
                 onChange={(e) => setPassword({ ...password, atual: e })}
               />
 
               <InputUnderline
+                value={password.nova}
                 type="password"
                 label="Nova senha"
                 onChange={(e) => setPassword({ ...password, nova: e })}
               />
 
               <InputUnderline
+                value={password.confirmacao}
                 type="password"
                 label="Confirmar nova senha"
                 onChange={(e) => setPassword({ ...password, confirmacao: e })}
@@ -204,6 +225,7 @@ function Perfil() {
         </Card>
 
         <Card
+          style={{ marginBottom: "8px" }}
           action={
             <Dialog
               title="Alterar Email Principal"
@@ -211,9 +233,12 @@ function Perfil() {
               icone={<Settings />}
               action={
                 <Button
-                  style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
+                  style={{
+                    backgroundColor: wait ? GREY_LIGHT : RED_SECONDARY,
+                    color: "#FFFFFF",
+                  }}
                   icon={<Check />}
-                  disabled={false}
+                  disabled={wait}
                   onClick={() => handleChangeEmail()}
                 >
                   Salvar
@@ -221,6 +246,8 @@ function Perfil() {
               }
             >
               <InputUnderline
+                value={newEmail}
+                disabled={wait}
                 type="text"
                 label={`Atual: ${info.Email.trim()}`}
                 onChange={(e) => setNewEmail(e)}
@@ -252,6 +279,7 @@ function Perfil() {
         </Card>
 
         <Card
+          style={{ marginBottom: "8px" }}
           action={
             <Button
               style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}

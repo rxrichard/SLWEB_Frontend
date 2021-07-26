@@ -13,12 +13,12 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Close from "@material-ui/icons/Close";
 
-import { clickRemove } from '../../../global/actions/SolicitacaoAction'
+import { clickRemove } from "../../../global/actions/SolicitacaoAction";
 
 //estilo
 const useStyles = makeStyles({
   table: {
-    marginTop: '8px',
+    marginTop: "8px",
     minWidth: 700,
   },
 });
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 function CustomizedTable(props) {
   const classes = useStyles();
 
-  const { Configuracao, TipoValidador, Pagamento } = props.State
+  const { Configuracao, TipoValidador, Pagamento } = props.State;
 
   const { clickRemove } = props;
 
@@ -59,10 +59,14 @@ function CustomizedTable(props) {
               </StyledTableCell>
 
               <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
-              <StyledTableCell>{formataPreço(row.valor, TipoValidador)}</StyledTableCell>
-              <StyledTableCell>{formataPreço(row.valor2, TipoValidador)}</StyledTableCell>
+              <StyledTableCell>
+                {formataPreço(row.valor, TipoValidador)}
+              </StyledTableCell>
+              <StyledTableCell>
+                {formataPreço(row.valor2, TipoValidador)}
+              </StyledTableCell>
               <StyledTableCell>{row.tipo}</StyledTableCell>
-              <StyledTableCell>{row.configura ? "Sim":"Não"}</StyledTableCell>
+              <StyledTableCell>{row.configura ? "Sim" : "Não"}</StyledTableCell>
               <StyledTableCell>
                 <Button
                   variant="outlined"
@@ -84,7 +88,7 @@ function CustomizedTable(props) {
 }
 
 const mapStateToProps = (store) => ({
-  State: store.solicitacaoState
+  State: store.solicitacaoState,
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -113,9 +117,12 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const formataPreço = (valor, TipoValidador) => {
-  if(TipoValidador === 'Ficha'){
-    return `${typeof valor == 'undefined' ? '0' : valor} Ficha`
-  }else{
-    return `R$ ${typeof valor == 'undefined' ? '0' : valor}`
+  if (TipoValidador === "Ficha") {
+    /*no fim das contas os preços pagos em ficha ainda contam como R$ 
+    então não tem necessidade de exibir uma unidade monetária 'F$'*/
+    return `R$ ${typeof valor == "undefined" ? "0" : valor}`;
+    // return `${typeof valor == 'undefined' ? '0' : valor} Ficha`
+  } else {
+    return `R$ ${typeof valor == "undefined" ? "0" : valor}`;
   }
-}
+};

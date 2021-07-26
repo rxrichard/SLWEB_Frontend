@@ -26,7 +26,7 @@ import {
 } from "../../../global/actions/SolicitacaoAction";
 import Selecao from "../../../components/materialComponents/Select";
 import Input from "./_InputValor";
-import { GREY_SECONDARY } from "../../../components/colors";
+import { GREY_SECONDARY } from "../../../misc/colors";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   button: {
-    marginLeft: '8px',
-    marginBottom: '8px',
+    marginLeft: "8px",
+    marginBottom: "8px",
     color: GREY_SECONDARY,
     height: "54px",
     border: `1px solid ${GREY_SECONDARY}`,
@@ -65,7 +65,7 @@ function FullScreenDialog({
   const [PSelecionado, setPSelecionado] = React.useState([]);
   const [Padroes, setPadroes] = React.useState([]);
 
-  const { Pagamento } = State;
+  const { Pagamento, Validador, TipoValidador } = State;
 
   const setValor = (Selecionado, indice, valor) => {
     let ConfigAux = [...Selecionado];
@@ -74,7 +74,6 @@ function FullScreenDialog({
     setPSelecionado(ConfigAux);
     return;
   };
-
 
   const setValor2 = (Selecionado, indice, valor) => {
     let ConfigAux = [...Selecionado];
@@ -85,9 +84,13 @@ function FullScreenDialog({
   };
 
   const handleClickOpen = () => {
-    setPadroes(Padrao)
-    setPSelecionado([]);
-    setOpen(true);
+    if(Padrao.length > 0){
+      setPadroes(Padrao);
+      setPSelecionado([]);
+      setOpen(true);
+    }else{
+      Toast('Não existem configurações padrão pra essa máquina')
+    }
   };
 
   const handleClose = () => {
@@ -96,25 +99,44 @@ function FullScreenDialog({
   };
 
   const handleConfirm = () => {
-    let valid = false;
+    let valid = true;
     if (PSelecionado.length === 0) {
       Toast("Nenhuma configuração padrão selecionada");
-      return;
-    }
-    PSelecionado.map((selec) => {
-      if ((typeof selec.Valor == "undefined" || String(selec.Valor) === String(0) || selec.Valor === 0) && Pagamento !== "Sem Pagamento") {
-        valid = true;
-      }
-      return null;
-    });
-
-    if (valid) {
-      Toast("Configure o valor de todas as bebidas");
       return;
     }
 
     clearConfig();
 
+    PSelecionado.map((confg) => {
+      if (
+        (Pagamento === "Validador" || Pagamento === "Cartão e Validador") &&
+        TipoValidador === "Ficha"
+      ) {
+        let ficha = null;
+        Validador.map((pos) => {
+          if (pos.charAt(0) === "F") {
+            ficha = pos;
+          }
+          return null;
+        });
+        if (
+          typeof confg.Valor != "undefined"
+            ? Number(confg.Valor.replace(/,/g, "."))
+            : "0" %
+            Number(ficha.replace("F", "")) >
+          0
+        ) {
+          valid = false;
+        }
+      }
+    });
+
+    if (!valid) {
+      Toast("Um ou mais valores não são compativeis com o valor de ficha informado", "error");
+      return;
+    }
+
+    //inclui todas as linhas
     PSelecionado.map((confg) => {
       clickButton({
         id: confg.Cod,
@@ -124,10 +146,17 @@ function FullScreenDialog({
         tipo: confg.TProd,
         contenedor: confg.Contenedor,
         configura: true,
-        valor: typeof confg.Valor != 'undefined' ? Number(confg.Valor.replace(/,/g, ".")) : '0', 
-        valor2: typeof confg.Valor2 != 'undefined' ? Number(confg.Valor2.replace(/,/g, ".")) : '0',
+        valor:
+          typeof confg.Valor != "undefined"
+            ? Number(confg.Valor.replace(/,/g, "."))
+            : "0",
+        valor2:
+          typeof confg.Valor2 != "undefined"
+            ? Number(confg.Valor2.replace(/,/g, "."))
+            : "0",
       });
-      return null;
+      console.log(confg.Valor)
+      console.log(confg.Valor2)
     });
 
     setPSelecionado([]);
@@ -172,8 +201,8 @@ function FullScreenDialog({
           </Toolbar>
         </AppBar>
         <Selecao
-          MLeft='8px'
-          MTop='8px'
+          MLeft="8px"
+          MTop="8px"
           width="200px"
           label="Configuração"
           value=""
@@ -201,14 +230,22 @@ function FullScreenDialog({
                         setValor(PSelecionado, i, e.target.value)
                       }
                       label="Valor Real"
-                      value={typeof selecao.Valor != 'undefined' ? selecao.Valor : null}
-                      />
+                      value={
+                        typeof selecao.Valor != "undefined"
+                          ? selecao.Valor
+                          : null
+                      }
+                    />
                     <Input
                       onChange={(e) =>
                         setValor2(PSelecionado, i, e.target.value)
                       }
-                      label="Valor Complementar"
-                      value={typeof selecao.Valor2 != 'undefined' ? selecao.Valor2 : null}
+                      label="Complementar"
+                      value={
+                        typeof selecao.Valor2 != "undefined"
+                          ? selecao.Valor2
+                          : null
+                      }
                     />
                   </div>
                 </ListItemSecondaryAction>

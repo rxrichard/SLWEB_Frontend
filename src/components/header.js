@@ -1,5 +1,7 @@
 import Styled from 'styled-components'
-import { RED_PRIMARY, GREY_SECONDARY } from './colors'
+import { RED_PRIMARY, GREY_SECONDARY } from '../misc/colors'
+import { roleLevel } from '../misc/commom_functions'
+import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from '../misc/role_levels'
 
 export const Header = Styled.div`
     display: flex;
@@ -12,5 +14,5 @@ export const Header = Styled.div`
     top: 0;
     left: 0;
     z-index: 1000;
-    background-color: ${sessionStorage.getItem('role') === 'Franquia' ? RED_PRIMARY:GREY_SECONDARY };
+    background-color: ${roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ? RED_PRIMARY:GREY_SECONDARY };
 `

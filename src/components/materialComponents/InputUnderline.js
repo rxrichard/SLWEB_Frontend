@@ -15,12 +15,12 @@ export default function BasicTextFields(props) {
   const classes = useStyles();
 
   const handleChange = (event) => {
-    props.onChange(event.target.value)
+    props.onChange(event.target.value, event)
   }
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
-      <TextField style={props.style} value={props.value} type={props.type} id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
+      <TextField disabled={props.disabled} style={props.style} value={props.value} type={props.type} id="standard-basic" label={props.label} onChange={e => handleChange(e)}/>
     </form>
   );
 }

@@ -6,7 +6,7 @@ import { api } from "../../services/api";
 //"Placeholder" da página enquanto dados são carregados no
 import Loading from "../../components/loading_screen";
 
-import { convertData } from "../../components/commom_functions";
+import { convertData } from "../../misc/commom_functions";
 
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";

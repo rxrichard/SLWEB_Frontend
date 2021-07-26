@@ -4,6 +4,7 @@ import {
   LOAD_CLIENTES_ENDERECOS,
   LOAD_CONFIGURACOES_PADRAO,
   LOAD_MIN_DDL_PARA_ENVIO,
+  LOAD_AJUDAS,
 
   CHANGE_MAQUINA,
   CHANGE_PAG_TIPO,
@@ -27,7 +28,9 @@ import {
   DATA_ENTREGA_DESEJADA,
   CHOOSE_EMAIL_ACOMPANHAMENTO,
   CHOOSE_TELEFONE_CONTATO,
-  SET_OBSERVACAO
+  SET_OBSERVACAO,
+
+  RESET
 } from "./SolicitacaoActionTypes";
 
 export const clickButton = (value) => ({
@@ -81,6 +84,10 @@ export const LoadConfigPadrao = (value) => ({
 export const LoadMinDDL = (value) => ({
   type: LOAD_MIN_DDL_PARA_ENVIO,
   DDL: value,
+});
+export const LoadHelper = (value) => ({
+  type: LOAD_AJUDAS,
+  help: value,
 });
 
 export const ChangeMaquina = (value) => ({
@@ -148,4 +155,7 @@ export const ChooseEmail = (value) => ({
 export const DefineOBS = (value) => ({
   type: SET_OBSERVACAO,
   Obs: value,
+});
+export const ResetRequest = () => ({
+  type: RESET,
 });

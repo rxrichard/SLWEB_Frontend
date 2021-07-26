@@ -2,14 +2,17 @@ import React from "react";
 import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
+import FindInPage from "@material-ui/icons/FindInPage";
+import TextField from "@material-ui/core/TextField";
+
 import Loading from "../../components/loading_screen";
-import { Button, Icon } from "react-materialize";
 import { Table } from "../../components/table";
 import { Toast } from "../../components/toasty";
-import { dateCheck, convertData } from "../../components/commom_functions";
-import AdmModal from "./modals/admModal";
-import Modal from "../../components/modal";
-import TextField from "@material-ui/core/TextField";
+import { dateCheck, convertData } from "../../misc/commom_functions";
+import AdmDialog from "./modals/admDialog";
+import HistoryDialog from "./modals/historyDialog";
+import Button from "../../components/materialComponents/Button";
+import { RED_SECONDARY } from "../../misc/colors";
 
 export default class Logs extends React.Component {
   state = {
@@ -47,14 +50,25 @@ export default class Logs extends React.Component {
     }
   }
 
-  async checkView(ID) {
-    try {
-      //Insere a data de vizualização da ordem por X departamento
-      await api.put("/equip/requests/check", {
-        ID,
-      });
-    } catch (err) {
-      Toast("Falha ao linkar dados da OS", "error");
+  showStatus(OS) {
+    if (OS === null) return;
+
+    if (OS.OSCComAceite === null && OS.OSCStatus === "Ativo") {
+      return "Comercial";
+    } else if (OS.OSCTecAceite === null && OS.OSCStatus === "Ativo") {
+      return "Técnica";
+    } else if (OS.OSCExpDtPrevisao === null && OS.OSCStatus === "Ativo") {
+      return "Transporte";
+    } else if (OS.OSCComAceite === false || OS.OSCTecAceite === false) {
+      return "Supervisão";
+    } else if (OS.OSCExpDtPrevisao !== null && OS.OSCStatus === "Ativo") {
+      return "Entrega";
+    } else if (OS.OSCStatus === "Cancelado") {
+      return "Nenhuma";
+    } else if (OS.OSCStatus === "Concluido") {
+      return "Nenhuma";
+    } else {
+      return "Desconhecido";
     }
   }
 
@@ -62,80 +76,62 @@ export default class Logs extends React.Component {
     return !this.state.loaded ? (
       <Loading />
     ) : this.state.logs.length > 0 ? ( //Se nao tiver nenhum log, nem mostra a estrutura da tabela
-      <Table centered hoverable>
+      <Table hoverable={true} responsive={true} centered>
         <thead>
           <tr>
             <th>Solicitação Nº</th>
             <th>Status</th>
+            <th>Pendência</th>
             <th>Data de solicitação</th>
             <th>Data pretendida</th>
-            <th>Data estimada</th>
-            <th>Destino</th>
+            <th>Data prevista</th>
             <th>Gerenciar</th>
+            <th>Histórico</th>
             <th>PDF</th>
           </tr>
         </thead>
-        {this.state.logs.map((log, i) => (
-          <tr>
-            <td align="center">{log.OSCId}</td>
-            <td align="center">{log.OSCStatus}</td>
-            <td align="center">{convertData(log.OSCDtSolicita)}</td>
-            <td align="center">{convertData(log.OSCDtPretendida)}</td>
-            <td align="center">
-              {log.OSCExpDtPrevisao !== ""
-                ? convertData(log.OSCExpDtPrevisao)
-                : ""}
-            </td>
-            <td align="center" style={{ padding: "0" }}>
-              <TextField
-                id="outlined-multiline-flexible"
-                multiline
-                rowsMax={1}
-                value={log.OSCDestino}
-                onChange={(e) => (e.target.value = log.OSCDestino)}
-                variant="standard"
-              />
-            </td>
-            <td align="center" style={{ padding: "0", textAlign: "center" }}>
-              {this.state.loaded ? (
-                <>
-                  
-                  <Modal
-                    header="Gerenciamento de solicitação"
-                    onOpenStart={() => this.checkView(this.state.logs[i].OSCId)}
-                    trigger={<Button
-                      style={{ margin: "0", textAlign: "center" }}
-                      tooltip="Gerenciamento da Requisição"
-                      tooltipOptions={{
-                        position: "top",
-                      }}
-                    >
-                      <Icon>settings</Icon>
-                    </Button>}
-                  >
-                    <AdmModal LOGS={this.state.logs[i]} />
-                  </Modal>
-                </>
-              ) : null}
-            </td>
-            <td align="center" style={{ padding: "0", textAlign: "center" }}>
-              <Button
-                style={{ margin: "0" }}
-                tooltip="Baixar PDF"
-                tooltipOptions={{
-                  position: "right",
-                }}
-                onClick={() => this.handleRetrivePDF(this.state.logs[i].OSCId)}
-              >
-                <Icon>find_in_page</Icon>
-              </Button>
-            </td>
-          </tr>
-        ))}
+        <tbody>
+          {this.state.logs.map((log, i) => (
+            <tr>
+              <td align="center">{log.OSCId}</td>
+              <td align="center">{log.OSCStatus}</td>
+              <td align="center">{this.showStatus(log)}</td>
+              <td align="center">{convertData(log.OSCDtSolicita)}</td>
+              <td align="center">{convertData(log.OSCDtPretendida)}</td>
+              <td align="center">
+                {log.OSCExpDtPrevisao !== ""
+                  ? convertData(log.OSCExpDtPrevisao)
+                  : ""}
+              </td>
+              <td align="center" style={{ padding: "0", textAlign: "center" }}>
+                <AdmDialog Req={log} />
+              </td>
+              <td align="center" style={{ padding: "0", textAlign: "center" }}>
+                <HistoryDialog Req={log} />
+              </td>
+              <td align="center" style={{ padding: "0", textAlign: "center" }}>
+                <Button
+                  style={{
+                    color: "#FFFFFF",
+                    backgroundColor: RED_SECONDARY,
+                  }}
+                  onClick={() => this.handleRetrivePDF(log.OSCId)}
+                >
+                  <FindInPage />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
     ) : (
-      <div style={{ display: 'flex',  justifyContent: 'center', alignContent: 'center'}}>
-
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
         <h5>Você ainda não fez nenhuma solicitação!</h5>
       </div>
     );

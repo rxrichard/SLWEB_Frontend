@@ -3,8 +3,7 @@ import React from 'react'
 import { Container } from '../../components/commom_out'
 import { Flex } from './styles'
 
-export default class ZRoute extends React.Component {
-  render() {
+function ZRoute (){
     return (
       <Container>
         <Flex>
@@ -16,5 +15,6 @@ export default class ZRoute extends React.Component {
         </Flex>
       </Container>
     )
-  }
 }
+
+export default ZRoute

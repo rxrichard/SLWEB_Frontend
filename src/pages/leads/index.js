@@ -15,13 +15,15 @@ import {
 } from "../../global/actions/LeadAction";
 
 import { Panel } from "../../components/commom_in";
+import { roleLevel } from "../../misc/commom_functions";
+import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
 import List from "./List";
 import Loading from "../../components/loading_screen";
 import Dialog from "../../components/materialComponents/Dialog";
 import Button from "../../components/materialComponents/Button";
 import Select from "../../components/materialComponents/Select";
 import InputMultline from "../../components/materialComponents/InputMultline";
-import { RED_SECONDARY } from "../../components/colors";
+import { RED_SECONDARY } from "../../misc/colors";
 import { Toast } from "../../components/toasty";
 
 function LeadsList(props) {
@@ -56,6 +58,18 @@ function LeadsList(props) {
     load();
   }, []);
 
+  const resetField = () => {
+    setNomeFantasia('')
+    setRazaoSocial('')
+    setEstado('')
+    setMunicipio('')
+    setContato('')
+    setFone1('')
+    setFone2('')
+    setEmail('')
+    setDesc('')
+  }
+
   const handleSubmit = async () => {
     try {
       const response = await api.post("/leads", {
@@ -74,6 +88,7 @@ function LeadsList(props) {
 
       if (response.status === 201) {
         Toast("Lead Cadastrado", "success");
+        resetField()
       } else {
         throw Error;
       }
@@ -86,7 +101,7 @@ function LeadsList(props) {
     <Loading />
   ) : (
     <Panel style={{ alignItems: "flex-start" }}>
-      {sessionStorage.getItem("role") === "Franquia" ? null : (
+      {roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ? null : (
         <div
           style={{
             display: "flex",
@@ -115,6 +130,7 @@ function LeadsList(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
+                value={NomeFantasia}
                 id="outlined-basic"
                 label="Nome Fantasia"
                 variant="outlined"
@@ -122,6 +138,7 @@ function LeadsList(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 8px" }}
+                value={RazaoSocial}
                 id="outlined-basic"
                 label="Razão Social"
                 variant="outlined"
@@ -132,7 +149,7 @@ function LeadsList(props) {
               width="100%"
               MBottom="8px"
               label="Estado"
-              value=""
+              value={Estado}
               onChange={(e) => setEstado(e.target.value)}
             >
               {estados.map((estado) => (
@@ -146,6 +163,7 @@ function LeadsList(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
+                value={Municipio}
                 id="outlined-basic"
                 label="Município"
                 variant="outlined"
@@ -153,6 +171,7 @@ function LeadsList(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 8px" }}
+                value={Contato}
                 id="outlined-basic"
                 label="Contato"
                 variant="outlined"
@@ -165,6 +184,7 @@ function LeadsList(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
+                value={Fone1}
                 id="outlined-basic"
                 label="Fone 1"
                 variant="outlined"
@@ -172,6 +192,7 @@ function LeadsList(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 8px" }}
+                value={Fone2}
                 id="outlined-basic"
                 label="Fone 2"
                 variant="outlined"
@@ -180,6 +201,7 @@ function LeadsList(props) {
             </div>
             <TextField
               style={{ width: "100%" }}
+              value={Email}
               id="outlined-basic"
               label="Email"
               variant="outlined"
@@ -187,6 +209,7 @@ function LeadsList(props) {
             />
             <InputMultline
               style={{ width: "100%", marginTop: "8px" }}
+              value={Desc}
               onChange={(e) => setDesc(e.target.value)}
               label="Atividade/Descrição"
             />

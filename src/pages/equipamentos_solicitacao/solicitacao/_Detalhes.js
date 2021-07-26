@@ -145,7 +145,7 @@ const mapDispatchToProps = (dispatch) =>
 
 export default connect(mapStateToProps, mapDispatchToProps)(Detalhes);
 
-const Chips = ["Vivo", "Tim", "Claro", "VodaFone", "WiFi"];
+const Chips = ["Vivo", "Tim", "Claro", "VodaFone"];
 
 const corporateMachineRules = () => {
   return false;

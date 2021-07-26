@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Icon, Modal } from "react-materialize";
-import { GOBACK_BUTTON_COLOR } from "./colors";
+import { GOBACK_BUTTON_COLOR } from "../misc/colors";
 
 export default function ModalOld(props) {
     const [open, setOpen] = useState(false)

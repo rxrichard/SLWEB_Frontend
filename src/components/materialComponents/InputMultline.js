@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 
 export default function MultilineTextFields(props) {
@@ -8,6 +8,10 @@ export default function MultilineTextFields(props) {
     setValue(event.target.value);
     props.onChange(event);
   };
+
+  useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
 
   return (
     <form noValidate autoComplete="off">

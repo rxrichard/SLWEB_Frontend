@@ -15,7 +15,7 @@ import Input from "./_InputValor";
 import { Toast } from "../../../components/toasty";
 import { clickButton } from "../../../global/actions/SolicitacaoAction";
 import Select from "../../../components/materialComponents/Select";
-import { RED_PRIMARY } from "../../../components/colors";
+import { RED_PRIMARY } from "../../../misc/colors";
 
 function DialogSelect(props) {
   const classes = useStyles();
@@ -39,6 +39,8 @@ function DialogSelect(props) {
 
   const {
     Pagamento,
+    TipoValidador,
+    Validador,
     Capacidade,
     Configuracao,
     BebidasDisponiveis,
@@ -87,20 +89,32 @@ function DialogSelect(props) {
 
   const handleConfirm = () => {
     if (
-      id === "" ||
       selecao === "" ||
       bebida === "" ||
       medida === "" ||
       tipo === "" ||
-      configura === "" ||
-      (Pagamento !== "Sem Pagamento" &&
-        (valor === "" ||
-          String(valor) === String(0) ||
-          typeof valor == "undefined"))
+      configura === ""
     ) {
       Toast("Selecione todos os campos");
       return;
     }
+
+    if (
+      (Pagamento === "Validador" || Pagamento === "Cartão e Validador") &&
+      (TipoValidador === "Ficha")
+    ) {
+      let ficha = null;
+      Validador.map((pos) => {
+        if (pos.charAt(0) === "F") {
+          ficha = pos;
+        }
+      });
+      if(Number(valor.replace(/,/g, "."))%Number(ficha.replace('F', '')) > 0){
+        Toast('Valor não compativel com o valor de ficha informado', 'error')
+        return
+      }
+    }
+
     const linha = {
       id,
       selecao,
@@ -112,6 +126,7 @@ function DialogSelect(props) {
       valor: Number(valor.replace(/,/g, ".")),
       valor2: Number(valor2.replace(/,/g, ".")),
     };
+    console.log(linha)
     clickButton(linha);
     handleClose();
   };
@@ -218,7 +233,7 @@ function DialogSelect(props) {
 
             <Input
               onChange={(e) => setValor2(e.target.value)}
-              label="Valor Complementar"
+              label="Complementar"
               value={valor2}
             />
           </form>

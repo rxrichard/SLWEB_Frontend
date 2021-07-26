@@ -4,13 +4,16 @@ import { bindActionCreators } from "redux";
 
 import { Link } from "react-router-dom";
 import { scaleDown as Menu } from "react-burger-menu";
+import { Typography } from "@material-ui/core";
 import { Icon, Dropdown } from "react-materialize";
 
 import { Combobox, Exit } from "./commom_in";
 import { Header } from "./header";
-import Logo from "../assets/logo_sl.PNG";
+// import Logo from "../assets/logo_sl.PNG";
 import { OverflowOn, OverflowOff } from "../global/actions/EtcAction";
-import { RED_SECONDARY, GREY_LIGHT } from './colors'
+import { RED_SECONDARY, GREY_LIGHT } from "../misc/colors";
+import { roleLevel } from "../misc/commom_functions";
+import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../misc/role_levels";
 
 function Sidebar(props) {
   const { OverflowOn, OverflowOff } = props;
@@ -108,11 +111,7 @@ function Sidebar(props) {
           </Dropdown>
         </Combobox>
 
-        {window.sessionStorage.getItem("role") === "Sistema" ||
-        window.sessionStorage.getItem("role") === "BackOffice" ||
-        window.sessionStorage.getItem("role") === "Técnica Bianchi" ||
-        window.sessionStorage.getItem("role") === "Técnica Pilão" ||
-        window.sessionStorage.getItem("role") === "Jurídico" ? (
+        {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
           <Combobox>
             <Dropdown
               options={{
@@ -138,18 +137,18 @@ function Sidebar(props) {
                 </div>
               }
             >
-              <Link to="/administracao/franquia">
+              {/* <Link to="/administracao/franquia">
                 <Icon center>recent_actors</Icon>Franquias
-              </Link>
+              </Link> */}
               <Link to="/equipamentos/solicitacao/management">
                 <Icon center>collections_bookmark</Icon>Solicitações
               </Link>
-              <Link to="/administracao/formularios">
+              {/* <Link to="/administracao/formularios">
                 <Icon center>import_contacts</Icon>Formulários
-              </Link>
-              <Link to="/administracao/emails">
+              </Link> */}
+              {/* <Link to="/administracao/emails">
                 <Icon center>email</Icon>Emails
-              </Link>
+              </Link> */}
             </Dropdown>
           </Combobox>
         ) : null}
@@ -169,9 +168,13 @@ function Sidebar(props) {
         </Exit>
       </Menu>
 
-      <a href="/">
-        <img style={{ height: "64px" }} src={Logo} alt="Inicio" />
-      </a>
+      <Link
+        to="/"
+        style={{ color: "#FFF", marginRight: "25px", marginTop: "18px" }}
+      >
+        <Typography variant="h6">SLAPLIC</Typography>
+        {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
+      </Link>
     </Header>
   );
 }
@@ -214,7 +217,10 @@ var styles = {
     height: "100%",
   },
   bmMenu: {
-    background: sessionStorage.getItem('role') === 'Franquia' ? RED_SECONDARY : GREY_LIGHT,
+    background:
+      roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL
+        ? RED_SECONDARY
+        : GREY_LIGHT,
     fontSize: "1.15em",
   },
   bmMorphShape: {

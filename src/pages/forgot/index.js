@@ -4,12 +4,12 @@ import { Toast } from "../../components/toasty";
 import { Link } from "react-router-dom";
 
 import { Container, Box, Logo } from "../../components/commom_out";
-import { FAILED_REQUEST } from "../../components/messages";
+import { FAILED_REQUEST } from "../../misc/messages";
 import Image from "../../assets/logo_sl.PNG";
 import Button from "../../components/materialComponents/Button";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import { LockOutlined, ArrowBack, Work } from "@material-ui/icons";
-import { RED_PRIMARY } from '../../components/colors'
+import { RED_PRIMARY } from '../../misc/colors'
 
 export default function Forgot() {
   const [user_code, setUser] = useState("");

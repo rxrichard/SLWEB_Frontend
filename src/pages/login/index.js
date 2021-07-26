@@ -12,7 +12,7 @@ import { Input, LockOutlined, Work } from "@material-ui/icons/";
 import { Toast } from "../../components/toasty";
 import Button from "../../components/materialComponents/Button";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
-import { RED_PRIMARY } from '../../components/colors'
+import { RED_PRIMARY } from '../../misc/colors'
 
 function Login() {
   const [user_code, setUser] = useState("");

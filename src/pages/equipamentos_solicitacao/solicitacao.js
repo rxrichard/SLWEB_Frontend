@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { api } from "../../services/api";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,16 +24,62 @@ import Requisicao from "./solicitacao/_Maquina";
 import Detalhes from "./solicitacao/_Detalhes";
 import Entrega from "./solicitacao/_Entrega";
 import { Toast } from "../../components/toasty";
-import { RED_SECONDARY } from "../../components/colors";
+import { RED_SECONDARY } from "../../misc/colors";
+import Loading from "../../components/loading_screen";
+import {
+  LoadAtivos,
+  LoadBebidas,
+  LoadClientesEnderecos,
+  LoadMinDDL,
+  LoadHelper,
+  ResetRequest,
+} from "../../global/actions/SolicitacaoAction";
 
 function VerticalLinearStepper(props) {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [desativar, setDesativar] = React.useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [desativar, setDesativar] = useState(false);
   const steps = getSteps();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const { Maquina } = props.State;
+  const { Maquina, Ajudas } = props.State;
+
+  const {
+    LoadAtivos,
+    LoadBebidas,
+    LoadClientesEnderecos,
+    LoadMinDDL,
+    LoadHelper,
+    ResetRequest,
+  } = props;
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await api.get("/equip/adresses");
+
+        LoadAtivos(response.data.MaquinasDisponiveis);
+        LoadBebidas(response.data.BebidasNovo);
+        LoadClientesEnderecos(response.data.endereços);
+        LoadMinDDL(response.data.MinDDL);
+        LoadHelper(response.data.newAjudas);
+        setLoaded(true);
+      } catch (err) {
+        Toast(
+          "Não foi possivel carregar as informações iniciais de bebidas e máquinas",
+          "error"
+        );
+      }
+    }
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      ResetRequest();
+    };
+  }, []);
 
   const Solicitacao = {
     MaquinaId: props.State.MaquinaId,
@@ -74,7 +121,9 @@ function VerticalLinearStepper(props) {
     setOpen(false);
   };
 
-  return (
+  return !loaded ? (
+    <Loading />
+  ) : (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
@@ -118,11 +167,11 @@ function VerticalLinearStepper(props) {
                   style={{ cursor: "move" }}
                   id="draggable-dialog-title"
                 >
-                  Ajuda
+                  Ajuda ({activeStep + 1}/{steps.length})
                 </DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    {wichHelpShow(activeStep, Maquina)}
+                    {wichHelpShow(activeStep, Maquina, Ajudas)}
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -147,7 +196,7 @@ function VerticalLinearStepper(props) {
           </Button>
           <Button
             disabled={desativar}
-            onClick={(e) => handleSubmit(Solicitacao, setDesativar)}
+            onClick={(e) => handleSubmit(Solicitacao, setDesativar, ResetRequest, setActiveStep)}
             className={classes.altButton}
             endIcon={<Icon>send</Icon>}
           >
@@ -163,7 +212,23 @@ const mapStateToProps = (store) => ({
   State: store.solicitacaoState,
 });
 
-export default connect(mapStateToProps)(VerticalLinearStepper);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      LoadAtivos,
+      LoadBebidas,
+      LoadClientesEnderecos,
+      LoadMinDDL,
+      LoadHelper,
+      ResetRequest,
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VerticalLinearStepper);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -241,136 +306,54 @@ function PaperComponent(props) {
   );
 }
 
-const wichHelpShow = (step, Maquina) => {
+const wichHelpShow = (step, Maquina, Ajudas) => {
   switch (step) {
     case 0:
       return (
         <ul>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Máquina:</strong> Cada modelo de máquina possui uma
-              capacidade de bebidas, copos e contenedores para guardar os
-              insumos.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Sem Pagamento:</strong> A máquina não acompanhará nenhum sistema de pagamento.
-              <br />
-              <strong>Pagamento por cartão:</strong> Esse sistema de pagamento
-              acompanha uma máquina de cartões digital.
-              <br />
-              <strong>Pagamento por validador:</strong> O validador pode ser
-              configurado para aceitar moedas, fichas ou ambos simultaneamente.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Valor Real:</strong> Preço que deve ser cobrado pela dose
-              na máquina, definir esse valor como R$ 0 torna a bebida livre.
-              <br />
-              <strong>Valor Complementar(Não obrigatório):</strong> Preço que deve
-              ser pago pelo cliente ao franqueado por dose.
-            </div>
-          </li>
+          {Ajudas.filter(
+            (help) => help.section > 100 && help.section < 200
+          ).map((hlp) => (
+            <li style={{ marginBottom: "10px" }}>
+              <div>
+                <strong>{hlp.name}: </strong>
+                {hlp.text}
+                <br />
+              </div>
+            </li>
+          ))}
         </ul>
       );
     case 1:
       return (
         <ul>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Máquina Corporativa:</strong> A máquina corporativa usa
-              menos insumo na composição da dose.
-            </div>
-          </li>
-          {Maquina !== "LEI SA" && Maquina !== "" ? (
+          {Ajudas.filter(
+            (help) => help.section > 200 && help.section < 300
+          ).map((hlp) => (
             <li style={{ marginBottom: "10px" }}>
               <div>
-                <strong>Inibir copos:</strong> Algumas máquinas podem inibir o
-                copo durante a produção da dose, um recepiente deve ser
-                fornecido externamente pelo consumidor.
+                <strong>{hlp.name}: </strong>
+                {hlp.text}
+                <br />
               </div>
             </li>
-          ) : (
-            ""
-          )}
-
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Acompanha gabinete:</strong> Marque se a máquina vai
-              precisar de um gabinete para ser instalada no cliente.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Abastecimento hídrico:</strong> Por qual fonte a máquina
-              deve receber água.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Chip de telemetria:</strong> Qual Chip seria conveniente
-              acompanhar o aparelho de telemetria(baseado na intencidade do
-              sinal de operadoras no local de instalação da máquina).
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Antena externa:</strong> Caso o sinal das operadoras de
-              Chip seja muito fraco na região você pode solicitar uma antena
-              exterior à máquina para ajudar na comunicação com a internet.
-            </div>
-          </li>
+          ))}
         </ul>
       );
     case 2:
       return (
         <ul>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Cliente:</strong> Informe qual cliente receberá a máquina,
-              caso ele não esteja cadastrado ainda no SLAplic você pode
-              selecionar à sí proprio e alterar o endereço de entrega.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Endereço:</strong> Preenchido automaticamente baseado no
-              cliente selecionado mas pode ser alterado, a máquina será enviada
-              para esse endereço.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Data de entrega desejada:</strong> À partir da data
-              mínima, selecione uma data conveniente para a entrega.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Contato:</strong> Com quem se deve entrar em contato para
-              fazer a entrega no cliente.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Email:</strong> Email para acompanhamento da produção e
-              entrega da máquina.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Telefone:</strong> Telefone para entrar em contato durante
-              a entrega da máquina.
-            </div>
-          </li>
-          <li style={{ marginBottom: "10px" }}>
-            <div>
-              <strong>Observações:</strong> Qualquer detalher adicional à ser
-              informado para a equipe técnica ou transporte.
-            </div>
-          </li>
+          {Ajudas.filter(
+            (help) => help.section > 300 && help.section < 400
+          ).map((hlp) => (
+            <li style={{ marginBottom: "10px" }}>
+              <div>
+                <strong>{hlp.name}: </strong>
+                {hlp.text}
+                <br />
+              </div>
+            </li>
+          ))}
         </ul>
       );
     default:
@@ -378,7 +361,7 @@ const wichHelpShow = (step, Maquina) => {
   }
 };
 
-const handleSubmit = async (Solicitacao, setDesativar) => {
+const handleSubmit = async (Solicitacao, setDesativar, ResetarState, ResetarStep) => {
   setDesativar(true);
 
   if (Solicitacao.Maquina === "") {
@@ -489,12 +472,9 @@ const handleSubmit = async (Solicitacao, setDesativar) => {
 
     if (response.status === 201) {
       Toast("Solicitação registrada com sucesso", "success");
-      alert(
-        'Solicitação registrada com sucesso, por favor verifique o PDF gerado que pode ser encontrado no seu email ou na aba "Solicitações" desta mesma tela. Se encontrar qualquer inconformidade no PDF do pedido, por favor entre em contato imediatamente com helpdesk@slaplic.com.br'
-      );
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      ResetarState()
+      ResetarStep(0)
+      setDesativar(false);
       return;
     } else {
       throw Error;

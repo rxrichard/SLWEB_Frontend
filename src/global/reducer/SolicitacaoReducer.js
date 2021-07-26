@@ -4,6 +4,7 @@ import {
   LOAD_CLIENTES_ENDERECOS,
   LOAD_CONFIGURACOES_PADRAO,
   LOAD_MIN_DDL_PARA_ENVIO,
+  LOAD_AJUDAS,
   CHANGE_MAQUINA,
   CHANGE_PAG_TIPO,
   CHANGE_VALIDADOR_TIPO,
@@ -24,43 +25,8 @@ import {
   CHOOSE_TELEFONE_CONTATO,
   CHOOSE_EMAIL_ACOMPANHAMENTO,
   SET_OBSERVACAO,
+  RESET,
 } from "../actions/SolicitacaoActionTypes";
-
-const initialState = {
-  AtivosDisponiveis: [],
-  BebidasDisponiveis: [],
-  ClientesEnderecos: [],
-  ConfiguracoesPadrao: [],
-  MinDDLEnvio: 0,
-
-  MaquinaId: "",
-  Maquina: "",
-  PermiteGab: false,
-  Capacidade: 0,
-  MaxContenedores: 0,
-
-  Contenedor: [],
-  Configuracao: [],
-  Pagamento: "",
-  Validador: [],
-  TipoValidador: null,
-
-  InibirCopos: "",
-  Corporativa: "",
-  Gabinete: "",
-  Abastecimento: "",
-  Chip: "",
-  AntExt: "",
-
-  Cliente_Destino: "",
-  CNPJ_Destino: "",
-  Endereço_Entrega: "",
-  Data_Entrega_Desejada: "",
-  Contato: "",
-  Email_Acompanhamento: "",
-  Telefone_Contato: "",
-  Observacao: "",
-};
 
 export const SolicitacaoReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -88,6 +54,11 @@ export const SolicitacaoReducer = (state = initialState, action) => {
       return {
         ...state,
         MinDDLEnvio: action.DDL,
+      };
+    case LOAD_AJUDAS:
+      return {
+        ...state,
+        Ajudas: action.help,
       };
 
     case CHANGE_MAQUINA:
@@ -241,21 +212,42 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         TipoValidador: action.TipoValidador,
         Validador:
           action.TipoValidador === "Ficha"
-            ? []
+            ? ["F1"]
             : ["0.05", "0.10", "0.25", "0.50", "1.00"],
       };
 
     case CHANGE_VALIDADOR_FICHAS:
-      if (state.Validador.indexOf(action.Ficha) < 0) {
-        state.Validador.push(action.Ficha);
-      } else {
-        state.Validador.splice(state.Validador.indexOf(action.Ficha), 1);
-      }
+      let aux = [];
+      if (isNaN(Number(action.Ficha.charAt(0)))) {
+        aux = [...state.Validador];
+        let achou = false;
+        state.Validador.map((pos, i) => {
+          if (pos.charAt(0) === "F") {
+            aux[i] = action.Ficha;
+            achou = true;
+          }
+        });
 
-      return {
-        ...state,
-        Validador: [...state.Validador],
-      };
+        if (achou === false) {
+          aux.push(action.Ficha);
+        }
+
+        return {
+          ...state,
+          Validador: aux,
+        };
+      } else {
+        if (state.Validador.indexOf(action.Ficha) < 0) {
+          state.Validador.push(action.Ficha);
+        } else {
+          state.Validador.splice(state.Validador.indexOf(action.Ficha), 1);
+        }
+
+        return {
+          ...state,
+          Validador: [...state.Validador],
+        };
+      }
 
     case CHANGE_MAQUINA_CORPORATIVA:
       return {
@@ -331,7 +323,79 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         Contenedor: [],
       };
 
+    case RESET:
+      return {...state, ...resetedState};
+
     default:
       return state;
   }
+};
+
+const initialState = {
+  AtivosDisponiveis: [],
+  BebidasDisponiveis: [],
+  ClientesEnderecos: [],
+  ConfiguracoesPadrao: [],
+  Ajudas: [],
+  MinDDLEnvio: 0,
+
+  MaquinaId: "",
+  Maquina: "",
+  PermiteGab: false,
+  Capacidade: 0,
+  MaxContenedores: 0,
+
+  Contenedor: [],
+  Configuracao: [],
+  Pagamento: "",
+  Validador: [],
+  TipoValidador: null,
+
+  InibirCopos: "",
+  Corporativa: "",
+  Gabinete: "",
+  Abastecimento: "",
+  Chip: "",
+  AntExt: "",
+
+  Cliente_Destino: "",
+  CNPJ_Destino: "",
+  Endereço_Entrega: "",
+  Data_Entrega_Desejada: "",
+  Contato: "",
+  Email_Acompanhamento: "",
+  Telefone_Contato: "",
+  Observacao: "",
+};
+
+const resetedState = {
+  ConfiguracoesPadrao: [],
+
+  MaquinaId: "",
+  Maquina: "",
+  PermiteGab: false,
+  Capacidade: 0,
+  MaxContenedores: 0,
+
+  Contenedor: [],
+  Configuracao: [],
+  Pagamento: "",
+  Validador: [],
+  TipoValidador: null,
+
+  InibirCopos: "",
+  Corporativa: "",
+  Gabinete: "",
+  Abastecimento: "",
+  Chip: "",
+  AntExt: "",
+
+  Cliente_Destino: "",
+  CNPJ_Destino: "",
+  Endereço_Entrega: "",
+  Data_Entrega_Desejada: "",
+  Contato: "",
+  Email_Acompanhamento: "",
+  Telefone_Contato: "",
+  Observacao: "",
 };
