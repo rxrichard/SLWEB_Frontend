@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 function CustomizedTable(props) {
   const classes = useStyles();
 
-  const { Configuracao, TipoValidador, Pagamento } = props.State;
+  const { Configuracao, TipoValidador } = props.State;
 
   const { clickRemove } = props;
 

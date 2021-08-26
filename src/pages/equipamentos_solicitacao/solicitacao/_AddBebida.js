@@ -104,7 +104,7 @@ function DialogSelect(props) {
       (TipoValidador === "Ficha")
     ) {
       let ficha = null;
-      Validador.map((pos) => {
+      Validador.forEach((pos) => {
         if (pos.charAt(0) === "F") {
           ficha = pos;
         }
@@ -126,7 +126,6 @@ function DialogSelect(props) {
       valor: Number(valor.replace(/,/g, ".")),
       valor2: Number(valor2.replace(/,/g, ".")),
     };
-    console.log(linha)
     clickButton(linha);
     handleClose();
   };

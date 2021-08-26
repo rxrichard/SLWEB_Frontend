@@ -110,7 +110,7 @@ export const SolicitacaoReducer = (state = initialState, action) => {
 
       //ordenação da configuração
       let auxiliar = [...state.Configuracao, action.Configuracao];
-      let novaConfiguracao = new Array();
+      let novaConfiguracao = [];
       auxiliar.map((config) => {
         novaConfiguracao[config.selecao] = config;
         return null;
@@ -221,7 +221,7 @@ export const SolicitacaoReducer = (state = initialState, action) => {
       if (isNaN(Number(action.Ficha.charAt(0)))) {
         aux = [...state.Validador];
         let achou = false;
-        state.Validador.map((pos, i) => {
+        state.Validador.forEach((pos, i) => {
           if (pos.charAt(0) === "F") {
             aux[i] = action.Ficha;
             achou = true;

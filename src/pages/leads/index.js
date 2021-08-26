@@ -56,7 +56,7 @@ function LeadsList(props) {
       }
     }
     load();
-  }, []);
+  }, [LoadLeadsFranqueado, LoadLeadsGeral, LoadLeadsLimite]);
 
   const resetField = () => {
     setNomeFantasia('')

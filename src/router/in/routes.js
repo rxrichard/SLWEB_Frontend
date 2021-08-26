@@ -2,8 +2,7 @@ import React from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 
-//import de componentes
-import SideBar from "../../components/sidebar";
+import NewSidebar from '../../components/newSidebar'
 
 //import de telas
 import notFound from "../../pages/1_NOT_FOUND/index";
@@ -16,6 +15,7 @@ import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../components/Home";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/Central_Emails/index";
+import Compras from '../../pages/Compras/index'
 
 function Dashboard(props) {
   return (
@@ -24,18 +24,20 @@ function Dashboard(props) {
       style={{
         display: "flex",
         flexDirection: "column",
+        justifyContent: 'flex-start',
         alignContent: "center",
         overflow: props.State.overflow
       }}
     >
       <Router id="Out">
-        <SideBar />
+        <NewSidebar />
         <div id="App">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/leads" component={Leads} />
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/ajuda" component={Ajuda} />
+            {/* <Route exact path="/compras" component={Compras} /> */}
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} /> <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />

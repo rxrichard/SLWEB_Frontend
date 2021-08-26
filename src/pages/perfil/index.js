@@ -36,7 +36,13 @@ function Perfil() {
           },
         });
 
-        if (response.data === 400) throw Error;
+        if (
+          response.data === {} ||
+          response.data === null ||
+          typeof response.data == "undefined" ||
+          !response.data
+        )
+          throw Error;
 
         setInfo(response.data);
         setLoaded(true);

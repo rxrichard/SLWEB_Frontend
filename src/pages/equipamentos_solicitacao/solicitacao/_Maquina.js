@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../../services/api";
@@ -19,7 +19,6 @@ import Button from "../../../components/materialComponents/Button";
 import Modal from "../../../components/modal";
 import { Rotulo } from "../../../components/commom_in";
 import PadraoMod from "./_Padrao";
-import { Toast } from "../../../components/toasty";
 
 import {
   ChangePagamento,

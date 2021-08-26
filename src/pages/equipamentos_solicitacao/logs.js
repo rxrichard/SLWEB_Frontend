@@ -3,7 +3,6 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 import FindInPage from "@material-ui/icons/FindInPage";
-import TextField from "@material-ui/core/TextField";
 
 import Loading from "../../components/loading_screen";
 import { Table } from "../../components/table";

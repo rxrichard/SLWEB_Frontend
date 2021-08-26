@@ -1,4 +1,4 @@
-import Styled from 'styled-components'
+import Styled from "styled-components";
 
 export const Container = Styled.div`
     display: flex;
@@ -8,15 +8,15 @@ export const Container = Styled.div`
     justify-content: space-between;
     background-color: none;
     align-items: center;
-    overflow: ${props => props.overflow};
-`
+    overflow: ${(props) => props.overflow};
+`;
 
 export const Subcontainer = Styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
     width: 100%;
-`
+`;
 
 export const Titulo = Styled.div`
     padding-top: 10px;
@@ -34,7 +34,7 @@ export const Titulo = Styled.div`
         margin-left: 10px;
         font-weight: bold;
     }
-`
+`;
 
 export const Option = Styled.div`
     display: flex;
@@ -71,10 +71,11 @@ export const Option = Styled.div`
         font-size: 14px;
     }
 
-`
+`;
 
 export const Panel = Styled.div`
     margin-top: 64px;
+    margin-left: 73px; //novo sidebar
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -85,10 +86,17 @@ export const Panel = Styled.div`
     box-shadow: 0px -0px 5px 3px rgba(0, 0, 0, 0.2);
     padding: 20px 20px 30px 20px;
     
-    min-height: 80%;
-    width: 100%;
-    margin-bottom: 10px;
-`
+    min-height: calc(100% - 64px);
+    min-width:calc(100% - 73px);
+    
+    //novo sidebar
+    @media (max-width: 600px) {
+        min-height: calc(100% - 48px);
+        min-width: calc(100%-  53px);
+        margin-left: 53px;
+        margin-top: 48px;
+  }
+`;
 
 export const Exit = Styled.a`
     display: flex;
@@ -101,7 +109,7 @@ export const Exit = Styled.a`
     position: absolute;
     bottom: 0;
     left: 0;
-`
+`;
 export const Combobox = Styled.div`
     display: flex;
     flex-direction: row;
@@ -117,7 +125,7 @@ export const Combobox = Styled.div`
             line-height: 1.5;
         }
     }
-`
+`;
 
 export const Button = Styled.button`
     height: 5vh;
@@ -135,7 +143,7 @@ export const Button = Styled.button`
         color: #FFF;
         cursor: pointer;
     }
-`
+`;
 
 export const CommomCheckbox = Styled.input`
     height: 16px,
@@ -144,26 +152,26 @@ export const CommomCheckbox = Styled.input`
     opacity: 1,
     pointer-events: auto
     border-radius: 4px
-`
+`;
 
 export const Contagem = Styled.label`
     height: 2.5vh;
     padding: 0 1vw 0 1vw;
     background-color: #FFF;
-`
+`;
 
 export const Rotulo = Styled.label`
     font-weight: bold;
     margin-right: 1vw;
     margin-top: 30px;
-`
+`;
 
 export const Campo = Styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 10px 0px 0px 10px;
-`
+`;
 
 export const Valor = Styled.input`
     display:flex;
@@ -201,10 +209,10 @@ export const Valor = Styled.input`
             padding: 0 1vw 0 1vw;
         }
     }
-`
+`;
 
 export const Data = Styled.input`
-`
+`;
 
 export const buttonFooter = Styled.div`
 height: 300px;
@@ -216,7 +224,7 @@ overflow: hidden;
 display: grid;
 grid-template-columns: repeat(2,25%);
 grid-template-rows: 1fr 100px 100px;
-`
+`;
 
 //Richard
 export const CB = Styled.div`
@@ -232,7 +240,7 @@ grid-template-columns: repeat(4,17%);
 grid-template-rows: 1fr 100px 100px 100px 100px;
 border-bottom: 1px solid #cecece;
 margin-bottom: 10px
-`
+`;
 
 //Richard
 export const Rot = Styled.label`
@@ -243,7 +251,7 @@ export const Rot = Styled.label`
     text-align: right;
     align-items: right;
     margin:20px 0 10px 20px;
-`
+`;
 
 //Richard
 export const Tit = Styled.div`
@@ -257,7 +265,7 @@ export const Tit = Styled.div`
         font-size: 16px;
         color: #555
     }
-`
+`;
 //Richard
 export const Combox = Styled.div`
 
@@ -272,4 +280,4 @@ grid-template-columns: repeat(20,5%);
 grid-template-rows: 1fr 100px 100px 100px 100px;
 border-bottom: 1px solid #cecece;
 margin-bottom: 10px
-`
+`;

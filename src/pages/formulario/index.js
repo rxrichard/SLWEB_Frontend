@@ -119,9 +119,10 @@ export default class Formulario extends React.Component {
   async handleSolicitaCodigo(event) {
     event.target.disabled = true;
 
-    if (this.state.email === "" || this.state.email === null) throw Error;
-
+    
     try {
+      if (this.state.email === "" || this.state.email === null) throw Error;
+      
       await api.post("/form/solicitacao", {
         email: this.state.email,
       });
@@ -610,7 +611,7 @@ export default class Formulario extends React.Component {
                   <Input
                     style={{ width: '100%' }}
                     onChange={(e) => this.handleChangeEmail(e)}
-                    Label="Email"
+                    label="Email"
                   />
                 </Modal>
               </div>
@@ -1152,6 +1153,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    value={this.state.form.Origem_Capital}
                     label="Especifique..."
                   />
                   <p>35. Qual sua renda familiar mensal?</p>
@@ -1177,6 +1179,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    value={this.state.form.Renda_Composta}
                     label="Especifique..."
                   />
 
@@ -1232,6 +1235,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
+                        value={this.state.form.Detalhes_Atividade}
                         label="Especifique..."
                       />
                     </>
@@ -1250,6 +1254,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    value={this.state.form.Form_Escolar}
                     label="Especifique..."
                   />
 
@@ -1263,6 +1268,7 @@ export default class Formulario extends React.Component {
                         form: { ...this.state.form, Ult_exp: e.target.value },
                       })
                     }
+                    value={this.state.form.Ult_exp}
                     lable="Especifique..."
                   />
                 </div>
@@ -1336,6 +1342,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
+                        value={this.state.form.Realizou_Socio}
                         label="Especifique..."
                       />
 
@@ -1354,6 +1361,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
+                        value={this.state.form.Cond_Socio}
                         label="Especifique...   "
                       />
                       <p>
@@ -1426,6 +1434,7 @@ export default class Formulario extends React.Component {
                             },
                           })
                         }
+                        value={this.state.form.Exp_Sociedade}
                         label="Especifique...   "
                       />
                     </>
@@ -1465,6 +1474,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    value={this.state.form.Conhece_Pilao}
                     label="Especifique..."
                   />
 
@@ -1715,6 +1725,7 @@ export default class Formulario extends React.Component {
                         },
                       })
                     }
+                    value={this.state.form.Caracteristica_Peso}
                     label="Especifique...   "
                   />
 

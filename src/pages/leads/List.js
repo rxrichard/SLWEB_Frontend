@@ -87,9 +87,9 @@ function CustomizedAccordions(props) {
 
       setLeads(aux);
     } catch (err) {
-      if (err.message == 401) {
+      if (Number(err.message) === 401) {
         Toast("Limite de leads atingido", "error");
-      } else if (err.message == 409) {
+      } else if (Number(err.message) === 409) {
         Toast("Lead assumido por outro franqueado", "error");
       } else {
         Toast("Não foi possivel recuperar o endereço do lead", "error");
@@ -192,6 +192,7 @@ function CustomizedAccordions(props) {
                     style={{ width: "100%" }}
                     label="Motivo da desistência"
                     onChange={(e) => setMotivo(e.target.value)}
+                    value={motivo}
                   />
                 </>
               ) : (

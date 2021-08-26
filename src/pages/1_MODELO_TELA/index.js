@@ -39,7 +39,7 @@ function Exemplo() {
     }
 }, [])
 
-  return loaded ? (
+  return !loaded ? (
     <Loading />
   ) : (
     <Container>

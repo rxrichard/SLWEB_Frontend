@@ -84,12 +84,12 @@ function FullScreenDialog({
   };
 
   const handleClickOpen = () => {
-    if(Padrao.length > 0){
+    if (Padrao.length > 0) {
       setPadroes(Padrao);
       setPSelecionado([]);
       setOpen(true);
-    }else{
-      Toast('Não existem configurações padrão pra essa máquina')
+    } else {
+      Toast("Não existem configurações padrão pra essa máquina");
     }
   };
 
@@ -107,7 +107,7 @@ function FullScreenDialog({
 
     clearConfig();
 
-    PSelecionado.map((confg) => {
+    PSelecionado.forEach((confg) => {
       if (
         (Pagamento === "Validador" || Pagamento === "Cartão e Validador") &&
         TipoValidador === "Ficha"
@@ -122,9 +122,7 @@ function FullScreenDialog({
         if (
           typeof confg.Valor != "undefined"
             ? Number(confg.Valor.replace(/,/g, "."))
-            : "0" %
-            Number(ficha.replace("F", "")) >
-          0
+            : "0" % Number(ficha.replace("F", "")) > 0
         ) {
           valid = false;
         }
@@ -132,12 +130,15 @@ function FullScreenDialog({
     });
 
     if (!valid) {
-      Toast("Um ou mais valores não são compativeis com o valor de ficha informado", "error");
+      Toast(
+        "Um ou mais valores não são compativeis com o valor de ficha informado",
+        "error"
+      );
       return;
     }
 
     //inclui todas as linhas
-    PSelecionado.map((confg) => {
+    PSelecionado.forEach((confg) => {
       clickButton({
         id: confg.Cod,
         selecao: confg.Selecao,
@@ -155,8 +156,6 @@ function FullScreenDialog({
             ? Number(confg.Valor2.replace(/,/g, "."))
             : "0",
       });
-      console.log(confg.Valor)
-      console.log(confg.Valor2)
     });
 
     setPSelecionado([]);

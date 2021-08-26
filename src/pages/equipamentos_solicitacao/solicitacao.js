@@ -19,6 +19,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Draggable from "react-draggable";
+import Grow from "@material-ui/core/Grow";
 
 import Requisicao from "./solicitacao/_Maquina";
 import Detalhes from "./solicitacao/_Detalhes";
@@ -73,13 +74,13 @@ function VerticalLinearStepper(props) {
       }
     }
     loadData();
-  }, []);
+  }, [LoadAtivos, LoadBebidas, LoadClientesEnderecos, LoadHelper, LoadMinDDL]);
 
   useEffect(() => {
     return () => {
       ResetRequest();
     };
-  }, []);
+  }, [ResetRequest]);
 
   const Solicitacao = {
     MaquinaId: props.State.MaquinaId,
@@ -161,6 +162,7 @@ function VerticalLinearStepper(props) {
                 open={open}
                 onClose={handleClose}
                 PaperComponent={PaperComponent}
+                TransitionComponent={Transition}
                 aria-labelledby="draggable-dialog-title"
               >
                 <DialogTitle
@@ -170,9 +172,9 @@ function VerticalLinearStepper(props) {
                   Ajuda ({activeStep + 1}/{steps.length})
                 </DialogTitle>
                 <DialogContent>
-                  <DialogContentText>
-                    {wichHelpShow(activeStep, Maquina, Ajudas)}
-                  </DialogContentText>
+                    <DialogContentText>
+                      {wichHelpShow(activeStep, Maquina, Ajudas)}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose} color="primary">
@@ -196,7 +198,14 @@ function VerticalLinearStepper(props) {
           </Button>
           <Button
             disabled={desativar}
-            onClick={(e) => handleSubmit(Solicitacao, setDesativar, ResetRequest, setActiveStep)}
+            onClick={(e) =>
+              handleSubmit(
+                Solicitacao,
+                setDesativar,
+                ResetRequest,
+                setActiveStep
+              )
+            }
             className={classes.altButton}
             endIcon={<Icon>send</Icon>}
           >
@@ -361,7 +370,12 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
   }
 };
 
-const handleSubmit = async (Solicitacao, setDesativar, ResetarState, ResetarStep) => {
+const handleSubmit = async (
+  Solicitacao,
+  setDesativar,
+  ResetarState,
+  ResetarStep
+) => {
   setDesativar(true);
 
   if (Solicitacao.Maquina === "") {
@@ -472,8 +486,8 @@ const handleSubmit = async (Solicitacao, setDesativar, ResetarState, ResetarStep
 
     if (response.status === 201) {
       Toast("Solicitação registrada com sucesso", "success");
-      ResetarState()
-      ResetarStep(0)
+      ResetarState();
+      ResetarStep(0);
       setDesativar(false);
       return;
     } else {
@@ -485,3 +499,7 @@ const handleSubmit = async (Solicitacao, setDesativar, ResetarState, ResetarStep
     return;
   }
 };
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow {...props}  timeout={300}  />;
+});

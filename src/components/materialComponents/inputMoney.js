@@ -2,37 +2,11 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import NumberFormat from "react-number-format";
 import clsx from "clsx";
-import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  withoutLabel: {
-    marginTop: theme.spacing(3),
-  },
-  textField: {
-    width: "15ch",
-    "& #outlined-start-adornment": {
-      border: "none",
-      borderBottom: "none",
-    },
-    "& #outlined-start-adornment:focus": {
-      border: "none !important",
-      borderBottom: "none !important",
-    },
-  },
-}));
-
-let Decimais = 4;
+let Decimais = 0;
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -72,11 +46,9 @@ function InputAdornments(props) {
     numberformat: "1320",
   });
 
-  const { TipoValidador, Pagamento } = props.State;
-
   useEffect(() => {
-    Decimais = validaEntrada(Pagamento, TipoValidador);
-  }, [TipoValidador, Pagamento]);
+    Decimais = props.decimais;
+  }, []);
 
   const handleChange = (event) => {
     setValues({
@@ -98,11 +70,7 @@ function InputAdornments(props) {
         onChange={handleChange}
         InputProps={{
           inputComponent: NumberFormatCustom,
-          startAdornment: (
-            <InputAdornment position="start">
-              {`${defineDecorator(TipoValidador)}:`}
-            </InputAdornment>
-          ),
+          
         }}
         variant="outlined"
         value={
@@ -115,42 +83,28 @@ function InputAdornments(props) {
   );
 }
 
-const mapStateToProps = (store) => ({
-  State: store.solicitacaoState,
-});
+export default InputAdornments
 
-export default connect(mapStateToProps)(InputAdornments);
-
-const defineDecorator = (TipoValidador) => {
-  /*no fim das contas os preços pagos em ficha ainda contam como R$ 
-    então não tem necessidade de exibir uma unidade monetária 'F$'*/
-  if (TipoValidador === "Ficha") {
-    return "R$";
-    // return "Ficha";
-  } else if (TipoValidador === "Moeda e Ficha") {
-    return "R$";
-    // return "$/F";
-  } else {
-    return "R$";
-  }
-};
-
-const validaEntrada = (Pagamento, TValidador) => {
-  //retorno as casas decimais que o campo deve aceitar
-  switch (Pagamento) {
-    case "Sem Pagamento":
-      return 4;
-    case "Cartão":
-      return 4;
-    case "Validador":
-      if (TValidador === "Ficha") {
-        return 0;
-      } else {
-        return 4;
-      }
-    case "Cartão e Validador":
-      return 4;
-    default:
-      return 4;
-  }
-};
+const useStyles = makeStyles((theme) => ({
+    root: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    withoutLabel: {
+      marginTop: theme.spacing(3),
+    },
+    textField: {
+      width: "100%",
+      "& #outlined-start-adornment": {
+        border: "none",
+        borderBottom: "none",
+      },
+      "& #outlined-start-adornment:focus": {
+        border: "none !important",
+        borderBottom: "none !important",
+      },
+    },
+  }));

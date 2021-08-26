@@ -42,6 +42,7 @@ function Entrega(props) {
     Data_Entrega_Desejada,
     Contato,
     MinDDLEnvio,
+    ClientesEnderecos
   } = props.State;
 
   const dataMinimaSolicitacao = new Date(
@@ -51,8 +52,8 @@ function Entrega(props) {
   );
 
   useEffect(() => {
-    setClientes(props.State.ClientesEnderecos);
-  }, []);
+    setClientes(ClientesEnderecos);
+  }, [ClientesEnderecos]);
 
   const defineCliente = (cliente) => {
     if (cliente === "") {

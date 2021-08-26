@@ -9,7 +9,7 @@ import Loading from "../../components/loading_screen";
 import { Panel, Container } from "../../components/commom_in";
 import { Table } from "../../components/table";
 import { Toast } from "../../components/toasty";
-import Input from "../../components/materialComponents/InputUnderline";
+import Input from '../../components/materialComponents/InputUnderline'
 
 function Franquia() {
   const [loaded, setLoaded] = useState(false);
@@ -101,7 +101,7 @@ function Franquia() {
           </tbody>
         </Table>
       </Panel>
-        {/* <Input onChange={Filter} type="text" label="Filial..." /> */}
+        <Input onChange={Filter} type="text" label="Filial..." />
     </Container>
   );
 }

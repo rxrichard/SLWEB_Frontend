@@ -188,7 +188,7 @@ body {
 /* Button bg when focus(after click) */
 button:focus {
   outline: none;
-  background-color: #CCC;
+  /* background-color: #CCC; */
 }
 
 .TextBold {
@@ -385,3 +385,7 @@ input[type="text"]:not(.browser-default):focus:not([readonly]) {
   box-shadow: none;
   margin-left: 10px;
 }
+/* diminuir o tamanho do checkbox*/
+.PrivateSwitchBase-input-51 {
+  transform: scale(0.5) !important;
+} 
