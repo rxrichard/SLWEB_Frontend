@@ -7,12 +7,17 @@ import {
   CHANGE_BUY_QTT,
   MOVE_CARRINHO_2_PRODUTOS,
   MOVE_PRODUTOS_2_CARRINHO,
+  SET_MIN_COMPRA,
+  SET_RETIRA
 } from "../actions/ComprasActionTypes";
 
 const initialState = {
   InitProdutos: [],
   Produtos: [],
   Carrinho: [],
+  MinCompra: undefined,
+  Retira: false,
+
 
   Checked: [],
   TabIndex: 1,
@@ -31,6 +36,20 @@ export const ComprasReducer = (state = initialState, action) => {
         Produtos: _newProdutos,
         InitProdutos: _newProdutos,
       };
+
+    case SET_MIN_COMPRA:
+      return {
+        ...state,
+        MinCompra: action.min,
+      };
+
+    case SET_RETIRA:
+      return {
+        ...state,
+        Retira: action.retira,
+      };
+
+    
 
     case MOVE_PRODUTOS_2_CARRINHO:
       let newCarrinho = [...state.Carrinho];

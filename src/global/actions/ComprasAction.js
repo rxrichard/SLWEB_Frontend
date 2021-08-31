@@ -7,11 +7,22 @@ import {
   CHANGE_BUY_QTT,
   MOVE_CARRINHO_2_PRODUTOS,
   MOVE_PRODUTOS_2_CARRINHO,
+  SET_MIN_COMPRA,
+  SET_RETIRA
 } from "./ComprasActionTypes";
 
 export const LoadInsumos = (value) => ({
   type: LOAD_PRODUTOS_DISPONIVEIS,
   Produtos: value,
+});
+
+export const SetMin = (value) => ({
+  type: SET_MIN_COMPRA,
+  min: value,
+});
+export const SetRetira = (value) => ({
+  type: SET_RETIRA,
+  retira: value,
 });
 
 export const ClearCarrinho = () => ({

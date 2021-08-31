@@ -37,7 +37,7 @@ function Dashboard(props) {
             <Route exact path="/leads" component={Leads} />
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/ajuda" component={Ajuda} />
-            {/* <Route exact path="/compras" component={Compras} /> */}
+            <Route exact path="/compras" component={Compras} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} /> <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />

@@ -27,6 +27,7 @@ export default function DraggableDialog(props) {
 
   const handleClickOpen = () => {
     setOpen(true);
+    props.onOpen && props.onOpen()
   };
 
   const handleClose = () => {

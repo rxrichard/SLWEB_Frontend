@@ -9,9 +9,9 @@ import { api } from "../../services/api";
 
 import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ContactPhone from "@material-ui/icons/ContactPhone";
+import Divider from "@material-ui/core/Divider";
 
 import Dialog from "../../components/materialComponents/Dialog";
 import Button from "../../components/materialComponents/Button";
@@ -19,33 +19,10 @@ import { RED_SECONDARY, GREY_SECONDARY } from "../../misc/colors";
 import { Toast } from "../../components/toasty";
 import Input from "../../components/materialComponents/InputMultline";
 
-const Accordion = withStyles({
-  root: {
-    paddingBottom: "8px",
-    boxShadow: "none",
-    "&:not(:last-child)": {
-      borderBottom: 0,
-    },
-    "&:before": {
-      display: "none",
-    },
-    "&$expanded": {
-      margin: "auto",
-    },
-  },
-  expanded: {},
-})(MuiAccordion);
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-    flexDirection: "row",
-  },
-}))(MuiAccordionDetails);
-
 function CustomizedAccordions(props) {
   const [leads, setLeads] = useState([]);
   const [motivo, setMotivo] = useState("");
+  const [history, setHistory] = useState([]);
 
   const { AddLimite, MoveLinha } = props;
   const { Limites } = props.State;
@@ -98,16 +75,45 @@ function CustomizedAccordions(props) {
     }
   };
 
+  const handleConfirmDeal = async (err, leadId) => {
+    try {
+      const response = await api
+        .put("/leads", {
+          ID: leadId,
+          type: "confirm",
+          motivo: motivo,
+        })
+        .catch((err) => {
+          throw new Error(err.response.status);
+        });
+    } catch (err) {
+      Toast("Falha ao confirmar negociação", "error");
+    }
+  };
+
+  const handleRequestHistory = async (leadid) => {
+    try {
+      const response = await api.get(`/leads/${leadid}`);
+
+      setHistory(response.data);
+    } catch (err) {
+      Toast("Não foi possivel recuperar o historico de desistências do lead");
+    }
+  };
+
   return (
     <div style={{ width: "100%" }}>
       {leads.map((le, i) => (
-        <Accordion square key={le.Id} id={le.Id}>
+        <Accordion
+          square
+          key={le.Id}
+          style={{ borderBottom: "1px solid #CCCCCC" }}
+        >
           <div
             className="XAlign"
             style={{
               justifyContent: "space-between",
-              borderBottom: "1px solid #CCCCCC",
-              paddingBottom: "8px",
+              padding: "8px 0px 8px 0px",
             }}
           >
             <div>
@@ -121,6 +127,7 @@ function CustomizedAccordions(props) {
             <Dialog
               disabled={shouldClose(le)}
               shouldClose={shouldClose(le)}
+              onOpen={() => handleRequestHistory(le.Id)}
               icone={<ContactPhone />}
               botao={
                 shouldClose(le)
@@ -131,24 +138,41 @@ function CustomizedAccordions(props) {
               }
               title="Contato Lead"
               action={
-                <Button
-                  style={{
-                    backgroundColor: shouldShowAdress(le)
-                      ? GREY_SECONDARY
-                      : RED_SECONDARY,
-                    color: "#FFFFFF",
-                  }}
-                  onClick={(e) => {
-                    e.target.disabled = true;
-                    handleRequestAdress(
-                      le.Id,
-                      i,
-                      shouldShowAdress(le) ? "release" : "hold"
-                    );
-                  }}
-                >
-                  {shouldShowAdress(le) ? "Desistir" : "Solicitar"}
-                </Button>
+                <>
+                  {shouldShowAdress(le) ? (
+                    <Button
+                      style={{
+                        backgroundColor: RED_SECONDARY,
+                        color: "#FFFFFF",
+                      }}
+                      onClick={(e) => {
+                        handleConfirmDeal(e, le.Id);
+                      }}
+                    >
+                      Negociando
+                    </Button>
+                  ) : (
+                    ""
+                  )}
+                  <Button
+                    style={{
+                      backgroundColor: shouldShowAdress(le)
+                        ? GREY_SECONDARY
+                        : RED_SECONDARY,
+                      color: "#FFFFFF",
+                    }}
+                    onClick={(e) => {
+                      e.target.disabled = true;
+                      handleRequestAdress(
+                        le.Id,
+                        i,
+                        shouldShowAdress(le) ? "release" : "hold"
+                      );
+                    }}
+                  >
+                    {shouldShowAdress(le) ? "Desistir" : "Solicitar"}
+                  </Button>
+                </>
               }
             >
               {shouldShowAdress(le) ? (
@@ -173,6 +197,11 @@ function CustomizedAccordions(props) {
                     {le.Email}
                   </Typography>
 
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>Mensagem do cliente: </strong>
+                    {le.Mensagem}
+                  </Typography>
+
                   <br />
 
                   <Typography variant="subtitle1" gutterBottom>
@@ -194,21 +223,44 @@ function CustomizedAccordions(props) {
                     onChange={(e) => setMotivo(e.target.value)}
                     value={motivo}
                   />
+                  {showHistory(history)}
                 </>
               ) : (
-                "Você ainda não tem acesso ao contato desse lead"
+                <>
+                  Você ainda não tem acesso ao contato desse lead.
+                  <div style={{ marginTop: "8px" }}>
+                    {le.Mensagem !== null ? (
+                      <Typography variant="subtitle1" gutterBottom>
+                        Mensagem do cliente:
+                        <strong>{le.Mensagem}</strong>{" "}
+                      </Typography>
+                    ) : (
+                      ""
+                    )}
+                    {showHistory(history)}
+                  </div>
+                </>
               )}
             </Dialog>
           </div>
 
-          <AccordionDetails>
+          {/* <AccordionDetails>
             <div className="YAlign">
-              <Typography>{le.Razao_Social.trim()}</Typography>
               <Typography>
-                Atividade/Descrição: {` ${le.AtividadeDesc}`.trim()}
+                Razão Social: <strong>{le.Razao_Social.trim()}</strong>
+              </Typography>
+              <Typography>
+                Atividade/Descrição:{" "}
+                <strong>
+                  {`${
+                    le.AtividadeDesc !== null
+                      ? le.AtividadeDesc
+                      : "Não Informado"
+                  }`.trim()}
+                </strong>
               </Typography>
             </div>
-          </AccordionDetails>
+          </AccordionDetails> */}
         </Accordion>
       ))}
     </div>
@@ -246,6 +298,29 @@ const shouldShowAdress = (lead) => {
   }
 };
 
+const showHistory = (history) => {
+  return (
+    <div style={{ marginTop: "8px" }}>
+      <Typography variant="subtitle1">
+        Desistencias: <strong>{history.length}</strong>
+      </Typography>
+
+      {history.map((item, i) => (
+        <div className="YAlign" style={{ marginBottom: "8px" }}>
+          <Typography variant="subtitle1">
+            <strong>{i + 1}ª</strong> Desistencia:{" "}
+            <strong>{moment(item.DataFechamento).format("LL")}</strong>
+          </Typography>
+          <Typography variant="subtitle1">
+            Motivo: "<strong>{item.Motivo}</strong>"
+          </Typography>
+          <Divider />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const mountString = (dados) => {
   let variavel = ``;
 
@@ -258,7 +333,7 @@ const mountString = (dados) => {
   if (dados.Municipio !== "") {
     variavel += ` - ${dados.Estado}`;
   }
-  if (dados.AtividadeDesc !== "") {
+  if (dados.AtividadeDesc !== "" && dados.AtividadeDesc !== null) {
     variavel += `, ${dados.AtividadeDesc}`;
   }
 
@@ -293,3 +368,20 @@ const shouldClose = (dados) => {
     return true;
   }
 };
+
+const Accordion = withStyles({
+  root: {
+    paddingBottom: "8px",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiAccordion);

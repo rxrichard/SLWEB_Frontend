@@ -14,7 +14,6 @@ import { Toast } from "../../components/toasty";
 import { ChangeTab } from "../../global/actions/ComprasAction";
 import { Table } from "../../components/table";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Close, Block } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -30,16 +29,7 @@ import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { DataGrid, ptBR } from "@material-ui/data-grid";
-
-const theme = createMuiTheme(
-  {
-    palette: {
-      primary: { main: "#1976d2" },
-    },
-  },
-  ptBR
-);
+import { DataGrid } from "@material-ui/data-grid";
 
 function Pedidos(props) {
   const TabIndex = 3;
@@ -128,7 +118,6 @@ function Pedidos(props) {
             </Typography>
           </div>
           <div style={{ height: 400, width: "100%" }}>
-            <ThemeProvider theme={theme}>
               <DataGrid
                 rows={
                   typeof pedidoDet.Detalhes != "undefined"
@@ -141,7 +130,6 @@ function Pedidos(props) {
                 disableColumnMenu
                 loading={typeof pedidoDet.Detalhes == "undefined"}
               />
-            </ThemeProvider>
           </div>
         </DialogContent>
         <DialogActions>

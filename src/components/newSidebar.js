@@ -24,6 +24,7 @@ import {
   PersonPinCircle,
   ExitToApp,
   ShoppingCart,
+  Help,
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../misc/commom_functions";
@@ -123,18 +124,9 @@ export default function MiniDrawer() {
               <ListItemText primary="Leads" />
             </ListItem>
           </Link>
-          {/* <Link to="/ajuda">
-            <ListItem button onClick={handleDrawerClose}>
-              <ListItemIcon>
-                <Inbox />
-              </ListItemIcon>
-
-              <ListItemText primary="Ajuda" />
-            </ListItem>
-          </Link> */}
         </List>
         <Divider />
-        {/* <List>
+        <List>
           <Link to="/compras" style={{ color: GREY_SECONDARY }}>
             <ListItem button onClick={handleDrawerClose}>
               <ListItemIcon>
@@ -145,7 +137,7 @@ export default function MiniDrawer() {
             </ListItem>
           </Link>
         </List>
-        <Divider /> */}
+        <Divider />
         <List>
           <Link
             to="/equipamentos/solicitacao"
@@ -181,6 +173,15 @@ export default function MiniDrawer() {
           </>
         ) : null}
         <List>
+          <Link to="/ajuda" style={{ color: GREY_SECONDARY }}>
+            <ListItem button onClick={handleDrawerClose}>
+              <ListItemIcon>
+                <Help />
+              </ListItemIcon>
+
+              <ListItemText primary="Ajuda" />
+            </ListItem>
+          </Link>
           <ListItem button onClick={handleLogout}>
             <ListItemIcon>
               <ExitToApp />

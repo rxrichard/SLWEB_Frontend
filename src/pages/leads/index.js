@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 
 import { api } from "../../services/api";
 import Typography from "@material-ui/core/Typography";
-import Add from "@material-ui/icons/Add";
+import { Add, Search, FindReplace } from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -28,6 +28,8 @@ import { Toast } from "../../components/toasty";
 
 function LeadsList(props) {
   const [Loaded, setLoaded] = useState(false);
+  const [Filtro, setFiltro] = useState("");
+  const [LeadsFiltrado, setLeadsFiltrado] = useState([]);
   const [NomeFantasia, setNomeFantasia] = useState("");
   const [RazaoSocial, setRazaoSocial] = useState("");
   const [Estado, setEstado] = useState("");
@@ -50,6 +52,7 @@ function LeadsList(props) {
         LoadLeadsGeral(response.data.LeadsGeral);
         LoadLeadsLimite(response.data.Limites);
         setLoaded(true);
+        setLeadsFiltrado(response.data.LeadsGeral);
       } catch (err) {
         sessionStorage.clear();
         window.location.assign("/");
@@ -59,16 +62,16 @@ function LeadsList(props) {
   }, [LoadLeadsFranqueado, LoadLeadsGeral, LoadLeadsLimite]);
 
   const resetField = () => {
-    setNomeFantasia('')
-    setRazaoSocial('')
-    setEstado('')
-    setMunicipio('')
-    setContato('')
-    setFone1('')
-    setFone2('')
-    setEmail('')
-    setDesc('')
-  }
+    setNomeFantasia("");
+    setRazaoSocial("");
+    setEstado("");
+    setMunicipio("");
+    setContato("");
+    setFone1("");
+    setFone2("");
+    setEmail("");
+    setDesc("");
+  };
 
   const handleSubmit = async () => {
     try {
@@ -88,12 +91,26 @@ function LeadsList(props) {
 
       if (response.status === 201) {
         Toast("Lead Cadastrado", "success");
-        resetField()
+        resetField();
       } else {
         throw Error;
       }
     } catch (err) {
       Toast("Falha ao cadastrar lead", "error");
+    }
+  };
+
+  const handleFilter = () => {
+    if (Filtro.trim() === "") {
+      setLeadsFiltrado(LeadsGeral);
+    } else {
+      setLeadsFiltrado(
+        LeadsGeral.filter(
+          (lead) =>
+            lead.Municipio &&
+            lead.Municipio.toUpperCase() === Filtro.toUpperCase()
+        )
+      );
     }
   };
 
@@ -221,11 +238,34 @@ function LeadsList(props) {
         Leads Assumidos ({Limites[0].Tentativas}/{Limites[0].MaxTentativas})
       </Typography>
       <List Leads={LeadsFranqueado} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          flexWrap: "wrap",
+          margin: '8px 0px 8px 0px'
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Leads Disponiveis({LeadsFiltrado.length})
+        </Typography>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <InputMultline
+            style={{ margin: "0px 8px 0px 0px" }}
+            value={Filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            label="Filtrar Município"
+          />
+          <Button onClick={() => handleFilter()}>
+            {Filtro === "" ? <FindReplace /> : <Search />}
+          </Button>
+        </div>
+      </div>
 
-      <Typography variant="h6" gutterBottom>
-        Leads Disponiveis
-      </Typography>
-      <List Leads={LeadsGeral} />
+      <List Leads={LeadsFiltrado} />
     </Panel>
   );
 }

@@ -10,7 +10,7 @@ import Loading from "../../components/loading_screen";
 
 //import de elementos visuais
 import { Toast } from "../../components/toasty";
-import { ChangeTab } from "../../global/actions/ComprasAction";
+import { ChangeTab, SetMin, SetRetira } from "../../global/actions/ComprasAction";
 
 import { withStyles } from "@material-ui/core/styles";
 import { Table } from "../../components/table";
@@ -31,7 +31,7 @@ function Contas(props) {
   const [TotalDuplicatas, setTotalDuplicatas] = useState([]);
   const [TotalAno, setTotalAno] = useState([]);
 
-  const { ChangeTab } = props;
+  const { ChangeTab, SetMin, SetRetira } = props;
 
   //component did mount
   useEffect(() => {
@@ -45,12 +45,14 @@ function Contas(props) {
         setTotalDuplicatas(DefineTotalDuplicatas(response.data.Duplicatas));
         setTotalAno(response.data.ComprasAno[0]);
         setLoaded(true);
+        SetMin(response.data.Geral.VlrMinCompra)
+        SetRetira(response.data.Geral.Retira)
       } catch (err) {
         Toast("Falha ao recuperar dados", "error");
       }
     }
     loadProdutos();
-  }, [ChangeTab]);
+  }, [ChangeTab, SetMin, SetRetira]);
 
   return !loaded ? (
     <Loading />
@@ -253,6 +255,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       ChangeTab,
+      SetMin,
+      SetRetira
     },
     dispatch
   );

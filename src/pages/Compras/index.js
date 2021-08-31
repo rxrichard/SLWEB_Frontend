@@ -4,14 +4,8 @@ import { bindActionCreators } from "redux";
 
 import { api } from "../../services/api";
 
-import {
-  makeStyles,
-  useTheme,
-  withStyles,
-  createMuiTheme,
-  ThemeProvider,
-} from "@material-ui/core/styles";
-import { DataGrid, ptBR } from "@material-ui/data-grid";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { DataGrid } from "@material-ui/data-grid";
 import Fab from "@material-ui/core/Fab";
 import { ShoppingCart, Add } from "@material-ui/icons";
 import Zoom from "@material-ui/core/Zoom";
@@ -45,18 +39,8 @@ import { Toast } from "../../components/toasty";
 import Input from "react-number-format";
 import InputMultline from "../../components/materialComponents/InputMultline";
 
-const Tema = createMuiTheme(
-  {
-    palette: {
-      primary: { main: "#1976d2" },
-    },
-  },
-  ptBR
-);
-
 function Compras(props) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [open, setOpen] = useState(false);
   const [obs, setObs] = useState("");
@@ -72,13 +56,15 @@ function Compras(props) {
     ClearCarrinho,
   } = props;
 
-  const { TabIndex, Carrinho, Checked, Produtos } = props.State;
+  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } =
+    props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
 
   const transitionDuration = {
-    enter: theme.transitions.duration.enteringScreen,
-    exit: theme.transitions.duration.leavingScreen,
+    appear: 300,
+    enter: 300,
+    exit: 300,
   };
 
   //component did mount
@@ -115,14 +101,32 @@ function Compras(props) {
     SetCheckedProd(newChecked);
   };
 
-  const handleBuy = () => {
-    console.log({ Carrinho, obs, retira });
-    //Vejo se o franqueado está bloqueado
-    //aviso se o frete gratis vai ser possivel ou não
-    //Vejo se o cara tem limite
-    //verifico se o pedido está vazio
+  const handleBuy = async (event) => {
+    event.target.disabled = true;
 
-    //faço um alert perguntando se o cara confirma o pedido
+    if (Carrinho.length === 0) {
+      Toast("Nenhum item no carrinho");
+      event.target.disabled = false;
+      return;
+    }
+
+    if ( !retira && totalPedido(Carrinho) < MinCompra) {
+      Toast("Valor total do pedido é menor que o mínimo");
+      event.target.disabled = false;
+      return;
+    }
+
+    try {
+      const response = await api.post('/compras/comprar', {
+        Items: Carrinho,
+        Obs: obs
+      })
+
+      console.log(response.data)
+    } catch (err) {
+      event.target.disabled = false
+      Toast("Falha ao incluir o pedido de compra, verifique a tela compras à pagar", "error");
+    }
   };
 
   return (
@@ -157,39 +161,39 @@ function Compras(props) {
             <div className="YAlign" style={{ flex: "unset" }}>
               <Typography gutterBottom variant="subtitle1">
                 <strong>Valor mínimo p/ frete grátis:</strong> R${" "}
-                {MinFrete(undefined, retira)}
+                {MinFrete(MinCompra, retira)}
               </Typography>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    className={classes.checkbox}
-                    checked={retira}
-                    onChange={(e) => setRetira(e.target.checked)}
-                    name="gilad"
-                  />
-                }
-                label="Franqueado Retira"
-              />
+              {Retira ? (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className={classes.checkbox}
+                      checked={retira}
+                      onChange={(e) => setRetira(e.target.checked)}
+                      name="gilad"
+                    />
+                  }
+                  label="Franqueado Retira"
+                />
+              ) : null}
             </div>
           </div>
           <div style={{ height: 400, width: "100%" }}>
-            <ThemeProvider theme={Tema}>
-              <DataGrid
-                className={classes.dataGrid}
-                rows={CarrinhoFormatado}
-                columns={columns}
-                autoPageSize={true}
-                disableSelectionOnClick={true}
-                disableColumnMenu={true}
-                checkboxSelection={true}
-                onCellEditCommit={(params, event) => {
-                  SetBuyQtt(params);
-                }}
-                onSelectionModelChange={(SelectedIDs) => {
-                  updateChecked(SelectedIDs);
-                }}
-              />
-            </ThemeProvider>
+            <DataGrid
+              className={classes.dataGrid}
+              rows={CarrinhoFormatado}
+              columns={columns}
+              autoPageSize={true}
+              disableSelectionOnClick={true}
+              disableColumnMenu={true}
+              checkboxSelection={true}
+              onCellEditCommit={(params, event) => {
+                SetBuyQtt(params);
+              }}
+              onSelectionModelChange={(SelectedIDs) => {
+                updateChecked(SelectedIDs);
+              }}
+            />
           </div>
         </DialogContent>
         <DialogActions>
@@ -199,7 +203,7 @@ function Compras(props) {
             label="Obs."
           />
 
-          <Button onClick={() => handleBuy()} color="primary">
+          <Button onClick={(e) => handleBuy(e)} color="primary">
             Comprar
           </Button>
           <Button
@@ -380,8 +384,8 @@ const totalPedido = (carrinho) => {
   return Number.parseFloat(aux).toFixed(2);
 };
 
-const MinFrete = (min = "999", retira) => {
-  return retira ? "0.00" : min;
+const MinFrete = (min, retira) => {
+  return retira ? "0.00" : Number(min).toFixed(2);
 };
 
 const columns = [
