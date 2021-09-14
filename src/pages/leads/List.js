@@ -77,7 +77,7 @@ function CustomizedAccordions(props) {
 
   const handleConfirmDeal = async (err, leadId) => {
     try {
-      const response = await api
+      await api
         .put("/leads", {
           ID: leadId,
           type: "confirm",

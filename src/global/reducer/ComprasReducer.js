@@ -1,14 +1,14 @@
 import {
-  LOAD_PRODUTOS_DISPONIVEIS,
-  CLEAR_CART,
-  DESTROY_STORE,
-  CHANGE_TAB_INDEX,
-  CHECKED_PROD,
-  CHANGE_BUY_QTT,
-  MOVE_CARRINHO_2_PRODUTOS,
-  MOVE_PRODUTOS_2_CARRINHO,
-  SET_MIN_COMPRA,
-  SET_RETIRA
+  COMPRA_LOAD_PRODUTOS_DISPONIVEIS,
+  COMPRA_CLEAR_CART,
+  COMPRA_DESTROY_STORE,
+  COMPRA_CHANGE_TAB_INDEX,
+  COMPRA_CHECKED_PROD,
+  COMPRA_CHANGE_BUY_QTT,
+  COMPRA_MOVE_CARRINHO_2_PRODUTOS,
+  COMPRA_MOVE_PRODUTOS_2_CARRINHO,
+  COMPRA_SET_MIN_COMPRA,
+  COMPRA_SET_RETIRA
 } from "../actions/ComprasActionTypes";
 
 const initialState = {
@@ -25,7 +25,7 @@ const initialState = {
 
 export const ComprasReducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOAD_PRODUTOS_DISPONIVEIS:
+    case COMPRA_LOAD_PRODUTOS_DISPONIVEIS:
       let _newProdutos = [];
       action.Produtos.forEach((produto) =>
         _newProdutos.push({ ...produto, QCompra: 0 })
@@ -37,13 +37,13 @@ export const ComprasReducer = (state = initialState, action) => {
         InitProdutos: _newProdutos,
       };
 
-    case SET_MIN_COMPRA:
+    case COMPRA_SET_MIN_COMPRA:
       return {
         ...state,
         MinCompra: action.min,
       };
 
-    case SET_RETIRA:
+    case COMPRA_SET_RETIRA:
       return {
         ...state,
         Retira: action.retira,
@@ -51,7 +51,7 @@ export const ComprasReducer = (state = initialState, action) => {
 
     
 
-    case MOVE_PRODUTOS_2_CARRINHO:
+    case COMPRA_MOVE_PRODUTOS_2_CARRINHO:
       let newCarrinho = [...state.Carrinho];
       let newProdutos = [];
       let newChecked = [];
@@ -80,7 +80,7 @@ export const ComprasReducer = (state = initialState, action) => {
         Checked: newChecked,
       };
 
-    case MOVE_CARRINHO_2_PRODUTOS:
+    case COMPRA_MOVE_CARRINHO_2_PRODUTOS:
       let newCarrinho_ = [];
       let newProdutos_ = [...state.Produtos];
       let newChecked_ = [];
@@ -109,7 +109,7 @@ export const ComprasReducer = (state = initialState, action) => {
         Checked: newChecked_,
       };
 
-    case CLEAR_CART:
+    case COMPRA_CLEAR_CART:
       return {
         ...state,
         Produtos: [...state.InitProdutos],
@@ -117,13 +117,13 @@ export const ComprasReducer = (state = initialState, action) => {
         Checked: [],
       };
 
-    case CHANGE_TAB_INDEX:
+    case COMPRA_CHANGE_TAB_INDEX:
       return {
         ...state,
         TabIndex: action.Tab,
       };
 
-    case CHECKED_PROD:
+    case COMPRA_CHECKED_PROD:
       /*precisei por esse teste aqui porque a seleção de produtos mandar ID por ID 
       quando selecionado, já o carrinho(administrado pelo datagrid) manda logo o Array 
       todo de ID's selecionados, mas no caso de um ID ser deselecionado, ele não vai 
@@ -146,9 +146,8 @@ export const ComprasReducer = (state = initialState, action) => {
           Checked: _newChecked,
         }
       };
-      
 
-    case CHANGE_BUY_QTT:
+    case COMPRA_CHANGE_BUY_QTT:
       let _newCarrinho = [...state.Carrinho];
 
       _newCarrinho.forEach((item) => {
@@ -162,7 +161,7 @@ export const ComprasReducer = (state = initialState, action) => {
         Carrinho: _newCarrinho,
       };
 
-    case DESTROY_STORE:
+    case COMPRA_DESTROY_STORE:
       return initialState;
 
     default:

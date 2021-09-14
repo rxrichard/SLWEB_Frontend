@@ -77,6 +77,19 @@ function Pedidos(props) {
     setOpen(false);
   };
 
+  const handleCancel = async (ID, event) => {
+    event.persist()
+    event.target.disable = true;
+    try {
+      await api.delete(`/compras/pedidos/cancelar/${ID}`);
+
+      Toast("Pedido cancelado", "success");
+    } catch (err) {
+      event.target.disable = false;
+      Toast("Falha ao cancelar pedido", "error");
+    }
+  };
+
   return !loaded ? (
     <Loading />
   ) : (
@@ -118,25 +131,25 @@ function Pedidos(props) {
             </Typography>
           </div>
           <div style={{ height: 400, width: "100%" }}>
-              <DataGrid
-                rows={
-                  typeof pedidoDet.Detalhes != "undefined"
-                    ? pedidoDet.Detalhes
-                    : []
-                }
-                columns={columns}
-                autoPageSize
-                disableSelectionOnClick
-                disableColumnMenu
-                loading={typeof pedidoDet.Detalhes == "undefined"}
-              />
+            <DataGrid
+              rows={
+                typeof pedidoDet.Detalhes != "undefined"
+                  ? pedidoDet.Detalhes
+                  : []
+              }
+              columns={columns}
+              autoPageSize
+              disableSelectionOnClick
+              disableColumnMenu
+              loading={typeof pedidoDet.Detalhes == "undefined"}
+            />
           </div>
         </DialogContent>
         <DialogActions>
           {pedidoDet.Status === "Processando" ? (
             <Button
               color="primary"
-              onClick={() => alert("Cancelamento em desenvolvimento")}
+              onClick={(e) => handleCancel(pedidoDet.PedidoId, e)}
               startIcon={<Block />}
             >
               Cancelar Pedido

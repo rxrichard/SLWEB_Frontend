@@ -1,58 +1,58 @@
 import {
-  LOAD_PRODUTOS_DISPONIVEIS,
-  CLEAR_CART,
-  DESTROY_STORE,
-  CHANGE_TAB_INDEX,
-  CHECKED_PROD,
-  CHANGE_BUY_QTT,
-  MOVE_CARRINHO_2_PRODUTOS,
-  MOVE_PRODUTOS_2_CARRINHO,
-  SET_MIN_COMPRA,
-  SET_RETIRA
+  COMPRA_LOAD_PRODUTOS_DISPONIVEIS,
+  COMPRA_CLEAR_CART,
+  COMPRA_DESTROY_STORE,
+  COMPRA_CHANGE_TAB_INDEX,
+  COMPRA_CHECKED_PROD,
+  COMPRA_CHANGE_BUY_QTT,
+  COMPRA_MOVE_CARRINHO_2_PRODUTOS,
+  COMPRA_MOVE_PRODUTOS_2_CARRINHO,
+  COMPRA_SET_MIN_COMPRA,
+  COMPRA_SET_RETIRA
 } from "./ComprasActionTypes";
 
 export const LoadInsumos = (value) => ({
-  type: LOAD_PRODUTOS_DISPONIVEIS,
+  type: COMPRA_LOAD_PRODUTOS_DISPONIVEIS,
   Produtos: value,
 });
 
 export const SetMin = (value) => ({
-  type: SET_MIN_COMPRA,
+  type: COMPRA_SET_MIN_COMPRA,
   min: value,
 });
 export const SetRetira = (value) => ({
-  type: SET_RETIRA,
+  type: COMPRA_SET_RETIRA,
   retira: value,
 });
 
 export const ClearCarrinho = () => ({
-  type: CLEAR_CART,
+  type: COMPRA_CLEAR_CART,
 });
 
 export const DestroyStore = () => ({
-  type: DESTROY_STORE,
+  type: COMPRA_DESTROY_STORE,
 });
 
 export const ChangeTab = (value) => ({
-  type: CHANGE_TAB_INDEX,
+  type: COMPRA_CHANGE_TAB_INDEX,
   Tab: value,
 });
 
 export const SetCheckedProd = (value) => ({
-  type: CHECKED_PROD,
+  type: COMPRA_CHECKED_PROD,
   value: value,
 });
 
 export const SetBuyQtt = (value) => ({
-  type: CHANGE_BUY_QTT,
+  type: COMPRA_CHANGE_BUY_QTT,
   ProdId: value.id,
   Qtd: value.value,
 });
 
 export const UpdateProdutos = () => ({
-  type: MOVE_CARRINHO_2_PRODUTOS,
+  type: COMPRA_MOVE_CARRINHO_2_PRODUTOS,
 });
 
 export const UpdateCarrinho = () => ({
-  type: MOVE_PRODUTOS_2_CARRINHO,
+  type: COMPRA_MOVE_PRODUTOS_2_CARRINHO,
 });

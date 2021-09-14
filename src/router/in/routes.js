@@ -14,8 +14,9 @@ import GerenciarEquip from "../../pages/equipamentos_solicitacao/gerenciamento";
 import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../components/Home";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
-import CentralEmails from "../../pages/Central_Emails/index";
-import Compras from '../../pages/Compras/index'
+import CentralEmails from "../../pages/emails/index";
+import Compras from '../../pages/compras/index'
+import Vendas from '../../pages/vendas/index'
 
 function Dashboard(props) {
   return (
@@ -38,6 +39,7 @@ function Dashboard(props) {
             <Route exact path="/perfil" component={Perfil} />
             <Route exact path="/ajuda" component={Ajuda} />
             <Route exact path="/compras" component={Compras} />
+            <Route exact path="/vendas" component={Vendas} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} /> <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />

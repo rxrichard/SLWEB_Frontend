@@ -10,10 +10,16 @@ import Loading from "../../components/loading_screen";
 
 //import de elementos visuais
 import { Toast } from "../../components/toasty";
-import { ChangeTab, SetMin, SetRetira } from "../../global/actions/ComprasAction";
+import {
+  ChangeTab,
+  SetMin,
+  SetRetira,
+} from "../../global/actions/ComprasAction";
 
+import { DataGrid } from "@material-ui/data-grid";
 import { withStyles } from "@material-ui/core/styles";
-import { Table } from "../../components/table";
+import Grow from "@material-ui/core/Grow";
+import { Close, Block } from "@material-ui/icons";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -21,15 +27,25 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@material-ui/core/Button";
+import Draggable from "react-draggable";
+
+import { Table } from "../../components/table";
 
 function Contas(props) {
   const TabIndex = 1;
 
+  const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [ResumoCompras, setResumo] = useState([]);
   const [Duplicatas, setDuplicatas] = useState([]);
   const [TotalDuplicatas, setTotalDuplicatas] = useState([]);
   const [TotalAno, setTotalAno] = useState([]);
+  const [pedidoDet, setPedidoDet] = useState({});
 
   const { ChangeTab, SetMin, SetRetira } = props;
 
@@ -45,14 +61,32 @@ function Contas(props) {
         setTotalDuplicatas(DefineTotalDuplicatas(response.data.Duplicatas));
         setTotalAno(response.data.ComprasAno[0]);
         setLoaded(true);
-        SetMin(response.data.Geral.VlrMinCompra)
-        SetRetira(response.data.Geral.Retira)
+        SetMin(response.data.Geral.VlrMinCompra);
+        SetRetira(response.data.Geral.Retira);
       } catch (err) {
         Toast("Falha ao recuperar dados", "error");
       }
     }
     loadProdutos();
   }, [ChangeTab, SetMin, SetRetira]);
+
+  const handleLoadDet = async (DOC) => {
+    setOpen(true);
+    try {
+      const response = await api.get(
+        `/compras/pedidos/detalhes/${DOC}/DOC`
+      );
+      setPedidoDet(response.data);
+    } catch (err) {
+      setPedidoDet({});
+      Toast("Não foi possivel recuperar os detalhes desse pedido", "error");
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setPedidoDet({});
+    setOpen(false);
+  };
 
   return !loaded ? (
     <Loading />
@@ -66,6 +100,69 @@ function Contas(props) {
         alignItems: "flex-start",
       }}
     >
+      <Dialog
+        open={open}
+        onClose={() => handleCloseDialog()}
+        PaperComponent={PaperComponent}
+        TransitionComponent={Transition}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          Detalhes do Pedido
+        </DialogTitle>
+        <DialogContent>
+          <div className="XAlign" style={{ justifyContent: "space-between" }}>
+            <Typography gutterBottom variant="subtitle1">
+              <strong>
+                {pedidoDet.Status === "Faturado" ? "Emissão" : "Solicitação"}
+              </strong>
+              :{" "}
+              {typeof pedidoDet.Data != "undefined"
+                ? moment(pedidoDet.Data).format("L")
+                : ""}
+            </Typography>
+            <Typography gutterBottom variant="subtitle1">
+              <strong>Transportadora:</strong>{" "}
+              {pedidoDet.Transportadora === null
+                ? "?"
+                : pedidoDet.Transportadora}
+            </Typography>
+          </div>
+          <div style={{ height: 400, width: "100%" }}>
+              <DataGrid
+                rows={
+                  typeof pedidoDet.Detalhes != "undefined"
+                    ? pedidoDet.Detalhes
+                    : []
+                }
+                columns={columns}
+                autoPageSize
+                disableSelectionOnClick
+                disableColumnMenu
+                loading={typeof pedidoDet.Detalhes == "undefined"}
+              />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          {pedidoDet.Status === "Processando" ? (
+            <Button
+              color="primary"
+              onClick={() => alert("Cancelamento em desenvolvimento")}
+              startIcon={<Block />}
+            >
+              Cancelar Pedido
+            </Button>
+          ) : null}
+
+          <Button
+            color="primary"
+            onClick={handleCloseDialog}
+            startIcon={<Close />}
+          >
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Typography variant="h6">Total Mensal</Typography>
       <TableContainer component={Paper}>
         <Table size="small">
@@ -87,23 +184,41 @@ function Contas(props) {
           </TableHead>
           <TableBody>
             <StyledTableRow>
-              <StyledTableCell>{currencyFormat(TotalAno["1"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["2"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["3"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["4"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["5"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["6"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["7"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["8"])}</StyledTableCell>
-              <StyledTableCell>{currencyFormat(TotalAno["9"])}</StyledTableCell>
               <StyledTableCell>
-                {currencyFormat(TotalAno["10"])}
+                {TotalAno && currencyFormat(TotalAno["1"])}
               </StyledTableCell>
               <StyledTableCell>
-                {currencyFormat(TotalAno["11"])}
+                {TotalAno && currencyFormat(TotalAno["2"])}
               </StyledTableCell>
               <StyledTableCell>
-                {currencyFormat(TotalAno["12"])}
+                {TotalAno && currencyFormat(TotalAno["3"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["4"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["5"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["6"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["7"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["8"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["9"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["10"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["11"])}
+              </StyledTableCell>
+              <StyledTableCell>
+                {TotalAno && currencyFormat(TotalAno["12"])}
               </StyledTableCell>
             </StyledTableRow>
           </TableBody>
@@ -143,6 +258,7 @@ function Contas(props) {
                           moment(dup.DtVenc) < moment() ? "#ff4747" : null,
                       }}
                       key={dup.E1_NUM}
+                      onClick={() => handleLoadDet(dup.E1_NUM)}
                     >
                       <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
                       <StyledTableCell>
@@ -256,7 +372,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       ChangeTab,
       SetMin,
-      SetRetira
+      SetRetira,
     },
     dispatch
   );
@@ -331,3 +447,59 @@ const currencyFormat = (currency) => {
     return "0.00";
   }
 };
+
+function PaperComponent(props) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} style={{ width: "100%", maxWidth: "900px" }} />
+    </Draggable>
+  );
+}
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow {...props} />;
+});
+
+const columns = [
+  { field: "id", headerName: "Código", width: 100, editable: false },
+  {
+    field: "Produto",
+    headerName: "Produto",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "UN",
+    headerName: "Un",
+    width: 50,
+    editable: false,
+    sortable: false,
+  },
+  {
+    field: "Quantidade",
+    headerName: "Quantidade",
+    type: "number",
+    width: 125,
+    editable: false,
+  },
+  {
+    field: "VlrUn",
+    headerName: "Valor Unitário",
+    type: "number",
+    sortable: false,
+    width: 130,
+  },
+  {
+    field: "VlrTotal",
+    headerName: "Valor Total",
+    type: "number",
+    description: "Cálculo do Valor Unitário x Quantidade",
+    width: 130,
+    valueGetter: (params) =>
+      params.getValue(params.id, "Quantidade") *
+      params.getValue(params.id, "VlrUn"),
+  },
+];

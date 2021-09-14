@@ -25,6 +25,7 @@ import {
   ExitToApp,
   ShoppingCart,
   Help,
+  AddShoppingCart,
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../misc/commom_functions";
@@ -130,10 +131,19 @@ export default function MiniDrawer() {
           <Link to="/compras" style={{ color: GREY_SECONDARY }}>
             <ListItem button onClick={handleDrawerClose}>
               <ListItemIcon>
-                <ShoppingCart />
+                <AddShoppingCart />
               </ListItemIcon>
 
               <ListItemText primary="Compras" />
+            </ListItem>
+          </Link>
+          <Link to="/vendas" style={{ color: GREY_SECONDARY }}>
+            <ListItem button onClick={handleDrawerClose}>
+              <ListItemIcon>
+                <ShoppingCart />
+              </ListItemIcon>
+
+              <ListItemText primary="Vendas" />
             </ListItem>
           </Link>
         </List>

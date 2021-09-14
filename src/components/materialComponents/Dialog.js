@@ -49,6 +49,7 @@ export default function DraggableDialog(props) {
           color: `${props.disabled ? GREY_LIGHT : RED_SECONDARY}`,
           border: `1px solid ${props.disabled ? GREY_LIGHT : RED_SECONDARY}`,
           height: "54px",
+          ...props.buttonStyle
         }}
         variant="outlined"
         color="primary"

@@ -1,86 +1,77 @@
 import React, { useEffect, useState } from "react";
+import Input from "react-number-format";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import { api } from "../../services/api";
+import Draggable from "react-draggable";
 
-import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
-import Fab from "@material-ui/core/Fab";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { ShoppingCart, Add } from "@material-ui/icons";
+import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
+import Badge from "@material-ui/core/Badge";
+import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Draggable from "react-draggable";
-import Paper from "@material-ui/core/Paper";
-import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+
+import MenuAbas from "../../components/materialComponents/PainelAbas";
+import Loading from "../../components/loading_screen";
+import { Panel } from "../../components/commom_in";
 
 import {
   LoadInsumos,
-  DestroyStore,
-  SetCheckedProd,
-  SetBuyQtt,
   UpdateCarrinho,
   UpdateProdutos,
+  SetBuyQtt,
+  SetCheckedProd,
   ClearCarrinho,
-} from "../../global/actions/ComprasAction";
-import MenuAbas from "../../components/materialComponents/PainelAbas";
-import { Panel } from "../../components/commom_in";
-import Comprar from "./Comprar";
-import Contas from "./Contas";
+  DestroyStore,
+  LoadClientes,
+  LoadPagamentos
+} from "../../global/actions/VendasAction";
+import Vender from "./Vender";
 import Pedidos from "./Pedidos";
-import { Toast } from "../../components/toasty";
-import Input from "react-number-format";
-import InputMultline from "../../components/materialComponents/InputMultline";
 
-function Compras(props) {
-  const classes = useStyles();
-
+function Vendas(props) {
+  const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
-  const [obs, setObs] = useState("");
-  const [retira, setRetira] = useState(false);
+
+  const classes = useStyles();
 
   const {
     LoadInsumos,
-    DestroyStore,
-    SetBuyQtt,
     UpdateCarrinho,
-    UpdateProdutos,
+    SetBuyQtt,
     SetCheckedProd,
+    UpdateProdutos,
     ClearCarrinho,
+    DestroyStore,
+    LoadClientes,
+    LoadPagamentos
   } = props;
-
-  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } =
-    props.State;
+  const { TabIndex, Produtos, Checked, Carrinho } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
 
-  const transitionDuration = {
-    appear: 300,
-    enter: 300,
-    exit: 300,
-  };
-
-  //component did mount
+  //componentDidMount
   useEffect(() => {
-    async function loadProdutos() {
-      try {
-        const response = await api.get("/compras/produtos");
-        LoadInsumos(response.data);
-      } catch (err) {
-        Toast("Falha ao recuperar produtos", "error");
-      }
-    }
-    loadProdutos();
-  }, [LoadInsumos]);
+    async function Load() {
+      const response = await api.get("/vendas/produtos");
 
-  //component will unmount
+      LoadInsumos(response.data.Produtos);
+      LoadClientes(response.data.Clientes);
+      LoadPagamentos(response.data.CodPag)
+      setLoaded(true);
+    }
+    Load();
+  }, [LoadInsumos, LoadClientes, LoadPagamentos]);
+
+  //componentWillUnmount
   useEffect(() => {
     return () => DestroyStore();
   }, [DestroyStore]);
@@ -101,57 +92,15 @@ function Compras(props) {
     SetCheckedProd(newChecked);
   };
 
-  const handleBuy = async (event) => {
-    let temZerado = false;
-    event.persist();
-    event.target.disabled = true;
-
-    if (Carrinho.length === 0) {
-      Toast("Nenhum item no carrinho");
-      event.target.disabled = false;
-      return;
-    }
-
-    for (let i = 0; i < Carrinho.length; i++) {
-      if (Carrinho[i].QCompra === 0) {
-        temZerado = true;
-        break;
-      }
-    }
-
-    if (temZerado) {
-      Toast("Um ou mais produtos do carrinho não tem uma quantidade definida");
-      event.target.disabled = false;
-      return;
-    }
-
-    if (!retira && totalPedido(Carrinho) < MinCompra) {
-      Toast("Valor total do pedido é menor que o mínimo");
-      event.target.disabled = false;
-      return;
-    }
-
-    try {
-      await api.post("/compras/comprar", {
-        Items: Carrinho,
-        Obs: obs,
-        Retira: retira
-      });
-
-      Toast("Pedido incluído com sucesso", "success");
-      ClearCarrinho();
-      setObs('')
-      event.target.disabled = false;
-    } catch (err) {
-      event.target.disabled = false;
-      Toast(
-        "Falha ao incluir o pedido de compra, verifique a tela compras à pagar",
-        "error"
-      );
-    }
+  const transitionDuration = {
+    appear: 300,
+    enter: 300,
+    exit: 300,
   };
 
-  return (
+  return !loaded ? (
+    <Loading />
+  ) : (
     <Panel
       style={{
         overflow: "auto",
@@ -160,9 +109,8 @@ function Compras(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Contas à Pagar", "Comprar", "Pedidos"]}>
-        <Contas />
-        <Comprar />
+      <MenuAbas titles={["Vender", "Vendas"]}>
+        <Vender />
         <Pedidos />
       </MenuAbas>
       <Dialog
@@ -177,28 +125,8 @@ function Compras(props) {
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
             <Typography gutterBottom variant="subtitle1">
-              <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
+              <strong>Total da Venda:</strong> R${totalPedido(Carrinho)}
             </Typography>
-
-            <div className="YAlign" style={{ flex: "unset" }}>
-              <Typography gutterBottom variant="subtitle1">
-                <strong>Valor mínimo p/ frete grátis:</strong> R${" "}
-                {MinFrete(MinCompra, retira)}
-              </Typography>
-              {Retira ? (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      className={classes.checkbox}
-                      checked={retira}
-                      onChange={(e) => setRetira(e.target.checked)}
-                      name="gilad"
-                    />
-                  }
-                  label="Franqueado Retira"
-                />
-              ) : null}
-            </div>
           </div>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
@@ -219,24 +147,18 @@ function Compras(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <InputMultline
-            onChange={(e) => setObs(e.target.value)}
-            value={obs}
-            label="Obs."
-          />
-
-          <Button onClick={(e) => handleBuy(e)} color="primary">
-            Comprar
+          <Button onClick={(e) => alert("venda gravada")} color="primary">
+            Gravar Venda
           </Button>
           <Button
             disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true}
             onClick={() => UpdateProdutos()}
             color="primary"
           >
-            Remover
+            Remover do Carrinho
           </Button>
           <Button onClick={() => ClearCarrinho()} color="primary">
-            Limpar
+            Limpar Carrinho
           </Button>
           <Button onClick={() => setOpen(false)} color="primary">
             Fechar
@@ -253,11 +175,11 @@ function Compras(props) {
         }}
       >
         <Zoom
-          in={TabIndex === 2 && ProdutosMarcados(Produtos, Checked) > 0}
+          in={TabIndex === 1 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
             transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
+              TabIndex === 1 ? transitionDuration.exit : 0
             }ms`,
           }}
           unmountOnExit
@@ -283,7 +205,7 @@ function Compras(props) {
           style={{
             marginTop: "8px",
             transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
+              TabIndex === 1 ? transitionDuration.exit : 0
             }ms`,
           }}
           unmountOnExit
@@ -307,24 +229,44 @@ function Compras(props) {
 }
 
 const mapStateToProps = (store) => ({
-  State: store.CompraState,
+  State: store.VendaState,
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       LoadInsumos,
-      DestroyStore,
-      SetCheckedProd,
-      SetBuyQtt,
       UpdateCarrinho,
+      SetBuyQtt,
+      SetCheckedProd,
       UpdateProdutos,
       ClearCarrinho,
+      DestroyStore,
+      LoadClientes,
+      LoadPagamentos
     },
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Compras);
+export default connect(mapStateToProps, mapDispatchToProps)(Vendas);
+
+const ProdutosMarcados = (ProdList, Marcados) => {
+  let count = 0;
+  ProdList.forEach((prod) =>
+    Marcados.indexOf(prod.ProdId[0]) !== -1 ? count++ : null
+  );
+
+  return count;
+};
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: -4,
+    top: -4,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: "0 4px",
+  },
+}))(Badge);
 
 const useStyles = makeStyles((theme) => ({
   extendedIcon: {
@@ -351,31 +293,14 @@ function PaperComponent(props) {
   );
 }
 
-const StyledBadge = withStyles((theme) => ({
-  badge: {
-    right: -4,
-    top: -4,
-    border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
-  },
-}))(Badge);
+const totalPedido = (carrinho) => {
+  let aux = 0;
 
-const ProdutosMarcados = (ProdList, Marcados) => {
-  let count = 0;
-  ProdList.forEach((prod) =>
-    Marcados.indexOf(prod.Cód) !== -1 ? count++ : null
-  );
+  carrinho.forEach((item) => {
+    aux += Number.parseFloat(item.VVenda).toFixed(4) * item.QVenda;
+  });
 
-  return count;
-};
-
-const CarrinhoMarcados = (CarrinhoList, Marcados) => {
-  let count = 0;
-  CarrinhoList.forEach((prod) =>
-    Marcados.indexOf(prod.Cód) !== -1 ? count++ : null
-  );
-
-  return count;
+  return Number.parseFloat(aux).toFixed(2);
 };
 
 const fromStore2Datagrid = (carrinho) => {
@@ -383,10 +308,10 @@ const fromStore2Datagrid = (carrinho) => {
 
   carrinho.forEach((item) => {
     aux.push({
-      id: item.Cód,
+      id: item.ProdId[0],
       Produto: item.Produto,
-      Quantidade: item.QCompra,
-      Vlr: item.VlrUn,
+      Quantidade: item.QVenda,
+      Vlr: item.VVenda,
       Conversao: item.FatConversao,
     });
   });
@@ -394,24 +319,8 @@ const fromStore2Datagrid = (carrinho) => {
   return aux;
 };
 
-const totalPedido = (carrinho) => {
-  let aux = 0;
-
-  carrinho.forEach((item) => {
-    aux +=
-      Number.parseFloat(item.VlrUn).toFixed(4) *
-      (item.FatConversao * item.QCompra);
-  });
-
-  return Number.parseFloat(aux).toFixed(2);
-};
-
-const MinFrete = (min, retira) => {
-  return retira ? "0.00" : Number(min).toFixed(2);
-};
-
 const columns = [
-  { field: "id", headerName: "Código", width: 100, editable: false },
+  { field: "id", headerName: "Cod", width: 80, editable: false },
   {
     field: "Produto",
     headerName: "Produto",
@@ -429,9 +338,42 @@ const columns = [
       <Input
         autoFocus={true}
         decimalScale={0}
+        allowLeadingZeros={false}
+        allowEmptyFormatting={false}
+        allowNegative={false}
         fixedDecimalScale={true}
         isNumericString
         prefix=""
+        onChange={(e) => {
+          params.api.setEditCellValue(
+            {
+              id: params.id,
+              field: params.field,
+              value: Number(e.target.value),
+            },
+            e
+          );
+        }}
+        value={params.value}
+      />
+    ),
+  },
+  {
+    field: "Vlr",
+    headerName: "Valor Un.",
+    type: "number",
+    hasFocus: true,
+    width: 110,
+    editable: true,
+    renderEditCell: (params) => (
+      <Input
+        autoFocus={true}
+        decimalScale={4}
+        fixedDecimalScale={false}
+        isNumericString
+        prefix=""
+        allowLeadingZeros={false}
+        allowEmptyFormatting={false}
         allowNegative={false}
         onChange={(e) => {
           params.api.setEditCellValue(
@@ -448,23 +390,22 @@ const columns = [
     ),
   },
   {
-    field: "VlrUn",
-    headerName: "Valor Unitário",
-    type: "number",
-    sortable: false,
-    width: 130,
-    valueGetter: (params) =>
-      params.getValue(params.id, "Vlr") *
-      params.getValue(params.id, "Conversao"),
-  },
-  {
     field: "VlrTotal",
     headerName: "Valor Total",
     type: "number",
     description: "Cálculo do Valor Unitário x Quantidade",
-    width: 130,
+    width: 120,
     valueGetter: (params) =>
       params.getValue(params.id, "Quantidade") *
-      params.getValue(params.id, "VlrUn"),
+      params.getValue(params.id, "Vlr"),
   },
 ];
+
+const CarrinhoMarcados = (CarrinhoList, Marcados) => {
+  let count = 0;
+  CarrinhoList.forEach((prod) =>
+    Marcados.indexOf(prod.ProdId[0]) !== -1 ? count++ : null
+  );
+
+  return count;
+};
