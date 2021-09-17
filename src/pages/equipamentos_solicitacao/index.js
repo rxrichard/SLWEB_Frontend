@@ -1,8 +1,8 @@
 import React from "react";
 
 import MenuAbas from "../../components/materialComponents/PainelAbas";
-import Logs from "./Logs";
-import Segmentos from "./Solicitacao";
+import Logs from "./logs";
+import Segmentos from "./solicitacao";
 
 import { Panel } from "../../components/commom_in";
 

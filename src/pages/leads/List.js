@@ -22,7 +22,7 @@ import Input from "../../components/materialComponents/InputMultline";
 function CustomizedAccordions(props) {
   const [leads, setLeads] = useState([]);
   const [motivo, setMotivo] = useState("");
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(null);
 
   const { AddLimite, MoveLinha } = props;
   const { Limites } = props.State;
@@ -75,21 +75,21 @@ function CustomizedAccordions(props) {
     }
   };
 
-  const handleConfirmDeal = async (err, leadId) => {
-    try {
-      await api
-        .put("/leads", {
-          ID: leadId,
-          type: "confirm",
-          motivo: motivo,
-        })
-        .catch((err) => {
-          throw new Error(err.response.status);
-        });
-    } catch (err) {
-      Toast("Falha ao confirmar negociação", "error");
-    }
-  };
+  // const handleConfirmDeal = async (err, leadId) => {
+  //   try {
+  //     const response = await api
+  //       .put("/leads", {
+  //         ID: leadId,
+  //         type: "confirm",
+  //         motivo: motivo,
+  //       })
+  //       .catch((err) => {
+  //         throw new Error(err.response.status);
+  //       });
+  //   } catch (err) {
+  //     Toast("Falha ao confirmar negociação", "error");
+  //   }
+  // };
 
   const handleRequestHistory = async (leadid) => {
     try {
@@ -128,18 +128,19 @@ function CustomizedAccordions(props) {
               disabled={shouldClose(le)}
               shouldClose={shouldClose(le)}
               onOpen={() => handleRequestHistory(le.Id)}
+              onClose={() => setHistory(null)}
               icone={<ContactPhone />}
               botao={
                 shouldClose(le)
                   ? "Desistiu"
                   : shouldShowAdress(le)
-                  ? "Contato Lead"
-                  : "Quero esse Lead"
+                    ? "Contato Lead"
+                    : "Quero esse Lead"
               }
               title="Contato Lead"
               action={
                 <>
-                  {shouldShowAdress(le) ? (
+                  {/* {shouldShowAdress(le) ? (
                     <Button
                       style={{
                         backgroundColor: RED_SECONDARY,
@@ -153,7 +154,7 @@ function CustomizedAccordions(props) {
                     </Button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                   <Button
                     style={{
                       backgroundColor: shouldShowAdress(le)
@@ -202,9 +203,14 @@ function CustomizedAccordions(props) {
                     {le.Mensagem}
                   </Typography>
 
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>Atividade/Ramo: </strong>
+                    {le.AtividadeDesc}
+                  </Typography>
+
                   <br />
 
-                  <Typography variant="subtitle1" gutterBottom>
+                  {/* <Typography variant="subtitle1" gutterBottom>
                     Lead assumido{" "}
                     <strong>
                       {returnTime(le, false, Limites[0].MaxHoras)}
@@ -215,7 +221,7 @@ function CustomizedAccordions(props) {
                     Você tem até{" "}
                     <strong>{returnTime(le, true, Limites[0].MaxHoras)}</strong>{" "}
                     para fechar com o cliente ou desistir do Lead
-                  </Typography>
+                  </Typography> */}
 
                   <Input
                     style={{ width: "100%" }}
@@ -299,7 +305,13 @@ const shouldShowAdress = (lead) => {
 };
 
 const showHistory = (history) => {
-  return (
+  return history === null ? (
+    <div style={{ marginTop: "8px" }}>
+      <Typography variant="subtitle1">
+        Desistencias: <strong>-</strong>
+      </Typography>
+    </div>
+  ) : (
     <div style={{ marginTop: "8px" }}>
       <Typography variant="subtitle1">
         Desistencias: <strong>{history.length}</strong>
@@ -340,23 +352,40 @@ const mountString = (dados) => {
   return variavel;
 };
 
+/*Essa previsao ta pulando dias caso caia em um sabado ou domingo 
+mas se "passar por cima" de um ele não considera, 
+como o Alberto pediu pra desativar os vencimentos, 
+vou parar de mecher nisso por agora(03/09)*/
 const returnTime = (dados, addtime, max) => {
   moment.locale("pt-br");
+  let inicial = null;
   let final = null;
 
+  //Esse trecho vai ativar quando a o lead tiver sido assumido pelo site e eu for mostrar uma data pro cara sem precisar do retorno da API
   if (typeof dados.DataHora == "undefined" && !addtime) {
-    return moment().format("LLLL");
+    inicial = moment();
   } else if (typeof dados.DataHora == "undefined" && addtime) {
-    return moment().add(max, "hours").format("LLLL");
+    final = moment().add(max, "hours");
+    if (final.isoWeekday() === 6) {
+      final.add(2, 'days')
+    } else if (final.isoWeekday() === 7) {
+      final.add(1, 'days')
+    }
   }
 
-  if (addtime) {
-    final = moment(dados.DataHora).add(max, "hours").utc().format("LLLL");
-    return final;
-  } else {
-    final = moment(dados.DataHora).utc().format("LLLL");
-    return final;
+  //Esse trecho vai executar quando o lead assumido veio do backend, junto com uma data de inclusão
+  if (typeof dados.DataHora != "undefined" && !addtime) {
+    inicial = moment(dados.DataHora).utc();
+  } else if (typeof dados.DataHora != "undefined" && addtime) {
+    final = moment(dados.DataHora).add(max, "hours").utc();
+    if (final.isoWeekday() === 6) {
+      final.add(2, 'days')
+    } else if (final.isoWeekday() === 7) {
+      final.add(1, 'days')
+    }
   }
+
+  return addtime ? final.format("LLLL") : inicial.format("LLLL")
 };
 
 const shouldClose = (dados) => {

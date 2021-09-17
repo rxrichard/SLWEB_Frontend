@@ -15,7 +15,7 @@ import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../components/Home";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
-import Compras from '../../pages/compras/index'
+import Compras from '../../pages/Compras/index'
 import Vendas from '../../pages/vendas/index'
 
 function Dashboard(props) {
