@@ -40,6 +40,7 @@ function LeadsList(props) {
   const [Fone2, setFone2] = useState("");
   const [Email, setEmail] = useState("");
   const [Desc, setDesc] = useState("");
+  const [Msg, setMsg] = useState("");
 
   const { LoadLeadsFranqueado, LoadLeadsGeral, LoadLeadsLimite } = props;
   const { LeadsFranqueado, LeadsGeral, Limites } = props.State;
@@ -87,6 +88,7 @@ function LeadsList(props) {
           Fone2,
           Email,
           Desc,
+          Msg,
         },
       });
 
@@ -135,7 +137,7 @@ function LeadsList(props) {
   //     result = convertToJson(data); // shows data in obj format
   //     console.log(result)
   //   };
-    
+
   //   if(typeof arquivos != 'undefined'){
   //     reader.readAsBinaryString(arquivos);
   //   }else{
@@ -226,7 +228,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 0px 8px 0px" }}
                 value={NomeFantasia}
                 id="outlined-basic"
                 label="Nome Fantasia"
@@ -234,7 +236,7 @@ function LeadsList(props) {
                 onChange={(e) => setNomeFantasia(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "0px 0px 8px 0px" }}
                 value={RazaoSocial}
                 id="outlined-basic"
                 label="Razão Social"
@@ -259,7 +261,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 16px 0px 0px" }}
                 value={Municipio}
                 id="outlined-basic"
                 label="Município"
@@ -267,7 +269,7 @@ function LeadsList(props) {
                 onChange={(e) => setMunicipio(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "8px 0px 8px 0px" }}
                 value={Contato}
                 id="outlined-basic"
                 label="Contato"
@@ -280,7 +282,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 16px 0px 0px" }}
                 value={Fone1}
                 id="outlined-basic"
                 label="Fone 1"
@@ -288,7 +290,7 @@ function LeadsList(props) {
                 onChange={(e) => setFone1(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "8px 0px 8px 0px" }}
                 value={Fone2}
                 id="outlined-basic"
                 label="Fone 2"
@@ -305,10 +307,24 @@ function LeadsList(props) {
               onChange={(e) => setEmail(e.target.value)}
             />
             <InputMultline
-              style={{ width: "100%", marginTop: "8px" }}
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor: charCount(Desc, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+              }}
               value={Desc}
               onChange={(e) => setDesc(e.target.value)}
-              label="Atividade/Descrição"
+              label={`Atividade/Descrição (${charCount(Desc, 250)})`}
+            />
+            <InputMultline
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor: charCount(Msg, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+              }}
+              value={Msg}
+              onChange={(e) => setMsg(e.target.value)}
+              label={`Recado Lead (${charCount(Msg, 250)})`}
             />
           </Dialog>
         </div>
@@ -397,5 +413,5 @@ const estados = [
 ];
 
 const charCount = (field, maxChar) => {
-  return field.length - maxChar
-}
+  return maxChar - field.length;
+};

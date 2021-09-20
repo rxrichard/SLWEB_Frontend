@@ -326,13 +326,22 @@ const mountString = (dados) => {
 
   if (dados.Nome_Fantasia !== "") {
     variavel += dados.Nome_Fantasia;
+  }else{
+    variavel += '???'
   }
-  if (dados.Estado !== "") {
-    variavel += `, ${dados.Municipio}`;
-  }
+
   if (dados.Municipio !== "") {
-    variavel += ` - ${dados.Estado}`;
+    variavel += `, ${dados.Municipio}`;
+  }else{
+    variavel += ', ???'
   }
+
+  if (dados.Estado !== "") {
+    variavel += ` - ${dados.Estado}`;
+  }else{
+    variavel += ' - ???'
+  }
+
   if (dados.AtividadeDesc !== "" && dados.AtividadeDesc !== null) {
     variavel += `, ${dados.AtividadeDesc}`;
   }
