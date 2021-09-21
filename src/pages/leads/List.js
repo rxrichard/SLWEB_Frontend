@@ -139,7 +139,7 @@ function CustomizedAccordions(props) {
               title="Contato Lead"
               action={
                 <>
-                  {shouldShowAdress(le) ? (
+                  {/* {shouldShowAdress(le) ? (
                     <Button
                       style={{
                         backgroundColor: RED_SECONDARY,
@@ -153,7 +153,7 @@ function CustomizedAccordions(props) {
                     </Button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                   <Button
                     style={{
                       backgroundColor: shouldShowAdress(le)
@@ -178,8 +178,21 @@ function CustomizedAccordions(props) {
               {shouldShowAdress(le) ? (
                 <>
                   <Typography variant="subtitle1" gutterBottom>
+                    <strong>Nome Fantasia: </strong>
+                    {le.Nome_Fantasia}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>Razão Social: </strong>
+                    {le.Razao_Social}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
                     <strong>Contato: </strong>
                     {le.Contato}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>
+                      {le.Municipio} - {le.Estado}
+                    </strong>
                   </Typography>
 
                   <Typography variant="subtitle1" gutterBottom>
@@ -198,6 +211,11 @@ function CustomizedAccordions(props) {
                   </Typography>
 
                   <Typography variant="subtitle1" gutterBottom>
+                    <strong>Atividade / Descrição: </strong>
+                    {le.AtividadeDesc}
+                  </Typography>
+
+                  <Typography variant="subtitle1" gutterBottom>
                     <strong>Mensagem do cliente: </strong>
                     {le.Mensagem}
                   </Typography>
@@ -211,11 +229,11 @@ function CustomizedAccordions(props) {
                     </strong>
                   </Typography>
 
-                  <Typography variant="subtitle1" gutterBottom>
+                  {/* <Typography variant="subtitle1" gutterBottom>
                     Você tem até{" "}
                     <strong>{returnTime(le, true, Limites[0].MaxHoras)}</strong>{" "}
                     para fechar com o cliente ou desistir do Lead
-                  </Typography>
+                  </Typography> */}
 
                   <Input
                     style={{ width: "100%" }}
@@ -326,20 +344,20 @@ const mountString = (dados) => {
 
   if (dados.Nome_Fantasia !== "") {
     variavel += dados.Nome_Fantasia;
-  }else{
-    variavel += '???'
+  } else {
+    variavel += "???";
   }
 
   if (dados.Municipio !== "") {
     variavel += `, ${dados.Municipio}`;
-  }else{
-    variavel += ', ???'
+  } else {
+    variavel += ", ???";
   }
 
   if (dados.Estado !== "") {
     variavel += ` - ${dados.Estado}`;
-  }else{
-    variavel += ' - ???'
+  } else {
+    variavel += " - ???";
   }
 
   if (dados.AtividadeDesc !== "" && dados.AtividadeDesc !== null) {

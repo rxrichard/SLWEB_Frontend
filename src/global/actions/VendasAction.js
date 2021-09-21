@@ -13,7 +13,8 @@ import {
   VENDA_SET_COND_PAG,
   VENDA_SET_DEP_DESTINO,
   VENDA_SET_DEP_ORIGEM,
-  VENDA_SET_OBS
+  VENDA_SET_OBS,
+  VENDA_LOAD_DEPOSITOS,
 } from "./VendasActionTypes";
 
 export const LoadInsumos = (value) => ({
@@ -23,6 +24,10 @@ export const LoadInsumos = (value) => ({
 export const LoadClientes = (value) => ({
   type: VENDA_LOAD_CLIENTES,
   Clientes: value,
+});
+export const LoadDepositos = (value) => ({
+  type: VENDA_LOAD_DEPOSITOS,
+  Depositos: value,
 });
 export const LoadPagamentos = (value) => ({
   type: VENDA_LOAD_PAGAMENTOS,
@@ -73,7 +78,7 @@ export const SetBuyQtt = (value) => ({
   type: VENDA_CHANGE_BUY_QTT,
   ProdId: value.id,
   Qtd: value.value,
-  campo: value.field
+  campo: value.field,
 });
 
 export const ClearCarrinho = () => ({

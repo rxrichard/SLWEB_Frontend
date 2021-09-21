@@ -73,6 +73,7 @@ function LeadsList(props) {
     setFone2("");
     setEmail("");
     setDesc("");
+    setMsg("");
   };
 
   const handleSubmit = async () => {
@@ -310,17 +311,19 @@ function LeadsList(props) {
               style={{
                 width: "100%",
                 marginTop: "8px",
-                backgroundColor: charCount(Desc, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+                backgroundColor:
+                  charCount(Desc, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
               value={Desc}
               onChange={(e) => setDesc(e.target.value)}
-              label={`Atividade/Descrição (${charCount(Desc, 250)})`}
+              label={`Atividade/Descrição(${charCount(Desc, 250)})`}
             />
             <InputMultline
               style={{
                 width: "100%",
                 marginTop: "8px",
-                backgroundColor: charCount(Msg, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+                backgroundColor:
+                  charCount(Msg, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
               value={Msg}
               onChange={(e) => setMsg(e.target.value)}

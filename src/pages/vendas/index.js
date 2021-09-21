@@ -32,7 +32,8 @@ import {
   ClearCarrinho,
   DestroyStore,
   LoadClientes,
-  LoadPagamentos
+  LoadPagamentos,
+  LoadDepositos,
 } from "../../global/actions/VendasAction";
 import Vender from "./Vender";
 import Pedidos from "./Pedidos";
@@ -52,9 +53,21 @@ function Vendas(props) {
     ClearCarrinho,
     DestroyStore,
     LoadClientes,
-    LoadPagamentos
+    LoadPagamentos,
+    LoadDepositos,
   } = props;
-  const { TabIndex, Produtos, Checked, Carrinho } = props.State;
+  const {
+    TabIndex,
+    Produtos,
+    Checked,
+    Carrinho,
+    Cliente,
+    OBS,
+    TipoVenda,
+    CondPag,
+    RemOrigem,
+    RemDestino,
+  } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
 
@@ -65,11 +78,12 @@ function Vendas(props) {
 
       LoadInsumos(response.data.Produtos);
       LoadClientes(response.data.Clientes);
-      LoadPagamentos(response.data.CodPag)
+      LoadPagamentos(response.data.CodPag);
+      LoadDepositos(response.data.Depositos);
       setLoaded(true);
     }
     Load();
-  }, [LoadInsumos, LoadClientes, LoadPagamentos]);
+  }, [LoadInsumos, LoadClientes, LoadPagamentos, LoadDepositos]);
 
   //componentWillUnmount
   useEffect(() => {
@@ -96,6 +110,18 @@ function Vendas(props) {
     appear: 300,
     enter: 300,
     exit: 300,
+  };
+
+  const handleSubmit = () => {
+    console.log({
+      Carrinho,
+      Cliente,
+      OBS,
+      TipoVenda,
+      CondPag,
+      RemOrigem,
+      RemDestino,
+    });
   };
 
   return !loaded ? (
@@ -147,7 +173,7 @@ function Vendas(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={(e) => alert("venda gravada")} color="primary">
+          <Button onClick={(e) => handleSubmit()} color="primary">
             Gravar Venda
           </Button>
           <Button
@@ -243,7 +269,8 @@ const mapDispatchToProps = (dispatch) =>
       ClearCarrinho,
       DestroyStore,
       LoadClientes,
-      LoadPagamentos
+      LoadPagamentos,
+      LoadDepositos,
     },
     dispatch
   );

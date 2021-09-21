@@ -172,9 +172,9 @@ function VerticalLinearStepper(props) {
                   Ajuda ({activeStep + 1}/{steps.length})
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                      {wichHelpShow(activeStep, Maquina, Ajudas)}
-                    </DialogContentText>
+                  <DialogContentText>
+                    {wichHelpShow(activeStep, Maquina, Ajudas)}
+                  </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose} color="primary">
@@ -326,7 +326,10 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
             <li style={{ marginBottom: "10px" }}>
               <div>
                 <strong>{hlp.name}: </strong>
-                {hlp.text}
+                <div
+                  style={{ all: "unset" }}
+                  dangerouslySetInnerHTML={{ __html: hlp.text }}
+                />
                 <br />
               </div>
             </li>
@@ -342,7 +345,10 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
             <li style={{ marginBottom: "10px" }}>
               <div>
                 <strong>{hlp.name}: </strong>
-                {hlp.text}
+                <div
+                  style={{ all: "unset" }}
+                  dangerouslySetInnerHTML={{ __html: hlp.text }}
+                />
                 <br />
               </div>
             </li>
@@ -358,7 +364,10 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
             <li style={{ marginBottom: "10px" }}>
               <div>
                 <strong>{hlp.name}: </strong>
-                {hlp.text}
+                <div
+                  style={{ all: "unset" }}
+                  dangerouslySetInnerHTML={{ __html: hlp.text }}
+                />
                 <br />
               </div>
             </li>
@@ -501,5 +510,5 @@ const handleSubmit = async (
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Grow {...props}  timeout={300}  />;
+  return <Grow {...props} timeout={300} />;
 });

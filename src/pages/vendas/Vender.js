@@ -44,6 +44,7 @@ function Vender(props) {
     CondPag,
     RemOrigem,
     RemDestino,
+    Depositos,
   } = props.State;
   const {
     SetCheckedProd,
@@ -103,6 +104,7 @@ function Vender(props) {
         TipoVenda,
         Condicoes,
         CondPag,
+        Depositos,
         RemOrigem,
         RemDestino,
         SetCondPag,
@@ -111,11 +113,12 @@ function Vender(props) {
       )}
 
       <InputMultline
-        onChange={(e) => SetObs(e)}
+        onChange={(e) => SetObs(e.target.value)}
         value={OBS}
         label="Obs. na nota"
         style={{ width: "100%", marginTop: "8px" }}
       />
+
       <CardHeader
         className={classes.cardHeader}
         avatar={<ViewList />}
@@ -269,13 +272,13 @@ const extraOptions = (
   TipoVenda,
   Condicoes = [],
   Pag,
+  Depositos,
   depOrigem,
   depDestino,
   SetCondPag,
   SetDepOrigem,
   SetDepDestino
 ) => {
-  console.log({ TipoVenda, Condicoes, Pag, depOrigem, depDestino });
   switch (TipoVenda) {
     case "Venda":
       return (
@@ -306,12 +309,11 @@ const extraOptions = (
             width="100%"
             MTop="8px"
           >
-            <MenuItem value="A" key={1}>
-              Exemplo A{" "}
-            </MenuItem>
-            <MenuItem value="B" key={2}>
-              Exemplo B{" "}
-            </MenuItem>
+            {Depositos.map((dep) => (
+              <MenuItem value={dep.DepId} key={dep.DepId}>
+                {dep.DepNome}
+              </MenuItem>
+            ))}
           </Select>
           <Select
             onChange={(e) => SetDepDestino(e.target.value)}
@@ -321,12 +323,11 @@ const extraOptions = (
             width="100%"
             MTop="8px"
           >
-            <MenuItem value="A" key={1}>
-              Exemplo A{" "}
-            </MenuItem>
-            <MenuItem value="B" key={2}>
-              Exemplo B{" "}
-            </MenuItem>
+            {Depositos.map((dep) => (
+              <MenuItem value={dep.DepId} key={dep.DepId}>
+                {dep.DepNome}
+              </MenuItem>
+            ))}
           </Select>
         </>
       );
