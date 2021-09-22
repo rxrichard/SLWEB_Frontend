@@ -290,6 +290,7 @@ const createSelecoes = (Capacidade, Configuracao) => {
   return selecoes;
 };
 
+//essa é minha melhor/pior função até hoje! :)
 const showBebidaDisponivel = (
   BebidasDisponiveis,
   MaxContenedores,

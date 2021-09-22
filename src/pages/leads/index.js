@@ -117,6 +117,56 @@ function LeadsList(props) {
     }
   };
 
+  // const CargaPlanilha = () => {
+  //   //Pega todos inputs do tipo arquivos
+  //   const arquivos = document.getElementsByClassName("files")[0].files[0];
+  //   const reader = new FileReader();
+  //   let result
+
+  //   reader.onload = (evt) => {
+  //     // evt = on_file_select event
+  //     /* Parse data */
+  //     const bstr = evt.target.result;
+  //     const wb = xlsx.read(bstr, { type: "binary" });
+  //     /* Get first worksheet */
+  //     const wsname = wb.SheetNames[0];
+  //     const ws = wb.Sheets[wsname];
+  //     /* Convert array of arrays */
+  //     const data = xlsx.utils.sheet_to_csv(ws, { header: 1 });
+  //     /* Update state */
+  //     result = convertToJson(data); // shows data in obj format
+  //     console.log(result)
+  //   };
+
+  //   if(typeof arquivos != 'undefined'){
+  //     reader.readAsBinaryString(arquivos);
+  //   }else{
+  //     Toast('Planilha não fornecida', 'error')
+  //   }
+  // }
+
+  // const convertToJson = (csv) => {
+  //   var lines = csv.split("\n");
+
+  //   var result = [];
+
+  //   var headers = lines[0].split(",");
+
+  //   for (var i = 1; i < lines.length; i++) {
+  //     var obj = {};
+  //     var currentline = lines[i].split(",");
+
+  //     for (var j = 0; j < headers.length; j++) {
+  //       obj[headers[j]] = currentline[j];
+  //     }
+
+  //     result.push(obj);
+  //   }
+
+  //   return result; //JavaScript object
+  //   // return JSON.stringify(result); //JSON
+  // }
+
   return !Loaded ? (
     <Loading />
   ) : (
@@ -149,7 +199,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 0px 8px 0px" }}
                 value={NomeFantasia}
                 id="outlined-basic"
                 label="Nome Fantasia"
@@ -157,7 +207,7 @@ function LeadsList(props) {
                 onChange={(e) => setNomeFantasia(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "0px 0px 8px 0px" }}
                 value={RazaoSocial}
                 id="outlined-basic"
                 label="Razão Social"
@@ -182,7 +232,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 16px 0px 0px" }}
                 value={Municipio}
                 id="outlined-basic"
                 label="Município"
@@ -190,7 +240,7 @@ function LeadsList(props) {
                 onChange={(e) => setMunicipio(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "8px 0px 8px 0px" }}
                 value={Contato}
                 id="outlined-basic"
                 label="Contato"
@@ -203,7 +253,7 @@ function LeadsList(props) {
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 8px 8px 0px" }}
+                style={{ margin: "0px 16px 0px 0px" }}
                 value={Fone1}
                 id="outlined-basic"
                 label="Fone 1"
@@ -211,7 +261,7 @@ function LeadsList(props) {
                 onChange={(e) => setFone1(e.target.value)}
               />
               <TextField
-                style={{ margin: "0px 0px 8px 8px" }}
+                style={{ margin: "8px 0px 8px 0px" }}
                 value={Fone2}
                 id="outlined-basic"
                 label="Fone 2"
@@ -228,10 +278,26 @@ function LeadsList(props) {
               onChange={(e) => setEmail(e.target.value)}
             />
             <InputMultline
-              style={{ width: "100%", marginTop: "8px" }}
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor:
+                  charCount(Desc, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+              }}
               value={Desc}
               onChange={(e) => setDesc(e.target.value)}
-              label="Atividade/Descrição"
+              label={`Atividade/Descrição(${charCount(Desc, 250)})`}
+            />
+            <InputMultline
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor:
+                  charCount(Msg, 250) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+              }}
+              value={Msg}
+              onChange={(e) => setMsg(e.target.value)}
+              label={`Recado Lead (${charCount(Msg, 250)})`}
             />
             <InputMultline
               style={{ width: "100%", marginTop: "8px" }}
@@ -324,3 +390,7 @@ const estados = [
   { estado: "Sergipe", UF: "SE" },
   { estado: "Tocantins", UF: "TO" },
 ];
+
+const charCount = (field, maxChar) => {
+  return maxChar - field.length;
+};

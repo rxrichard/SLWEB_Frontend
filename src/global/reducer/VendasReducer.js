@@ -14,6 +14,7 @@ import {
   VENDA_SET_DEP_ORIGEM,
   VENDA_SET_DEP_DESTINO,
   VENDA_SET_OBS,
+  VENDA_LOAD_DEPOSITOS,
 } from "../actions/VendasActionTypes";
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   Produtos: [],
   Clientes: [],
   Condicoes: [],
+  Depositos: [],
 
   Carrinho: [],
   Cliente: {},
@@ -52,6 +54,11 @@ export const VendasReducer = (state = initialState, action) => {
       return {
         ...state,
         Clientes: action.Clientes,
+      };
+    case VENDA_LOAD_DEPOSITOS:
+      return {
+        ...state,
+        Depositos: action.Depositos,
       };
     case VENDA_LOAD_PAGAMENTOS:
       return {

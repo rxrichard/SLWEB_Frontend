@@ -179,8 +179,21 @@ function CustomizedAccordions(props) {
               {shouldShowAdress(le) ? (
                 <>
                   <Typography variant="subtitle1" gutterBottom>
+                    <strong>Nome Fantasia: </strong>
+                    {le.Nome_Fantasia}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>Razão Social: </strong>
+                    {le.Razao_Social}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
                     <strong>Contato: </strong>
                     {le.Contato}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>
+                      {le.Municipio} - {le.Estado}
+                    </strong>
                   </Typography>
 
                   <Typography variant="subtitle1" gutterBottom>
@@ -196,6 +209,11 @@ function CustomizedAccordions(props) {
                   <Typography variant="subtitle1" gutterBottom>
                     <strong>Email: </strong>
                     {le.Email}
+                  </Typography>
+
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>Atividade / Descrição: </strong>
+                    {le.AtividadeDesc}
                   </Typography>
 
                   <Typography variant="subtitle1" gutterBottom>
@@ -217,7 +235,7 @@ function CustomizedAccordions(props) {
                     </strong>
                   </Typography>
 
-                  <Typography variant="subtitle1" gutterBottom>
+                  {/* <Typography variant="subtitle1" gutterBottom>
                     Você tem até{" "}
                     <strong>{returnTime(le, true, Limites[0].MaxHoras)}</strong>{" "}
                     para fechar com o cliente ou desistir do Lead
@@ -338,13 +356,22 @@ const mountString = (dados) => {
 
   if (dados.Nome_Fantasia !== "") {
     variavel += dados.Nome_Fantasia;
+  } else {
+    variavel += "???";
   }
-  if (dados.Estado !== "") {
-    variavel += `, ${dados.Municipio}`;
-  }
+
   if (dados.Municipio !== "") {
-    variavel += ` - ${dados.Estado}`;
+    variavel += `, ${dados.Municipio}`;
+  } else {
+    variavel += ", ???";
   }
+
+  if (dados.Estado !== "") {
+    variavel += ` - ${dados.Estado}`;
+  } else {
+    variavel += " - ???";
+  }
+
   if (dados.AtividadeDesc !== "" && dados.AtividadeDesc !== null) {
     variavel += `, ${dados.AtividadeDesc}`;
   }
