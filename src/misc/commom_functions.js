@@ -49,9 +49,9 @@ export const maskCNPJ = (cnpj) => {
 export const maskCEP = (cep) => {
   const cep_aux = [];
 
-  cep_aux[0] = cep.substring(0, 2);
-  cep_aux[1] = cep.substring(2, 5);
-  cep_aux[2] = cep.substring(5, 8);
+  cep_aux[0] = cep ? cep.substring(0, 2) : '?';
+  cep_aux[1] = cep ? cep.substring(2, 5) : '?';
+  cep_aux[2] = cep ? cep.substring(5, 8) : '?';
 
   return `${cep_aux[0]}.${cep_aux[1]}-${cep_aux[2]}`;
 };

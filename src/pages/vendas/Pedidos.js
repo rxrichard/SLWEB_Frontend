@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../services/api";
 import Draggable from "react-draggable";
+import { saveAs } from "file-saver";
 
 import Grow from "@material-ui/core/Grow";
 import {
@@ -35,6 +36,7 @@ import Loading from "../../components/loading_screen";
 import { Toast } from "../../components/toasty";
 
 function Pedidos() {
+  const [wait, setWait] = useState(false);
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [pedidos, setPedidos] = useState([]);
@@ -78,9 +80,57 @@ function Pedidos() {
     alert("cancelar NFe");
   };
 
-  const handleRecoverNFE = () => {
-    alert("recuperar NFe do nasajon");
+  // const handleRecoverNFE = async (pedido) => {
+  //   setWait(true)
+  //   try {
+  //     const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`)
+  //     /*Os arquivos sao retornados em formato Buffer,
+  //     preciso convertelos para ArrayBuffer antes de fazer o blob*/
+
+  //     const danfeArrayBuffer = toArrayBuffer(response.data.DANFE.data)
+  //     const xmlArrayBuffer = toArrayBuffer(response.data.XML[0].data)
+
+  //     const danfeBlob = new Blob([danfeArrayBuffer], { type: "application/pdf" });
+  //     const xmlBlob = new Blob([xmlArrayBuffer], { type: "text/xml" });
+
+  //     saveAs(danfeBlob, `NFe_${pedido.DOC}_DANFE.pdf`);
+  //     saveAs(xmlBlob, `NFe_${pedido.DOC}_XML.xml`);
+
+  //     setWait(false)
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+
+  // };
+  // function toArrayBuffer(buf) {
+  //   var ab = new ArrayBuffer(buf.length);
+  //   var view = new Uint8Array(ab);
+  //   for (var i = 0; i < buf.length; ++i) {
+  //     view[i] = buf[i];
+  //   }
+  //   return ab;
+  // }
+
+  const handleRecoverDOC = async (pedido, doctype) => {
+    setWait(true)
+    try {
+      const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`, {
+        responseType: 'arraybuffer'
+      })
+
+      //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+      saveAs(blob, `NFe_${pedido.DOC}_${doctype}.pdf`);
+
+      setWait(false)
+    } catch (err) {
+      console.log(err)
+    }
+
   };
+
 
   const handleRequestNFE = () => {
     alert("solicitar NFe atravéz do Nasajonson");
@@ -129,9 +179,10 @@ function Pedidos() {
                 </IconButton>
               </Tooltip>
               {actualPedidoInfo?.DOC ? (
-                <Tooltip title="Baixar NFe" placement="top">
+                <Tooltip title="DANFE" placement="top">
                   <IconButton
-                    onClick={() => handleRecoverNFE()}
+                    disabled={wait}
+                    onClick={() => handleRecoverDOC(actualPedidoInfo, 'DANFE')}
                     color="primary"
                   >
                     <InsertDriveFile />

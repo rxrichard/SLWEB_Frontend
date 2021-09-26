@@ -121,8 +121,8 @@ function FullScreenDialog({
         });
         if (
           typeof confg.Valor != "undefined"
-            ? Number(confg.Valor.replace(/,/g, "."))
-            : "0" % Number(ficha.replace("F", "")) > 0
+            ? Number(confg.Valor.replace(/,/g, ".")) % Number(ficha.replace("F", "")) > 0
+            : false
         ) {
           valid = false;
         }

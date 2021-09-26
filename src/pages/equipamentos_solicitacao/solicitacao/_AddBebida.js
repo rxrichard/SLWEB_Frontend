@@ -109,7 +109,7 @@ function DialogSelect(props) {
           ficha = pos;
         }
       });
-      if(Number(valor.replace(/,/g, "."))%Number(ficha.replace('F', '')) > 0){
+      if(Number(valor.replace(/,/g, ".")) % Number(ficha.replace('F', '')) > 0){
         Toast('Valor não compativel com o valor de ficha informado', 'error')
         return
       }

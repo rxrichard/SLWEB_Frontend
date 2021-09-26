@@ -183,7 +183,7 @@ function Requisicao(props) {
       <div
         className="YAlign"
         style={{
-          margin: "8px 0px 0px 8px",
+          margin: "0px 0px 8px 8px",
           height: "54px",
           justifyContent: "center",
           flex: "unset",
@@ -199,7 +199,7 @@ function Requisicao(props) {
         </p>
       </div>
 
-      <div style={{ margin: "8px 0px 0px 8px" }}>
+      <div style={{ margin: "0px 0px 8px 8px" }}>
         <Dialog botao="Contenedores" title="Contenedores em uso">
           {Contenedor.map((cont) => (
             <p>{defineContenedor(cont)}</p>

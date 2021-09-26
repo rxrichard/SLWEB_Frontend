@@ -149,7 +149,11 @@ const validaEntrada = (Pagamento, TValidador) => {
         return 4;
       }
     case "Cartão e Validador":
-      return 4;
+      if (TValidador === "Ficha") {
+        return 0;
+      } else {
+        return 4;
+      }
     default:
       return 4;
   }
