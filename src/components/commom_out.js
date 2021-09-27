@@ -20,14 +20,18 @@ export const Box = Styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     background-color: #FFFFFF;
-    width: 25vw;
-    margin-right: 10vw;
-    margin-bottom: calc(10% - 36px);
-    height: 60vh;
+    
     min-width: 280px;
-    min-height: 400px;
+    width: 25vw;
+    max-width: 300px;
+    max-height: 400px;
+
     border-radius: 10px;
+    
+    margin-right: 15vw;
+    margin-bottom: calc(25vh - 36px);
 
     animation-name: fadein;
     animation-duration: 700ms;
