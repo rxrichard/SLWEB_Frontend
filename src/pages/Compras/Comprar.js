@@ -45,7 +45,9 @@ function TransferList(props) {
         className={classes.cardHeader}
         avatar={<ViewList />}
         title={title}
-        subheader={`${ProdutosMarcados(Produtos, Checked)}/${items.length} selecionados`}
+        subheader={`${ProdutosMarcados(Produtos, Checked)}/${
+          items.length
+        } selecionados`}
       />
       <Divider />
       <TableContainer component={Paper}>
@@ -66,7 +68,7 @@ function TransferList(props) {
 
               return (
                 <StyledTableRow key={prod.Cód} onClick={handleToggle(prod)}>
-                  <StyledTableCell>
+                  <StyledTableCell style={{ textAlign: "center" }}>
                     <input
                       style={{ margin: "0px" }}
                       checked={Checked.indexOf(prod.Cód) !== -1}
@@ -88,12 +90,16 @@ function TransferList(props) {
                   </StyledTableCell>
                   <StyledTableCell>
                     <ListItemText
-                      primary={Number.parseFloat(prod.VlrUn).toFixed(4)}
+                      primary={String(
+                        Number.parseFloat(prod.VlrUn).toFixed(4)
+                      ).replace(".", ",")}
                     />
                   </StyledTableCell>
                   <StyledTableCell>
                     <ListItemText
-                      primary={Number.parseFloat(prod.Vlr).toFixed(4)}
+                      primary={String(
+                        Number.parseFloat(prod.Vlr).toFixed(4)
+                      ).replace(".", ",")}
                     />
                   </StyledTableCell>
                 </StyledTableRow>
@@ -178,8 +184,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProdutosMarcados = (ProdList, Marcados) => {
-  let count = 0
-  ProdList.forEach(prod => Marcados.indexOf(prod.Cód) !== -1 ? count++ : null)
+  let count = 0;
+  ProdList.forEach((prod) =>
+    Marcados.indexOf(prod.Cód) !== -1 ? count++ : null
+  );
 
-  return count
-}
+  return count;
+};

@@ -7,13 +7,7 @@ import Draggable from "react-draggable";
 import { saveAs } from "file-saver";
 
 import Grow from "@material-ui/core/Grow";
-import {
-  Close,
-  InsertDriveFile,
-  NoteAdd,
-  Block,
-  Edit,
-} from "@material-ui/icons";
+import { Close, CloudDownload, NoteAdd, Block, Edit } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -29,6 +23,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Typography from "@material-ui/core/Typography";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
+import Select from "../../components/materialComponents/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import { DataGrid } from "@material-ui/data-grid";
 
 import { Table } from "../../components/table";
@@ -38,6 +34,7 @@ import { Toast } from "../../components/toasty";
 function Pedidos() {
   const [wait, setWait] = useState(false);
   const [open, setOpen] = useState(false);
+  const [doctype, setDoctype] = useState("DANFE");
   const [loaded, setLoaded] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [pedidoDet, setPedidoDet] = useState([]);
@@ -80,57 +77,75 @@ function Pedidos() {
     alert("cancelar NFe");
   };
 
-  // const handleRecoverNFE = async (pedido) => {
-  //   setWait(true)
-  //   try {
-  //     const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`)
-  //     /*Os arquivos sao retornados em formato Buffer,
-  //     preciso convertelos para ArrayBuffer antes de fazer o blob*/
-
-  //     const danfeArrayBuffer = toArrayBuffer(response.data.DANFE.data)
-  //     const xmlArrayBuffer = toArrayBuffer(response.data.XML[0].data)
-
-  //     const danfeBlob = new Blob([danfeArrayBuffer], { type: "application/pdf" });
-  //     const xmlBlob = new Blob([xmlArrayBuffer], { type: "text/xml" });
-
-  //     saveAs(danfeBlob, `NFe_${pedido.DOC}_DANFE.pdf`);
-  //     saveAs(xmlBlob, `NFe_${pedido.DOC}_XML.xml`);
-
-  //     setWait(false)
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-
-  // };
-  // function toArrayBuffer(buf) {
-  //   var ab = new ArrayBuffer(buf.length);
-  //   var view = new Uint8Array(ab);
-  //   for (var i = 0; i < buf.length; ++i) {
-  //     view[i] = buf[i];
-  //   }
-  //   return ab;
-  // }
-
   const handleRecoverDOC = async (pedido, doctype) => {
-    setWait(true)
-    try {
-      const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`, {
-        responseType: 'arraybuffer'
-      })
+    let configs = null;
 
-      //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
-      const blob = new Blob([response.data], { type: "application/pdf" });
-
-      //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
-      saveAs(blob, `NFe_${pedido.DOC}_${doctype}.pdf`);
-
-      setWait(false)
-    } catch (err) {
-      console.log(err)
+    if(doctype === ''){
+      Toast('Selecione um tipo de documento')
     }
 
-  };
+    switch (doctype) {
+      case "DANFE":
+        configs = {
+          ext: 'pdf',
+          sulfix: doctype,
+          appType: "application/pdf",
+        };
+        break;
+      case "XML" || "CANCELAMENTO" || "CC":
+        configs = {
+          ext: 'xml',
+          sulfix: doctype,
+          appType: "text/xml",
+        };
+        break;
+      case "CANCELAMENTO":
+        configs = {
+          ext: 'xml',
+          sulfix: doctype,
+          appType: "text/xml",
+        };
+        break;
+      case "CC":
+        configs = {
+          ext: 'xml',
+          sulfix: doctype,
+          appType: "text/xml",
+        };
+        break;
 
+      default:
+        configs = null;
+        break;
+    }
+
+    setWait(true);
+    try {
+      const response = await api.get(
+        `/vendas/pedidos/detalhes/DOCS/${doctype}/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`,
+        {
+          responseType: "arraybuffer",
+        }
+      );
+
+      //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
+      if (response.data.byteLength > 5) {
+        //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
+        const blob = new Blob([response.data], { type: configs.appType });
+
+        //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+        saveAs(blob, `NFe_${pedido.DOC}_${configs.sulfix}.${configs.ext}`);
+
+        setWait(false);
+      }else{
+        Toast('Nenhum documento encontrado', 'error')
+        setWait(false);
+      }
+    } catch (err) {
+      setWait(false);
+      console.log(err);
+    }
+  };
 
   const handleRequestNFE = () => {
     alert("solicitar NFe atravéz do Nasajonson");
@@ -165,10 +180,12 @@ function Pedidos() {
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
             <Typography gutterBottom variant="subtitle1">
-              {PedidoDesc('V', 'F', 'Joãozinho', new Date())}
+              {PedidoDesc("V", "F", "Joãozinho", new Date())}
             </Typography>
-            <div style={{ all: "unset" }}>
-              <Tooltip title="Cancelar Pedido" placement="top">
+            <div
+              style={{ all: "unset", display: "flex", flexDirection: "row" }}
+            >
+              {/* <Tooltip title="Cancelar Pedido" placement="top">
                 <IconButton onClick={(e) => handleCancel()} color="primary">
                   <Block />
                 </IconButton>
@@ -177,15 +194,27 @@ function Pedidos() {
                 <IconButton onClick={() => handleEditVenda()} color="secondary">
                   <Edit />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
+              <Select
+                onChange={(e) => setDoctype(e.target.value)}
+                value={doctype}
+                disabled={false}
+                label="Documento"
+                variant='outlined'
+              >
+                <MenuItem value="DANFE">DANFE</MenuItem>
+                <MenuItem value="XML">XML</MenuItem>
+                <MenuItem value="CANCELAMENTO">Cancelamento</MenuItem>
+                <MenuItem value="CC">Carta de Correção</MenuItem>
+              </Select>
               {actualPedidoInfo?.DOC ? (
-                <Tooltip title="DANFE" placement="top">
+                <Tooltip title="Baixar" placement="top">
                   <IconButton
                     disabled={wait}
-                    onClick={() => handleRecoverDOC(actualPedidoInfo, 'DANFE')}
+                    onClick={() => handleRecoverDOC(actualPedidoInfo, doctype)}
                     color="primary"
                   >
-                    <InsertDriveFile />
+                    <CloudDownload />
                   </IconButton>
                 </Tooltip>
               ) : (
@@ -400,3 +429,35 @@ const PedidoDesc = (tipo, status, cliente, emissão) => {
 
   return Desc;
 };
+
+  // Antiga função pra baixar NFe que eu convertia Buffer pra ArrayBuffer depois de receber a resposta e não automaticamente com o Axios
+  // const handleRecoverNFE = async (pedido) => {
+  //   setWait(true)
+  //   try {
+  //     const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`)
+  //     /*Os arquivos sao retornados em formato Buffer,
+  //     preciso convertelos para ArrayBuffer antes de fazer o blob*/
+
+  //     const danfeArrayBuffer = toArrayBuffer(response.data.DANFE.data)
+  //     const xmlArrayBuffer = toArrayBuffer(response.data.XML[0].data)
+
+  //     const danfeBlob = new Blob([danfeArrayBuffer], { type: "application/pdf" });
+  //     const xmlBlob = new Blob([xmlArrayBuffer], { type: "text/xml" });
+
+  //     saveAs(danfeBlob, `NFe_${pedido.DOC}_DANFE.pdf`);
+  //     saveAs(xmlBlob, `NFe_${pedido.DOC}_XML.xml`);
+
+  //     setWait(false)
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+
+  // };
+  // function toArrayBuffer(buf) {
+  //   var ab = new ArrayBuffer(buf.length);
+  //   var view = new Uint8Array(ab);
+  //   for (var i = 0; i < buf.length; ++i) {
+  //     view[i] = buf[i];
+  //   }
+  //   return ab;
+  // }

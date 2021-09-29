@@ -305,7 +305,7 @@ function Contas(props) {
                         ResumoCompras.Bloqueado === "S" ? "#ff4747" : null,
                     }}
                   >
-                    {ResumoCompras.Bloqueado}
+                    {ResumoCompras.Bloqueado === "S" ? "Sim" : 'Não'}
                   </StyledTableCell>
                   <StyledTableCell>
                     {currencyFormat(ResumoCompras.LimiteCredito)}
@@ -442,9 +442,9 @@ const currencyFormat = (currency) => {
     String(currency).trim() !== "" &&
     typeof currency != "undefined"
   ) {
-    return Number.parseFloat(currency).toFixed(2);
+    return String(Number.parseFloat(currency).toFixed(2)).replace('.', ',');
   } else {
-    return "0.00";
+    return "0,00";
   }
 };
 

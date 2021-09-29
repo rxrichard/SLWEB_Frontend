@@ -33,11 +33,7 @@ function CustomizedTable(props) {
 
   return (
     <TableContainer component={Paper}>
-      <Table
-        className={classes.table}
-        aria-label="customized table"
-        size="small"
-      >
+      <Table size="small">
         <TableHead>
           <TableRow>
             <StyledTableCell>Seleção</StyledTableCell>
@@ -54,9 +50,7 @@ function CustomizedTable(props) {
           {Configuracao.map((row, i) => (
             <StyledTableRow key={row.selecao}>
               <StyledTableCell>{row.selecao}</StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {row.bebida}
-              </StyledTableCell>
+              <StyledTableCell>{row.bebida}</StyledTableCell>
 
               <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
               <StyledTableCell>

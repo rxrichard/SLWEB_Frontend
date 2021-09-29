@@ -68,38 +68,38 @@ function Vender(props) {
 
   const customList = (title, items) => (
     <Card style={{ width: "100%" }}>
-      <Select
-        onChange={(e) => handleSwitchCliente(e.target.value)}
-        value={Cliente.CNPJ}
-        disabled={false}
-        label="Cliente"
-        width="100%"
-      >
-        {Clientes.map((cliente) => (
-          <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
-            {cliente.Nome_Fantasia}, {cliente.CNPJss}
-          </MenuItem>
-        ))}
-      </Select>
+        <Select
+          onChange={(e) => handleSwitchCliente(e.target.value)}
+          value={Cliente.CNPJ}
+          disabled={false}
+          label="Cliente"
+          width="100%"
+        >
+          {Clientes.map((cliente) => (
+            <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
+              {cliente.Nome_Fantasia}, {cliente.CNPJss}
+            </MenuItem>
+          ))}
+        </Select>
 
-      <Select
-        onChange={(e) => ChangeTipoVenda(e.target.value)}
-        value={TipoVenda}
-        disabled={false}
-        label="Tipo de Venda"
-        width="100%"
-        MTop="8px"
-      >
-        <MenuItem value="Venda" key="Venda">
-          Venda
-        </MenuItem>
-        <MenuItem value="Remessa" key="Remessa">
-          Remessa
-        </MenuItem>
-        <MenuItem value="Bonificação" key="Bonificação">
-          Bonificação
-        </MenuItem>
-      </Select>
+        <Select
+          onChange={(e) => ChangeTipoVenda(e.target.value)}
+          value={TipoVenda}
+          disabled={false}
+          label="Tipo de Venda"
+          width="100%"
+          MTop='8px'
+        >
+          <MenuItem value="Venda" key="Venda">
+            Venda
+          </MenuItem>
+          <MenuItem value="Remessa" key="Remessa">
+            Remessa
+          </MenuItem>
+          <MenuItem value="Bonificação" key="Bonificação">
+            Bonificação
+          </MenuItem>
+        </Select>
       {extraOptions(
         TipoVenda,
         Condicoes,

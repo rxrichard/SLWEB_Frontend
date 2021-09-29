@@ -31,7 +31,7 @@ export const Box = Styled.div`
     border-radius: 10px;
     
     margin-right: 15vw;
-    margin-bottom: calc(25vh - 36px);
+    margin-bottom: calc(25vh - 40px);
 
     animation-name: fadein;
     animation-duration: 700ms;

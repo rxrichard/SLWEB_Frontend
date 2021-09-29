@@ -20,6 +20,8 @@ import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   LoadInsumos,
@@ -135,12 +137,12 @@ function Compras(props) {
       await api.post("/compras/comprar", {
         Items: Carrinho,
         Obs: obs,
-        Retira: retira
+        Retira: retira,
       });
 
       Toast("Pedido incluído com sucesso", "success");
       ClearCarrinho();
-      setObs('')
+      setObs("");
       event.target.disabled = false;
     } catch (err) {
       event.target.disabled = false;
@@ -160,7 +162,7 @@ function Compras(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Contas à Pagar", "Comprar", "Pedidos"]}>
+      <MenuAbas titles={["Contas a Pagar", "Comprar", "Pedidos"]}>
         <Contas />
         <Comprar />
         <Pedidos />
@@ -176,28 +178,28 @@ function Compras(props) {
         </DialogTitle>
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
-            <Typography gutterBottom variant="subtitle1">
-              <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
-            </Typography>
+            {Retira ? (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    className={classes.checkbox}
+                    checked={retira}
+                    onChange={(e) => setRetira(e.target.checked)}
+                    name="gilad"
+                  />
+                }
+                label="Franqueado Retira"
+              />
+            ) : null}
 
             <div className="YAlign" style={{ flex: "unset" }}>
               <Typography gutterBottom variant="subtitle1">
                 <strong>Valor mínimo p/ frete grátis:</strong> R${" "}
                 {MinFrete(MinCompra, retira)}
+                <Typography gutterBottom variant="subtitle1">
+                  <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
+                </Typography>
               </Typography>
-              {Retira ? (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      className={classes.checkbox}
-                      checked={retira}
-                      onChange={(e) => setRetira(e.target.checked)}
-                      name="gilad"
-                    />
-                  }
-                  label="Franqueado Retira"
-                />
-              ) : null}
             </div>
           </div>
           <div style={{ height: 400, width: "100%" }}>
@@ -219,25 +221,74 @@ function Compras(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <InputMultline
-            onChange={(e) => setObs(e.target.value)}
-            value={obs}
-            label="Obs."
-          />
-
-          <Button onClick={(e) => handleBuy(e)} color="primary">
-            Comprar
-          </Button>
-          <Button
-            disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true}
-            onClick={() => UpdateProdutos()}
-            color="primary"
+          <Box
+            sx={{
+              width: 500,
+              maxWidth: "100%",
+            }}
           >
-            Remover
-          </Button>
-          <Button onClick={() => ClearCarrinho()} color="primary">
-            Limpar
-          </Button>
+            <InputMultline
+              onChange={(e) => setObs(e.target.value)}
+              value={obs}
+              label="Obs."
+              fullWidth
+            />
+          </Box>
+
+          <Tooltip
+            title={
+              <label
+                style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
+              >
+                Gravar pedido de compra
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
+          >
+            <Button onClick={(e) => handleBuy(e)} color="primary">
+              Comprar
+            </Button>
+          </Tooltip>
+
+          <Tooltip
+            title={
+              <label
+                style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
+              >
+                Remove itens selecionados
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
+          >
+            <Button
+              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true}
+              onClick={() => UpdateProdutos()}
+              color="primary"
+            >
+              Remover
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={
+              <label
+                style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
+              >
+                Remove todos os produtos do carriho
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
+          >
+            <Button onClick={() => ClearCarrinho()} color="primary">
+              Limpar
+            </Button>
+          </Tooltip>
+
           <Button onClick={() => setOpen(false)} color="primary">
             Fechar
           </Button>
@@ -337,6 +388,7 @@ const useStyles = makeStyles((theme) => ({
   },
   checkbox: {
     transform: "scale(0.4)",
+    marginLeft: "8px",
   },
 }));
 

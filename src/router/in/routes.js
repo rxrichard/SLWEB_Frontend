@@ -9,13 +9,13 @@ import notFound from "../../pages/1_NOT_FOUND/index";
 import Perfil from "../../pages/perfil/index";
 import Leads from "../../pages/leads/index";
 import Ajuda from "../../pages/ajuda/index";
-import AddEquipamentos from "../../pages/equipamentos_solicitacao/index";
-import GerenciarEquip from "../../pages/equipamentos_solicitacao/gerenciamento";
+import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
+import GerenciarEquip from "../../pages/equipamentosSolicitacao/gerenciamento";
 import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../components/Home";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
-import Compras from '../../pages/Compras/index'
+import Compras from '../../pages/compras/index'
 import Vendas from '../../pages/vendas/index'
 
 function Dashboard(props) {
