@@ -82,6 +82,7 @@ function Pedidos() {
 
     if(doctype === ''){
       Toast('Selecione um tipo de documento')
+      return
     }
 
     switch (doctype) {

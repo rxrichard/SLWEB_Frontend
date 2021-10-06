@@ -440,6 +440,7 @@ const fromStore2Datagrid = (carrinho) => {
       Quantidade: item.QCompra,
       Vlr: item.VlrUn,
       Conversao: item.FatConversao,
+      Pacote: item.QtMin,
     });
   });
 
@@ -451,8 +452,7 @@ const totalPedido = (carrinho) => {
 
   carrinho.forEach((item) => {
     aux +=
-      Number.parseFloat(item.VlrUn).toFixed(4) *
-      (item.FatConversao * item.QCompra);
+      Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra);
   });
 
   return Number.parseFloat(aux).toFixed(2);
@@ -506,8 +506,7 @@ const columns = [
     sortable: false,
     width: 130,
     valueGetter: (params) =>
-      params.getValue(params.id, "Vlr") *
-      params.getValue(params.id, "Conversao"),
+      params.getValue(params.id, "Vlr") * params.getValue(params.id, "Pacote"),
   },
   {
     field: "VlrTotal",

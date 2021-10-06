@@ -79,13 +79,14 @@ function Pedidos(props) {
 
   const handleCancel = async (ID, event) => {
     event.persist()
-    event.target.disable = true;
+    event.target.disabled = true;
+    
     try {
       await api.delete(`/compras/pedidos/cancelar/${ID}`);
 
       Toast("Pedido cancelado", "success");
     } catch (err) {
-      event.target.disable = false;
+      event.target.disabled = false;
       Toast("Falha ao cancelar pedido", "error");
     }
   };
