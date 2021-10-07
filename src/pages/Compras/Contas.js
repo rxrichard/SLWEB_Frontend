@@ -43,6 +43,7 @@ function Contas(props) {
   const [loaded, setLoaded] = useState(false);
   const [ResumoCompras, setResumo] = useState([]);
   const [Duplicatas, setDuplicatas] = useState([]);
+  const [aFaturar, setAFaturar] = useState(null);
   const [TotalDuplicatas, setTotalDuplicatas] = useState([]);
   const [TotalAno, setTotalAno] = useState([]);
   const [pedidoDet, setPedidoDet] = useState({});
@@ -60,6 +61,7 @@ function Contas(props) {
         setDuplicatas(response.data.Duplicatas);
         setTotalDuplicatas(DefineTotalDuplicatas(response.data.Duplicatas));
         setTotalAno(response.data.ComprasAno[0]);
+        setAFaturar(response.data.AFaturar[0].Total);
         setLoaded(true);
         SetMin(response.data.Geral.VlrMinCompra);
         SetRetira(response.data.Geral.Retira);
@@ -129,18 +131,19 @@ function Contas(props) {
             </Typography>
           </div>
           <div style={{ height: 400, width: "100%" }}>
-              <DataGrid
-                rows={
-                  typeof pedidoDet.Detalhes != "undefined"
-                    ? pedidoDet.Detalhes
-                    : []
-                }
-                columns={columns}
-                autoPageSize
-                disableSelectionOnClick
-                disableColumnMenu
-                loading={typeof pedidoDet.Detalhes == "undefined"}
-              />
+            <DataGrid
+              rows={
+                typeof pedidoDet.Detalhes != "undefined"
+                  ? pedidoDet.Detalhes
+                  : []
+              }
+              columns={columns}
+              pageSize={5}
+              hideFooter={pedidoDet.Detalhes?.length > 5 ? false : true}
+              disableSelectionOnClick={true}
+              disableColumnMenu={true}
+              loading={typeof pedidoDet.Detalhes == "undefined"}
+            />
           </div>
         </DialogContent>
         <DialogActions>
@@ -163,7 +166,7 @@ function Contas(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Typography variant="h6">Total Mensal</Typography>
+      <Typography variant="h5" gutterBottom>Total Mensal</Typography>
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -184,7 +187,13 @@ function Contas(props) {
           </TableHead>
           <TableBody>
             <StyledTableRow>
-              <StyledTableCell>
+              <StyledTableCell style={{
+                "&:hover": {
+                  transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+                  backgroundColor: "#CCC",
+                  cursor: "default",
+                }
+              }}>
                 {TotalAno && currencyFormat(TotalAno["1"])}
               </StyledTableCell>
               <StyledTableCell>
@@ -234,8 +243,8 @@ function Contas(props) {
           flexWrap: "wrap",
         }}
       >
-        <div>
-          <Typography variant="h6">Duplicatas</Typography>
+        <div style={{ marginTop: "16px" }}>
+          <Typography variant="h5" gutterBottom>Duplicatas</Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -284,8 +293,8 @@ function Contas(props) {
             </Table>
           </TableContainer>
         </div>
-        <div>
-          <Typography variant="h6">Balanço</Typography>
+        <div style={{ marginTop: "16px" }}>
+          <Typography variant="h5" gutterBottom>Balanço</Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -324,6 +333,7 @@ function Contas(props) {
             </Table>
           </TableContainer>
 
+          <Typography variant="h5" gutterBottom>Resumo</Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -354,6 +364,18 @@ function Contas(props) {
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
+                {aFaturar ? <StyledTableRow>
+                  <StyledTableCell>A Faturar</StyledTableCell>
+                  <StyledTableCell>
+                    0,00
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {currencyFormat(aFaturar)}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {currencyFormat(aFaturar)}
+                  </StyledTableCell>
+                </StyledTableRow> : null}
               </TableBody>
             </Table>
           </TableContainer>

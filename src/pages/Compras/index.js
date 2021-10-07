@@ -143,6 +143,7 @@ function Compras(props) {
       Toast("Pedido incluído com sucesso", "success");
       ClearCarrinho();
       setObs("");
+      setRetira(false)
       event.target.disabled = false;
     } catch (err) {
       event.target.disabled = false;
@@ -211,6 +212,8 @@ function Compras(props) {
               disableSelectionOnClick={true}
               disableColumnMenu={true}
               checkboxSelection={true}
+              pageSize={5}
+              hideFooter={CarrinhoFormatado?.length > 5 ? false : true}
               onCellEditCommit={(params, event) => {
                 SetBuyQtt(params);
               }}

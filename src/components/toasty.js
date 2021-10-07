@@ -43,7 +43,7 @@ export const ToastyContainer = () => {
       hideProgressBar
       newestOnTop={false}
       closeOnClick
-      rtl
+      rtl={false}
       pauseOnVisibilityChange={false}
       draggable
       pauseOnHover={false}

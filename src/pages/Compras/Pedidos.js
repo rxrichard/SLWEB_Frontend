@@ -80,9 +80,12 @@ function Pedidos(props) {
   const handleCancel = async (ID, event) => {
     event.persist()
     event.target.disabled = true;
-    
+
     try {
       await api.delete(`/compras/pedidos/cancelar/${ID}`);
+
+      setOpen(false);
+      setPedidosAberto(pedidosAberto.filter(element => String(element.Pedido) !== String(ID)))
 
       Toast("Pedido cancelado", "success");
     } catch (err) {
@@ -139,7 +142,8 @@ function Pedidos(props) {
                   : []
               }
               columns={columns}
-              autoPageSize
+              pageSize={5}
+              hideFooter={pedidoDet.Detalhes?.length > 5 ? false : true}
               disableSelectionOnClick
               disableColumnMenu
               loading={typeof pedidoDet.Detalhes == "undefined"}

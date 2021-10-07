@@ -15,7 +15,7 @@ export default function Loading() {
         width: '100%'
       }}
     >
-        <ReactLoading type='spinningBubbles' color='#000000' height='10%' width='10%' />
+        <ReactLoading type='spin' color='#000000' height='10%' width='10%' />
     </div>
   )
 }

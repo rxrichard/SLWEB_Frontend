@@ -49,8 +49,6 @@ export const ComprasReducer = (state = initialState, action) => {
         Retira: action.retira,
       };
 
-    
-
     case COMPRA_MOVE_PRODUTOS_2_CARRINHO:
       let newCarrinho = [...state.Carrinho];
       let newProdutos = [];
