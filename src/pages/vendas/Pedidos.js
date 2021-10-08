@@ -7,7 +7,7 @@ import Draggable from "react-draggable";
 import { saveAs } from "file-saver";
 
 import Grow from "@material-ui/core/Grow";
-import { Close, CloudDownload, NoteAdd, Block, Edit } from "@material-ui/icons";
+import { Close, CloudDownload, NoteAdd } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";

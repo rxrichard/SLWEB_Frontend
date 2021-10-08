@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
+import { saveAs } from "file-saver";
 
 //Meio de comunicação
 import { api } from "../../services/api";
@@ -16,10 +17,12 @@ import {
   SetRetira,
 } from "../../global/actions/ComprasAction";
 
+import { Close, InsertDriveFile, Block } from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import { DataGrid } from "@material-ui/data-grid";
 import { withStyles } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
-import { Close, Block } from "@material-ui/icons";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -40,6 +43,7 @@ function Contas(props) {
   const TabIndex = 1;
 
   const [open, setOpen] = useState(false);
+  const [wait, setWait] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [ResumoCompras, setResumo] = useState([]);
   const [Duplicatas, setDuplicatas] = useState([]);
@@ -75,13 +79,36 @@ function Contas(props) {
   const handleLoadDet = async (DOC) => {
     setOpen(true);
     try {
-      const response = await api.get(
-        `/compras/pedidos/detalhes/${DOC}/DOC`
-      );
+      const response = await api.get(`/compras/pedidos/detalhes/${DOC}/DOC`);
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
       Toast("Não foi possivel recuperar os detalhes desse pedido", "error");
+    }
+  };
+
+  const handleRetriveBoleto = async (DOC) => {
+    setWait(true);
+    try {
+      const response = await api.get(`/compras/retrivepdf/${DOC}`, {
+        responseType: "arraybuffer",
+      });
+
+      //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
+      if (response.data.byteLength > 28) {
+        //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
+        const blob = new Blob([response.data], { type: "application/pdf" });
+
+        //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+        saveAs(blob, `BOLETO_NF_${DOC}.pdf`);
+        setWait(false);
+      } else {
+        Toast("Nenhum documento encontrado", "error");
+        setWait(false);
+      }
+    } catch (err) {
+      Toast("Falha ao comunicar com o servidor", "error");
+      setWait(false);
     }
   };
 
@@ -114,21 +141,32 @@ function Contas(props) {
         </DialogTitle>
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
-            <Typography gutterBottom variant="subtitle1">
-              <strong>
-                {pedidoDet.Status === "Faturado" ? "Emissão" : "Solicitação"}
-              </strong>
-              :{" "}
-              {typeof pedidoDet.Data != "undefined"
-                ? moment(pedidoDet.Data).format("L")
-                : ""}
-            </Typography>
-            <Typography gutterBottom variant="subtitle1">
-              <strong>Transportadora:</strong>{" "}
-              {pedidoDet.Transportadora === null
-                ? "?"
-                : pedidoDet.Transportadora}
-            </Typography>
+            <div className="YAlign">
+              <Typography gutterBottom variant="subtitle1">
+                <strong>
+                  {pedidoDet.Status === "Faturado" ? "Emissão" : "Solicitação"}
+                </strong>
+                :{" "}
+                {typeof pedidoDet.Data != "undefined" && pedidoDet.Data != null
+                  ? moment(pedidoDet.Data).format("L")
+                  : "Desconhecido"}
+              </Typography>
+              <Typography gutterBottom variant="subtitle1">
+                <strong>Transportadora:</strong>{" "}
+                {pedidoDet.Transportadora === null
+                  ? "?"
+                  : pedidoDet.Transportadora}
+              </Typography>
+            </div>
+            <Tooltip title="Baixar Boleto" placement="top">
+              <IconButton
+                disabled={wait}
+                onClick={() => handleRetriveBoleto(pedidoDet.PedidoId)}
+                color="primary"
+              >
+                <InsertDriveFile />
+              </IconButton>
+            </Tooltip>
           </div>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
@@ -166,7 +204,9 @@ function Contas(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Typography variant="h5" gutterBottom>Total Mensal</Typography>
+      <Typography variant="h5" gutterBottom>
+        Total Mensal
+      </Typography>
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
@@ -187,13 +227,15 @@ function Contas(props) {
           </TableHead>
           <TableBody>
             <StyledTableRow>
-              <StyledTableCell style={{
-                "&:hover": {
-                  transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-                  backgroundColor: "#CCC",
-                  cursor: "default",
-                }
-              }}>
+              <StyledTableCell
+                style={{
+                  "&:hover": {
+                    transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+                    backgroundColor: "#CCC",
+                    cursor: "default",
+                  },
+                }}
+              >
                 {TotalAno && currencyFormat(TotalAno["1"])}
               </StyledTableCell>
               <StyledTableCell>
@@ -244,7 +286,9 @@ function Contas(props) {
         }}
       >
         <div style={{ marginTop: "16px" }}>
-          <Typography variant="h5" gutterBottom>Duplicatas</Typography>
+          <Typography variant="h5" gutterBottom>
+            Duplicatas
+          </Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -259,42 +303,56 @@ function Contas(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Duplicatas.map((dup) => {
-                  return (
-                    <StyledTableRow
-                      style={{
-                        background:
-                          moment(dup.DtVenc) < moment() ? "#ff4747" : null,
-                      }}
-                      key={dup.E1_NUM}
-                      onClick={() => handleLoadDet(dup.E1_NUM)}
-                    >
-                      <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
-                      <StyledTableCell>
-                        {String(dup.E1_PARCELA).trim() === ""
-                          ? 1
-                          : dup.E1_PARCELA}
-                      </StyledTableCell>
-                      <StyledTableCell>{dup.E1Desc}</StyledTableCell>
-                      <StyledTableCell>{dup.E1_TIPO[0]}</StyledTableCell>
-                      <StyledTableCell>
-                        {moment(dup.DtEmissao).format("L")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {moment(dup.DtVenc).format("L")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {currencyFormat(dup.E1_VALOR)}
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
+                {Duplicatas.length > 0 ? (
+                  Duplicatas.map((dup) => {
+                    return (
+                      <StyledTableRow
+                        style={{
+                          background:
+                            moment(dup.DtVenc) < moment() ? "#ff4747" : null,
+                        }}
+                        key={dup.E1_NUM}
+                        onClick={() => handleLoadDet(dup.E1_NUM)}
+                      >
+                        <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
+                        <StyledTableCell>
+                          {String(dup.E1_PARCELA).trim() === ""
+                            ? 1
+                            : dup.E1_PARCELA}
+                        </StyledTableCell>
+                        <StyledTableCell>{dup.E1Desc}</StyledTableCell>
+                        <StyledTableCell>{dup.E1_TIPO[0]}</StyledTableCell>
+                        <StyledTableCell>
+                          {moment(dup.DtEmissao).format("L")}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {moment(dup.DtVenc).format("L")}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {currencyFormat(dup.E1_VALOR)}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })
+                ) : (
+                  <StyledTableRow>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                  </StyledTableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
         </div>
         <div style={{ marginTop: "16px" }}>
-          <Typography variant="h5" gutterBottom>Balanço</Typography>
+          <Typography variant="h5" gutterBottom>
+            Balanço
+          </Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -314,7 +372,7 @@ function Contas(props) {
                         ResumoCompras.Bloqueado === "S" ? "#ff4747" : null,
                     }}
                   >
-                    {ResumoCompras.Bloqueado === "S" ? "Sim" : 'Não'}
+                    {ResumoCompras.Bloqueado === "S" ? "SIM" : "NÃO"}
                   </StyledTableCell>
                   <StyledTableCell>
                     {currencyFormat(ResumoCompras.LimiteCredito)}
@@ -333,52 +391,60 @@ function Contas(props) {
             </Table>
           </TableContainer>
 
-          <Typography variant="h5" gutterBottom>Resumo</Typography>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>Tipo</StyledTableCell>
-                  <StyledTableCell>Vencida</StyledTableCell>
-                  <StyledTableCell>A Vencer</StyledTableCell>
-                  <StyledTableCell>Total</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {TotalDuplicatas.map((total) => (
-                  <StyledTableRow>
-                    <StyledTableCell>{total.E1_TIPO}</StyledTableCell>
-                    <StyledTableCell
-                      style={{
-                        background:
-                          currencyFormat(total.vencido) > 0 ? "#ff4747" : null,
-                      }}
-                    >
-                      {currencyFormat(total.vencido)}
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      {currencyFormat(total.avencer)}
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      {currencyFormat(total.vencido + total.avencer)}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-                {aFaturar ? <StyledTableRow>
-                  <StyledTableCell>A Faturar</StyledTableCell>
-                  <StyledTableCell>
-                    0,00
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {currencyFormat(aFaturar)}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {currencyFormat(aFaturar)}
-                  </StyledTableCell>
-                </StyledTableRow> : null}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {TotalDuplicatas.length > 0 || aFaturar ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Resumo
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>Tipo</StyledTableCell>
+                      <StyledTableCell>Vencida</StyledTableCell>
+                      <StyledTableCell>A Vencer</StyledTableCell>
+                      <StyledTableCell>Total</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {TotalDuplicatas.map((total) => (
+                      <StyledTableRow>
+                        <StyledTableCell>{total.E1_TIPO}</StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            background:
+                              currencyFormat(total.vencido) > 0
+                                ? "#ff4747"
+                                : null,
+                          }}
+                        >
+                          {currencyFormat(total.vencido)}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {currencyFormat(total.avencer)}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {currencyFormat(total.vencido + total.avencer)}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                    {aFaturar ? (
+                      <StyledTableRow>
+                        <StyledTableCell>A Faturar</StyledTableCell>
+                        <StyledTableCell>0,00</StyledTableCell>
+                        <StyledTableCell>
+                          {currencyFormat(aFaturar)}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {currencyFormat(aFaturar)}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ) : null}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          ) : null}
         </div>
       </div>
     </div>
@@ -434,7 +500,7 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
 
   duplicatas.forEach((dup) => {
     for (let i = 0; i < aux.length; i++) {
-      if (dup.E1_TIPO[0] === aux[i].E1_TIPO) {
+      if (dup.E1Desc === aux[i].E1Desc) {
         if (moment(dup.DtVenc) >= hoje) {
           aux[i].avencer += dup.E1_VALOR;
         } else {
@@ -447,7 +513,7 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
 
     if (cont) {
       aux.push({
-        E1_TIPO: dup.E1_TIPO[0],
+        E1_TIPO: dup.E1Desc,
         avencer: moment(dup.DtVenc) >= hoje ? dup.E1_VALOR : 0,
         vencido: moment(dup.DtVenc) < hoje ? dup.E1_VALOR : 0,
       });
@@ -464,7 +530,7 @@ const currencyFormat = (currency) => {
     String(currency).trim() !== "" &&
     typeof currency != "undefined"
   ) {
-    return String(Number.parseFloat(currency).toFixed(2)).replace('.', ',');
+    return String(Number.parseFloat(currency).toFixed(2)).replace(".", ",");
   } else {
     return "0,00";
   }
