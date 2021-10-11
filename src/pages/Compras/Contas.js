@@ -148,7 +148,7 @@ function Contas(props) {
                 </strong>
                 :{" "}
                 {typeof pedidoDet.Data != "undefined" && pedidoDet.Data != null
-                  ? moment(pedidoDet.Data).format("L")
+                  ? moment(pedidoDet.Data).utc().format("L")
                   : "Desconhecido"}
               </Typography>
               <Typography gutterBottom variant="subtitle1">
@@ -309,7 +309,7 @@ function Contas(props) {
                       <StyledTableRow
                         style={{
                           background:
-                            moment(dup.DtVenc) < moment() ? "#ff4747" : null,
+                          !moment().utc().isSameOrBefore(moment(dup.DtVenc).utc(), 'day') ? "#ff4747" : null,
                         }}
                         key={dup.E1_NUM}
                         onClick={() => handleLoadDet(dup.E1_NUM)}
@@ -323,10 +323,10 @@ function Contas(props) {
                         <StyledTableCell>{dup.E1Desc}</StyledTableCell>
                         <StyledTableCell>{dup.E1_TIPO[0]}</StyledTableCell>
                         <StyledTableCell>
-                          {moment(dup.DtEmissao).format("L")}
+                          {moment(dup.DtEmissao).utc().format("L")}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {moment(dup.DtVenc).format("L")}
+                          {moment(dup.DtVenc).utc().format("L")}
                         </StyledTableCell>
                         <StyledTableCell>
                           {currencyFormat(dup.E1_VALOR)}
@@ -409,22 +409,22 @@ function Contas(props) {
                   <TableBody>
                     {TotalDuplicatas.map((total) => (
                       <StyledTableRow>
-                        <StyledTableCell>{total.E1_TIPO}</StyledTableCell>
+                        <StyledTableCell>{total.Desc}</StyledTableCell>
                         <StyledTableCell
                           style={{
                             background:
-                              currencyFormat(total.vencido) > 0
+                              currencyFormat(total.Vencido) > 0
                                 ? "#ff4747"
                                 : null,
                           }}
                         >
-                          {currencyFormat(total.vencido)}
+                          {currencyFormat(total.Vencido)}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {currencyFormat(total.avencer)}
+                          {currencyFormat(total.Avencer)}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {currencyFormat(total.vencido + total.avencer)}
+                          {currencyFormat(Number.parseFloat(total.Vencido) + Number.parseFloat(total.Avencer))}
                         </StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -495,30 +495,55 @@ const StyledTableRow = withStyles((theme) => ({
 
 const DefineTotalDuplicatas = (duplicatas = []) => {
   let aux = [];
-  let cont = true;
-  const hoje = moment();
+  let auxLinha = {};
+  let indexAuxNovaLinha = -1;
+  let tipoJaExiste = false;
 
   duplicatas.forEach((dup) => {
+    if (aux.length === 0) {
+      aux.push({
+        Desc: dup.E1Desc,
+        Avencer: dup.Status === "Avencer" ? dup.E1_VALOR : "0,00",
+        Vencido: dup.Status === "Avencer" ? "0,00" : dup.E1_VALOR,
+        Total: dup.E1_VALOR,
+      });
+      return;
+    }
+
+    //procuro se já existe aquele tipo de dívida no array
     for (let i = 0; i < aux.length; i++) {
-      if (dup.E1Desc === aux[i].E1Desc) {
-        if (moment(dup.DtVenc) >= hoje) {
-          aux[i].avencer += dup.E1_VALOR;
-        } else {
-          aux[i].vencido += dup.E1_VALOR;
-        }
-        cont = false;
+      if (aux[i].Desc === dup.E1Desc) {
+        auxLinha = {
+          Desc: dup.E1Desc,
+          Avencer:
+            dup.Status === "Avencer" ? aux[i].Avencer + dup.E1_VALOR : "0,00",
+          Vencido:
+            dup.Status === "Avencer" ? "0,00" : aux[i].Vencido + dup.E1_VALOR,
+          Total: dup.E1_VALOR,
+        };
+        indexAuxNovaLinha = i;
+        tipoJaExiste = true;
         break;
+      } else {
+        auxLinha = {};
+        indexAuxNovaLinha = -1;
+        tipoJaExiste = false;
       }
     }
 
-    if (cont) {
+    if (tipoJaExiste) {
+      aux[indexAuxNovaLinha] = auxLinha;
+      auxLinha = {};
+      indexAuxNovaLinha = -1;
+      tipoJaExiste = false;
+    } else {
       aux.push({
-        E1_TIPO: dup.E1Desc,
-        avencer: moment(dup.DtVenc) >= hoje ? dup.E1_VALOR : 0,
-        vencido: moment(dup.DtVenc) < hoje ? dup.E1_VALOR : 0,
+        Desc: dup.E1Desc,
+        Avencer: dup.Status === "Avencer" ? dup.E1_VALOR : "0,00",
+        Vencido: dup.Status === "Avencer" ? "0,00" : dup.E1_VALOR,
+        Total: dup.E1_VALOR,
       });
     }
-    cont = true;
   });
 
   return aux;

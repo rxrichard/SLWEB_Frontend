@@ -127,6 +127,12 @@ function Compras(props) {
       return;
     }
 
+    if (obs.length > 255) {
+      Toast("Tamanho do campo Observações excede o limite");
+      event.target.disabled = false;
+      return;
+    }
+
     if (!retira && totalPedido(Carrinho) < MinCompra) {
       Toast("Valor total do pedido é menor que o mínimo");
       event.target.disabled = false;
@@ -231,10 +237,16 @@ function Compras(props) {
             }}
           >
             <InputMultline
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              backgroundColor:
+                (250 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+            }}
               onChange={(e) => setObs(e.target.value)}
               value={obs}
-              label="Obs."
-              fullWidth
+              label={`Obs.(${250 - obs.length})`}
+              fullWidth={true}
             />
           </Box>
 
@@ -280,7 +292,7 @@ function Compras(props) {
               <label
                 style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
               >
-                Remove todos os produtos do carriho
+                Remove todos os produtos do carrinho
               </label>
             }
             placement="top"
