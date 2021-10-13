@@ -28,6 +28,7 @@ export default class Management extends React.Component {
 
       if (response.status === 200) {
         this.setState({ OSS: response.data, loaded: true });
+        console.log(response.data)
       } else {
         throw Error;
       }
@@ -82,69 +83,59 @@ export default class Management extends React.Component {
     return !this.state.loaded ? (
       <Loading />
     ) : (
-      <Container>
-        <Panel style={{ justifyContent: "flex-start", alignItems: "center" }}>
-          <Typography variant="h6" gutterBottom>
-            Solicitações
-          </Typography>
-          <Table hoverable={true} responsive={true} centered>
-            <thead>
-              <th>Solicitação Nº</th>
-              <th>GrpVen</th>
-              <th>Status</th>
-              <th>Pendência</th>
-              <th>Data de solicitação</th>
-              <th>Data pretendida</th>
-              <th>Previsão Tec.</th>
-              <th>Previsão Exp.</th>
-              <th>Gerenciar</th>
-              <th>Histórico</th>
-              <th>PDF</th>
-            </thead>
-            <tbody>
-              {this.state.OSS.filter((Sol) => Sol.OSCStatus !== null).map(
-                (OS) => (
-                  <tr>
-                    <td align="center">{OS.OSCId}</td>
-                    <td align="center">{OS.GrpVen}</td>
-                    <td align="center">{OS.OSCStatus}</td>
-                    <td align="center">{this.showStatus(OS)}</td>
-                    <td align="center">{convertData(OS.OSCDtSolicita)}</td>
-                    <td align="center">{convertData(OS.OSCDtPretendida)}</td>
-                    <td align="center">
-                      {OS.OSCTecDtPrevisao !== ""
-                        ? convertData(OS.OSCTecDtPrevisao)
-                        : "NA"}
-                    </td>
-                    <td align="center">
-                      {OS.OSCExpDtPrevisao !== ""
-                        ? convertData(OS.OSCExpDtPrevisao)
-                        : "NA"}
-                    </td>
-                    <td align="center">
-                      <AdmDialog Req={OS} />
-                    </td>
-                    <td>
-                      <HistDialog Req={OS} />
-                    </td>
-                    <td>
-                      <Button
-                        style={{
-                          color: "#FFFFFF",
-                          backgroundColor: RED_SECONDARY,
-                        }}
-                        onClick={() => this.handleRetrivePDF(OS.OSCId)}
-                      >
-                        <FindInPage />
-                      </Button>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </Table>
-        </Panel>
-      </Container>
+      <Panel style={{ justifyContent: "flex-start", alignItems: "center" }}>
+        <Typography variant="h5" gutterBottom>
+          Solicitações
+        </Typography>
+        <Table width={100} height={100} hoverable={true} responsive={true} centered>
+          <thead>
+            <th>Solicitação</th>
+            <th>Filial</th>
+            <th>Status</th>
+            <th>Pendência</th>
+            <th>Data de solicitação</th>
+            <th>Data pretendida</th>
+            <th>Previsão Tec.</th>
+            <th>Previsão Exp.</th>
+            <th>Gerenciar</th>
+            <th>Histórico</th>
+            <th>PDF</th>
+          </thead>
+          <tbody>
+            {this.state.OSS.filter((Sol) => Sol.OSCStatus !== null).map(
+              (OS) => (
+                <tr style={{ borderLeft: `10px solid ${borderColor(OS.OSCStatus)}` }}>
+                  <td align="center">{OS.OSCId}</td>
+                  <td align="center">{OS.M0_CODFIL}</td>
+                  <td align="center">{OS.OSCStatus}</td>
+                  <td align="center">{this.showStatus(OS)}</td>
+                  <td align="center">{convertData(OS.OSCDtSolicita)}</td>
+                  <td align="center">{convertData(OS.OSCDtPretendida)}</td>
+                  <td align="center"> {OS.OSCTecDtPrevisao !== "" ? convertData(OS.OSCTecDtPrevisao) : "NA"} </td>
+                  <td align="center"> {OS.OSCExpDtPrevisao !== "" ? convertData(OS.OSCExpDtPrevisao) : "NA"} </td>
+                  <td align="center"> <AdmDialog Req={OS} /> </td>
+                  <td> <HistDialog Req={OS} /> </td>
+                  <td> <Button style={{ color: "#FFFFFF", backgroundColor: RED_SECONDARY, }} onClick={() => this.handleRetrivePDF(OS.OSCId)} > <FindInPage /> </Button> </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </Table>
+      </Panel>
     );
+  }
+}
+
+
+const borderColor = (status) => {
+  switch (status) {
+    case 'Cancelado':
+      return '#f5814c';
+
+    case 'Ativo':
+      return '#4f9eff';
+
+    case 'Concluido':
+      return '#29ff8d';
   }
 }

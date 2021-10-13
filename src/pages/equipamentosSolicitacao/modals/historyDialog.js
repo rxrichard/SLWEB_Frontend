@@ -104,7 +104,7 @@ function DraggableDialog(props) {
 
               {Req.OSCComMotivo !== null ? (
                 <Typography variant="subtitle1" gutterBottom>
-                  <strong>Motivo de rejeição da solicitação: </strong>
+                  <strong>Mensagem(Comercial): </strong>
                   {Req.OSCComMotivo}
                 </Typography>
               ) : null}
@@ -123,7 +123,7 @@ function DraggableDialog(props) {
 
               {Req.OSCTecMotivo !== null ? (
                 <Typography variant="subtitle1" gutterBottom>
-                  <strong>Motivo de rejeição da solicitação: </strong>
+                  <strong>Mensagem(Técnica): </strong>
                   {Req.OSCTecMotivo}
                 </Typography>
               ) : null}

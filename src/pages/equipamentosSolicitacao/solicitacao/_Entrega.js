@@ -162,7 +162,7 @@ function Entrega(props) {
           variant="outlined"
         />
       </form>
-      <form className={classes.root} noValidate autoComplete="off">
+      {/* <form className={classes.root} noValidate autoComplete="off">
         <TextField
           id="outlined-basic"
           value={Email_Acompanhamento}
@@ -170,7 +170,7 @@ function Entrega(props) {
           label="Email"
           variant="outlined"
         />
-      </form>
+      </form> */}
       <form className={classes.root} noValidate autoComplete="off">
         <TextField
           id="outlined-basic"

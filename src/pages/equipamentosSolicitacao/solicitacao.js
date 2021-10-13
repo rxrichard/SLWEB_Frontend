@@ -473,11 +473,11 @@ const handleSubmit = async (
     return false;
   }
 
-  if (Solicitacao.Email_Acompanhamento === "") {
-    Toast("Preencha um email para receber atualizações sobre o pedido");
-    setDesativar(false);
-    return;
-  }
+  // if (Solicitacao.Email_Acompanhamento === "") {
+  //   Toast("Preencha um email para receber atualizações sobre o pedido");
+  //   setDesativar(false);
+  //   return;
+  // }
 
   if (Solicitacao.Telefone_Contato === "") {
     Toast(
