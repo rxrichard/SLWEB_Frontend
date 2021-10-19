@@ -18,7 +18,7 @@ export default function Forgot() {
     if (user_code === "") {
       Toast("Informe o código da sua filial");
     } else {
-      Toast("...Aguarde");
+      Toast("Aguarde...");
       try {
         const response = await api.post("/forgot", {
           user_code: user_code,

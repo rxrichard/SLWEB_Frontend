@@ -24,7 +24,7 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
-    Toast("...Autenticando");
+    Toast("Autenticando...");
 
     try {
       const response = await api.post("/auth/", {

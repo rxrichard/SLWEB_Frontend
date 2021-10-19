@@ -18,7 +18,7 @@ export default class Out extends React.Component {
                     <Route exact path='/pilao' component={LoginADM} />
                     <Route exact path='/forgot' component={Forgot} />
                     <Route exact path='/formulario' component={Formulario} />
-                    <Route path='/integracao/:code' component={autoLogin} />
+                    <Route path='/integracao/:code/:target' component={autoLogin} />
                     <Route path='*' component={XRoute} />
                 </Switch>
             </Router>

@@ -488,7 +488,7 @@ const handleSubmit = async (
   }
 
   try {
-    Toast("...Aguarde");
+    Toast("Aguarde...");
     const response = await api.post("/equip", {
       Solicitacao,
     });

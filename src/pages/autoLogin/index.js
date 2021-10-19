@@ -2,17 +2,16 @@ import React, { Component } from "react";
 import { api } from "../../services/api";
 
 export default class autoLogin extends Component {
-  state = {
-    user_code: null
-  };
-
   async componentDidMount() {
     sessionStorage.clear();
 
-    this.login(this.props.match.params.code);
+    const code = this.props.match.params.code
+    const target = this.props.match.params.target
+
+    this.login(code, target);
   }
 
-  async login(code) {
+  async login(code, targetWindow) {
     try {
       const response = await api.post("/checkAuth", {
         code
@@ -21,8 +20,9 @@ export default class autoLogin extends Component {
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("usuario", response.data.nome);
-        sessionStorage.setItem('role', response.data.role)
-        window.location.assign("/equipamentos/solicitacao");
+        sessionStorage.setItem('role', response.data.role);
+
+        this.redirectWindow(targetWindow);
       } else {
         sessionStorage.clear();
         window.location.assign("/");
@@ -30,6 +30,19 @@ export default class autoLogin extends Component {
     } catch (err) {
       window.location.assign("/");
     }
+  }
+
+  async redirectWindow(target) {
+    switch (target) {
+      case 'solicitacao':
+        window.location.assign("/equipamentos/solicitacao");
+        break;
+
+      case 'compras':
+        window.location.assign("/compras");
+        break;
+    }
+
   }
 
   render() {

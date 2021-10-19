@@ -137,7 +137,7 @@ export default function MiniDrawer() {
               <ListItemText primary="Compras" />
             </ListItem>
           </Link>
-          <Link to="/vendas" style={{ color: GREY_SECONDARY }}>
+          {/* <Link to="/vendas" style={{ color: GREY_SECONDARY }}>
             <ListItem button onClick={handleDrawerClose}>
               <ListItemIcon>
                 <ShoppingCart />
@@ -145,7 +145,7 @@ export default function MiniDrawer() {
 
               <ListItemText primary="Vendas" />
             </ListItem>
-          </Link>
+          </Link> */}
         </List>
         <Divider />
         <List>
