@@ -22,6 +22,7 @@ import Paper from "@material-ui/core/Paper";
 import MenuAbas from "../../components/materialComponents/PainelAbas";
 import Loading from "../../components/loading_screen";
 import { Panel } from "../../components/commom_in";
+import { Toast } from '../../components/toasty'
 
 import {
   LoadInsumos,
@@ -41,6 +42,7 @@ import Pedidos from "./Pedidos";
 function Vendas(props) {
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
+  const [wait, setWait] = useState(false);
 
   const classes = useStyles();
 
@@ -112,8 +114,11 @@ function Vendas(props) {
     exit: 300,
   };
 
-  const handleSubmit = () => {
-    console.log({
+  const handleSubmit = async () => {
+    Toast('Aguarde...')
+    setWait(true)
+
+    const LoadDTO = {
       Carrinho,
       Cliente,
       OBS,
@@ -121,7 +126,23 @@ function Vendas(props) {
       CondPag,
       RemOrigem,
       RemDestino,
-    });
+    }
+
+    if (!verifyDTO(LoadDTO)) {
+      return
+    }
+
+    try {
+      await api.post('/vendas/vender', {
+        Pedido: LoadDTO
+      })
+
+      Toast('Pedido registrado com sucesso', 'success')
+      setWait(false)
+    } catch (err) {
+      Toast('Falha ao gravar pedido de venda', 'error')
+      setWait(false)
+    }
   };
 
   return !loaded ? (
@@ -159,10 +180,11 @@ function Vendas(props) {
               className={classes.dataGrid}
               rows={CarrinhoFormatado}
               columns={columns}
-              autoPageSize={true}
+              autoPageSize={5}
               disableSelectionOnClick={true}
               disableColumnMenu={true}
               checkboxSelection={true}
+              hideFooter={CarrinhoFormatado.length > 5 ? false : true}
               onCellEditCommit={(params, event) => {
                 SetBuyQtt(params);
               }}
@@ -173,22 +195,27 @@ function Vendas(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={(e) => handleSubmit()} color="primary">
+
+          <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
             Gravar Venda
           </Button>
+
           <Button
-            disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true}
+            disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true || wait}
             onClick={() => UpdateProdutos()}
             color="primary"
           >
             Remover do Carrinho
           </Button>
-          <Button onClick={() => ClearCarrinho()} color="primary">
+
+          <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
             Limpar Carrinho
           </Button>
-          <Button onClick={() => setOpen(false)} color="primary">
+
+          <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
             Fechar
           </Button>
+
         </DialogActions>
       </Dialog>
       <div
@@ -204,9 +231,8 @@ function Vendas(props) {
           in={TabIndex === 1 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
-            transitionDelay: `${
-              TabIndex === 1 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 1 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >
@@ -230,9 +256,8 @@ function Vendas(props) {
           timeout={transitionDuration}
           style={{
             marginTop: "8px",
-            transitionDelay: `${
-              TabIndex === 1 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 1 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >
@@ -436,3 +461,68 @@ const CarrinhoMarcados = (CarrinhoList, Marcados) => {
 
   return count;
 };
+
+const verifyDTO = (Pedido) => {
+  let valid = true
+
+  //verificar se o cliente foi definido
+  if (typeof Pedido.Cliente.CNPJ === 'undefined') {
+    Toast('Cliente não selecionado')
+    valid = false
+    return valid
+  }
+
+  //verificar se o tipo de operação foi definido(venda/bonificação/remessa)
+  if (Pedido.TipoVenda === '') {
+    Toast('Tipo de venda não selecionado')
+    valid = false
+    return valid
+  }
+
+  //verificar se o tipo de pagamento foi definido no caso venda
+  if (Pedido.TipoVenda === 'V' && Pedido.CondPag === '') {
+    Toast('Tipo de pagamento não informado')
+    valid = false
+    return valid
+  }
+
+  //verificar se os depósitos foram definidos no caso remessa
+  if (Pedido.TipoVenda === 'R' && (Pedido.RemOrigem === '' || Pedido.RemDestino === '')) {
+    Toast('Depósito de origem ou destino não informado')
+    valid = false
+    return valid
+  }
+
+  //verificar se o carrinho está vazio
+  if (Pedido.Carrinho.length <= 0) {
+    Toast('Carrinho está vazio')
+    valid = false
+    return valid
+  }
+
+  //verificar se tem item com QTD zerada no carrinho
+  for (let i = 0; i < Pedido.Carrinho.length; i++) {
+    if (Pedido.Carrinho[i].QVenda === 0) {
+      valid = false
+      break
+    }
+  }
+  if (!valid) {
+    Toast('Um dos produtos tem Qtd. zerada')
+    return valid
+  }
+
+  //verificar se tem item com Valor zerado no carrinho
+  for (let i = 0; i < Pedido.Carrinho.length; i++) {
+    if (Pedido.Carrinho[i].VVenda === 0) {
+      valid = false
+      break
+    }
+  }
+  if (!valid) {
+    Toast('Um dos produtos tem Valor zerado')
+    return valid
+  }
+
+  return valid
+}

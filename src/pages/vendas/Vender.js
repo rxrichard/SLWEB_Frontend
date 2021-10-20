@@ -67,7 +67,7 @@ function Vender(props) {
   };
 
   const customList = (title, items) => (
-    <Card style={{ width: "100%" }}>
+    <Card style={{ width: "100%", padding: '8px' }}>
         <Select
           onChange={(e) => handleSwitchCliente(e.target.value)}
           value={Cliente.CNPJ}
@@ -90,13 +90,13 @@ function Vender(props) {
           width="100%"
           MTop='8px'
         >
-          <MenuItem value="Venda" key="Venda">
+          <MenuItem value="V" key="Venda">
             Venda
           </MenuItem>
-          <MenuItem value="Remessa" key="Remessa">
+          <MenuItem value="R" key="Remessa">
             Remessa
           </MenuItem>
-          <MenuItem value="Bonificação" key="Bonificação">
+          <MenuItem value="B" key="Bonificação">
             Bonificação
           </MenuItem>
         </Select>
@@ -129,7 +129,7 @@ function Vender(props) {
       />
       <Divider />
       <TableContainer component={Paper}>
-        <Table size="small">
+        <Table size="small" className={classes.table}>
           <TableHead>
             <TableRow>
               <StyledTableCell></StyledTableCell>
@@ -147,7 +147,7 @@ function Vender(props) {
                   key={prod.ProdId[0]}
                   onClick={handleToggle(prod)}
                 >
-                  <StyledTableCell>
+                  <StyledTableCell style={{ textAlign: 'center', padding: '0px' }}>
                     <input
                       style={{ margin: "0px" }}
                       checked={Checked.indexOf(prod.ProdId[0]) !== -1}
@@ -257,6 +257,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(0.5, 0),
   },
+  table: {
+    padding: '0px'
+  }
 }));
 
 const ProdutosMarcados = (ProdList, Marcados) => {
@@ -280,7 +283,7 @@ const extraOptions = (
   SetDepDestino
 ) => {
   switch (TipoVenda) {
-    case "Venda":
+    case "V":
       return (
         <Select
           onChange={(e) => SetCondPag(e.target.value)}
@@ -298,7 +301,7 @@ const extraOptions = (
           ))}
         </Select>
       );
-    case "Remessa":
+    case "R":
       return (
         <>
           <Select
@@ -331,7 +334,7 @@ const extraOptions = (
           </Select>
         </>
       );
-    case "Bonificação":
+    case "B":
       return;
     default:
       return;

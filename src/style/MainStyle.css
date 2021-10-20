@@ -111,6 +111,15 @@ td {
   color: #f5f5f5 !important;
 }
 
+/* padding das celulas do material ui */
+.TableFirstItemCheckbox {
+  padding: 10px 0px 10px 8px !important;
+}
+
+.TableFirstItemCheckbox:first-child {
+  padding: 0px 0px 0px 0px !important;
+}
+
 .modal-trigger:hover {
   animation-name: GreyBIn;
   animation-duration: 500ms;
