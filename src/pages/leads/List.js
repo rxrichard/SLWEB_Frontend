@@ -25,7 +25,7 @@ function CustomizedAccordions(props) {
   const [history, setHistory] = useState(null);
 
   const { AddLimite, MoveLinha } = props;
-  const { Limites } = props.State;
+  // const { Limites } = props.State;
 
   useEffect(() => {
     if (typeof props.Leads != "undefined") {
@@ -383,37 +383,37 @@ const mountString = (dados) => {
 mas se "passar por cima" de um ele não considera, 
 como o Alberto pediu pra desativar os vencimentos, 
 vou parar de mecher nisso por agora(03/09)*/
-const returnTime = (dados, addtime, max) => {
-  moment.locale("pt-br");
-  let inicial = null;
-  let final = null;
+// const returnTime = (dados, addtime, max) => {
+//   moment.locale("pt-br");
+//   let inicial = null;
+//   let final = null;
 
-  //Esse trecho vai ativar quando a o lead tiver sido assumido pelo site e eu for mostrar uma data pro cara sem precisar do retorno da API
-  if (typeof dados.DataHora == "undefined" && !addtime) {
-    inicial = moment();
-  } else if (typeof dados.DataHora == "undefined" && addtime) {
-    final = moment().add(max, "hours");
-    if (final.isoWeekday() === 6) {
-      final.add(2, 'days')
-    } else if (final.isoWeekday() === 7) {
-      final.add(1, 'days')
-    }
-  }
+//   //Esse trecho vai ativar quando a o lead tiver sido assumido pelo site e eu for mostrar uma data pro cara sem precisar do retorno da API
+//   if (typeof dados.DataHora == "undefined" && !addtime) {
+//     inicial = moment();
+//   } else if (typeof dados.DataHora == "undefined" && addtime) {
+//     final = moment().add(max, "hours");
+//     if (final.isoWeekday() === 6) {
+//       final.add(2, 'days')
+//     } else if (final.isoWeekday() === 7) {
+//       final.add(1, 'days')
+//     }
+//   }
 
-  //Esse trecho vai executar quando o lead assumido veio do backend, junto com uma data de inclusão
-  if (typeof dados.DataHora != "undefined" && !addtime) {
-    inicial = moment(dados.DataHora).utc();
-  } else if (typeof dados.DataHora != "undefined" && addtime) {
-    final = moment(dados.DataHora).add(max, "hours").utc();
-    if (final.isoWeekday() === 6) {
-      final.add(2, 'days')
-    } else if (final.isoWeekday() === 7) {
-      final.add(1, 'days')
-    }
-  }
+//   //Esse trecho vai executar quando o lead assumido veio do backend, junto com uma data de inclusão
+//   if (typeof dados.DataHora != "undefined" && !addtime) {
+//     inicial = moment(dados.DataHora).utc();
+//   } else if (typeof dados.DataHora != "undefined" && addtime) {
+//     final = moment(dados.DataHora).add(max, "hours").utc();
+//     if (final.isoWeekday() === 6) {
+//       final.add(2, 'days')
+//     } else if (final.isoWeekday() === 7) {
+//       final.add(1, 'days')
+//     }
+//   }
 
-  return addtime ? final.format("LLLL") : inicial.format("LLLL")
-};
+//   return addtime ? final.format("LLLL") : inicial.format("LLLL")
+// };
 
 const shouldClose = (dados) => {
   if (typeof dados.close != "undefined") {

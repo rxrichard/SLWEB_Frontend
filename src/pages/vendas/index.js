@@ -12,6 +12,7 @@ import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -31,6 +32,7 @@ import {
   SetBuyQtt,
   SetCheckedProd,
   ClearCarrinho,
+  ResetarDetalhes,
   DestroyStore,
   LoadClientes,
   LoadPagamentos,
@@ -53,11 +55,13 @@ function Vendas(props) {
     SetCheckedProd,
     UpdateProdutos,
     ClearCarrinho,
+    ResetarDetalhes,
     DestroyStore,
     LoadClientes,
     LoadPagamentos,
     LoadDepositos,
   } = props;
+
   const {
     TabIndex,
     Produtos,
@@ -108,14 +112,7 @@ function Vendas(props) {
     SetCheckedProd(newChecked);
   };
 
-  const transitionDuration = {
-    appear: 300,
-    enter: 300,
-    exit: 300,
-  };
-
   const handleSubmit = async () => {
-    Toast('Aguarde...')
     setWait(true)
 
     const LoadDTO = {
@@ -129,8 +126,11 @@ function Vendas(props) {
     }
 
     if (!verifyDTO(LoadDTO)) {
+      setWait(false)
       return
     }
+
+    Toast('Aguarde...')
 
     try {
       await api.post('/vendas/vender', {
@@ -138,7 +138,10 @@ function Vendas(props) {
       })
 
       Toast('Pedido registrado com sucesso', 'success')
+      setOpen(false)
       setWait(false)
+      ResetarDetalhes()
+      ClearCarrinho()
     } catch (err) {
       Toast('Falha ao gravar pedido de venda', 'error')
       setWait(false)
@@ -170,7 +173,7 @@ function Vendas(props) {
           Carrinho
         </DialogTitle>
         <DialogContent>
-          <div className="XAlign" style={{ justifyContent: "space-between" }}>
+          <div className="XAlign" style={{ justifyContent: "flex-end" }}>
             <Typography gutterBottom variant="subtitle1">
               <strong>Total da Venda:</strong> R${totalPedido(Carrinho)}
             </Typography>
@@ -180,7 +183,7 @@ function Vendas(props) {
               className={classes.dataGrid}
               rows={CarrinhoFormatado}
               columns={columns}
-              autoPageSize={5}
+              pageSize={5}
               disableSelectionOnClick={true}
               disableColumnMenu={true}
               checkboxSelection={true}
@@ -196,25 +199,69 @@ function Vendas(props) {
         </DialogContent>
         <DialogActions>
 
-          <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
-            Gravar Venda
-          </Button>
-
-          <Button
-            disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true || wait}
-            onClick={() => UpdateProdutos()}
-            color="primary"
+          <Tooltip
+            title={
+              <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                Gravar venda
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
           >
-            Remover do Carrinho
-          </Button>
+            <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
+              Gravar
+            </Button>
+          </Tooltip>
 
-          <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
-            Limpar Carrinho
-          </Button>
+          <Tooltip
+            title={
+              <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                Remove marcados
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
+          >
+            <Button
+              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true || wait}
+              onClick={() => UpdateProdutos()}
+              color="primary"
+            >
+              Remover
+            </Button>
+          </Tooltip>
 
-          <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
-            Fechar
-          </Button>
+          <Tooltip
+            title={
+              <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                Limpa carrinho
+              </label>
+            }
+            placement="top"
+            arrow
+            followCursor
+          >
+            <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
+              Limpar
+            </Button>
+          </Tooltip>
+
+          <Tooltip
+            title={
+              <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                Fechar carrinho
+              </label>
+            }
+            placement="right"
+            arrow
+            followCursor
+          >
+            <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
+              Fechar
+            </Button>
+          </Tooltip>
 
         </DialogActions>
       </Dialog>
@@ -292,6 +339,7 @@ const mapDispatchToProps = (dispatch) =>
       SetCheckedProd,
       UpdateProdutos,
       ClearCarrinho,
+      ResetarDetalhes,
       DestroyStore,
       LoadClientes,
       LoadPagamentos,
@@ -460,6 +508,12 @@ const CarrinhoMarcados = (CarrinhoList, Marcados) => {
   );
 
   return count;
+};
+
+const transitionDuration = {
+  appear: 300,
+  enter: 300,
+  exit: 300,
 };
 
 const verifyDTO = (Pedido) => {

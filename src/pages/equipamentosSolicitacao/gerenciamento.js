@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 
 import Loading from "../../components/loading_screen";
 import { Toast } from "../../components/toasty";
-import { Panel, Container } from "../../components/commom_in";
+import { Panel } from "../../components/commom_in";
 import Button from "../../components/materialComponents/Button";
 import { Table } from "../../components/table";
 import { convertData, dateCheck } from "../../misc/commom_functions";
@@ -137,5 +137,7 @@ const borderColor = (status) => {
 
     case 'Concluido':
       return '#29ff8d';
+    default:
+      return '#8403fc'
   }
 }

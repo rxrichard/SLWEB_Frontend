@@ -5,6 +5,7 @@ import {
   VENDA_CHANGE_BUY_QTT,
   VENDA_MOVE_CARRINHO_2_PRODUTOS,
   VENDA_CLEAR_CART,
+  VENDA_RESET_DETALHES,
   VENDA_DESTROY_STORE,
   VENDA_LOAD_CLIENTES,
   VENDA_CHANGE_CLIENTE,
@@ -216,6 +217,17 @@ export const VendasReducer = (state = initialState, action) => {
         Produtos: [...state.InitProdutos],
         Carrinho: [],
         Checked: [],
+      };
+
+    case VENDA_RESET_DETALHES:
+      return {
+        ...state,
+        Cliente: {},
+        OBS: "",
+        TipoVenda: "",
+        CondPag: "",
+        RemOrigem: "",
+        RemDestino: "",
       };
 
     case VENDA_DESTROY_STORE:

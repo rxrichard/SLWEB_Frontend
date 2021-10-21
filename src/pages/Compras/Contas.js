@@ -158,7 +158,16 @@ function Contas(props) {
                   : pedidoDet.Transportadora}
               </Typography>
             </div>
-            <Tooltip title="Baixar Boleto" placement="top">
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Baixar Boleto
+                </label>
+              }
+              placement="top"
+              arrow
+              followCursor
+            >
               <IconButton
                 disabled={wait}
                 onClick={() => handleRetriveBoleto(pedidoDet.PedidoId)}
@@ -309,7 +318,7 @@ function Contas(props) {
                       <StyledTableRow
                         style={{
                           background:
-                          !moment().utc().isSameOrBefore(moment(dup.DtVenc).utc(), 'day') ? "#ff4747" : null,
+                            !moment().utc().isSameOrBefore(moment(dup.DtVenc).utc(), 'day') ? "#ff4747" : null,
                         }}
                         key={dup.E1_NUM}
                         onClick={() => handleLoadDet(dup.E1_NUM)}

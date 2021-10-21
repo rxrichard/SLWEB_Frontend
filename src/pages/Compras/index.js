@@ -237,12 +237,12 @@ function Compras(props) {
             }}
           >
             <InputMultline
-            style={{
-              width: "100%",
-              marginTop: "8px",
-              backgroundColor:
-                (250 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
-            }}
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor:
+                  (250 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+              }}
               onChange={(e) => setObs(e.target.value)}
               value={obs}
               label={`Obs.(${250 - obs.length})`}
@@ -304,9 +304,22 @@ function Compras(props) {
             </Button>
           </Tooltip>
 
-          <Button onClick={() => setOpen(false)} color="primary">
-            Fechar
-          </Button>
+          <Tooltip
+            title={
+              <label
+                style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
+              >
+                Fechar carrinho
+              </label>
+            }
+            placement="right"
+            arrow
+            followCursor
+          >
+            <Button onClick={() => setOpen(false)} color="primary">
+              Fechar
+            </Button>
+          </Tooltip>
         </DialogActions>
       </Dialog>
       <div
@@ -322,9 +335,8 @@ function Compras(props) {
           in={TabIndex === 2 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
-            transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >
@@ -348,9 +360,8 @@ function Compras(props) {
           timeout={transitionDuration}
           style={{
             marginTop: "8px",
-            transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >

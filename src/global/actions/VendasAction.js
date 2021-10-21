@@ -5,6 +5,7 @@ import {
   VENDA_CHANGE_BUY_QTT,
   VENDA_MOVE_CARRINHO_2_PRODUTOS,
   VENDA_CLEAR_CART,
+  VENDA_RESET_DETALHES,
   VENDA_DESTROY_STORE,
   VENDA_LOAD_CLIENTES,
   VENDA_CHANGE_CLIENTE,
@@ -79,6 +80,10 @@ export const SetBuyQtt = (value) => ({
   ProdId: value.id,
   Qtd: value.value,
   campo: value.field,
+});
+
+export const ResetarDetalhes = () => ({
+  type: VENDA_RESET_DETALHES,
 });
 
 export const ClearCarrinho = () => ({

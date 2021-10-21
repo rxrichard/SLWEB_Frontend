@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import moment from "moment";
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -341,6 +340,7 @@ const extraOptions = (
   }
 };
 
+//Funcao pra pegar DDL e retornar o dia alvo
 function addBusinessDays(originalDate, numDaysToAdd) {
   const Sunday = 0;
   const Saturday = 6;
