@@ -69,7 +69,7 @@ export default function DraggableDialog(props) {
         <DialogContent>
           <DialogContentText>{props.children}</DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           {props.action}
           <Button onClick={handleClose} color="primary">
             Fechar

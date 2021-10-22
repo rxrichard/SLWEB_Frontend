@@ -197,7 +197,7 @@ function Vendas(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
 
           <Tooltip
             title={

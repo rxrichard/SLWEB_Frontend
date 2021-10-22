@@ -237,7 +237,7 @@ function DialogSelect(props) {
             />
           </form>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           <Button onClick={handleClose} color="primary">
             Fechar
           </Button>

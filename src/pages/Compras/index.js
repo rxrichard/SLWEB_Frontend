@@ -58,16 +58,9 @@ function Compras(props) {
     ClearCarrinho,
   } = props;
 
-  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } =
-    props.State;
+  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
-
-  const transitionDuration = {
-    appear: 300,
-    enter: 300,
-    exit: 300,
-  };
 
   //component did mount
   useEffect(() => {
@@ -174,6 +167,7 @@ function Compras(props) {
         <Comprar />
         <Pedidos />
       </MenuAbas>
+
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -183,6 +177,7 @@ function Compras(props) {
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
           Carrinho
         </DialogTitle>
+
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
             {Retira ? (
@@ -229,17 +224,15 @@ function Compras(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           <Box
             sx={{
-              width: 500,
-              maxWidth: "100%",
+              width: "100%",
             }}
           >
             <InputMultline
               style={{
                 width: "100%",
-                marginTop: "8px",
                 backgroundColor:
                   (250 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
@@ -266,7 +259,6 @@ function Compras(props) {
               Comprar
             </Button>
           </Tooltip>
-
           <Tooltip
             title={
               <label
@@ -303,7 +295,6 @@ function Compras(props) {
               Limpar
             </Button>
           </Tooltip>
-
           <Tooltip
             title={
               <label
@@ -320,6 +311,7 @@ function Compras(props) {
               Fechar
             </Button>
           </Tooltip>
+
         </DialogActions>
       </Dialog>
       <div
@@ -486,6 +478,12 @@ const totalPedido = (carrinho) => {
 
 const MinFrete = (min, retira) => {
   return retira ? "0.00" : Number(min).toFixed(2);
+};
+
+const transitionDuration = {
+  appear: 300,
+  enter: 300,
+  exit: 300,
 };
 
 const columns = [

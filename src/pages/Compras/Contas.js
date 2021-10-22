@@ -193,7 +193,7 @@ function Contas(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           {pedidoDet.Status === "Processando" ? (
             <Button
               color="primary"

@@ -168,7 +168,13 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
     };
 
     const handleRequestNFE = () => {
-        alert("solicitar NFe atravéz do Nasajonson");
+        if(actualPedidoInfo.Tipo === 'R' && actualPedidoInfo.DepDestId != 1){
+            if(window.confirm(`Para emitir uma nota de remessa o depósito do destinatário será alterado para o ser o seu, depósito atual da remessa: ${actualPedidoInfo.DepDestDesc}`)){
+                return
+            }
+        }
+
+        
     };
 
     const handleCancel = async () => {
@@ -241,7 +247,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                     />
                 </div>
             </DialogContent >
-            <DialogActions>
+            <DialogActions style={{ padding: '8px 24px'}}>
                 <Button
                     color="primary"
                     onClick={handleCloseDialog}

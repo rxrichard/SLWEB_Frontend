@@ -157,7 +157,7 @@ function DraggableDialog(props) {
             </Campo>
           </>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           <ButtonPure onClick={handleClose} color="primary">
             Fechar
           </ButtonPure>

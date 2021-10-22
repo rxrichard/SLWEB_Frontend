@@ -146,7 +146,7 @@ function DraggableDialog(props) {
             SUDO
           )}
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: '8px 24px'}}>
           <Button
             style={{
               color: `${wait ? "#CCCCCC" : RED_SECONDARY}`,
