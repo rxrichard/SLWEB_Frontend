@@ -168,7 +168,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
     };
 
     const handleRequestNFE = () => {
-        if(actualPedidoInfo.Tipo === 'R' && actualPedidoInfo.DepDestId != 1){
+        if(actualPedidoInfo.Tipo === 'R' && Number(actualPedidoInfo.DepDestId) !== 1){
             if(window.confirm(`Para emitir uma nota de remessa o depósito do destinatário será alterado para o ser o seu, depósito atual da remessa: ${actualPedidoInfo.DepDestDesc}`)){
                 return
             }
