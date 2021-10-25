@@ -193,7 +193,7 @@ function Contas(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
           {pedidoDet.Status === "Processando" ? (
             <Button
               color="primary"
@@ -503,59 +503,46 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const DefineTotalDuplicatas = (duplicatas = []) => {
-  let aux = [];
-  let auxLinha = {};
-  let indexAuxNovaLinha = -1;
-  let tipoJaExiste = false;
+  let duplicatasTotal = [];
+  let achou = false
 
   duplicatas.forEach((dup) => {
-    if (aux.length === 0) {
-      aux.push({
+    if (duplicatasTotal.length === 0) {
+      duplicatasTotal.push({
         Desc: dup.E1Desc,
-        Avencer: dup.Status === "Avencer" ? dup.E1_VALOR : "0,00",
-        Vencido: dup.Status === "Avencer" ? "0,00" : dup.E1_VALOR,
-        Total: dup.E1_VALOR,
+        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : "0,00",
+        Vencido: dup.Status === "Avencer" ? "0,00" : Number(dup.E1_VALOR),
+        Total: Number(dup.E1_VALOR),
       });
       return;
     }
 
-    //procuro se já existe aquele tipo de dívida no array
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].Desc === dup.E1Desc) {
-        auxLinha = {
-          Desc: dup.E1Desc,
-          Avencer:
-            dup.Status === "Avencer" ? aux[i].Avencer + dup.E1_VALOR : "0,00",
-          Vencido:
-            dup.Status === "Avencer" ? "0,00" : aux[i].Vencido + dup.E1_VALOR,
-          Total: dup.E1_VALOR,
-        };
-        indexAuxNovaLinha = i;
-        tipoJaExiste = true;
+    for (let i = 0; i < duplicatasTotal.length; i++) {
+
+      if (duplicatasTotal[i].Desc === dup.E1Desc) {
+        duplicatasTotal[i] = {
+          ...duplicatasTotal[i],
+          Avencer: dup.Status === "Avencer" ? Number(duplicatasTotal[i].Avencer) + Number(dup.E1_VALOR) : Number(duplicatasTotal[i].Avencer),
+          Vencido: dup.Status === "Avencer" ? Number(duplicatasTotal[i].Vencido) : Number(duplicatasTotal[i].Vencido) + Number(dup.E1_VALOR),
+          Total: Number(duplicatasTotal[i].Total) + Number(dup.E1_VALOR)
+        }
+        achou = true
         break;
-      } else {
-        auxLinha = {};
-        indexAuxNovaLinha = -1;
-        tipoJaExiste = false;
       }
     }
 
-    if (tipoJaExiste) {
-      aux[indexAuxNovaLinha] = auxLinha;
-      auxLinha = {};
-      indexAuxNovaLinha = -1;
-      tipoJaExiste = false;
-    } else {
-      aux.push({
+    if (!achou) {
+      duplicatasTotal.push({
         Desc: dup.E1Desc,
-        Avencer: dup.Status === "Avencer" ? dup.E1_VALOR : "0,00",
-        Vencido: dup.Status === "Avencer" ? "0,00" : dup.E1_VALOR,
-        Total: dup.E1_VALOR,
-      });
+        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : 0,
+        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
+        Total: Number(dup.E1_VALOR),
+      })
+      achou = false
     }
   });
 
-  return aux;
+  return duplicatasTotal;
 };
 
 const currencyFormat = (currency) => {

@@ -3,7 +3,7 @@ import Draggable from "react-draggable";
 import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
-import { Close, GetApp, NoteAdd, HourglassEmpty, Block, Edit } from "@material-ui/icons";
+import { Close, GetApp, NoteAdd, HourglassEmpty, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
 import { DataGrid } from "@material-ui/data-grid";
 import Dialog from "@material-ui/core/Dialog";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -85,7 +85,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                                 <Block />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip
+                        {/* <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
                                     Editar Venda
@@ -98,7 +98,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                         <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
@@ -120,6 +120,13 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <HourglassEmpty />
                         <Typography variant='subtitle2'>Gerando NFe...</Typography>
+                    </div>
+                )
+            case 'C':
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CancelScheduleSend />
+                        <Typography variant='subtitle2'>Venda cancelada</Typography>
                     </div>
                 )
             default:
@@ -167,14 +174,49 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
         alert("iniciar edição da venda(trocar colums do datagrid)");
     };
 
-    const handleRequestNFE = () => {
-        if(actualPedidoInfo.Tipo === 'R' && Number(actualPedidoInfo.DepDestId) !== 1){
-            if(window.confirm(`Para emitir uma nota de remessa o depósito do destinatário será alterado para o ser o seu, depósito atual da remessa: ${actualPedidoInfo.DepDestDesc}`)){
+    const handleRequestNFE = async () => {
+        if (String(actualPedidoInfo.Tipo).trim() === 'R' && Number(actualPedidoInfo.DepDestId) !== 1) {
+            if (!window.confirm(`Para emitir uma nota de remessa o depósito do destinatário será alterado para o ser o seu. Depósito atual da remessa: ${actualPedidoInfo.DepDestDesc}`)) {
+                console.log('rejeitou')
                 return
             }
         }
 
-        
+        Toast('Aguarde...')
+        setWait(true)
+
+        try {
+            await api.put(`/vendas/pedidos/faturar/${actualPedidoInfo.Serie_Pvc}/${actualPedidoInfo.Pvc_ID}`)
+
+            Toast('Nota solicitada', 'success')
+
+            setWait(false)
+            setActualPedidoInfo(previousState => {
+                return {
+                    ...previousState,
+                    ST: 'S'
+                }
+            })
+            setPedidos(previousState => {
+                let index = null
+                let aux = [...previousState]
+
+                aux.forEach((pedido, i) => {
+                    if (pedido.Serie_Pvc === actualPedidoInfo.Serie_Pvc && pedido.Pvc_ID === actualPedidoInfo.Pvc_ID) {
+                        index = i
+                    }
+                })
+
+                if (index !== null) {
+                    aux[index].ST = 'S'
+                }
+
+                return aux
+            })
+        } catch (err) {
+            Toast('Falha ao solicitar a nota', 'error')
+            setWait(false)
+        }
     };
 
     const handleCancel = async () => {
@@ -183,8 +225,13 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
             await api.put(`/vendas/pedidos/cancelar/${actualPedidoInfo.Serie_Pvc}/${actualPedidoInfo.Pvc_ID}`)
 
             Toast('Venda cancelada', 'success')
-            setOpen(false)
             setWait(false)
+            setActualPedidoInfo(previousState => {
+                return {
+                    ...previousState,
+                    ST: 'C'
+                }
+            })
             setPedidos(previousState => {
                 let index = null
                 let aux = [...previousState]
@@ -247,7 +294,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                     />
                 </div>
             </DialogContent >
-            <DialogActions style={{ padding: '8px 24px'}}>
+            <DialogActions style={{ padding: '8px 24px' }}>
                 <Button
                     color="primary"
                     onClick={handleCloseDialog}
@@ -277,7 +324,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const PedidoDesc = (tipo, status, cliente, emissão) => {
-    console.log(tipo)
     let Desc = "";
 
     if (status === 'S') {
