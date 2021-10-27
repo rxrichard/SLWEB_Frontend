@@ -41,7 +41,7 @@ export default function SimpleSelect(props) {
           marginLeft: props.MLeft ? props.MLeft : "0px",
           marginTop: props.MTop ? props.MTop : "0px",
           marginRight: props.MRight ? props.MRight : "0px",
-          marginBottom: props.MBottom ? props.MBottom : "0px",
+          marginBottom: props.MBottom ? props.MBottom : "0px"
         }}
         variant="outlined"
         className={classes.formControl}

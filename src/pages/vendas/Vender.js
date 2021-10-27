@@ -67,12 +67,16 @@ function Vender(props) {
 
   const customList = (title, items) => (
     <Card style={{ width: "100%", padding: '8px' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
         <Select
           onChange={(e) => handleSwitchCliente(e.target.value)}
+          width='500px'
+          maxWidth='100%'
           value={Cliente.CNPJ}
           disabled={false}
           label="Cliente"
-          width="100%"
+          MRight='8px'
+          MBottom='8px'
         >
           {Clientes.map((cliente) => (
             <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
@@ -86,8 +90,9 @@ function Vender(props) {
           value={TipoVenda}
           disabled={false}
           label="Tipo de Venda"
-          width="100%"
-          MTop='8px'
+          width='200px'
+          MRight='8px'
+          MBottom='8px'
         >
           <MenuItem value="V" key="Venda">
             Venda
@@ -99,32 +104,31 @@ function Vender(props) {
             Bonificação
           </MenuItem>
         </Select>
-      {extraOptions(
-        TipoVenda,
-        Condicoes,
-        CondPag,
-        Depositos,
-        RemOrigem,
-        RemDestino,
-        SetCondPag,
-        SetDepOrigem,
-        SetDepDestino
-      )}
-
+        {extraOptions(
+          TipoVenda,
+          Condicoes,
+          CondPag,
+          Depositos,
+          RemOrigem,
+          RemDestino,
+          SetCondPag,
+          SetDepOrigem,
+          SetDepDestino
+        )}
+      </div>
       <InputMultline
         onChange={(e) => SetObs(e.target.value)}
         value={OBS}
         label="Obs. na nota"
-        style={{ width: "100%", marginTop: "8px" }}
+        style={{ width: "100%" }}
       />
 
       <CardHeader
         className={classes.cardHeader}
         avatar={<ViewList />}
         title={title}
-        subheader={`${ProdutosMarcados(Produtos, Checked)}/${
-          items.length
-        } selecionados`}
+        subheader={`${ProdutosMarcados(Produtos, Checked)}/${items.length
+          } selecionados`}
       />
       <Divider />
       <TableContainer component={Paper}>
@@ -289,8 +293,8 @@ const extraOptions = (
           value={Pag}
           disabled={false}
           label="Condição de Pagamento"
-          width="100%"
-          MTop="8px"
+          width="210px"
+          MBottom='8px'
         >
           {Condicoes.map((cond) => (
             <MenuItem value={cond.CpgId} key={cond.CpgId}>
@@ -308,8 +312,9 @@ const extraOptions = (
             value={depOrigem}
             disabled={false}
             label="Origem"
-            width="100%"
-            MTop="8px"
+            width="200px"
+            MRight='8px'
+            MBottom='8px'
           >
             {Depositos.map((dep) => (
               <MenuItem value={dep.DepId} key={dep.DepId}>
@@ -322,8 +327,8 @@ const extraOptions = (
             value={depDestino}
             disabled={false}
             label="Destino"
-            width="100%"
-            MTop="8px"
+            width="200px"
+            MBottom='8px'
           >
             {Depositos.map((dep) => (
               <MenuItem value={dep.DepId} key={dep.DepId}>
