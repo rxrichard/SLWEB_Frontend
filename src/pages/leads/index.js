@@ -76,7 +76,10 @@ function LeadsList(props) {
   };
 
   const handleSubmit = async () => {
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       const response = await api.post("/leads", {
         lead: {
           NomeFantasia,
@@ -93,13 +96,13 @@ function LeadsList(props) {
       });
 
       if (response.status === 201) {
-        Toast("Lead Cadastrado", "success");
+        Toast('Lead Cadastrado!', 'update', toastId, 'success')
         resetField();
       } else {
         throw Error;
       }
     } catch (err) {
-      Toast("Falha ao cadastrar lead", "error");
+      Toast('Falha ao cadastrar lead', 'update', toastId, 'error')
     }
   };
 

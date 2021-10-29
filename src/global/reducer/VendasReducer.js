@@ -42,7 +42,7 @@ export const VendasReducer = (state = initialState, action) => {
     case VENDA_LOAD_PRODUTOS_DISPONIVEIS:
       let _newProdutos = [];
       action.Produtos.forEach((produto) =>
-        _newProdutos.push({ ...produto, QVenda: 0 })
+        _newProdutos.push({ ...produto })
       );
 
       return {
@@ -144,6 +144,12 @@ export const VendasReducer = (state = initialState, action) => {
         _newCarrinho.forEach((item) => {
           if (String(item.ProdId[0]) === String(action.ProdId)) {
             item.VVenda = action.Qtd;
+          }
+        });
+      } else if (campo === "Desconto") {
+        _newCarrinho.forEach((item) => {
+          if (String(item.ProdId[0]) === String(action.ProdId)) {
+            item.DVenda = action.Qtd;
           }
         });
       }

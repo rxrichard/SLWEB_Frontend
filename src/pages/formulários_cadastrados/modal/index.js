@@ -14,7 +14,7 @@ export default class Modalzinho extends React.Component {
     try {
       this.setState({ form: this.props.form });
     } catch (err) {
-      Toast("Falha ao linkar dados da OS", "error");
+      Toast("Falha ao linkar dados", "error");
     }
   }
 

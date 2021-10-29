@@ -24,6 +24,7 @@ import MenuAbas from "../../components/materialComponents/PainelAbas";
 import Loading from "../../components/loading_screen";
 import { Panel } from "../../components/commom_in";
 import { Toast } from '../../components/toasty'
+import { RED_PRIMARY } from '../../misc/colors'
 
 import {
   LoadInsumos,
@@ -113,7 +114,7 @@ function Vendas(props) {
   };
 
   const handleSubmit = async () => {
-    setWait(true)
+     setWait(true)
 
     const LoadDTO = {
       Carrinho,
@@ -130,20 +131,21 @@ function Vendas(props) {
       return
     }
 
-    Toast('Aguarde...')
+    let toastId = null
 
     try {
+      toastId = Toast('Aguarde...', 'wait')
       await api.post('/vendas/vender', {
         Pedido: LoadDTO
       })
 
-      Toast('Pedido registrado com sucesso', 'success')
+      Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
       setOpen(false)
       setWait(false)
       ResetarDetalhes()
       ClearCarrinho()
     } catch (err) {
-      Toast('Falha ao gravar pedido de venda', 'error')
+      Toast('Falha ao gravar pedido de venda', 'update', toastId, 'error')
       setWait(false)
     }
   };
@@ -170,7 +172,10 @@ function Vendas(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Carrinho
+          <div className='XAlign' style={{ justifyContent: 'flex-start' }}>
+            <ShoppingCart className={classes.extendedIcon} />
+            Carrinho
+          </div>
         </DialogTitle>
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "flex-end" }}>
@@ -197,7 +202,7 @@ function Vendas(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
 
           <Tooltip
             title={
@@ -225,7 +230,7 @@ function Vendas(props) {
             followCursor
           >
             <Button
-              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true || wait}
+              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true}
               onClick={() => UpdateProdutos()}
               color="primary"
             >
@@ -397,7 +402,7 @@ const totalPedido = (carrinho) => {
   let aux = 0;
 
   carrinho.forEach((item) => {
-    aux += Number.parseFloat(item.VVenda).toFixed(4) * item.QVenda;
+    aux += (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao);
   });
 
   return Number.parseFloat(aux).toFixed(2);
@@ -412,6 +417,7 @@ const fromStore2Datagrid = (carrinho) => {
       Produto: item.Produto,
       Quantidade: item.QVenda,
       Vlr: item.VVenda,
+      Desconto: item.DVenda,
       Conversao: item.FatConversao,
     });
   });
@@ -429,13 +435,25 @@ const columns = [
   },
   {
     field: "Quantidade",
-    headerName: "Quantidade",
+    headerName: "Qtd",
     type: "number",
     hasFocus: true,
-    width: 125,
+    width: 80,
     editable: true,
+    renderCell: (params) => (
+      <div style={{
+        fontWeight: 'bold',
+        color: RED_PRIMARY,
+      }}>
+        {params.value}
+      </div>
+    ),
     renderEditCell: (params) => (
       <Input
+        style={{
+          fontWeight: 'bold',
+          color: RED_PRIMARY,
+        }}
         autoFocus={true}
         decimalScale={0}
         allowLeadingZeros={false}
@@ -463,10 +481,67 @@ const columns = [
     headerName: "Valor Un.",
     type: "number",
     hasFocus: true,
-    width: 110,
+    width: 90,
     editable: true,
+    sortable: false,
+    renderCell: (params) => (
+      <div style={{
+        fontWeight: 'bold',
+        color: RED_PRIMARY,
+      }}>
+        {params.value}
+      </div>
+    ),
     renderEditCell: (params) => (
       <Input
+        style={{
+          fontWeight: 'bold',
+          color: RED_PRIMARY,
+        }}
+        autoFocus={true}
+        decimalScale={4}
+        fixedDecimalScale={false}
+        isNumericString
+        prefix=""
+        allowLeadingZeros={false}
+        allowEmptyFormatting={false}
+        allowNegative={false}
+        onChange={(e) => {
+          params.api.setEditCellValue(
+            {
+              id: params.id,
+              field: params.field,
+              value: Number(e.target.value),
+            },
+            e
+          );
+        }}
+        value={params.value}
+      />
+    ),
+  },
+  {
+    field: "Desconto",
+    headerName: "Desconto",
+    type: "number",
+    hasFocus: true,
+    width: 90,
+    editable: true,
+    sortable: false,
+    renderCell: (params) => (
+      <div style={{
+        fontWeight: 'bold',
+        color: RED_PRIMARY,
+      }}>
+        {params.value}
+      </div>
+    ),
+    renderEditCell: (params) => (
+      <Input
+        style={{
+          fontWeight: 'bold',
+          color: RED_PRIMARY,
+        }}
         autoFocus={true}
         decimalScale={4}
         fixedDecimalScale={false}
@@ -491,13 +566,15 @@ const columns = [
   },
   {
     field: "VlrTotal",
-    headerName: "Valor Total",
+    headerName: "Total",
     type: "number",
     description: "Cálculo do Valor Unitário x Quantidade",
     width: 120,
     valueGetter: (params) =>
-      params.getValue(params.id, "Quantidade") *
-      params.getValue(params.id, "Vlr"),
+      (params.getValue(params.id, "Quantidade") * params.getValue(params.id, "Conversao")) *
+      (
+        params.getValue(params.id, "Vlr") - params.getValue(params.id, "Desconto")
+      ),
   },
 ];
 
@@ -517,66 +594,70 @@ const transitionDuration = {
 };
 
 const verifyDTO = (Pedido) => {
-  let valid = true
 
   //verificar se o cliente foi definido
   if (typeof Pedido.Cliente.CNPJ === 'undefined') {
-    Toast('Cliente não selecionado')
-    valid = false
-    return valid
+    Toast('Cliente não selecionado', 'warn')
+    return false
   }
 
   //verificar se o tipo de operação foi definido(venda/bonificação/remessa)
   if (Pedido.TipoVenda === '') {
-    Toast('Tipo de venda não selecionado')
-    valid = false
-    return valid
+    Toast('Tipo de venda não selecionado', 'warn')
+    return false
   }
 
   //verificar se o tipo de pagamento foi definido no caso venda
   if (Pedido.TipoVenda === 'V' && Pedido.CondPag === '') {
-    Toast('Tipo de pagamento não informado')
-    valid = false
-    return valid
+    Toast('Tipo de pagamento não informado', 'warn')
+    return false
   }
 
   //verificar se os depósitos foram definidos no caso remessa
   if (Pedido.TipoVenda === 'R' && (Pedido.RemOrigem === '' || Pedido.RemDestino === '')) {
-    Toast('Depósito de origem ou destino não informado')
-    valid = false
-    return valid
+    Toast('Depósito de origem ou destino não informado', 'warn')
+    return false
   }
 
   //verificar se o carrinho está vazio
   if (Pedido.Carrinho.length <= 0) {
-    Toast('Carrinho está vazio')
-    valid = false
-    return valid
+    Toast('Carrinho está vazio', 'warn')
+    return false
+  }
+
+  //verificar o tamanho da OBS
+  if (Pedido.OBS.length > 200) {
+    Toast('A observação não deve ultrapassar 200 caractéres', 'warn')
+    return false
   }
 
   //verificar se tem item com QTD zerada no carrinho
   for (let i = 0; i < Pedido.Carrinho.length; i++) {
     if (Pedido.Carrinho[i].QVenda === 0) {
-      valid = false
-      break
+      Toast('Um dos produtos tem Qtd. zerada', 'warn')
+      return false
     }
-  }
-  if (!valid) {
-    Toast('Um dos produtos tem Qtd. zerada')
-    return valid
   }
 
   //verificar se tem item com Valor zerado no carrinho
   for (let i = 0; i < Pedido.Carrinho.length; i++) {
     if (Pedido.Carrinho[i].VVenda === 0) {
-      valid = false
-      break
+      Toast('Um dos produtos tem valor zerado', 'warn')
+      return false
     }
   }
-  if (!valid) {
-    Toast('Um dos produtos tem Valor zerado')
-    return valid
+
+  //verificar se o desconto está muito grande
+  for (let i = 0; i < Pedido.Carrinho.length; i++) {
+    if (
+      Pedido.Carrinho[i].QVenda * (
+        Pedido.Carrinho[i].VVenda - Pedido.Carrinho[i].DVenda
+      ) < 0
+    ) {
+      Toast('Um dos produtos tem desconto maior que o preco unitário', 'warn')
+      return false
+    }
   }
 
-  return valid
+  return true
 }

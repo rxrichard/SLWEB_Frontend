@@ -4,7 +4,6 @@ import { Toast } from "../../components/toasty";
 import { Link } from "react-router-dom";
 
 import { Container, Box, Logo } from "../../components/commom_out";
-import { FAILED_REQUEST } from "../../misc/messages";
 import Image from "../../assets/logo_sl.PNG";
 import Button from "../../components/materialComponents/Button";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
@@ -16,16 +15,18 @@ export default function Forgot() {
 
   const handleReset = async () => {
     if (user_code === "") {
-      Toast("Informe o código da sua filial");
+      Toast("Informe o código da sua filial", 'warn');
     } else {
-      Toast("Aguarde...");
+      let toastId = null
+
       try {
+        toastId = Toast('Aguarde...', 'wait')
         const response = await api.post("/forgot", {
           user_code: user_code,
         });
 
         if (response.status === 200) {
-          Toast(".Sua senha foi enviada para seu e-mail", "success");
+          Toast('Sua senha foi enviada para o seu e-mail!', 'update', toastId, 'success')
           setTimeout(() => {
             window.location.assign("/");
           }, 3000);
@@ -33,10 +34,7 @@ export default function Forgot() {
           throw Error;
         }
       } catch (err) {
-        Toast(FAILED_REQUEST, "error");
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        Toast('Falha na comunicação', 'update', toastId, 'error')
       }
     }
   };

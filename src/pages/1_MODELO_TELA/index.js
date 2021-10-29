@@ -25,7 +25,7 @@ function Exemplo() {
           throw Error;
         }
       } catch (err) {
-        Toast("Falha", "error");
+        Toast('Falha na comunicação', 'error')
       }
     }
 
@@ -35,9 +35,9 @@ function Exemplo() {
   //componentWillUnmount
   useEffect(() => {
     return () => {
-        console.log('Resetar store');
+      console.log('Resetar store');
     }
-}, [])
+  }, [])
 
   return !loaded ? (
     <Loading />

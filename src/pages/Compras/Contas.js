@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 
 //Meio de comunicação
 import { api } from "../../services/api";
+
 //"Placeholder" da página enquanto dados são carregados no
 import Loading from "../../components/loading_screen";
 
@@ -39,7 +40,7 @@ import Draggable from "react-draggable";
 
 import { Table } from "../../components/table";
 
-function Contas(props) {
+const Contas = (props) => {
   const TabIndex = 1;
 
   const [open, setOpen] = useState(false);
@@ -70,7 +71,7 @@ function Contas(props) {
         SetMin(response.data.Geral.VlrMinCompra);
         SetRetira(response.data.Geral.Retira);
       } catch (err) {
-        Toast("Falha ao recuperar dados", "error");
+        Toast("Falha na comunicação", "error");
       }
     }
     loadProdutos();
@@ -89,13 +90,18 @@ function Contas(props) {
 
   const handleRetriveBoleto = async (DOC) => {
     setWait(true);
+    let toastId = null
+
     try {
+      toastId = Toast('Buscando...', 'wait')
+
       const response = await api.get(`/compras/retrivepdf/${DOC}`, {
         responseType: "arraybuffer",
       });
 
       //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
       if (response.data.byteLength > 28) {
+        Toast('Encontrado!', 'update', toastId, 'success')
         //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
         const blob = new Blob([response.data], { type: "application/pdf" });
 
@@ -103,11 +109,11 @@ function Contas(props) {
         saveAs(blob, `BOLETO_NF_${DOC}.pdf`);
         setWait(false);
       } else {
-        Toast("Nenhum documento encontrado", "error");
+        Toast('Documento não encontrado', 'update', toastId, 'error')
         setWait(false);
       }
     } catch (err) {
-      Toast("Falha ao comunicar com o servidor", "error");
+      Toast("Falha na comunicação", "error");
       setWait(false);
     }
   };
@@ -510,8 +516,8 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
     if (duplicatasTotal.length === 0) {
       duplicatasTotal.push({
         Desc: dup.E1Desc,
-        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : "0,00",
-        Vencido: dup.Status === "Avencer" ? "0,00" : Number(dup.E1_VALOR),
+        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : 0,
+        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
         Total: Number(dup.E1_VALOR),
       });
       return;
@@ -538,8 +544,8 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
         Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
         Total: Number(dup.E1_VALOR),
       })
-      achou = false
     }
+    achou = false
   });
 
   return duplicatasTotal;

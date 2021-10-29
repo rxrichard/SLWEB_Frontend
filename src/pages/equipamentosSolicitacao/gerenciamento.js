@@ -28,17 +28,20 @@ export default class Management extends React.Component {
 
       if (response.status === 200) {
         this.setState({ OSS: response.data, loaded: true });
-        console.log(response.data)
       } else {
         throw Error;
       }
     } catch (err) {
-      Toast("Falha trazer todas as Requisições", "error");
+      Toast("Falha na comunicação", "error");
     }
   }
 
   async handleRetrivePDF(OSID) {
+    let toastId = null
+
     try {
+      toastId = Toast('Buscando...', 'wait')
+
       const response = await api.get("/equip/requests/retrive", {
         params: {
           token: sessionStorage.getItem("token"),
@@ -47,13 +50,14 @@ export default class Management extends React.Component {
         responseType: "arraybuffer",
       });
 
+      Toast('Encontrado!', 'update', toastId, 'success')
       //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
       const blob = new Blob([response.data], { type: "application/pdf" });
 
       //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
       saveAs(blob, `OS_${dateCheck()}.pdf`);
     } catch (err) {
-      Toast("Falha ao recuperar PDF do servidor", "error");
+      Toast('Falha ao recuperar PDF do servidor', 'update', toastId, 'error')
     }
   }
 

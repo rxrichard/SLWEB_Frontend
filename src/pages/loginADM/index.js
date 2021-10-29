@@ -26,31 +26,41 @@ export default function LoginADM() {
   const [user_name, setUserName] = useState(null);
 
   const handleAttempt = async () => {
-    if (adm_code !== null && adm_password !== null) {
-      Toast("Aguarde");
-      try {
-        const response = await api.get("/admAuth", {
-          params: {
-            admin_code: adm_code,
-            admin_password: adm_password,
-          },
-        });
-        if (response.status === 401) throw Error;
-        Toast("Autenticado", "success");
-        setUserList(response.data);
-        setUserFiltered(response.data);
-        setValidAdm(true);
-      } catch (err) {
-        Toast("Falha na autenticação", "error");
-        setValidAdm(false);
-      }
-    } else {
-      Toast("Preencha todos os campo");
+
+    if ((adm_code === null || adm_code === '') && (adm_password === null || adm_password === '')) {
+      Toast('Código ou Senha não informados', 'warn')
+      return
     }
+
+    let toastId = null
+
+    try {
+      toastId = Toast('Aguarde...', 'wait')
+
+      const response = await api.get("/admAuth", {
+        params: {
+          admin_code: adm_code,
+          admin_password: adm_password,
+        },
+      });
+
+      Toast('Autenticado!', 'update', toastId, 'success')
+
+      setUserList(response.data);
+      setUserFiltered(response.data);
+      setValidAdm(true);
+    } catch (err) {
+      Toast('Falha na autenticação', 'update', toastId, 'error')
+      setValidAdm(false);
+    }
+
   };
 
   const handleLogin = async () => {
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       const response = await api.post("/admAuth", {
         admin_code: adm_code,
         admin_password: adm_password,
@@ -59,13 +69,14 @@ export default function LoginADM() {
 
       if (typeof response.data != "object") throw Error;
 
+      Toast('Conectado!', 'update', toastId, 'success')
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("usuario", response.data.nome);
 
       window.location.assign("/");
     } catch (err) {
-      Toast("Falha ao realizar o login", "error");
+      Toast('Falha ao realizar o login', 'update', toastId, 'error')
     }
   };
 

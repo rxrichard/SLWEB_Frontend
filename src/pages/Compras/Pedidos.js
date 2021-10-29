@@ -53,7 +53,7 @@ function Pedidos(props) {
         setPedidosAtendidos(response.data.PedidosFaturados);
         setLoaded(true);
       } catch (err) {
-        Toast("Falha ao carregar pedidos", "error");
+        Toast("Falha na comunicação", "error");
       }
     }
     LoadData();
@@ -68,7 +68,7 @@ function Pedidos(props) {
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
-      Toast("Não foi possivel recuperar os detalhes desse pedido", "error");
+      Toast("Não foi possivel recuperar os detalhes deste pedido", "error");
     }
   };
 
@@ -80,17 +80,19 @@ function Pedidos(props) {
   const handleCancel = async (ID, event) => {
     event.persist()
     event.target.disabled = true;
+    let toastId = null
 
     try {
+      toastId = Toast('Aguarde...', 'wait')
       await api.delete(`/compras/pedidos/cancelar/${ID}`);
 
       setOpen(false);
       setPedidosAberto(pedidosAberto.filter(element => String(element.Pedido) !== String(ID)))
 
-      Toast("Pedido cancelado", "success");
+      Toast('Pedido cancelado com sucesso!', 'update', toastId, 'success')
     } catch (err) {
       event.target.disabled = false;
-      Toast("Falha ao cancelar pedido", "error");
+      Toast('Falha ao cancelar pedido', 'update', toastId, 'error')
     }
   };
 

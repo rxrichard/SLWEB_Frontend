@@ -95,7 +95,7 @@ function DialogSelect(props) {
       tipo === "" ||
       configura === ""
     ) {
-      Toast("Selecione todos os campos");
+      Toast("Selecione todos os campos", 'warn');
       return;
     }
 
@@ -110,7 +110,7 @@ function DialogSelect(props) {
         }
       });
       if(Number(valor.replace(/,/g, ".")) % Number(ficha.replace('F', '')) > 0){
-        Toast('Valor não compativel com o valor de ficha informado', 'error')
+        Toast('Valor não compativel com o valor de ficha informado', 'warn')
         return
       }
     }

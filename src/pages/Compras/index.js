@@ -40,11 +40,13 @@ import Pedidos from "./Pedidos";
 import { Toast } from "../../components/toasty";
 import Input from "react-number-format";
 import InputMultline from "../../components/materialComponents/InputMultline";
+import { RED_PRIMARY } from '../../misc/colors'
 
 function Compras(props) {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
+  const [wait, setWait] = useState(false);
   const [obs, setObs] = useState("");
   const [retira, setRetira] = useState(false);
 
@@ -69,7 +71,7 @@ function Compras(props) {
         const response = await api.get("/compras/produtos");
         LoadInsumos(response.data);
       } catch (err) {
-        Toast("Falha ao recuperar produtos", "error");
+        Toast("Falha na comunicação", "error");
       }
     }
     loadProdutos();
@@ -97,59 +99,35 @@ function Compras(props) {
   };
 
   const handleBuy = async (event) => {
-    let temZerado = false;
-    event.persist();
-    event.target.disabled = true;
-
-    if (Carrinho.length === 0) {
-      Toast("Nenhum item no carrinho");
-      event.target.disabled = false;
-      return;
+    const LoadDTO = {
+      Items: Carrinho,
+      Obs: obs,
+      Retira: retira,
     }
 
-    for (let i = 0; i < Carrinho.length; i++) {
-      if (Carrinho[i].QCompra === 0) {
-        temZerado = true;
-        break;
-      }
+    setWait(true)
+
+    if (!verifyPedido(LoadDTO, retira, MinCompra)) {
+      setWait(false)
+      return
     }
 
-    if (temZerado) {
-      Toast("Um ou mais produtos do carrinho não tem uma quantidade definida");
-      event.target.disabled = false;
-      return;
-    }
-
-    if (obs.length > 255) {
-      Toast("Tamanho do campo Observações excede o limite");
-      event.target.disabled = false;
-      return;
-    }
-
-    if (!retira && totalPedido(Carrinho) < MinCompra) {
-      Toast("Valor total do pedido é menor que o mínimo");
-      event.target.disabled = false;
-      return;
-    }
+    let toastId = null
 
     try {
-      await api.post("/compras/comprar", {
-        Items: Carrinho,
-        Obs: obs,
-        Retira: retira,
-      });
+      toastId = Toast('Aguarde...', 'wait')
 
-      Toast("Pedido incluído com sucesso", "success");
+      await api.post("/compras/comprar", LoadDTO);
+
+      Toast('Pedido incluído com sucesso!', 'update', toastId, 'success')
       ClearCarrinho();
       setObs("");
       setRetira(false)
-      event.target.disabled = false;
+      setWait(false)
+
     } catch (err) {
-      event.target.disabled = false;
-      Toast(
-        "Falha ao incluir o pedido de compra, verifique a tela compras à pagar",
-        "error"
-      );
+      Toast('Falha ao incluir o pedido de compra, verifique a tela "Contas à Pagar"', 'update', toastId, 'error')
+      setWait(false)
     }
   };
 
@@ -175,7 +153,10 @@ function Compras(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Carrinho
+          <div className='XAlign' style={{ justifyContent: 'flex-start' }}>
+            <ShoppingCart className={classes.extendedIcon} />
+            Carrinho
+          </div>
         </DialogTitle>
 
         <DialogContent>
@@ -196,7 +177,7 @@ function Compras(props) {
 
             <div className="YAlign" style={{ flex: "unset" }}>
               <Typography gutterBottom variant="subtitle1">
-                <strong>Valor mínimo p/ frete grátis:</strong> R${" "}
+                <strong>Valor mínimo:</strong> R${" "}
                 {MinFrete(MinCompra, retira)}
                 <Typography gutterBottom variant="subtitle1">
                   <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
@@ -224,7 +205,7 @@ function Compras(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
           <Box
             sx={{
               width: "100%",
@@ -234,11 +215,11 @@ function Compras(props) {
               style={{
                 width: "100%",
                 backgroundColor:
-                  (250 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+                  (200 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
               onChange={(e) => setObs(e.target.value)}
               value={obs}
-              label={`Obs.(${250 - obs.length})`}
+              label={`Obs.(${200 - obs.length})`}
               fullWidth={true}
             />
           </Box>
@@ -255,7 +236,7 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button onClick={(e) => handleBuy(e)} color="primary">
+            <Button disabled={wait} onClick={(e) => handleBuy(e)} color="primary">
               Comprar
             </Button>
           </Tooltip>
@@ -272,7 +253,7 @@ function Compras(props) {
             followCursor
           >
             <Button
-              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 ? false : true}
+              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true}
               onClick={() => UpdateProdutos()}
               color="primary"
             >
@@ -291,7 +272,7 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button onClick={() => ClearCarrinho()} color="primary">
+            <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
               Limpar
             </Button>
           </Tooltip>
@@ -307,7 +288,7 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button onClick={() => setOpen(false)} color="primary">
+            <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
               Fechar
             </Button>
           </Tooltip>
@@ -457,8 +438,7 @@ const fromStore2Datagrid = (carrinho) => {
       Produto: item.Produto,
       Quantidade: item.QCompra,
       Vlr: item.VlrUn,
-      Conversao: item.FatConversao,
-      Pacote: item.QtMin,
+      Conversao: item.QtMin,
     });
   });
 
@@ -480,6 +460,33 @@ const MinFrete = (min, retira) => {
   return retira ? "0.00" : Number(min).toFixed(2);
 };
 
+const verifyPedido = (pedido, retira, MinCompra) => {
+
+  if (pedido.Items.length === 0) {
+    Toast("Nenhum item no carrinho", "warn");
+    return false;
+  }
+
+  for (let i = 0; i < pedido.Items.length; i++) {
+    if (pedido.Items[i].QCompra === 0) {
+      Toast("Um ou mais produtos do carrinho não tem uma quantidade definida", 'warn');
+      return false;
+    }
+  }
+
+  if (pedido.Obs.length > 200) {
+    Toast("Tamanho do campo Observações excede o limite", 'warn');
+    return false;
+  }
+
+  if (!retira && totalPedido(pedido.Items) < MinCompra) {
+    Toast("Valor total do pedido é menor que o mínimo", 'warn');
+    return false;
+  }
+
+  return true
+}
+
 const transitionDuration = {
   appear: 300,
   enter: 300,
@@ -496,13 +503,26 @@ const columns = [
   },
   {
     field: "Quantidade",
-    headerName: "Quantidade",
+    headerName: "Qtd",
     type: "number",
     hasFocus: true,
-    width: 125,
+    width: 90,
+    sortable: false,
     editable: true,
+    renderCell: (params) => (
+      <div style={{
+        fontWeight: 'bold',
+        color: RED_PRIMARY,
+      }}>
+        {params.value}
+      </div>
+    ),
     renderEditCell: (params) => (
       <Input
+        style={{
+          fontWeight: 'bold',
+          color: RED_PRIMARY,
+        }}
         autoFocus={true}
         decimalScale={0}
         fixedDecimalScale={true}
@@ -525,19 +545,20 @@ const columns = [
   },
   {
     field: "VlrUn",
-    headerName: "Valor Unitário",
+    headerName: "Valor Un.",
     type: "number",
     sortable: false,
-    width: 130,
+    width: 90,
     valueGetter: (params) =>
-      params.getValue(params.id, "Vlr") * params.getValue(params.id, "Pacote"),
+      params.getValue(params.id, "Vlr") * params.getValue(params.id, "Conversao"),
   },
   {
     field: "VlrTotal",
-    headerName: "Valor Total",
+    headerName: "Total",
     type: "number",
+    sortable: false,
     description: "Cálculo do Valor Unitário x Quantidade",
-    width: 130,
+    width: 90,
     valueGetter: (params) =>
       params.getValue(params.id, "Quantidade") *
       params.getValue(params.id, "VlrUn"),
