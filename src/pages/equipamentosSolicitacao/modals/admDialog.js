@@ -66,8 +66,10 @@ function DraggableDialog(props) {
 
   const handleManagement = async (action) => {
     setWait(true);
+    let toastId = null
 
     try {
+      toastId = Toast('Aguarde...', 'wait')
       const response = await api.put("/equip/requests/validate", {
         OSID: Req.OSCId,
         action: action,
@@ -77,12 +79,12 @@ function DraggableDialog(props) {
 
       if (response.status !== 200) throw Error;
 
-      Toast("Ação registrada com sucesso", "success");
+      Toast('Atualização gravada', 'update', toastId, 'success')
       setUpdated(true);
       handleClose();
     } catch (err) {
       setWait(false);
-      Toast("Falha ao concluir sua ação", "error");
+      Toast('Falha ao gravar atualização', 'update', toastId, 'error')
     }
   };
 
@@ -92,17 +94,20 @@ function DraggableDialog(props) {
 
   const SUDO = async (action) => {
     setWait(true);
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       await api.put("/equip/requests/admin", {
         OSID: Req.OSCId,
         action,
       });
 
-      Toast("Ação concluída com sucesso", "success");
+      Toast('Atualização gravada com sucesso!', 'update', toastId, 'success')
       setWait(false);
     } catch (err) {
       setWait(false);
-      Toast("Não foi possivel concluir sua ação", "error");
+      Toast('Falha ao gravar atualização', 'update', toastId, 'error')
     }
   };
 

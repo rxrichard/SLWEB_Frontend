@@ -34,7 +34,7 @@ export default class FormsAcompanhamento extends React.Component {
         throw Error;
       }
     } catch (err) {
-      Toast("Falha", "error");
+      Toast("Falha na comunicação", "error");
     }
   }
 

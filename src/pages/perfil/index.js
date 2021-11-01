@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 
 import { Panel } from "../../components/commom_in";
-import { maskCNPJ, maskCEP, valueCheck } from "../../misc/commom_functions";
+import { maskCNPJ, maskCEP } from "../../misc/commom_functions";
 import { Toast } from "../../components/toasty";
-import { FAILED_REQUEST } from "../../misc/messages";
 import Loading from "../../components/loading_screen";
 
+import InputNumber from '../../components/materialComponents/inputMoney'
 import Card from "../../components/materialComponents/Card";
 import Dialog from "../../components/materialComponents/Dialog";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
@@ -23,7 +23,10 @@ function Perfil() {
   const [info, setInfo] = useState({});
   const [password, setPassword] = useState({});
   const [newEmail, setNewEmail] = useState(null);
-  const [newTaxa, setNewTaxa] = useState({});
+  const [newTaxa, setNewTaxa] = useState({
+    tipo: '',
+    valor: 0
+  });
   const [loaded, setLoaded] = useState(false);
   const [wait, setWait] = useState(false);
 
@@ -51,7 +54,7 @@ function Perfil() {
           valor: response.data.ParamVlr * 100,
         });
       } catch (err) {
-        Toast(FAILED_REQUEST, "error");
+        Toast('Falha na comunicação', "error");
       }
     }
     loadData();
@@ -59,7 +62,10 @@ function Perfil() {
 
   const handleChangePassword = async () => {
     setWait(true);
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       await api
         .put("/profile/password", {
           token: sessionStorage.getItem("token"),
@@ -69,7 +75,7 @@ function Perfil() {
           throw new Error(error.response.status);
         });
 
-      Toast("Senha atualizada com sucesso", "success");
+      Toast('Senha atualizada com sucesso!', 'update', toastId, 'success')
       setWait(false);
       setPassword({
         atual: "",
@@ -79,26 +85,23 @@ function Perfil() {
     } catch (err) {
       switch (Number(err.message)) {
         case 409:
-          Toast("A nova senha diverge da confirmação", "error");
+          Toast('A nova senha diverge da confirmação', 'update', toastId, 'error')
           setWait(false);
           break;
         case 406:
-          Toast("A senha deve possuir no máximo seis caractéres", "error");
+          Toast('A senha deve possuir no máximo seis caractéres', 'update', toastId, 'error')
           setWait(false);
           break;
         case 405:
-          Toast("A senha atual não está correta", "error");
+          Toast('A senha atual não está correta', 'update', toastId, 'error')
           setWait(false);
           break;
         case 304:
-          Toast("Nova senha e atual são identicas", "error");
+          Toast('Nova senha e atual são identicas', 'update', toastId, 'error')
           setWait(false);
           break;
         default:
-          Toast(
-            "Não foi possivel alterar sua senha, contate o suporte",
-            "error"
-          );
+          Toast('Não foi possivel alterar sua senha, contate o suporte', 'update', toastId, 'error')
           setWait(false);
           break;
       }
@@ -111,37 +114,50 @@ function Perfil() {
       newEmail === null ||
       typeof newEmail == "undefined"
     ) {
-      Toast("Preencha um email valido");
+      Toast("Preencha um email valido", 'warn');
       return;
     }
 
     setWait(true);
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       const response = await api.put("/profile/email", {
         email: newEmail,
       });
 
       if (response.status === 400) throw Error;
 
-      Toast("Email atualizado com sucesso", "success");
+      Toast('Email atualizado com sucesso!', 'update', toastId, 'success')
       setWait(false);
       setInfo({ ...info, Email: newEmail });
     } catch (err) {
-      Toast(FAILED_REQUEST, "error");
+      Toast('Falha na comunicação', 'update', toastId, 'error')
       setWait(false);
     }
   };
 
   const handleChangeTax = async () => {
+    if (newTaxa.valor === '' || newTaxa.valor === null) {
+      Toast('Preencha algum valor para a taxa', 'warn')
+      return
+    }
+
+    let toastId = null
+
     try {
+      toastId = Toast('Aguarde...', 'wait')
       const response = await api.put("/profile/tax", {
         token: sessionStorage.getItem("token"),
         newTax: newTaxa,
       });
 
       if (response.status === 400) throw Error;
+
+      Toast('Taxa atualizada!', 'update', toastId, 'success')
     } catch (err) {
-      Toast(FAILED_REQUEST, "error");
+      Toast('Falha na comunicação', 'update', toastId, 'error')
     }
   };
 
@@ -306,23 +322,21 @@ function Perfil() {
             onChange={(e) => {
               setNewTaxa({ tipo: e.target.value, valor: 0 });
               const i = document.querySelectorAll("input");
-
+              
               i[0].value = "";
             }}
-          >
-            <MenuItem value="PERCENTUAL">Imposto</MenuItem>
+            >
+            <MenuItem value="PERCENTUAL">Percentual</MenuItem>
             <MenuItem value="VALOR FIXO">Valor fixo</MenuItem>
           </Select>
-          <InputUnderline
+
+          <InputNumber
+            style={{ marginTop: '8px', maxWidth: '100px'}}
+            decimais={newTaxa.tipo === "PERCENTUAL" ? 0 : 2}
+            onChange={(e) => setNewTaxa({ ...newTaxa, valor: e.target.value })}
+            label={newTaxa.tipo === "PERCENTUAL" ? "Porcentagem(%)" : "Valor(R$)"}
+            disabled={false}
             value={newTaxa.valor}
-            type="text"
-            label={
-              newTaxa.tipo === "PERCENTUAL" ? "Porcentagem(%)" : "Valor(R$)"
-            }
-            onChange={(e) => {
-              e = valueCheck(e);
-              setNewTaxa({ ...newTaxa, valor: e });
-            }}
           />
         </Card>
       </div>

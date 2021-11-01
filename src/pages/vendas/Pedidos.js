@@ -33,7 +33,7 @@ function Pedidos() {
         setPedidos(response.data.Pedidos);
         setLoaded(true);
       } catch (err) {
-        Toast("Falha ao carregar histórico de pedidos", "error");
+        Toast("Falha na comunicação", "error");
       }
     }
     LoadData();

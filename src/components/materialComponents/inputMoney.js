@@ -48,7 +48,7 @@ function InputAdornments(props) {
 
   useEffect(() => {
     Decimais = props.decimais;
-  }, []);
+  }, [props.decimais]);
 
   const handleChange = (event) => {
     setValues({
@@ -60,7 +60,7 @@ function InputAdornments(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div style={props.style} className={classes.root}>
       <TextField
         name="numberformat"
         id="formatted-numberformat-input"
@@ -70,7 +70,7 @@ function InputAdornments(props) {
         onChange={handleChange}
         InputProps={{
           inputComponent: NumberFormatCustom,
-          
+
         }}
         variant="outlined"
         value={
@@ -86,25 +86,25 @@ function InputAdornments(props) {
 export default InputAdornments
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      display: "flex",
-      flexWrap: "wrap",
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  margin: {
+    margin: '0px',
+  },
+  withoutLabel: {
+    marginTop: theme.spacing(3),
+  },
+  textField: {
+    width: "100%",
+    "& #outlined-start-adornment": {
+      border: "none",
+      borderBottom: "none",
     },
-    margin: {
-      margin: theme.spacing(1),
+    "& #outlined-start-adornment:focus": {
+      border: "none !important",
+      borderBottom: "none !important",
     },
-    withoutLabel: {
-      marginTop: theme.spacing(3),
-    },
-    textField: {
-      width: "100%",
-      "& #outlined-start-adornment": {
-        border: "none",
-        borderBottom: "none",
-      },
-      "& #outlined-start-adornment:focus": {
-        border: "none !important",
-        borderBottom: "none !important",
-      },
-    },
-  }));
+  },
+}));

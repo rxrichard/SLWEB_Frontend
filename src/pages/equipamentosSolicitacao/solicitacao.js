@@ -68,7 +68,7 @@ function VerticalLinearStepper(props) {
         setLoaded(true);
       } catch (err) {
         Toast(
-          "Não foi possivel carregar as informações iniciais de bebidas e máquinas",
+          "Falha ao recuperar informações iniciais de bebidas e máquinas",
           "error"
         );
       }
@@ -388,13 +388,13 @@ const handleSubmit = async (
   setDesativar(true);
 
   if (Solicitacao.Maquina === "") {
-    Toast("Escolha um modelo de máquina");
+    Toast("Escolha um modelo de máquina", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Pagamento === "") {
-    Toast("Selecione o meio de pagamento para a máquina");
+    Toast("Selecione o meio de pagamento para a máquina", 'warn');
     setDesativar(false);
     return;
   }
@@ -405,31 +405,31 @@ const handleSubmit = async (
     Solicitacao.TipoValidador === "Ficha" &&
     Solicitacao.Validador.length === 0
   ) {
-    Toast("Especifique que fichas o validador deve acompanhar");
+    Toast("Especifique que fichas o validador deve acompanhar", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Configuracao.length < 1) {
-    Toast("Selecione pelo menos uma bebida para a máquina");
+    Toast("Selecione pelo menos uma bebida para a máquina", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Corporativa === "") {
-    Toast("Especifique se a máquina é corporativa");
+    Toast("Especifique se a máquina é corporativa", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Gabinete === "") {
-    Toast("Selecione se deseja um gabinete acompanhando a máquina");
+    Toast("Selecione se deseja um gabinete acompanhando a máquina", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Abastecimento === "") {
-    Toast("Selecione o sistema de abastecimento hídrico");
+    Toast("Selecione o sistema de abastecimento hídrico", 'warn');
     setDesativar(false);
     return;
   }
@@ -437,64 +437,66 @@ const handleSubmit = async (
   // Verificação desativada por solicitação do Alberto
   // if (Solicitacao.Chip === "") {
   //   Toast(
-  //     "Informe qual chip de operadora deve acompanhar a telemetria da máquina"
+  //     "Informe qual chip de operadora deve acompanhar a telemetria da máquina", 'warn'
   //   );
   //   setDesativar(false);
   //   return;
   // }
 
   if (Solicitacao.AntExt === "") {
-    Toast("Informe se o a máquina deve acompanhar uma antena externa");
+    Toast("Informe se o a máquina deve acompanhar uma antena externa", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Cliente_Destino === "") {
-    Toast("Informe qual cliente receberá a máquina");
+    Toast("Informe qual cliente receberá a máquina", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Endereço_Entrega === "") {
-    Toast("O endereço de entrega não pode estar vazio");
+    Toast("O endereço de entrega não pode estar vazio", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Data_Entrega_Desejada === "") {
-    Toast("Preencha uma data conveniente para entrega");
+    Toast("Preencha uma data conveniente para entrega", 'warn');
     setDesativar(false);
     return;
   }
 
   if (Solicitacao.Contato === "") {
-    Toast("Informe o nome do contato para acompanhar a entrega da máquina");
+    Toast("Informe o nome do contato para acompanhar a entrega da máquina", 'warn');
     setDesativar(false);
     return false;
   }
 
   // if (Solicitacao.Email_Acompanhamento === "") {
-  //   Toast("Preencha um email para receber atualizações sobre o pedido");
+  //   Toast("Preencha um email para receber atualizações sobre o pedido", 'warn');
   //   setDesativar(false);
   //   return;
   // }
 
   if (Solicitacao.Telefone_Contato === "") {
     Toast(
-      "Informe o número de telefone do contato que acompanhará a entrega da máquina"
+      "Informe o número de telefone do contato que acompanhará a entrega da máquina", 'warn'
     );
     setDesativar(false);
     return;
   }
 
+  let toastId = null
+
   try {
-    Toast("Aguarde...");
+    toastId = Toast('Aguarde...', 'wait')
     const response = await api.post("/equip", {
       Solicitacao,
     });
 
     if (response.status === 201) {
-      Toast("Solicitação registrada com sucesso", "success");
+      Toast('Solicitação registrada com sucesso!', 'update', toastId, 'success')
       ResetarState();
       ResetarStep(0);
       setDesativar(false);
@@ -503,7 +505,7 @@ const handleSubmit = async (
       throw Error;
     }
   } catch (err) {
-    Toast("Falha ao concluir solicitação, por favor tente novamente", "error");
+    Toast('Falha ao concluir solicitação, por favor tente novamente', 'update', toastId, 'error')
     setDesativar(false);
     return;
   }

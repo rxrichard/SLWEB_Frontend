@@ -30,7 +30,7 @@ function Franquia() {
           throw Error;
         }
       } catch (err) {
-        Toast("Falha ao trazer as informações das franquias", "error");
+        Toast("Falha na comunicação", "error");
       }
     }
     LoadData();

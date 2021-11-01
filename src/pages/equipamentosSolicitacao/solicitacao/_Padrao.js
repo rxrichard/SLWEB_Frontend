@@ -89,7 +89,7 @@ function FullScreenDialog({
       setPSelecionado([]);
       setOpen(true);
     } else {
-      Toast("Não existem configurações padrão pra essa máquina");
+      Toast("Não existem configurações padrão para essa máquina", 'warn');
     }
   };
 
@@ -101,7 +101,7 @@ function FullScreenDialog({
   const handleConfirm = () => {
     let valid = true;
     if (PSelecionado.length === 0) {
-      Toast("Nenhuma configuração padrão selecionada");
+      Toast("Nenhuma configuração padrão selecionada", 'warn');
       return;
     }
 
@@ -131,8 +131,7 @@ function FullScreenDialog({
 
     if (!valid) {
       Toast(
-        "Um ou mais valores não são compativeis com o valor de ficha informado",
-        "error"
+        "Um ou mais valores não são compativeis com o valor de ficha informado", 'warn'
       );
       return;
     }

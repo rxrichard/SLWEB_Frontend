@@ -85,7 +85,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                                 <Block />
                             </IconButton>
                         </Tooltip>
-                        {/* <Tooltip
+                        <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
                                     Editar Venda
@@ -98,7 +98,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <Edit />
                             </IconButton>
-                        </Tooltip> */}
+                        </Tooltip>
                         <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
@@ -136,14 +136,18 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
 
     const handleRecoverDOC = async (pedido, doctype) => {
         if (doctype === '') {
-            Toast('Selecione um tipo de documento')
+            Toast('Selecione um tipo de documento', 'warn')
             return
         }
 
         let configs = selectDocConfigs(doctype);
 
         setWait(true);
+        let toastId = null
+
         try {
+            toastId = Toast('Buscando...', 'wait')
+
             const response = await api.get(
                 `/vendas/pedidos/detalhes/DOCS/${doctype}/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`,
                 {
@@ -153,6 +157,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
 
             //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
             if (response.data.byteLength > 5) {
+                Toast('Encontrado!', 'update', toastId, 'success')
                 //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
                 const blob = new Blob([response.data], { type: configs.appType });
 
@@ -161,12 +166,12 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
 
                 setWait(false);
             } else {
-                Toast('Nenhum documento encontrado', 'error')
+                Toast('Documento não encontrado', 'update', toastId, 'error')
                 setWait(false);
             }
         } catch (err) {
             setWait(false);
-            console.log(err);
+            Toast('Falha na comunicação', 'update', toastId, 'error')
         }
     };
 
@@ -177,18 +182,18 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
     const handleRequestNFE = async () => {
         if (String(actualPedidoInfo.Tipo).trim() === 'R' && Number(actualPedidoInfo.DepDestId) !== 1) {
             if (!window.confirm(`Para emitir uma nota de remessa o depósito do destinatário será alterado para o ser o seu. Depósito atual da remessa: ${actualPedidoInfo.DepDestDesc}`)) {
-                console.log('rejeitou')
                 return
             }
         }
 
-        Toast('Aguarde...')
         setWait(true)
+        let toastId = null
 
         try {
+            toastId = Toast('Aguarde...', 'wait')
             await api.put(`/vendas/pedidos/faturar/${actualPedidoInfo.Serie_Pvc}/${actualPedidoInfo.Pvc_ID}`)
 
-            Toast('Nota solicitada', 'success')
+            Toast('Nota solicitada!', 'update', toastId, 'success')
 
             setWait(false)
             setActualPedidoInfo(previousState => {
@@ -214,17 +219,21 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                 return aux
             })
         } catch (err) {
-            Toast('Falha ao solicitar a nota', 'error')
+            Toast('Falha ao solicitar a nota', 'update', toastId, 'error')
             setWait(false)
         }
     };
 
     const handleCancel = async () => {
         setWait(true)
+        let toastId = null
+
         try {
+            toastId = Toast('Aguarde...', 'wait')
+
             await api.put(`/vendas/pedidos/cancelar/${actualPedidoInfo.Serie_Pvc}/${actualPedidoInfo.Pvc_ID}`)
 
-            Toast('Venda cancelada', 'success')
+            Toast('Venda cancelada!', 'update', toastId, 'success')
             setWait(false)
             setActualPedidoInfo(previousState => {
                 return {
@@ -250,7 +259,7 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
             })
         } catch (err) {
             setWait(false)
-            Toast('Não foi possivel cancelar a venda', 'error')
+            Toast('Falha na comunicação', 'update', toastId, 'error')
         }
     };
 

@@ -120,6 +120,16 @@ td {
   padding: 0px 0px 0px 0px !important;
 }
 
+.Toastify__toast {
+  border-radius: 4px !important;
+}
+
+@media only screen and (max-width: 480px) {
+  .Toastify__toast {
+    border-radius: 0px !important;
+  }
+}
+
 .modal-trigger:hover {
   animation-name: GreyBIn;
   animation-duration: 500ms;

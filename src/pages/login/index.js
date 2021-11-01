@@ -24,27 +24,30 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
-    Toast("Autenticando...");
-
+    let toastId = null 
     try {
+      toastId = Toast('Aguarde...', 'wait')
+      
       const response = await api.post("/auth/", {
         user_code: user_code,
         password: password,
       });
 
       if (response.data.token) {
+        Toast('Conectado!', 'update', toastId, 'success')
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("usuario", response.data.nome);
         sessionStorage.setItem("role", response.data.role);
         window.location.assign("/");
       } else {
-        Toast("Dados de login incorretos ou inexistentes", "error");
+        Toast('Filial ou Senha incorretas!', 'update', toastId, 'error')
         sessionStorage.clear();
       }
     } catch (err) {
-      Toast("Falha na conexão", "error");
+      Toast('Falha na conexão', 'update', toastId, 'error')
     }
   };
+
   return (
     <Container style={{ backgroundColor: RED_PRIMARY }}>
       <Box>
@@ -74,7 +77,7 @@ function Login() {
         </Button>
         <Link to="/forgot">
           <Button
-            style={{ minWidth: "60%", marginBottom: "8px",  backgroundColor: '#FFFFFF', boxShadow: 'none' }}
+            style={{ minWidth: "60%", marginBottom: "8px", backgroundColor: '#FFFFFF', boxShadow: 'none' }}
             icon={<LockOutlined />}
           >
             Recuperar senha

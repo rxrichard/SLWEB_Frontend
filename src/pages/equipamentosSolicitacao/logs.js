@@ -30,7 +30,11 @@ export default class Logs extends React.Component {
   }
 
   async handleRetrivePDF(OSID) {
+    let toastId = null
+
     try {
+      toastId = Toast('Buscando...', 'wait')
+
       const response = await api.get("/equip/requests/retrive", {
         params: {
           token: sessionStorage.getItem("token"),
@@ -39,13 +43,15 @@ export default class Logs extends React.Component {
         responseType: "arraybuffer",
       });
 
+      Toast('Encontrado!', 'update', toastId, 'success')
+
       //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
       const blob = new Blob([response.data], { type: "application/pdf" });
 
       //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
       saveAs(blob, `OS_${dateCheck()}.pdf`);
     } catch (err) {
-      Toast("Falha ao recuperar PDF do servidor", "error");
+      Toast('Falha ao recuperar PDF do servidor', 'update', toastId, 'error')
     }
   }
 

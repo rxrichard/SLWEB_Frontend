@@ -32,6 +32,7 @@ import {
 
 function Vender(props) {
   const classes = useStyles();
+
   const {
     Produtos,
     Checked,
@@ -45,6 +46,7 @@ function Vender(props) {
     RemDestino,
     Depositos,
   } = props.State;
+
   const {
     SetCheckedProd,
     ChangeCliente,
@@ -65,121 +67,7 @@ function Vender(props) {
     );
   };
 
-  const customList = (title, items) => (
-    <Card style={{ width: "100%", padding: '8px' }}>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Select
-          onChange={(e) => handleSwitchCliente(e.target.value)}
-          width='500px'
-          maxWidth='100%'
-          value={Cliente.CNPJ}
-          disabled={false}
-          label="Cliente"
-          MRight='8px'
-          MBottom='8px'
-        >
-          {Clientes.map((cliente) => (
-            <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
-              {cliente.Nome_Fantasia}, {cliente.CNPJss}
-            </MenuItem>
-          ))}
-        </Select>
 
-        <Select
-          onChange={(e) => ChangeTipoVenda(e.target.value)}
-          value={TipoVenda}
-          disabled={false}
-          label="Tipo de Venda"
-          width='200px'
-          MRight='8px'
-          MBottom='8px'
-        >
-          <MenuItem value="V" key="Venda">
-            Venda
-          </MenuItem>
-          <MenuItem value="R" key="Remessa">
-            Remessa
-          </MenuItem>
-          <MenuItem value="B" key="Bonificação">
-            Bonificação
-          </MenuItem>
-        </Select>
-        {extraOptions(
-          TipoVenda,
-          Condicoes,
-          CondPag,
-          Depositos,
-          RemOrigem,
-          RemDestino,
-          SetCondPag,
-          SetDepOrigem,
-          SetDepDestino
-        )}
-      </div>
-      <InputMultline
-        onChange={(e) => SetObs(e.target.value)}
-        value={OBS}
-        label="Obs. na nota"
-        style={{ width: "100%" }}
-      />
-
-      <CardHeader
-        className={classes.cardHeader}
-        avatar={<ViewList />}
-        title={title}
-        subheader={`${ProdutosMarcados(Produtos, Checked)}/${items.length
-          } selecionados`}
-      />
-      <Divider />
-      <TableContainer component={Paper}>
-        <Table size="small" className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell>Código</StyledTableCell>
-              <StyledTableCell>Produto</StyledTableCell>
-              <StyledTableCell>Valor Base</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((prod, i) => {
-              const labelId = `transfer-list-all-item-${prod.ProdId[0]}-label`;
-
-              return (
-                <StyledTableRow
-                  key={prod.ProdId[0]}
-                  onClick={handleToggle(prod)}
-                >
-                  <StyledTableCell style={{ textAlign: 'center', padding: '0px' }}>
-                    <input
-                      style={{ margin: "0px" }}
-                      checked={Checked.indexOf(prod.ProdId[0]) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ "aria-labelledby": labelId }}
-                      type="checkbox"
-                      value={prod.ProdId[0]}
-                    />
-                  </StyledTableCell>
-
-                  <StyledTableCell>{prod.ProdId[0]}</StyledTableCell>
-
-                  <StyledTableCell>
-                    <ListItemText primary={String(prod.Produto).trim()} />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <ListItemText
-                      primary={Number.parseFloat(prod.PvnVlr).toFixed(4)}
-                    />
-                  </StyledTableCell>
-                </StyledTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Card>
-  );
 
   return (
     <div
@@ -191,7 +79,122 @@ function Vender(props) {
         alignItems: "flex-start",
       }}
     >
-      {customList("Produtos", Produtos)}
+      <Card style={{ width: "100%", padding: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Select
+            onChange={(e) => handleSwitchCliente(e.target.value)}
+            width='500px'
+            maxWidth='100%'
+            value={Cliente.CNPJ}
+            disabled={false}
+            label="Cliente"
+            MRight='8px'
+            MBottom='8px'
+          >
+            {Clientes.map((cliente) => (
+              <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
+                {cliente.Nome_Fantasia}, {cliente.CNPJss}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            onChange={(e) => ChangeTipoVenda(e.target.value)}
+            value={TipoVenda}
+            disabled={false}
+            label="Tipo de Venda"
+            width='200px'
+            MRight='8px'
+            MBottom='8px'
+          >
+            <MenuItem value="V" key="Venda">
+              Venda
+            </MenuItem>
+            <MenuItem value="R" key="Remessa">
+              Remessa
+            </MenuItem>
+            <MenuItem value="B" key="Bonificação">
+              Bonificação
+            </MenuItem>
+          </Select>
+          {extraOptions(
+            TipoVenda,
+            Condicoes,
+            CondPag,
+            Depositos,
+            RemOrigem,
+            RemDestino,
+            SetCondPag,
+            SetDepOrigem,
+            SetDepDestino
+          )}
+        </div>
+        <InputMultline
+          onChange={(e) => SetObs(e.target.value)}
+          value={OBS}
+          label={`Obs. na nota(${200 - OBS.length})`}
+          style={{
+            width: "100%", backgroundColor:
+              (200 - OBS.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+          }}
+        />
+
+        <CardHeader
+          className={classes.cardHeader}
+          avatar={<ViewList />}
+          title='Produtos'
+          subheader={`${ProdutosMarcados(Produtos, Checked)}/${Produtos.length
+            } selecionados`}
+        />
+        <Divider />
+        <TableContainer component={Paper}>
+          <Table size="small" className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>Código</StyledTableCell>
+                <StyledTableCell>Produto</StyledTableCell>
+                <StyledTableCell>Valor Base</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Produtos.map((prod, i) => {
+                const labelId = `transfer-list-all-item-${prod.ProdId[0]}-label`;
+
+                return (
+                  <StyledTableRow
+                    key={prod.ProdId[0]}
+                    onClick={handleToggle(prod)}
+                  >
+                    <StyledTableCell style={{ textAlign: 'center', padding: '0px' }}>
+                      <input
+                        style={{ margin: "0px" }}
+                        checked={Checked.indexOf(prod.ProdId[0]) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{ "aria-labelledby": labelId }}
+                        type="checkbox"
+                        value={prod.ProdId[0]}
+                      />
+                    </StyledTableCell>
+
+                    <StyledTableCell>{prod.ProdId[0]}</StyledTableCell>
+
+                    <StyledTableCell>
+                      <ListItemText primary={String(prod.Produto).trim()} />
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <ListItemText
+                        primary={Number.parseFloat(prod.PvnVlr).toFixed(4)}
+                      />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
     </div>
   );
 }
@@ -346,19 +349,19 @@ const extraOptions = (
 };
 
 //Funcao pra pegar DDL e retornar o dia alvo
-function addBusinessDays(originalDate, numDaysToAdd) {
-  const Sunday = 0;
-  const Saturday = 6;
-  let daysRemaining = numDaysToAdd;
+// function addBusinessDays(originalDate, numDaysToAdd) {
+//   const Sunday = 0;
+//   const Saturday = 6;
+//   let daysRemaining = numDaysToAdd;
 
-  const newDate = originalDate.clone();
+//   const newDate = originalDate.clone();
 
-  while (daysRemaining > 0) {
-    newDate.add(1, "days");
-    if (newDate.day() !== Sunday && newDate.day() !== Saturday) {
-      daysRemaining--;
-    }
-  }
+//   while (daysRemaining > 0) {
+//     newDate.add(1, "days");
+//     if (newDate.day() !== Sunday && newDate.day() !== Saturday) {
+//       daysRemaining--;
+//     }
+//   }
 
-  return newDate.format("ll");
-}
+//   return newDate.format("ll");
+// }

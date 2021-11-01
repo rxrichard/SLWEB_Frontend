@@ -40,7 +40,7 @@ export default class CentralEmails extends React.Component {
         throw Error;
       }
     } catch (err) {
-      Toast("Falha", "error");
+      Toast("Falha na comunicação", "error");
     }
   }
 

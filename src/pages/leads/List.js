@@ -35,7 +35,7 @@ function CustomizedAccordions(props) {
 
   const handleRequestAdress = async (id, index, type) => {
     if (type === "release" && motivo.trim() === "") {
-      Toast("Informe o motivo da desistencia");
+      Toast("Informe o motivo da desistencia", 'warn');
       return;
     }
 
@@ -65,7 +65,7 @@ function CustomizedAccordions(props) {
       setLeads(aux);
     } catch (err) {
       if (Number(err.message) === 401) {
-        Toast("Limite de leads atingido", "error");
+        Toast("Limite de leads já atingido", 'warn');
       } else if (Number(err.message) === 409) {
         Toast("Lead assumido por outro franqueado", "error");
       } else {
@@ -97,7 +97,7 @@ function CustomizedAccordions(props) {
 
       setHistory(response.data);
     } catch (err) {
-      Toast("Não foi possivel recuperar o historico de desistências do lead");
+      Toast("Não foi possivel recuperar o historico de desistências do lead", 'error');
     }
   };
 

@@ -28,7 +28,6 @@ function Entrega(props) {
     ChooseData,
     DefineContato,
     ChooseTelefone,
-    ChooseEmail,
     DefineOBS,
   } = props;
 
@@ -36,7 +35,6 @@ function Entrega(props) {
     Cliente_Destino,
     Endereço_Entrega,
     CNPJ_Destino,
-    Email_Acompanhamento,
     Telefone_Contato,
     Observacao,
     Data_Entrega_Desejada,

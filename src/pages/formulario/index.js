@@ -118,17 +118,24 @@ export default class Formulario extends React.Component {
 
   async handleSolicitaCodigo(event) {
     event.target.disabled = true;
-
     
+    if (this.state.email === "" || this.state.email === null) {
+      Toast('Preencha um email', 'warn')
+      return
+    }
+
+    let toastId = null
+
     try {
-      if (this.state.email === "" || this.state.email === null) throw Error;
+      toastId = Toast('Aguarde...', 'wait')
       
       await api.post("/form/solicitacao", {
         email: this.state.email,
       });
-      Toast("Verifique o código de acesso enviado para seu email", "success");
+
+      Toast('Um código foi enviado para o seu email!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Falha ao enviar email com código", "error");
+      Toast('Falha ao enviar email com código', 'update', toastId, 'error')
       event.target.disabled = false;
     }
   }
@@ -152,8 +159,11 @@ export default class Formulario extends React.Component {
       }
     }
 
+    let toastId = null
+
     //faz upload do formulario
     try {
+      toastId = Toast('Enviando dados...', 'wait')
       await api.post(
         "/form",
         {
@@ -165,21 +175,26 @@ export default class Formulario extends React.Component {
           },
         }
       );
+
+      Toast('Dados salvos!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Falha ao salvar os dados do seu formulário", "error");
+      Toast('Falha ao salvar os dados', 'update', toastId, 'error')
       return;
     }
 
     //faz o upload das fotos
     try {
+      toastId = Toast('Enviando arquivos...', 'wait')
       await api.post("/form/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "proto-cod": this.state.cod_candidato,
         },
       });
+
+      Toast('Arquivos enviados!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Erro ao fazer o upload dos seus arquivos", "error");
+      Toast('Falha ao enviar arquivos', 'update', toastId, 'error')
       return;
     }
 
@@ -192,63 +207,63 @@ export default class Formulario extends React.Component {
 
     // INICIO DA VALIDAÇÃO DE DADOS BÁSICOS
     if (aux.Nome_Completo === null || aux.Nome_Completo === "") {
-      Toast("(1).Preencha seu nome completo");
+      Toast("(1).Preencha seu nome completo", 'warn');
       return true;
     }
     if (aux.DtNascimento === null || aux.DtNascimento === "") {
-      Toast("(2).Preencha sua data de nascimento");
+      Toast("(2).Preencha sua data de nascimento", 'warn');
       return true;
     }
     if (aux.RG === null || aux.RG === "") {
-      Toast("(3).Preencha seu RG");
+      Toast("(3).Preencha seu RG", 'warn');
       return true;
     }
     if (aux.CPF === null || aux.CPF === "") {
-      Toast("(4).Preencha seu CPF");
+      Toast("(4).Preencha seu CPF", 'warn');
       return true;
     }
     if (aux.Logradouro === null || aux.Logradouro === "") {
-      Toast("(5).Preencha seu endereço");
+      Toast("(5).Preencha seu endereço", 'warn');
       return true;
     }
     if (aux.Número === null || aux.Número === "") {
-      Toast("(6).Preencha o número do seu endereço");
+      Toast("(6).Preencha o número do seu endereço", 'warn');
       return true;
     }
     if (aux.Bairro === null || aux.Bairro === "") {
-      Toast("(8).Preencha o bairro");
+      Toast("(8).Preencha o bairro", 'warn');
       return true;
     }
     if (aux.Municipio === null || aux.Municipio === "") {
-      Toast("(9).Preencha o município");
+      Toast("(9).Preencha o município", 'warn');
       return true;
     }
     if (aux.Estado === null || aux.Estado === "") {
-      Toast("(10).Preencha seu estado");
+      Toast("(10).Preencha seu estado", 'warn');
       return true;
     }
     if (aux.CEP === null || aux.CEP === "") {
-      Toast("(11).Preencha seu CEP");
+      Toast("(11).Preencha seu CEP", 'warn');
       return true;
     }
     if (aux.Email === null || aux.Email === "") {
-      Toast("(12).Preencha seu email");
+      Toast("(12).Preencha seu email", 'warn');
       return true;
     }
     if (
       (aux.Tel_Residencial === null || aux.Tel_Residencial === "") &&
       (aux.Celular === null || aux.Celular === "")
     ) {
-      Toast("(13/14).Informe pelo menos um número de Telefone ou Celular");
+      Toast("(13/14).Informe pelo menos um número de Telefone ou Celular", 'warn');
       return true;
     }
 
     // FIM DA VALIDAÇÃO DE DADOS BÁSICOS
 
-    // VALIDAÇÃO DO PRIMEIRO LADO
+    // VALIDAÇÃO DO LADO ESQUERDO
     //verificar se o estado civil foi marcado ou se foi marcado como casado sem os dados do conjuge
     if (aux.Est_Civil === null) {
-      Toast("(15).Informe seu estado civil");
+      Toast("(15).Informe seu estado civil", 'warn');
       return true;
     }
     if (
@@ -266,12 +281,12 @@ export default class Formulario extends React.Component {
         aux.TUnião === null ||
         aux.TUnião === "")
     ) {
-      Toast("(16 a 21).Revise os dados do seu conjuge");
+      Toast("(16 a 21).Revise os dados do seu conjuge", 'warn');
       return true;
     }
 
     if (aux.CLT === null) {
-      Toast("(22).Informe se é CLT ou não");
+      Toast("(22).Informe se é CLT ou não", 'warn');
       return true;
     }
 
@@ -279,12 +294,12 @@ export default class Formulario extends React.Component {
       aux.CLT === "Sim" &&
       (aux.Rend_Mensal === null || aux.Rend_Mensal === "")
     ) {
-      Toast("(23).Você não informou seu rendimento mensal como CLT");
+      Toast("(23).Você não informou seu rendimento mensal como CLT", 'warn');
       return true;
     }
 
     if (aux.Tem_filhos === null) {
-      Toast("(24).Informe se possui filhos");
+      Toast("(24).Informe se possui filhos", 'warn');
       return true;
     }
 
@@ -295,12 +310,12 @@ export default class Formulario extends React.Component {
         aux.Idd_filhos === null ||
         aux.Idd_filhos === "")
     ) {
-      Toast("(25 e 26).Preencha corretamente quantos filhos e suas idades");
+      Toast("(25 e 26).Preencha corretamente quantos filhos e suas idades", 'warn');
       return true;
     }
 
     if (aux.T_Residencia === null) {
-      Toast("(27).Informe qual o tipo da sua residência atual");
+      Toast("(27).Informe qual o tipo da sua residência atual", 'warn');
       return true;
     }
 
@@ -308,30 +323,30 @@ export default class Formulario extends React.Component {
       (aux.T_Residencia === "Alugada" || aux.T_Residencia === "Financiada") &&
       (aux.Residencia_Mensal === null || aux.Residencia_Mensal === "")
     ) {
-      Toast("(28).Informe a quantia gasta por mês com sua residência");
+      Toast("(28).Informe a quantia gasta por mês com sua residência", 'warn');
       return true;
     }
 
     if (aux.P_Veiculo === null || aux.P_Veiculo === "") {
-      Toast("(29).Informe se possui veículo");
+      Toast("(29).Informe se possui veículo", 'warn');
       return true;
     }
 
     if (aux.P_Imovel === null || aux.P_Imovel === "") {
-      Toast("(30).Informe se possui imóvel");
+      Toast("(30).Informe se possui imóvel", 'warn');
       return true;
     }
 
     if (aux.Expect === null) {
       Toast(
-        "(31).Informe a margem de tempo em que deseja receber o retorno para seu investimento"
+        "(31).Informe a margem de tempo em que deseja receber o retorno para seu investimento", 'warn'
       );
       return true;
     }
 
     if (aux.Recolhimento === null) {
       Toast(
-        "(32).Informe se houve recolhimento de imposto de renda no último ano"
+        "(32).Informe se houve recolhimento de imposto de renda no último ano", 'warn'
       );
       return true;
     }
@@ -340,54 +355,54 @@ export default class Formulario extends React.Component {
       aux.Recolhimento === "Sim" &&
       (aux.Recolhimento_QTD === null || aux.Recolhimento_QTD === "")
     ) {
-      Toast("(33).Informe a quantia recolhida pelo imposto de renda");
+      Toast("(33).Informe a quantia recolhida pelo imposto de renda", 'warn');
       return true;
     }
 
     if (aux.Origem_Capital === null || aux.Origem_Capital === "") {
       Toast(
-        "(34).Informe a origem do capital destinado à abertura do negócio junto à Pilão"
+        "(34).Informe a origem do capital destinado à abertura do negócio junto à Pilão", 'warn'
       );
       return true;
     }
 
     if (aux.Renda_Familiar === null || aux.Renda_Familiar === "") {
-      Toast("(35).Informe sua renda familiar");
+      Toast("(35).Informe sua renda familiar", 'warn');
       return true;
     }
 
     if (aux.Renda_Composta === null || aux.Renda_Composta === "") {
-      Toast("(36).Especifique como sua renda familiar é composta");
+      Toast("(36).Especifique como sua renda familiar é composta", 'warn');
       return true;
     }
     if (aux.Disp_Invest === null || aux.Disp_Invest === "") {
-      Toast("(37).Informe a quantia disponivel para investimento no negócio");
+      Toast("(37).Informe a quantia disponivel para investimento no negócio", 'warn');
       return true;
     }
     if (aux.T_Empresa === null) {
-      Toast("(38).Informe se já teve uma empresa própria");
+      Toast("(38).Informe se já teve uma empresa própria", 'warn');
       return true;
     }
     if (
       aux.T_Empresa === "Sim" &&
       (aux.Detalhes_Atividade === null || aux.Detalhes_Atividade === "")
     ) {
-      Toast("(39).Detalhe as atividades da sua empresa");
+      Toast("(39).Detalhe as atividades da sua empresa", 'warn');
       return true;
     }
     if (aux.Form_Escolar === null || aux.Form_Escolar === "") {
-      Toast("(40).Informe sua formação escolar");
+      Toast("(40).Informe sua formação escolar", 'warn');
       return true;
     }
     if (aux.Ult_exp === null || aux.Ult_exp === "") {
-      Toast("(41).Conte sobre suas últimas experiencias profissionais");
+      Toast("(41).Conte sobre suas últimas experiencias profissionais", 'warn');
       return true;
     }
     //FIM DA VALIDAÇÃO DO PRIMEIRO LADO
 
     //INICIO DA VALIDAÇÃO DO SEGUNDO LADO
     if (aux.Sociedade === null) {
-      Toast("(42).Informe se haverá um sócio na franquia");
+      Toast("(42).Informe se haverá um sócio na franquia", 'warn');
       return true;
     }
     if (
@@ -407,13 +422,13 @@ export default class Formulario extends React.Component {
           (aux.Prop_Invest === null || aux.Prop_Invest === "")))
     ) {
       Toast(
-        "(43 a 49).Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas"
+        "(43 a 49).Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas", 'warn'
       );
       return true;
     }
 
     if (aux.T_Empreendimento === null) {
-      Toast("(50).Informe se já teve um empreendimento em sociedade antes");
+      Toast("(50).Informe se já teve um empreendimento em sociedade antes", 'warn');
       return true;
     }
 
@@ -421,50 +436,50 @@ export default class Formulario extends React.Component {
       aux.T_Empreendimento === "Sim" &&
       (aux.Exp_Sociedade === null || aux.Exp_Sociedade === "")
     ) {
-      Toast("(51).Conte sobre sua experiencia em sociedade");
+      Toast("(51).Conte sobre sua experiencia em sociedade", 'warn');
       return true;
     }
 
     if (aux.Cob_Desp === null) {
       Toast(
-        "(52).Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia"
+        "(52).Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia", 'warn'
       );
       return true;
     }
 
     if (aux.Conhece_Pilao === null || aux.Conhece_Pilao === "") {
-      Toast("(53).Nos conte como conheceu a Pilão");
+      Toast("(53).Nos conte como conheceu a Pilão", 'warn');
       return true;
     }
 
     for (let i = 0; i < aux.Prioridade.length; i++) {
       if (typeof aux.Prioridade[i] == "undefined") {
-        Toast("(54).Avalie cada uma das afirmações da questão .42");
+        Toast("(54).Avalie cada uma das afirmações da questão .42", 'warn');
         return true;
       }
     }
 
     if (aux.Caracteristica_Peso === null || aux.Caracteristica_Peso === "") {
       Toast(
-        "(55).Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional"
+        "(55).Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional", 'warn'
       );
       return true;
     }
 
     if (aux.Com_Regra === null) {
       Toast(
-        "(56).Informe se está disposto à cumprir as regras da franqueadora"
+        "(56).Informe se está disposto à cumprir as regras da franqueadora", 'warn'
       );
       return true;
     }
 
     if (aux.Com_Med === null) {
-      Toast("(57).Informe se está ciente da média mensal inicial");
+      Toast("(57).Informe se está ciente da média mensal inicial", 'warn');
       return true;
     }
 
     if (aux.Com_Inf === null) {
-      Toast("(58).Informe se concorda em fornecer informações à franqueadora");
+      Toast("(58).Informe se concorda em fornecer informações à franqueadora", 'warn');
       return true;
     }
 
@@ -531,17 +546,21 @@ export default class Formulario extends React.Component {
   //baixa form word da rede
   async handleRetriveWORD(event) {
     event.target.disabled = true;
+    let toastId = null
+
     try {
+      toastId = Toast('Buscando formulário...', 'wait')
       const response = await api.get("/form/original", {
         responseType: "arraybuffer",
       });
 
+      Toast('Formulário encontrado!', 'update', toastId, 'success')
       const blob = new Blob([response.data], { type: "application/msword" });
 
       saveAs(blob, `Questionário de Perfil.doc`);
       event.target.disabled = false;
     } catch (err) {
-      Toast("Falha ao recuperar questionário do servidor", "error");
+      Toast('Falha ao recuperar formulário do servidor', 'update', toastId, 'error')
       event.target.disabled = false;
     }
   }
