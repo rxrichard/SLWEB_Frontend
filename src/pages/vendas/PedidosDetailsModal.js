@@ -176,7 +176,8 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
     };
 
     const handleEditVenda = () => {
-        alert("iniciar edição da venda(trocar colums do datagrid)");
+        console.log(actualPedidoInfo)
+        console.log(pedidoDet)
     };
 
     const handleRequestNFE = async () => {

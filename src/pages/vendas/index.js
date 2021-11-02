@@ -114,7 +114,7 @@ function Vendas(props) {
   };
 
   const handleSubmit = async () => {
-     setWait(true)
+    setWait(true)
 
     const LoadDTO = {
       Carrinho,
@@ -126,28 +126,30 @@ function Vendas(props) {
       RemDestino,
     }
 
-    if (!verifyDTO(LoadDTO)) {
-      setWait(false)
-      return
-    }
+    console.log(LoadDTO)
 
-    let toastId = null
+    // if (!verifyDTO(LoadDTO)) {
+    //   setWait(false)
+    //   return
+    // }
 
-    try {
-      toastId = Toast('Aguarde...', 'wait')
-      await api.post('/vendas/vender', {
-        Pedido: LoadDTO
-      })
+    // let toastId = null
 
-      Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
-      setOpen(false)
-      setWait(false)
-      ResetarDetalhes()
-      ClearCarrinho()
-    } catch (err) {
-      Toast('Falha ao gravar pedido de venda', 'update', toastId, 'error')
-      setWait(false)
-    }
+    // try {
+    //   toastId = Toast('Aguarde...', 'wait')
+    //   await api.post('/vendas/vender', {
+    //     Pedido: LoadDTO
+    //   })
+
+    //   Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
+    //   setOpen(false)
+    //   setWait(false)
+    //   ResetarDetalhes()
+    //   ClearCarrinho()
+    // } catch (err) {
+    //   Toast('Falha ao gravar pedido de venda', 'update', toastId, 'error')
+    //   setWait(false)
+    // }
   };
 
   return !loaded ? (
