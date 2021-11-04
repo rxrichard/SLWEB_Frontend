@@ -126,30 +126,28 @@ function Vendas(props) {
       RemDestino,
     }
 
-    console.log(LoadDTO)
+    if (!verifyDTO(LoadDTO)) {
+      setWait(false)
+      return
+    }
 
-    // if (!verifyDTO(LoadDTO)) {
-    //   setWait(false)
-    //   return
-    // }
+    let toastId = null
 
-    // let toastId = null
+    try {
+      toastId = Toast('Aguarde...', 'wait')
+      await api.post('/vendas/vender', {
+        Pedido: LoadDTO
+      })
 
-    // try {
-    //   toastId = Toast('Aguarde...', 'wait')
-    //   await api.post('/vendas/vender', {
-    //     Pedido: LoadDTO
-    //   })
-
-    //   Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
-    //   setOpen(false)
-    //   setWait(false)
-    //   ResetarDetalhes()
-    //   ClearCarrinho()
-    // } catch (err) {
-    //   Toast('Falha ao gravar pedido de venda', 'update', toastId, 'error')
-    //   setWait(false)
-    // }
+      Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
+      setOpen(false)
+      setWait(false)
+      ResetarDetalhes()
+      ClearCarrinho()
+    } catch (err) {
+      Toast('Falha ao gravar pedido de venda', 'update', toastId, 'error')
+      setWait(false)
+    }
   };
 
   return !loaded ? (
@@ -404,7 +402,7 @@ const totalPedido = (carrinho) => {
   let aux = 0;
 
   carrinho.forEach((item) => {
-    aux += (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao);
+    aux += item.FatConversao !== null ? (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao) : (item.VVenda - item.DVenda) * item.QVenda;
   });
 
   return Number.parseFloat(aux).toFixed(2);
@@ -420,7 +418,7 @@ const fromStore2Datagrid = (carrinho) => {
       Quantidade: item.QVenda,
       Vlr: item.VVenda,
       Desconto: item.DVenda,
-      Conversao: item.FatConversao,
+      Conversao: item.FatConversao !== null ? item.FatConversao : 1,
     });
   });
 

@@ -68,7 +68,6 @@ function Vender(props) {
   };
 
 
-
   return (
     <div
       className="XAlign"

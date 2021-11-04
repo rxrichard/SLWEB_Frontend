@@ -17,7 +17,7 @@ import { Table } from "../../components/table";
 import Loading from "../../components/loading_screen";
 import { Toast } from "../../components/toasty";
 
-import { DetailsModal } from './PedidosDetailsModal'
+import { PedidoDetailsModal } from './PedidosDetailsModal'
 
 function Pedidos() {
   const [open, setOpen] = useState(false);
@@ -65,7 +65,7 @@ function Pedidos() {
         alignItems: "flex-start",
       }}
     >
-      <DetailsModal
+      <PedidoDetailsModal
         setActualPedidoInfo={setActualPedidoInfo}
         setPedidoDet={setPedidoDet}
         setOpen={setOpen}
