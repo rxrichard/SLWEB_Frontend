@@ -18,8 +18,9 @@ import Loading from "../../components/loading_screen";
 import { Toast } from "../../components/toasty";
 
 import { PedidoDetailsModal } from './PedidosDetailsModal'
+import { SwitchTab } from '../../global/actions/VendasAction'
 
-function Pedidos() {
+function Pedidos(props) {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [pedidos, setPedidos] = useState([]);
@@ -28,6 +29,7 @@ function Pedidos() {
 
   useEffect(() => {
     async function LoadData() {
+      SwitchTab(1)
       try {
         const response = await api.get("/vendas/pedidos");
         setPedidos(response.data.Pedidos);
@@ -52,6 +54,10 @@ function Pedidos() {
       Toast("Não foi possivel recuperar informações do pedido", "error");
     }
   }
+
+  const {
+    SwitchTab
+  } = props;
 
   return !loaded ? (
     <Loading />
@@ -113,7 +119,9 @@ function Pedidos() {
   );
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  SwitchTab,
+}, dispatch);
 
 const mapStateToProps = (store) => ({
   State: store.VendaState,

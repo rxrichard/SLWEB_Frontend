@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { ViewList } from "@material-ui/icons";
 import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,6 +20,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { Table } from "../../components/table";
 import Select from "../../components/materialComponents/Select";
 import InputMultline from "../../components/materialComponents/InputMultline";
+import { RED_PRIMARY } from '../../misc/colors'
 
 import {
   SetCheckedProd,
@@ -28,6 +30,8 @@ import {
   SetDepOrigem,
   SetDepDestino,
   SetObs,
+  EditPedido,
+  SwitchTab
 } from "../../global/actions/VendasAction";
 
 function Vender(props) {
@@ -45,6 +49,7 @@ function Vender(props) {
     RemOrigem,
     RemDestino,
     Depositos,
+    FixPedido
   } = props.State;
 
   const {
@@ -55,7 +60,13 @@ function Vender(props) {
     SetCondPag,
     SetDepOrigem,
     SetDepDestino,
+    EditPedido,
+    SwitchTab
   } = props;
+
+  useEffect(() => {
+    SwitchTab(0)
+  }, [])
 
   const handleToggle = (value) => () => {
     SetCheckedProd(value.ProdId[0]);
@@ -67,6 +78,9 @@ function Vender(props) {
     );
   };
 
+  const cancelarEdicao = () => {
+    EditPedido(null)
+  }
 
   return (
     <div
@@ -79,54 +93,83 @@ function Vender(props) {
       }}
     >
       <Card style={{ width: "100%", padding: '8px' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
-          <Select
-            onChange={(e) => handleSwitchCliente(e.target.value)}
-            width='500px'
-            maxWidth='100%'
-            value={Cliente.CNPJ}
-            disabled={false}
-            label="Cliente"
-            MRight='8px'
-            MBottom='8px'
-          >
-            {Clientes.map((cliente) => (
-              <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
-                {cliente.Nome_Fantasia}, {cliente.CNPJss}
-              </MenuItem>
-            ))}
-          </Select>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Select
+              onChange={(e) => handleSwitchCliente(e.target.value)}
+              width='500px'
+              maxWidth='100%'
+              value={Cliente.CNPJ}
+              disabled={FixPedido !== null}
+              label="Cliente"
+              MRight='8px'
+              MBottom='8px'
+            >
+              {Clientes.map((cliente) => (
+                <MenuItem value={cliente.CNPJ} key={cliente.CNPJ}>
+                  {cliente.Nome_Fantasia} {cliente.CNPJss}
+                </MenuItem>
+              ))}
+            </Select>
 
-          <Select
-            onChange={(e) => ChangeTipoVenda(e.target.value)}
-            value={TipoVenda}
-            disabled={false}
-            label="Tipo de Venda"
-            width='200px'
-            MRight='8px'
-            MBottom='8px'
-          >
-            <MenuItem value="V" key="Venda">
-              Venda
-            </MenuItem>
-            <MenuItem value="R" key="Remessa">
-              Remessa
-            </MenuItem>
-            <MenuItem value="B" key="Bonificação">
-              Bonificação
-            </MenuItem>
-          </Select>
-          {extraOptions(
-            TipoVenda,
-            Condicoes,
-            CondPag,
-            Depositos,
-            RemOrigem,
-            RemDestino,
-            SetCondPag,
-            SetDepOrigem,
-            SetDepDestino
-          )}
+            <Select
+              onChange={(e) => ChangeTipoVenda(e.target.value)}
+              value={TipoVenda}
+              disabled={FixPedido !== null}
+              label="Tipo de Venda"
+              width='200px'
+              MRight='8px'
+              MBottom='8px'
+            >
+              <MenuItem value="V" key="Venda">
+                Venda
+              </MenuItem>
+              <MenuItem value="R" key="Remessa">
+                Remessa
+              </MenuItem>
+              <MenuItem value="B" key="Bonificação">
+                Bonificação
+              </MenuItem>
+            </Select>
+            {extraOptions(
+              TipoVenda,
+              Condicoes,
+              CondPag,
+              Depositos,
+              RemOrigem,
+              RemDestino,
+              SetCondPag,
+              SetDepOrigem,
+              SetDepDestino
+            )}
+          </div>
+          {FixPedido &&
+              <Typography
+                variant="h5"
+                gutterBottom
+
+                onMouseEnter={e => {
+                  e.target.innerHTML = 'Cancelar Atualização'
+                  e.target.style.border = `2px solid ${RED_PRIMARY}`
+                  e.target.style.backgroundColor = `${RED_PRIMARY}`
+                  e.target.style.color = `#FFF`
+                  e.target.style.cursor = 'pointer'
+                }}
+
+                onMouseLeave={e => {
+                  e.target.style.color = `#000`
+                  e.target.innerHTML = `Editando pedido <strong style="color: ${RED_PRIMARY}">${FixPedido}</strong>`
+                  e.target.style.border = `2px dashed ${RED_PRIMARY}`
+                  e.target.style.backgroundColor = `#FFF`
+                  e.target.style.cursor = 'pointer'
+                }}
+
+                onClick={cancelarEdicao}
+
+                style={{ border: `2px dashed ${RED_PRIMARY}`, padding: '8px', borderRadius: '4px', fontWeight: 'bold' }}>
+                Editando pedido <strong style={{ color: RED_PRIMARY }}>{FixPedido}</strong>
+              </Typography>
+          }
         </div>
         <InputMultline
           onChange={(e) => SetObs(e.target.value)}
@@ -208,6 +251,8 @@ const mapDispatchToProps = (dispatch) =>
       SetCondPag,
       SetDepOrigem,
       SetDepDestino,
+      EditPedido,
+      SwitchTab
     },
     dispatch
   );

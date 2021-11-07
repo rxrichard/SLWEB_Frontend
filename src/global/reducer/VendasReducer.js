@@ -16,6 +16,8 @@ import {
   VENDA_SET_DEP_DESTINO,
   VENDA_SET_OBS,
   VENDA_LOAD_DEPOSITOS,
+  VENDA_EDIT_PEDIDO,
+  VENDA_CHANGE_TAB_INDEX
 } from "../actions/VendasActionTypes";
 
 const initialState = {
@@ -34,7 +36,8 @@ const initialState = {
   RemDestino: "",
 
   Checked: [],
-  TabIndex: 1,
+  TabIndex: 0,
+  FixPedido: null
 };
 
 export const VendasReducer = (state = initialState, action) => {
@@ -65,6 +68,18 @@ export const VendasReducer = (state = initialState, action) => {
       return {
         ...state,
         Condicoes: action.pagamentos,
+      };
+
+    case VENDA_EDIT_PEDIDO:
+      return {
+        ...state,
+        FixPedido: action.PedidoId,
+      };
+
+    case VENDA_CHANGE_TAB_INDEX:
+      return {
+        ...state,
+        TabIndex: action.tab,
       };
 
     case VENDA_CHANGE_CLIENTE:
@@ -234,6 +249,7 @@ export const VendasReducer = (state = initialState, action) => {
         CondPag: "",
         RemOrigem: "",
         RemDestino: "",
+        FixPedido: null
       };
 
     case VENDA_DESTROY_STORE:

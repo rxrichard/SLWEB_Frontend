@@ -5,7 +5,7 @@ import { saveAs } from "file-saver";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { Close, GetApp, NoteAdd, HourglassEmpty, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
+import { Close, GetApp, NoteAdd, HourglassEmpty, FileCopy, ListAlt, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
 import { DataGrid } from "@material-ui/data-grid";
 import Dialog from "@material-ui/core/Dialog";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -32,12 +32,16 @@ import {
     UpdateCarrinho,
     SetBuyQtt,
     ResetarDetalhes,
-    ClearCarrinho
+    ClearCarrinho,
+    EditPedido,
+    SwitchTab
 } from "../../global/actions/VendasAction";
 
 const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, setPedidos, setPedidoDet, setOpen, ...props }) => {
     const [wait, setWait] = useState(false);
     const [doctype, setDoctype] = useState("DANFE");
+
+    const TabIndex = 1
 
     const {
         Clientes,
@@ -54,7 +58,9 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
         UpdateCarrinho,
         SetBuyQtt,
         ResetarDetalhes,
-        ClearCarrinho
+        ClearCarrinho,
+        EditPedido,
+        SwitchTab
     } = props;
 
     const handleCloseDialog = () => {
@@ -72,7 +78,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                         <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                                    Editar Venda
+                                    Copiar pedido
                                 </label>
                             }
                             placement="top"
@@ -80,7 +86,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             followCursor
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
-                                <Edit />
+                                <FileCopy />
                             </IconButton>
                         </Tooltip>
                         <Select
@@ -168,7 +174,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                         <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                                    Editar Venda
+                                    Copiar pedido
                                 </label>
                             }
                             placement="top"
@@ -176,7 +182,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             followCursor
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
-                                <Edit />
+                                <FileCopy />
                             </IconButton>
                         </Tooltip>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -191,7 +197,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                         <Tooltip
                             title={
                                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                                    Editar Venda
+                                    Copiar pedido
                                 </label>
                             }
                             placement="top"
@@ -199,7 +205,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             followCursor
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
-                                <Edit />
+                                <FileCopy />
                             </IconButton>
                         </Tooltip>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -258,6 +264,10 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
         ResetarDetalhes()
         ClearCarrinho()
 
+        if (actualPedidoInfo.ST === 'P') {
+            EditPedido(actualPedidoInfo.Pvc_ID)
+        }
+
         //escolhe o cliente correto
         Clientes.forEach((cliente) =>
             String(cliente.CNPJ) === String(actualPedidoInfo.CNPJ) ? ChangeCliente(cliente) : null
@@ -271,7 +281,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
         } else if (String(actualPedidoInfo.Tipo).trim() === 'V') {
             SetCondPag(String(actualPedidoInfo.CpgId).trim())
         }
-        SetObs(String(actualPedidoInfo.MsgNF).trim() !== null ? String(actualPedidoInfo.MsgNF).trim() : '')
+        SetObs(actualPedidoInfo.MsgNF !== null ? String(actualPedidoInfo.MsgNF).trim() : '')
 
         //adiciono os produtos no carrinho
         pedidoDet.forEach(produto => SetCheckedProd(produto.ProdId))
@@ -297,6 +307,9 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                 field: 'Desconto'
             })
         })
+        
+        // setOpen(false)
+        SwitchTab(0)
     };
 
     const handleRequestNFE = async () => {
@@ -393,7 +406,10 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-                Detalhes da Venda
+                <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <ListAlt />
+                    Detalhes da Venda
+                </div>
             </DialogTitle>
             <DialogContent>
                 <div className="XAlign" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: '8px' }}>
@@ -450,7 +466,9 @@ const mapDispatchToProps = (dispatch) =>
             UpdateCarrinho,
             SetBuyQtt,
             ResetarDetalhes,
-            ClearCarrinho
+            ClearCarrinho,
+            EditPedido,
+            SwitchTab
         },
         dispatch
     );

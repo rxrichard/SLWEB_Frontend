@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -7,6 +7,44 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { GREY_PRIMARY } from '../../misc/colors'
+
+export default function PainelAbas(props) {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  useEffect(() => {
+    if (typeof props.activeTab !== 'undefined') {
+      setValue(props.activeTab)
+    }
+  }, [props.activeTab])
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Tabs
+          className={classes.header}
+          value={value}
+          onChange={handleChange}
+          variant="fullWidth"
+        >
+          {props.titles.map((title, i) => (
+            <Tab label={title} {...a11yProps(i)} />
+          ))}
+        </Tabs>
+      </AppBar>
+      {props.children.map((component, i) => (
+        <TabPanel value={value} index={i}>
+          {component}
+        </TabPanel>
+      ))}
+    </div>
+  );
+}
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -49,34 +87,3 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: GREY_PRIMARY
   }
 }));
-
-export default function PainelAbas(props) {
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Tabs
-          className={classes.header}
-          value={value}
-          onChange={handleChange}
-          variant="fullWidth"
-        >
-          {props.titles.map((title, i) => (
-            <Tab label={title} {...a11yProps(i)} />
-          ))}
-        </Tabs>
-      </AppBar>
-      {props.children.map((component, i) => (
-        <TabPanel value={value} index={i}>
-          {component}
-        </TabPanel>
-      ))}
-    </div>
-  );
-}

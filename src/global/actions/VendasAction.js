@@ -16,6 +16,8 @@ import {
   VENDA_SET_DEP_ORIGEM,
   VENDA_SET_OBS,
   VENDA_LOAD_DEPOSITOS,
+  VENDA_EDIT_PEDIDO,
+  VENDA_CHANGE_TAB_INDEX
 } from "./VendasActionTypes";
 
 export const LoadInsumos = (value) => ({
@@ -34,10 +36,19 @@ export const LoadPagamentos = (value) => ({
   type: VENDA_LOAD_PAGAMENTOS,
   pagamentos: value,
 });
+export const SwitchTab = (value) => ({
+  type: VENDA_CHANGE_TAB_INDEX,
+  tab: value,
+});
 
 export const SetCheckedProd = (value) => ({
   type: VENDA_CHECKED_PROD,
   value: value,
+});
+
+export const EditPedido = (value) => ({
+  type: VENDA_EDIT_PEDIDO,
+  PedidoId: value,
 });
 
 export const ChangeCliente = (value) => ({

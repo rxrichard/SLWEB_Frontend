@@ -15,7 +15,7 @@ const initialState = {
   InitProdutos: [],
   Produtos: [],
   Carrinho: [],
-  MinCompra: undefined,
+  MinCompra: 0,
   Retira: false,
 
 
