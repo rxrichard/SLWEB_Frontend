@@ -67,10 +67,7 @@ function VerticalLinearStepper(props) {
         LoadHelper(response.data.newAjudas);
         setLoaded(true);
       } catch (err) {
-        Toast(
-          "Falha ao recuperar informações iniciais de bebidas e máquinas",
-          "error"
-        );
+        
       }
     }
     loadData();

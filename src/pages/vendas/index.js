@@ -84,8 +84,8 @@ function Vendas(props) {
     async function Load() {
       const response = await api.get("/vendas/produtos");
 
-      LoadInsumos(response.data.Produtos);
-      LoadClientes(response.data.Clientes);
+      LoadInsumos(Array.isArray(response.data.Produtos) ? response.data.Produtos : []);
+      LoadClientes(Array.isArray(response.data.Clientes) ? response.data.Clientes : []);
       LoadPagamentos(response.data.CodPag);
       LoadDepositos(response.data.Depositos);
       setLoaded(true);

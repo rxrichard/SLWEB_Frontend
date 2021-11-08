@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { Toast } from '../components/toasty'
 
-export const api = axios.create({
+const AxiosWithConfig = axios.create({
   baseURL: `http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`,
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -10,5 +11,24 @@ export const api = axios.create({
     host: process.env.REACT_APP_API_URL,
     port: process.env.REACT_APP_API_PORT
   },
-  crossDomain: true
+  crossDomain: true,
 })
+
+AxiosWithConfig.interceptors.response.use(undefined,
+  error => {
+    if (String(error.response.status) === '498') {
+      Toast('Sua sessão expirou, faça login novamente', 'error')
+      setTimeout(() => {
+        window.location.assign('/')
+        window.sessionStorage.clear()
+      }, 3000)
+    }
+
+    if (String(error.response.status) === '400') {
+      Toast('Falha de conexão', 'error')
+    }
+    
+    return Promise.reject(error)
+  })
+
+export const api = AxiosWithConfig
