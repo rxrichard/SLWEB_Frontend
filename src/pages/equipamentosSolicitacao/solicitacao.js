@@ -67,7 +67,7 @@ function VerticalLinearStepper(props) {
         LoadHelper(response.data.newAjudas);
         setLoaded(true);
       } catch (err) {
-        
+
       }
     }
     loadData();
@@ -173,7 +173,7 @@ function VerticalLinearStepper(props) {
                     {wichHelpShow(activeStep, Maquina, Ajudas)}
                   </DialogContentText>
                 </DialogContent>
-                <DialogActions style={{ padding: '8px 24px'}}>
+                <DialogActions style={{ padding: '8px 24px' }}>
                   <Button onClick={handleClose} color="primary">
                     Fechar
                   </Button>
@@ -492,17 +492,11 @@ const handleSubmit = async (
       Solicitacao,
     });
 
-    if (response.status === 201) {
-      Toast('Solicitação registrada com sucesso!', 'update', toastId, 'success')
-      ResetarState();
-      ResetarStep(0);
-      setDesativar(false);
-      return;
-    } else {
-      throw Error;
-    }
+    Toast('Solicitação registrada com sucesso!', 'update', toastId, 'success')
+    ResetarState();
+    ResetarStep(0);
+    setDesativar(false);
   } catch (err) {
-    Toast('Falha ao concluir solicitação, por favor tente novamente', 'update', toastId, 'error')
     setDesativar(false);
     return;
   }

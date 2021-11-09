@@ -25,7 +25,7 @@ AxiosWithConfig.interceptors.response.use(undefined,
     }
 
     if (String(error.response.status) === '400') {
-      Toast('Falha de conexão', 'error')
+      Toast('Falha ao processar sua requisição, contate o suporte', 'error')
     }
     
     return Promise.reject(error)

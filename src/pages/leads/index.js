@@ -95,14 +95,9 @@ function LeadsList(props) {
         },
       });
 
-      if (response.status === 201) {
-        Toast('Lead Cadastrado!', 'update', toastId, 'success')
-        resetField();
-      } else {
-        throw Error;
-      }
+      Toast('Lead Cadastrado!', 'update', toastId, 'success')
+      resetField();
     } catch (err) {
-      Toast('Falha ao cadastrar lead', 'update', toastId, 'error')
     }
   };
 

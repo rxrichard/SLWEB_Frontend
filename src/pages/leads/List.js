@@ -68,9 +68,7 @@ function CustomizedAccordions(props) {
         Toast("Limite de leads já atingido", 'warn');
       } else if (Number(err.message) === 409) {
         Toast("Lead assumido por outro franqueado", "error");
-      } else {
-        Toast("Não foi possivel recuperar o endereço do lead", "error");
-      }
+      } 
       return;
     }
   };

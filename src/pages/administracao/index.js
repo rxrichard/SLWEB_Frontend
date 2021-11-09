@@ -22,16 +22,10 @@ function Franquia() {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("/administrar/franquia");
 
-        if (response.status === 200) {
-          setLoaded(true);
-          setFranqueados(response.data);
-          setUsersListFiltered(response.data);
-        } else {
-          throw Error;
-        }
-      } catch (err) {
-        Toast("Falha na comunicação", "error");
-      }
+        setLoaded(true);
+        setFranqueados(response.data);
+        setUsersListFiltered(response.data);
+      } catch (err) {}
     }
     LoadData();
   }, []);
@@ -101,7 +95,7 @@ function Franquia() {
           </tbody>
         </Table>
       </Panel>
-        <Input onChange={Filter} type="text" label="Filial..." />
+      <Input onChange={Filter} type="text" label="Filial..." />
     </Container>
   );
 }
