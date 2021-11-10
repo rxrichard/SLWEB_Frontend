@@ -1,16 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Image from '../../assets/svg/undraw_Current_location.svg'
+import './style.css'
 
-import { Panel } from "../../components/commom_in";
 
 function PAGE_404 () {
     return (
-      <Panel>
-        <h5>Desculpe, não foi possivel te levar até a pagina desejada...</h5>
-        <p>
-          Clique <Link to="/">Aqui</Link> para retornar à aplicação
-        </p>
-      </Panel>
+      <div className="not_found">
+      
+      <img src={Image} alt="Pagina de erro - Perdido"/>
+      <div className='not_found_lost'>
+        <h1>Ops!</h1>
+        <h3>Parece que você se perdeu! Clique no botão abaixo para voltar a tela inicial.</h3>
+          <Link to ='/'>
+          <p className='button'>
+            Clique aqui para voltar à tela inicial.
+          </p>
+          </Link>
+      </div>
+    </div>
     );
 }
 

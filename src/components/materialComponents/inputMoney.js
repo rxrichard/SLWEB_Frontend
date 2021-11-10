@@ -103,8 +103,8 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: "none",
     },
     "& #outlined-start-adornment:focus": {
-      border: "none !important",
-      borderBottom: "none !important",
+      border: "none  ",
+      borderBottom: "none  ",
     },
   },
 }));

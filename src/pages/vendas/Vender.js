@@ -75,7 +75,7 @@ function Vender(props) {
       style={{
         width: "100%",
         height: "100%",
-        flexWrap: "wrap !important",
+        flexWrap: "wrap  ",
         alignItems: "flex-start",
       }}
     >

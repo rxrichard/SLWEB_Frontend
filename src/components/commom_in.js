@@ -9,6 +9,8 @@ export const Container = Styled.div`
     background-color: none;
     align-items: center;
     overflow: ${(props) => props.overflow};
+
+   
 `;
 
 export const Subcontainer = Styled.div`
@@ -266,6 +268,7 @@ export const Tit = Styled.div`
         color: #555
     }
 `;
+
 //Richard
 export const Combox = Styled.div`
 

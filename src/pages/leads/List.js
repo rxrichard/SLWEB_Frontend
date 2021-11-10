@@ -110,7 +110,7 @@ function CustomizedAccordions(props) {
           style={{ borderBottom: "1px solid #CCCCCC" }}
         >
           <div
-            className="XAlign"
+            className="XAlign df-mobile"
             style={{
               justifyContent: "space-between",
               padding: "8px 0px 8px 0px",

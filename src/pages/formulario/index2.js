@@ -6,18 +6,20 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 //"Placeholder" da página enquanto dados são carregados no
-import { Button, TextInput, Icon } from "react-materialize";
+// import { Button, TextInput, Icon } from "react-materialize";
 import Input from "../../components/materialComponents/InputUnderline";
 import InputMultline from "../../components/materialComponents/InputMultline";
 
 //import de elementos visuais
-import { Panel, Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 import Modal from "../../components/modal";
 import Select from "../../components/materialComponents/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import {MenuItem, Button, TextField} from "@material-ui/core/";
+import {Send,  AttachFile , FileDownload} from '@mui/icons-material';
+import './Formulario.css'
 
 export default class Formulario extends React.Component {
+  
   state = {
     cod_candidato: null,
     email: "",
@@ -85,6 +87,8 @@ export default class Formulario extends React.Component {
     },
   };
 
+
+
   async handleInsereCodigo(codigo, event) {
     if (!Number.isSafeInteger(Number(codigo))) {
       event.target.value = codigo.slice(0, codigo.length - 1);
@@ -112,35 +116,32 @@ export default class Formulario extends React.Component {
     }
   }
 
+  
+
   handleChangeEmail(value) {
     this.setState({ email: value });
   }
 
   async handleSolicitaCodigo(event) {
     event.target.disabled = true;
-
+    
     if (this.state.email === "" || this.state.email === null) {
-      Toast("Preencha um email", "warn");
-      return;
+      Toast('Preencha um email', 'warn')
+      return
     }
 
-    let toastId = null;
+    let toastId = null
 
     try {
-      toastId = Toast("Aguarde...", "wait");
-
+      toastId = Toast('Aguarde...', 'wait')
+      
       await api.post("/form/solicitacao", {
         email: this.state.email,
       });
 
-      Toast(
-        "Um código foi enviado para o seu email!",
-        "update",
-        toastId,
-        "success"
-      );
+      Toast('Um código foi enviado para o seu email!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Falha ao enviar email com código", "update", toastId, "error");
+      Toast('Falha ao enviar email com código', 'update', toastId, 'error')
       event.target.disabled = false;
     }
   }
@@ -164,11 +165,11 @@ export default class Formulario extends React.Component {
       }
     }
 
-    let toastId = null;
+    let toastId = null
 
     //faz upload do formulario
     try {
-      toastId = Toast("Enviando dados...", "wait");
+      toastId = Toast('Enviando dados...', 'wait')
       await api.post(
         "/form",
         {
@@ -181,15 +182,15 @@ export default class Formulario extends React.Component {
         }
       );
 
-      Toast("Dados salvos!", "update", toastId, "success");
+      Toast('Dados salvos!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Falha ao salvar os dados", "update", toastId, "error");
+      Toast('Falha ao salvar os dados', 'update', toastId, 'error')
       return;
     }
 
     //faz o upload das fotos
     try {
-      toastId = Toast("Enviando arquivos...", "wait");
+      toastId = Toast('Enviando arquivos...', 'wait')
       await api.post("/form/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -197,9 +198,9 @@ export default class Formulario extends React.Component {
         },
       });
 
-      Toast("Arquivos enviados!", "update", toastId, "success");
+      Toast('Arquivos enviados!', 'update', toastId, 'success')
     } catch (err) {
-      Toast("Falha ao enviar arquivos", "update", toastId, "error");
+      Toast('Falha ao enviar arquivos', 'update', toastId, 'error')
       return;
     }
 
@@ -212,66 +213,65 @@ export default class Formulario extends React.Component {
 
     // INICIO DA VALIDAÇÃO DE DADOS BÁSICOS
     if (aux.Nome_Completo === null || aux.Nome_Completo === "") {
-      Toast("(1).Preencha seu nome completo", "warn");
+      Toast("(1).Preencha seu nome completo", 'warn');
       return true;
     }
     if (aux.DtNascimento === null || aux.DtNascimento === "") {
-      Toast("(2).Preencha sua data de nascimento", "warn");
+      Toast("(2).Preencha sua data de nascimento", 'warn');
       return true;
     }
     if (aux.RG === null || aux.RG === "") {
-      Toast("(3).Preencha seu RG", "warn");
+      Toast("(3).Preencha seu RG", 'warn');
       return true;
     }
     if (aux.CPF === null || aux.CPF === "") {
-      Toast("(4).Preencha seu CPF", "warn");
+      Toast("(4).Preencha seu CPF", 'warn');
       return true;
     }
     if (aux.Logradouro === null || aux.Logradouro === "") {
-      Toast("(5).Preencha seu endereço", "warn");
+      Toast("(5).Preencha seu endereço", 'warn');
       return true;
     }
     if (aux.Número === null || aux.Número === "") {
-      Toast("(6).Preencha o número do seu endereço", "warn");
+      Toast("(6).Preencha o número do seu endereço", 'warn');
       return true;
     }
     if (aux.Bairro === null || aux.Bairro === "") {
-      Toast("(8).Preencha o bairro", "warn");
+      Toast("(8).Preencha o bairro", 'warn');
       return true;
     }
     if (aux.Municipio === null || aux.Municipio === "") {
-      Toast("(9).Preencha o município", "warn");
+      Toast("(9).Preencha o município", 'warn');
       return true;
     }
     if (aux.Estado === null || aux.Estado === "") {
-      Toast("(10).Preencha seu estado", "warn");
+      Toast("(10).Preencha seu estado", 'warn');
       return true;
     }
     if (aux.CEP === null || aux.CEP === "") {
-      Toast("(11).Preencha seu CEP", "warn");
+      Toast("(11).Preencha seu CEP", 'warn');
       return true;
     }
     if (aux.Email === null || aux.Email === "") {
-      Toast("(12).Preencha seu email", "warn");
+      Toast("(12).Preencha seu email", 'warn');
       return true;
     }
     if (
       (aux.Tel_Residencial === null || aux.Tel_Residencial === "") &&
       (aux.Celular === null || aux.Celular === "")
     ) {
-      Toast(
-        "(13/14).Informe pelo menos um número de Telefone ou Celular",
-        "warn"
-      );
+      Toast("(13/14).Informe pelo menos um número de Telefone ou Celular", 'warn');
       return true;
     }
 
     // FIM DA VALIDAÇÃO DE DADOS BÁSICOS
 
+    
+
     // VALIDAÇÃO DO LADO ESQUERDO
     //verificar se o estado civil foi marcado ou se foi marcado como casado sem os dados do conjuge
     if (aux.Est_Civil === null) {
-      Toast("(15).Informe seu estado civil", "warn");
+      Toast("(15).Informe seu estado civil", 'warn');
       return true;
     }
     if (
@@ -289,12 +289,12 @@ export default class Formulario extends React.Component {
         aux.TUnião === null ||
         aux.TUnião === "")
     ) {
-      Toast("(16 a 21).Revise os dados do seu conjuge", "warn");
+      Toast("(16 a 21).Revise os dados do seu conjuge", 'warn');
       return true;
     }
 
     if (aux.CLT === null) {
-      Toast("(22).Informe se é CLT ou não", "warn");
+      Toast("(22).Informe se é CLT ou não", 'warn');
       return true;
     }
 
@@ -302,12 +302,12 @@ export default class Formulario extends React.Component {
       aux.CLT === "Sim" &&
       (aux.Rend_Mensal === null || aux.Rend_Mensal === "")
     ) {
-      Toast("(23).Você não informou seu rendimento mensal como CLT", "warn");
+      Toast("(23).Você não informou seu rendimento mensal como CLT", 'warn');
       return true;
     }
 
     if (aux.Tem_filhos === null) {
-      Toast("(24).Informe se possui filhos", "warn");
+      Toast("(24).Informe se possui filhos", 'warn');
       return true;
     }
 
@@ -318,15 +318,12 @@ export default class Formulario extends React.Component {
         aux.Idd_filhos === null ||
         aux.Idd_filhos === "")
     ) {
-      Toast(
-        "(25 e 26).Preencha corretamente quantos filhos e suas idades",
-        "warn"
-      );
+      Toast("(25 e 26).Preencha corretamente quantos filhos e suas idades", 'warn');
       return true;
     }
 
     if (aux.T_Residencia === null) {
-      Toast("(27).Informe qual o tipo da sua residência atual", "warn");
+      Toast("(27).Informe qual o tipo da sua residência atual", 'warn');
       return true;
     }
 
@@ -334,92 +331,92 @@ export default class Formulario extends React.Component {
       (aux.T_Residencia === "Alugada" || aux.T_Residencia === "Financiada") &&
       (aux.Residencia_Mensal === null || aux.Residencia_Mensal === "")
     ) {
-      Toast("(28).Informe a quantia gasta por mês com sua residência", "warn");
+      Toast("(28).Informe a quantia gasta por mês com sua residência", 'warn');
       return true;
     }
 
     if (aux.P_Veiculo === null || aux.P_Veiculo === "") {
-      Toast("(29).Informe se possui veículo", "warn");
+      Toast("(29).Informe se possui veículo", 'warn');
       return true;
     }
 
     if (aux.P_Imovel === null || aux.P_Imovel === "") {
-      Toast("(30).Informe se possui imóvel", "warn");
+      Toast("(30).Informe se possui imóvel", 'warn');
       return true;
     }
 
     if (aux.Expect === null) {
       Toast(
-        "(31).Informe a margem de tempo em que deseja receber o retorno para seu investimento",
-        "warn"
+        "(31).Informe a margem de tempo em que deseja receber o retorno para seu investimento", 'warn'
       );
       return true;
     }
 
     if (aux.Recolhimento === null) {
       Toast(
-        "(32).Informe se houve recolhimento de imposto de renda no último ano",
-        "warn"
+        "(32).Informe se houve recolhimento de imposto de renda no último ano", 'warn'
       );
       return true;
     }
 
-    if (
-      aux.Recolhimento === "Sim" &&
+    if (aux.Recolhimento === "Sim" &&
       (aux.Recolhimento_QTD === null || aux.Recolhimento_QTD === "")
     ) {
-      Toast("(33).Informe a quantia recolhida pelo imposto de renda", "warn");
+      Toast("(33).Informe a quantia recolhida pelo imposto de renda", 'warn');
       return true;
     }
 
     if (aux.Origem_Capital === null || aux.Origem_Capital === "") {
       Toast(
-        "(34).Informe a origem do capital destinado à abertura do negócio junto à Pilão",
-        "warn"
+        "(34).Informe a origem do capital destinado à abertura do negócio junto à Pilão", 'warn'
       );
       return true;
     }
 
     if (aux.Renda_Familiar === null || aux.Renda_Familiar === "") {
-      Toast("(35).Informe sua renda familiar", "warn");
+      Toast("(35).Informe sua renda familiar", 'warn');
       return true;
     }
 
     if (aux.Renda_Composta === null || aux.Renda_Composta === "") {
-      Toast("(36).Especifique como sua renda familiar é composta", "warn");
+      Toast("(36).Especifique como sua renda familiar é composta", 'warn');
       return true;
     }
     if (aux.Disp_Invest === null || aux.Disp_Invest === "") {
-      Toast(
-        "(37).Informe a quantia disponivel para investimento no negócio",
-        "warn"
-      );
+      Toast("(37).Informe a quantia disponivel para investimento no negócio", 'warn');
       return true;
     }
     if (aux.T_Empresa === null) {
-      Toast("(38).Informe se já teve uma empresa própria", "warn");
+      Toast("(38).Informe se já teve uma empresa própria", 'warn');
       return true;
     }
     if (
       aux.T_Empresa === "Sim" &&
       (aux.Detalhes_Atividade === null || aux.Detalhes_Atividade === "")
     ) {
-      Toast("(39).Detalhe as atividades da sua empresa", "warn");
+      Toast("(39).Detalhe as atividades da sua empresa", 'warn');
       return true;
     }
+
+
+  
     if (aux.Form_Escolar === null || aux.Form_Escolar === "") {
-      Toast("(40).Informe sua formação escolar", "warn");
+      Toast("(40).Informe sua formação escolar", 'warn');
       return true;
     }
     if (aux.Ult_exp === null || aux.Ult_exp === "") {
-      Toast("(41).Conte sobre suas últimas experiencias profissionais", "warn");
+      Toast("(41).Conte sobre suas últimas experiencias profissionais", 'warn');
       return true;
     }
     //FIM DA VALIDAÇÃO DO PRIMEIRO LADO
 
+
+
+
+
     //INICIO DA VALIDAÇÃO DO SEGUNDO LADO
     if (aux.Sociedade === null) {
-      Toast("(42).Informe se haverá um sócio na franquia", "warn");
+      Toast("(42).Informe se haverá um sócio na franquia", 'warn');
       return true;
     }
     if (
@@ -439,17 +436,13 @@ export default class Formulario extends React.Component {
           (aux.Prop_Invest === null || aux.Prop_Invest === "")))
     ) {
       Toast(
-        "(43 a 49).Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas",
-        "warn"
+        "(43 a 49).Verifique se todas as questões relacionadas ao sócio da franquia foram devidamente respondidas", 'warn'
       );
       return true;
     }
 
     if (aux.T_Empreendimento === null) {
-      Toast(
-        "(50).Informe se já teve um empreendimento em sociedade antes",
-        "warn"
-      );
+      Toast("(50).Informe se já teve um empreendimento em sociedade antes", 'warn');
       return true;
     }
 
@@ -457,56 +450,50 @@ export default class Formulario extends React.Component {
       aux.T_Empreendimento === "Sim" &&
       (aux.Exp_Sociedade === null || aux.Exp_Sociedade === "")
     ) {
-      Toast("(51).Conte sobre sua experiencia em sociedade", "warn");
+      Toast("(51).Conte sobre sua experiencia em sociedade", 'warn');
       return true;
     }
 
     if (aux.Cob_Desp === null) {
       Toast(
-        "(52).Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia",
-        "warn"
+        "(52).Informe a disponibilidade de capital para eventual investimento que complete despesas da franquia", 'warn'
       );
       return true;
     }
 
     if (aux.Conhece_Pilao === null || aux.Conhece_Pilao === "") {
-      Toast("(53).Nos conte como conheceu a Pilão", "warn");
+      Toast("(53).Nos conte como conheceu a Pilão", 'warn');
       return true;
     }
 
     for (let i = 0; i < aux.Prioridade.length; i++) {
       if (typeof aux.Prioridade[i] == "undefined") {
-        Toast("(54).Avalie cada uma das afirmações da questão .42", "warn");
+        Toast("(54).Avalie cada uma das afirmações da questão .42", 'warn');
         return true;
       }
     }
 
     if (aux.Caracteristica_Peso === null || aux.Caracteristica_Peso === "") {
       Toast(
-        "(55).Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional",
-        "warn"
+        "(55).Nos conte qual foi a caracteristica de negócio que mais lhe atraiu na Pilão Professional", 'warn'
       );
       return true;
     }
 
     if (aux.Com_Regra === null) {
       Toast(
-        "(56).Informe se está disposto à cumprir as regras da franqueadora",
-        "warn"
+        "(56).Informe se está disposto à cumprir as regras da franqueadora", 'warn'
       );
       return true;
     }
 
     if (aux.Com_Med === null) {
-      Toast("(57).Informe se está ciente da média mensal inicial", "warn");
+      Toast("(57).Informe se está ciente da média mensal inicial", 'warn');
       return true;
     }
 
     if (aux.Com_Inf === null) {
-      Toast(
-        "(58).Informe se concorda em fornecer informações à franqueadora",
-        "warn"
-      );
+      Toast("(58).Informe se concorda em fornecer informações à franqueadora", 'warn');
       return true;
     }
 
@@ -573,99 +560,72 @@ export default class Formulario extends React.Component {
   //baixa form word da rede
   async handleRetriveWORD(event) {
     event.target.disabled = true;
-    let toastId = null;
+    let toastId = null
 
     try {
-      toastId = Toast("Buscando formulário...", "wait");
+      toastId = Toast('Buscando formulário...', 'wait')
       const response = await api.get("/form/original", {
         responseType: "arraybuffer",
       });
 
-      Toast("Formulário encontrado!", "update", toastId, "success");
+      Toast('Formulário encontrado!', 'update', toastId, 'success')
       const blob = new Blob([response.data], { type: "application/msword" });
 
       saveAs(blob, `Questionário de Perfil.doc`);
       event.target.disabled = false;
     } catch (err) {
-      Toast(
-        "Falha ao recuperar formulário do servidor",
-        "update",
-        toastId,
-        "error"
-      );
+      Toast('Falha ao recuperar formulário do servidor', 'update', toastId, 'error')
       event.target.disabled = false;
     }
   }
 
   render() {
     return (
-      <Container
-        style={{
-          justifyContent: "center",
-          alignContent: "center",
-          height: "unset",
-        }}
-      >
+      <div className="container-form">
         <h4>Questionário para Análise de Perfil</h4>
-        <Panel
-          style={{
-            justifyContent: "flex-start",
-            marginTop: "10vh",
-            maxWidth: "90vw",
-            minHeight: "65vh",
-            flexDirection: "column",
-            fontSize: "1.50vw",
-          }}
-        >
+        <div className='panel'>
           {this.state.cod_candidato === null ? (
-            <div style={divAlinha2}>
-              <input
+            <div>
+              <input className="input-form"
                 onChange={(e) => {
                   e.persist();
                   this.handleInsereCodigo(e.target.value, e);
                 }}
                 autoFocus={true}
                 disabled={false}
-                style={{
-                  all: "unset",
-                  textAlign: "center",
-                  border: "1px solid #000",
-                  borderRadius: "5px",
-                  padding: "10px",
-                  fontSize: "2vw",
-                }}
+               
                 type="text"
                 placeholder="Código de acesso"
               />
-              <div style={divStyle}>
-                <p style={{ marginRight: "10px" }}>Não possui um código?</p>
+              <div className='container-modal'>
+                <p>Não possui um código?</p>
 
                 <Modal
                   actions={
-                    <Button
+                    <Button variant="contained"
                       style={{ marginRight: "10px" }}
                       onClick={(e) => this.handleSolicitaCodigo(e)}
                     >
-                      <Icon left>send</Icon>Solicitar
+                      <Send/> Solicitar
                     </Button>
                   }
                   header="Solicitar código de acesso"
                   trigger={
-                    <Button>
+                    <Button variant="contained" >
                       Clique aqui
-                      <Icon right small>
-                        contact_mail
-                      </Icon>
+                      <Send />
                     </Button>
                   }
                 >
                   <Input
-                    style={{ width: "100%" }}
+                    style={{ width: '100%' }}
                     onChange={(e) => this.handleChangeEmail(e)}
                     label="Email"
                   />
                 </Modal>
               </div>
+
+
             </div>
           ) : null}
 
@@ -678,7 +638,6 @@ export default class Formulario extends React.Component {
             />
           ) : null}
 
-          {/*PERGUNTAS FORMULÁRIO  */}
           {this.state.validado ? (
             <div className="YAlign">
               <p>
@@ -699,9 +658,7 @@ export default class Formulario extends React.Component {
                 formalmente no contrato social, é imprescindível que seja
                 enviado um questionário para cada pessoa envolvida
               </p>
-
-              {/*PESSOAL  */}
-              <div style={divBorder}>
+              <div>
                 <div style={divStyle2}>
                   <Input
                     label="1. Nome completo"
@@ -741,171 +698,7 @@ export default class Formulario extends React.Component {
                     }
                     label="4. CPF"
                   />
-
-                  <div className="estado_civil">
-                    <p>15. Estado Civil:</p>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        style={checkbox}
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="1"
-                      />
-                      <p style={{ margin: "0px" }}>
-                        Casado(a) em regime de comunhão universal de bens
-                      </p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="2"
-                      />
-                      <p style={{ margin: "0px" }}>
-                        Casado(a) em regime de comunhão parcial de bens
-                      </p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="3"
-                      />
-                      <p style={{ margin: "0px" }}>
-                        Casado(a) em regime de separação de bens
-                      </p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="4"
-                      />
-                      <p style={{ margin: "0px" }}>Solteiro (a)</p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="5"
-                      />
-                      <p style={{ margin: "0px" }}>Divorciado(a)</p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="6"
-                      />
-                      <p style={{ margin: "0px" }}>Separado(a) judicialmente</p>
-                    </div>
-                    <div style={divStyle}>
-                      <input
-                        type="checkbox"
-                        onClick={(e) =>
-                          this.marcaCheckbox(e.target.value, e.target.checked)
-                        }
-                        value="7"
-                      />
-                      <p style={{ margin: "0px" }}>Viúvo (a)</p>
-                    </div>
-
-                    {this.state.form.Est_Civil < 4 &&
-                    this.state.form.Est_Civil !== null ? (
-                      <>
-                        <div style={divStyle}>
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  Conj_Nome: e,
-                                },
-                              })
-                            }
-                            label="16. Nome do(a) cônjuge"
-                          />
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  Conj_DtNascimento: e,
-                                },
-                              })
-                            }
-                            label="17. Data de Nascimento"
-                          />
-                        </div>
-                        <div style={divStyle}>
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  Conj_CPF: e,
-                                },
-                              })
-                            }
-                            label="18. CPF"
-                          />
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  Conj_RG: e,
-                                },
-                              })
-                            }
-                            label="19. RG"
-                          />
-                        </div>
-                        <div style={divStyle}>
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  TUnião: e,
-                                },
-                              })
-                            }
-                            label="20. Tempo de união"
-                          />
-                          <Input
-                            onChange={(e) =>
-                              this.setState({
-                                form: {
-                                  ...this.state.form,
-                                  Conj_RendMensal: e,
-                                },
-                              })
-                            }
-                            label="21. Rendimento mensal"
-                          />
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-
-
-
                 </div>
-
-                {/*ENDEREÇO  E CONTATO */}
 
                 <div style={divStyle}>
                   <Input
@@ -1007,7 +800,7 @@ export default class Formulario extends React.Component {
                 </div>
               </div>
 
-              {/* SOBRE VOCE   */}
+              {/* INICIO DO FORMULARIO */}
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div
                   style={{
@@ -1017,6 +810,162 @@ export default class Formulario extends React.Component {
                     paddingRight: "calc(1vw - 1px)",
                   }}
                 >
+                  <p>15. Estado Civil:</p>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      style={checkbox}
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="1"
+                    />
+                    <p style={{ margin: "0px" }}>
+                      Casado(a) em regime de comunhão universal de bens
+                    </p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="2"
+                    />
+                    <p style={{ margin: "0px" }}>
+                      Casado(a) em regime de comunhão parcial de bens
+                    </p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="3"
+                    />
+                    <p style={{ margin: "0px" }}>
+                      Casado(a) em regime de separação de bens
+                    </p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="4"
+                    />
+                    <p style={{ margin: "0px" }}>Solteiro (a)</p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="5"
+                    />
+                    <p style={{ margin: "0px" }}>Divorciado(a)</p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="6"
+                    />
+                    <p style={{ margin: "0px" }}>Separado(a) judicialmente</p>
+                  </div>
+                  <div style={divStyle}>
+                    <input
+                      type="checkbox"
+                      onClick={(e) =>
+                        this.marcaCheckbox(e.target.value, e.target.checked)
+                      }
+                      value="7"
+                    />
+                    <p style={{ margin: "0px" }}>Viúvo (a)</p>
+                  </div>
+
+                  {this.state.form.Est_Civil < 4 &&
+                  this.state.form.Est_Civil !== null ? (
+                    <>
+                      <div style={divStyle}>
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                Conj_Nome: e,
+                              },
+                            })
+                          }
+                          label="16. Nome do(a) cônjuge"
+                        />
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                Conj_DtNascimento: e,
+                              },
+                            })
+                          }
+                          label="17. Data de Nascimento"
+                        />
+                      </div>
+                      <div style={divStyle}>
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                Conj_CPF: e,
+                              },
+                            })
+                          }
+                          label="18. CPF"
+                        />
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                Conj_RG: e,
+                              },
+                            })
+                          }
+                          label="19. RG"
+                        />
+                      </div>
+                      <div style={divStyle}>
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                TUnião: e,
+                              },
+                            })
+                          }
+                          label="20. Tempo de união"
+                        />
+                        <Input
+                          onChange={(e) =>
+                            this.setState({
+                              form: {
+                                ...this.state.form,
+                                Conj_RendMensal: e,
+                              },
+                            })
+                          }
+                          label="21. Rendimento mensal"
+                        />
+                      </div>
+                    </>
+                  ) : null}
                   <p>22. CLT?</p>
                   <Select
                     width="200px"
@@ -1149,10 +1098,22 @@ export default class Formulario extends React.Component {
                     <MenuItem value="Não">Não</MenuItem>
                   </Select>
 
-
-                 
-
-                {/*FINANCEIRO */}
+                  <p>
+                    31. Qual sua expectativa de retorno para esse investimento?
+                  </p>
+                  <Select
+                    width="200px"
+                    label="Selecione..."
+                    onChange={(e) =>
+                      this.setState({
+                        form: { ...this.state.form, Expect: e.target.value },
+                      })
+                    }
+                  >
+                    <MenuItem value="10/20">10 a 20 meses</MenuItem>
+                    <MenuItem value="20/30">20 a 30 meses</MenuItem>
+                    <MenuItem value="30+">30+ meses</MenuItem>
+                  </Select>
 
                   <p>
                     32. Teve recolhimento de imposto de renda no ultimo ano?
@@ -1206,7 +1167,6 @@ export default class Formulario extends React.Component {
                     value={this.state.form.Origem_Capital}
                     label="Especifique..."
                   />
-
                   <p>35. Qual sua renda familiar mensal?</p>
                   <Input
                     onChange={(e) =>
@@ -1266,7 +1226,6 @@ export default class Formulario extends React.Component {
                     <MenuItem value="Sim">Sim</MenuItem>
                     <MenuItem value="Não">Não</MenuItem>
                   </Select>
-
                   {this.state.form.T_Empresa === "Sim" ? (
                     <>
                       <p>
@@ -1278,7 +1237,6 @@ export default class Formulario extends React.Component {
                         ocasionaram o encerramento, se na ocasião houve prejuízo
                         ou lucro e se houve a ocorrência de dívidas pendentes
                       </p>
-
                       <InputMultline
                         onChange={(e) =>
                           this.setState({
@@ -1293,7 +1251,6 @@ export default class Formulario extends React.Component {
                       />
                     </>
                   ) : null}
-
 
                   <p>
                     40. Qual a sua formação escolar/acadêmica (especificar grau
@@ -1326,7 +1283,6 @@ export default class Formulario extends React.Component {
                     lable="Especifique..."
                   />
                 </div>
-                
                 <div
                   style={{
                     ...divAlinha,
@@ -1533,8 +1489,6 @@ export default class Formulario extends React.Component {
                     label="Especifique..."
                   />
 
-
-                     {/* EXPECTATIVAS  */}
                   <p>
                     54. Seguindo a sua opinião pessoal, por favor, numere por
                     ordem de sua preferência, os motivos que o fizeram decidir
@@ -1543,23 +1497,6 @@ export default class Formulario extends React.Component {
                     até o 11 para o menos importante - último). Leia todas as
                     alternativas antes de começar a responder
                   </p>
-
-                  <p>
-                    31. Qual sua expectativa de retorno para esse investimento?
-                  </p>
-                  <Select
-                    width="200px"
-                    label="Selecione..."
-                    onChange={(e) =>
-                      this.setState({
-                        form: { ...this.state.form, Expect: e.target.value },
-                      })
-                    }
-                  >
-                    <MenuItem value="10/20">10 a 20 meses</MenuItem>
-                    <MenuItem value="20/30">20 a 30 meses</MenuItem>
-                    <MenuItem value="30+">30+ meses</MenuItem>
-                  </Select>
                   <div style={divStyle}>
                     <input
                       onChange={(e) => {
@@ -1892,25 +1829,25 @@ export default class Formulario extends React.Component {
                   <label style={labels}>
                     Comprovante de disponibilidade do capital declarado
                   </label>
-                  <TextInput
+                 <TextField label="Outlined" focused
                     className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
-                    label={<Icon>attach_file</Icon>}
+                    label={<AttachFile>attach_file</AttachFile>}
                   />
                 </div>
                 <div style={{ ...divAlinha, marginTop: "10px" }}>
                   <label style={labels}>
                     Cópias do CPF e RG de quem está apresentando o questionário
                   </label>
-                  <TextInput
+                 <TextField label="Outlined" focused
                     multiple
                     className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
-                    label={<Icon>attach_file</Icon>}
+                    label={<AttachFile>attach_file</AttachFile>}
                   />
                 </div>
                 {this.state.form.Est_Civil < 4 &&
@@ -1919,13 +1856,13 @@ export default class Formulario extends React.Component {
                     <label style={labels}>
                       Cópias do CPF e RG do(a) cônjuge ou semelhante
                     </label>
-                    <TextInput
+                   <TextField label="Outlined" focused
                       multiple
                       className="files"
                       type="file"
                       name="upload"
                       accept="application/pdf,image/png, image/jpeg"
-                      label={<Icon>attach_file</Icon>}
+                      label={<AttachFile>attach_file</AttachFile>}
                     />
                   </div>
                 ) : null}
@@ -1934,17 +1871,17 @@ export default class Formulario extends React.Component {
                   <label style={labels}>
                     Cópia e da última declaração de imposto de renda
                   </label>
-                  <TextInput
+                 <TextField label="Outlined" focused
                     className="files"
                     type="file"
                     name="upload"
                     accept="application/pdf,image/png, image/jpeg"
-                    label={<Icon>attach_file</Icon>}
+                    label={<AttachFile>attach_file</AttachFile>}
                   />
                 </div>
               </div>
               <div style={{ ...divStyle, justifyContent: "flex-end" }}>
-                <Button
+                <Button variant="contained" 
                   onClick={(e) => {
                     e.persist();
                     this.handleSubmit(e);
@@ -1954,9 +1891,9 @@ export default class Formulario extends React.Component {
                   }}
                   tooltip="Confirmar e enviar à Pilão Professional"
                 >
-                  <Icon left>send</Icon>Enviar
+                  <Send>send</Send>Enviar
                 </Button>
-                <Button
+                <Button variant="contained" 
                   style={{ marginLeft: "10px" }}
                   onClick={(e) => {
                     e.persist();
@@ -1967,18 +1904,20 @@ export default class Formulario extends React.Component {
                   }}
                   tooltip="Se preferir, faça o download do formulário e abra com o Microsoft Word"
                 >
-                  <Icon left>file_download</Icon>
+                  <FileDownload >file_download</FileDownload>
                   Formulário WORD
                 </Button>
               </div>
             </div>
           ) : null}
-        </Panel>
-      </Container>
+        </div>
+      </div>
     );
   }
 }
 
+
+//ESTILOS DO COMPONENTE
 const divStyle = {
   display: "Flex",
   width: "100%",

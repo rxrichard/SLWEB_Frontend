@@ -22,20 +22,23 @@ import { Close, InsertDriveFile, Block } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { DataGrid } from "@material-ui/data-grid";
-import { withStyles } from "@material-ui/core/styles";
-import Grow from "@material-ui/core/Grow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
+import {
+  withStyles,
+  Grow,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@material-ui/core/";
+
 import Draggable from "react-draggable";
 
 import { Table } from "../../components/table";
@@ -90,10 +93,10 @@ const Contas = (props) => {
 
   const handleRetriveBoleto = async (DOC) => {
     setWait(true);
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Buscando...', 'wait')
+      toastId = Toast("Buscando...", "wait");
 
       const response = await api.get(`/compras/retrivepdf/${DOC}`, {
         responseType: "arraybuffer",
@@ -101,7 +104,7 @@ const Contas = (props) => {
 
       //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
       if (response.data.byteLength > 28) {
-        Toast('Encontrado!', 'update', toastId, 'success')
+        Toast("Encontrado!", "update", toastId, "success");
         //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
         const blob = new Blob([response.data], { type: "application/pdf" });
 
@@ -109,7 +112,7 @@ const Contas = (props) => {
         saveAs(blob, `BOLETO_NF_${DOC}.pdf`);
         setWait(false);
       } else {
-        Toast('Documento não encontrado', 'update', toastId, 'error')
+        Toast("Documento não encontrado", "update", toastId, "error");
         setWait(false);
       }
     } catch (err) {
@@ -131,7 +134,7 @@ const Contas = (props) => {
       style={{
         width: "100%",
         height: "100%",
-        flexWrap: "wrap !important",
+        flexWrap: "wrap  ",
         alignItems: "flex-start",
       }}
     >
@@ -166,7 +169,13 @@ const Contas = (props) => {
             </div>
             <Tooltip
               title={
-                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#FFF",
+                    lineHeight: "20px",
+                  }}
+                >
                   Baixar Boleto
                 </label>
               }
@@ -199,7 +208,7 @@ const Contas = (props) => {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px' }}>
+        <DialogActions style={{ padding: "8px 24px" }}>
           {pedidoDet.Status === "Processando" ? (
             <Button
               color="primary"
@@ -323,8 +332,11 @@ const Contas = (props) => {
                     return (
                       <StyledTableRow
                         style={{
-                          background:
-                            !moment().utc().isSameOrBefore(moment(dup.DtVenc).utc(), 'day') ? "#ff4747" : null,
+                          background: !moment()
+                            .utc()
+                            .isSameOrBefore(moment(dup.DtVenc).utc(), "day")
+                            ? "#ff4747"
+                            : null,
                         }}
                         key={dup.E1_NUM}
                         onClick={() => handleLoadDet(dup.E1_NUM)}
@@ -439,7 +451,10 @@ const Contas = (props) => {
                           {currencyFormat(total.Avencer)}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {currencyFormat(Number.parseFloat(total.Vencido) + Number.parseFloat(total.Avencer))}
+                          {currencyFormat(
+                            Number.parseFloat(total.Vencido) +
+                              Number.parseFloat(total.Avencer)
+                          )}
                         </StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -464,7 +479,7 @@ const Contas = (props) => {
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = (store) => ({
   State: store.CompraState,
@@ -510,7 +525,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 const DefineTotalDuplicatas = (duplicatas = []) => {
   let duplicatasTotal = [];
-  let achou = false
+  let achou = false;
 
   duplicatas.forEach((dup) => {
     if (duplicatasTotal.length === 0) {
@@ -524,15 +539,20 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
     }
 
     for (let i = 0; i < duplicatasTotal.length; i++) {
-
       if (duplicatasTotal[i].Desc === dup.E1Desc) {
         duplicatasTotal[i] = {
           ...duplicatasTotal[i],
-          Avencer: dup.Status === "Avencer" ? Number(duplicatasTotal[i].Avencer) + Number(dup.E1_VALOR) : Number(duplicatasTotal[i].Avencer),
-          Vencido: dup.Status === "Avencer" ? Number(duplicatasTotal[i].Vencido) : Number(duplicatasTotal[i].Vencido) + Number(dup.E1_VALOR),
-          Total: Number(duplicatasTotal[i].Total) + Number(dup.E1_VALOR)
-        }
-        achou = true
+          Avencer:
+            dup.Status === "Avencer"
+              ? Number(duplicatasTotal[i].Avencer) + Number(dup.E1_VALOR)
+              : Number(duplicatasTotal[i].Avencer),
+          Vencido:
+            dup.Status === "Avencer"
+              ? Number(duplicatasTotal[i].Vencido)
+              : Number(duplicatasTotal[i].Vencido) + Number(dup.E1_VALOR),
+          Total: Number(duplicatasTotal[i].Total) + Number(dup.E1_VALOR),
+        };
+        achou = true;
         break;
       }
     }
@@ -543,9 +563,9 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
         Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : 0,
         Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
         Total: Number(dup.E1_VALOR),
-      })
+      });
     }
-    achou = false
+    achou = false;
   });
 
   return duplicatasTotal;
