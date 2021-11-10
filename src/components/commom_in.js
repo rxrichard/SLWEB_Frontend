@@ -93,7 +93,7 @@ export const Panel = Styled.div`
     @media (max-width: 600px) {
         min-height: calc(100% - 48px);
         min-width: calc(100%-  53px);
-        margin-left: 53px;
+        margin-left: 0px;
         margin-top: 48px;
   }
 `;

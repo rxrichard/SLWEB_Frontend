@@ -97,7 +97,7 @@ function Vender(props) {
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap' }}>
             <Select
               onChange={(e) => handleSwitchCliente(e.target.value)}
-              width='500px'
+              width='200px'
               maxWidth='100%'
               value={Cliente.CNPJ}
               disabled={FixPedido !== null}
@@ -340,7 +340,7 @@ const extraOptions = (
           value={Pag}
           disabled={false}
           label="Condição de Pagamento"
-          width="210px"
+          width="200px"
           MBottom='8px'
         >
           {Condicoes.map((cond) => (

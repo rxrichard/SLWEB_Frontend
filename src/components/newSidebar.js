@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -32,11 +33,21 @@ import { roleLevel } from "../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../misc/role_levels";
 import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../misc/colors";
 
-const drawerWidth = 240;
+const drawerWidthFull = 240;
+const drawerWidthCell = 200;
 
 export default function MiniDrawer() {
-  const classes = useStyles();
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const stylePC = useStyles_FULL()
+  const styleCELL = useStyles_CELL()
+
   const [open, setOpen] = React.useState(false);
+  const [classes, setClasses] = React.useState(stylePC);
+
+  useEffect(() => {
+    setClasses(isMdUp ? stylePC : styleCELL);
+  }, [isMdUp])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -56,19 +67,19 @@ export default function MiniDrawer() {
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
+        className={isMdUp ? clsx(classes.appBar, {
           [classes.appBarShift]: open,
-        })}
+        }) : classes.appBar}
       >
         <Toolbar style={{ justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, {
+            onClick={handleDrawerOpen}
+            className={isMdUp ? clsx(classes.menuButton, {
               [classes.hide]: open,
-            })}
+            }) : classes.menuButton}
           >
             <Menu fontSize="large" />
           </IconButton>
@@ -88,17 +99,22 @@ export default function MiniDrawer() {
         </Toolbar>
       </AppBar>
       <Drawer
-        variant="permanent"
+        variant={isMdUp ? "permanent" : "temporary"}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
-        classes={{
+        classes={isMdUp ? {
           paper: clsx({
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
           }),
+        } : {
+          paper: classes.drawerPaper
         }}
+        anchor='left'
+        open={open}
+        onClose={handleDrawerClose}
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
@@ -205,7 +221,44 @@ export default function MiniDrawer() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles_CELL = makeStyles(theme => ({
+  root: {
+    display: "flex"
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    background:
+      roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ? RED_PRIMARY : GREY_LIGHT,
+  },
+  drawer: {
+    flexShrink: 0,
+    width: drawerWidthCell
+  },
+  drawerPaper: {
+    width: drawerWidthCell
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3)
+  }
+}));
+
+const useStyles_FULL = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
@@ -219,8 +272,8 @@ const useStyles = makeStyles((theme) => ({
       roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ? RED_PRIMARY : GREY_LIGHT,
   },
   appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidthFull,
+    width: `calc(100% - ${drawerWidthFull}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -231,12 +284,12 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   drawer: {
-    width: drawerWidth,
+    width: drawerWidthFull,
     flexShrink: 0,
     whiteSpace: "nowrap",
   },
   drawerOpen: {
-    width: drawerWidth,
+    width: drawerWidthFull,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

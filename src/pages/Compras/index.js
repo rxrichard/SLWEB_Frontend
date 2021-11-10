@@ -310,6 +310,7 @@ function Compras(props) {
           style={{
             transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
               }ms`,
+            zIndex: "2",
           }}
           unmountOnExit
         >
@@ -335,6 +336,7 @@ function Compras(props) {
             marginTop: "8px",
             transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
               }ms`,
+            zIndex: "2",
           }}
           unmountOnExit
         >

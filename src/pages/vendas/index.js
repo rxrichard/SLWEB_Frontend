@@ -302,6 +302,7 @@ function Vendas(props) {
           style={{
             transitionDelay: `${TabIndex === 0 ? transitionDuration.exit : 0
               }ms`,
+            zIndex: "2",
           }}
           unmountOnExit
         >
@@ -327,6 +328,7 @@ function Vendas(props) {
             marginTop: "8px",
             transitionDelay: `${TabIndex === 0 ? transitionDuration.exit : 0
               }ms`,
+            zIndex: "2",
           }}
           unmountOnExit
         >
