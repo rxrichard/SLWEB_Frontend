@@ -21,20 +21,15 @@ export default function Forgot() {
 
       try {
         toastId = Toast('Aguarde...', 'wait')
-        const response = await api.post("/forgot", {
+        await api.post("/forgot", {
           user_code: user_code,
         });
 
-        if (response.status === 200) {
-          Toast('Sua senha foi enviada para o seu e-mail!', 'update', toastId, 'success')
-          setTimeout(() => {
-            window.location.assign("/");
-          }, 3000);
-        } else {
-          throw Error;
-        }
+        Toast('Sua senha foi enviada para o seu e-mail!', 'update', toastId, 'success')
+        setTimeout(() => {
+          window.location.assign("/");
+        }, 3000);
       } catch (err) {
-        Toast('Falha na comunicação', 'update', toastId, 'error')
       }
     }
   };

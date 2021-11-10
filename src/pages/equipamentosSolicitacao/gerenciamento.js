@@ -26,13 +26,8 @@ export default class Management extends React.Component {
     try {
       const response = await api.get("/equip/requests/all");
 
-      if (response.status === 200) {
-        this.setState({ OSS: response.data, loaded: true });
-      } else {
-        throw Error;
-      }
+      this.setState({ OSS: response.data, loaded: true });
     } catch (err) {
-      Toast("Falha na comunicação", "error");
     }
   }
 

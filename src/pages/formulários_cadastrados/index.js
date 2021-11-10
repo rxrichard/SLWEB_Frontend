@@ -28,13 +28,8 @@ export default class FormsAcompanhamento extends React.Component {
       //requisição inicial para obter dados essenciais da pagina
       const response = await api.get("/form/all");
 
-      if (response.status === 200) {
-        this.setState({ loaded: true, formularios: response.data });
-      } else {
-        throw Error;
-      }
+      this.setState({ loaded: true, formularios: response.data });
     } catch (err) {
-      Toast("Falha na comunicação", "error");
     }
   }
 

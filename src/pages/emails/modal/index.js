@@ -19,9 +19,7 @@ export default class ConfigEmissao extends React.Component {
     try {
       const response = api.get(`/emails/recipients/${value}`);
 
-      if(response.status === 400){
-        throw Error
-      }
+    
     } catch (err) {
       
     }

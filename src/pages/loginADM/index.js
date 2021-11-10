@@ -118,7 +118,7 @@ export default function LoginADM() {
             setAdmCode(e);
             setValidAdm(false);
           }}
-          label="Código de administrador"
+          label="Código ADM"
         />
         <Input
           type="password"
@@ -126,7 +126,7 @@ export default function LoginADM() {
             setAdmPassword(e);
             setValidAdm(false);
           }}
-          label="Senha de administrador"
+          label="Senha ADM"
         />
 
         <Button

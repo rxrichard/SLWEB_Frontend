@@ -74,6 +74,7 @@ function Vendas(props) {
     CondPag,
     RemOrigem,
     RemDestino,
+    FixPedido,
   } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
@@ -83,8 +84,8 @@ function Vendas(props) {
     async function Load() {
       const response = await api.get("/vendas/produtos");
 
-      LoadInsumos(response.data.Produtos);
-      LoadClientes(response.data.Clientes);
+      LoadInsumos(Array.isArray(response.data.Produtos) ? response.data.Produtos : []);
+      LoadClientes(Array.isArray(response.data.Clientes) ? response.data.Clientes : []);
       LoadPagamentos(response.data.CodPag);
       LoadDepositos(response.data.Depositos);
       setLoaded(true);
@@ -114,7 +115,7 @@ function Vendas(props) {
   };
 
   const handleSubmit = async () => {
-     setWait(true)
+    setWait(true)
 
     const LoadDTO = {
       Carrinho,
@@ -133,13 +134,24 @@ function Vendas(props) {
 
     let toastId = null
 
+
     try {
       toastId = Toast('Aguarde...', 'wait')
-      await api.post('/vendas/vender', {
-        Pedido: LoadDTO
-      })
 
-      Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
+      if (FixPedido === null) {
+        await api.post('/vendas/vender', {
+          Pedido: LoadDTO
+        })
+
+        Toast('Pedido registrado com sucesso!', 'update', toastId, 'success')
+      } else {
+        await api.put(`/vendas/pedidos/atualizar/${FixPedido}`, {
+          Pedido: LoadDTO
+        })
+
+        Toast('Pedido atualizado com sucesso!', 'update', toastId, 'success')
+      }
+
       setOpen(false)
       setWait(false)
       ResetarDetalhes()
@@ -161,7 +173,7 @@ function Vendas(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Vender", "Vendas"]}>
+      <MenuAbas titles={["Vender", "Vendas"]} activeTab={TabIndex}>
         <Vender />
         <Pedidos />
       </MenuAbas>
@@ -178,7 +190,12 @@ function Vendas(props) {
           </div>
         </DialogTitle>
         <DialogContent>
-          <div className="XAlign" style={{ justifyContent: "flex-end" }}>
+          <div className="XAlign" style={{ justifyContent: FixPedido !== null ? 'space-between' : "flex-end", flexWrap: 'wrap' }}>
+            {FixPedido &&
+              <Typography gutterBottom variant="subtitle1" style={{ color: RED_PRIMARY }}>
+                <strong style={{ color: '#000' }}>Atualizando pedido:</strong> {FixPedido}
+              </Typography>
+            }
             <Typography gutterBottom variant="subtitle1">
               <strong>Total da Venda:</strong> R${totalPedido(Carrinho)}
             </Typography>
@@ -207,7 +224,7 @@ function Vendas(props) {
           <Tooltip
             title={
               <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                Gravar venda
+                {FixPedido !== null ? `Atualizar pedido ${FixPedido}` : 'Gravar venda'}
               </label>
             }
             placement="top"
@@ -215,7 +232,7 @@ function Vendas(props) {
             followCursor
           >
             <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
-              Gravar
+              {FixPedido !== null ? 'Atualizar' : 'Gravar'}
             </Button>
           </Tooltip>
 
@@ -280,10 +297,10 @@ function Vendas(props) {
         }}
       >
         <Zoom
-          in={TabIndex === 1 && ProdutosMarcados(Produtos, Checked) > 0}
+          in={TabIndex === 0 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
-            transitionDelay: `${TabIndex === 1 ? transitionDuration.exit : 0
+            transitionDelay: `${TabIndex === 0 ? transitionDuration.exit : 0
               }ms`,
           }}
           unmountOnExit
@@ -304,11 +321,11 @@ function Vendas(props) {
         </Zoom>
 
         <Zoom
-          in={Carrinho.length > 0}
+          in={TabIndex === 0 && Carrinho.length > 0}
           timeout={transitionDuration}
           style={{
             marginTop: "8px",
-            transitionDelay: `${TabIndex === 1 ? transitionDuration.exit : 0
+            transitionDelay: `${TabIndex === 0 ? transitionDuration.exit : 0
               }ms`,
           }}
           unmountOnExit
@@ -402,7 +419,7 @@ const totalPedido = (carrinho) => {
   let aux = 0;
 
   carrinho.forEach((item) => {
-    aux += (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao);
+    aux += item.FatConversao !== null ? (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao) : (item.VVenda - item.DVenda) * item.QVenda;
   });
 
   return Number.parseFloat(aux).toFixed(2);
@@ -418,7 +435,7 @@ const fromStore2Datagrid = (carrinho) => {
       Quantidade: item.QVenda,
       Vlr: item.VVenda,
       Desconto: item.DVenda,
-      Conversao: item.FatConversao,
+      Conversao: item.FatConversao !== null ? item.FatConversao : 1,
     });
   });
 

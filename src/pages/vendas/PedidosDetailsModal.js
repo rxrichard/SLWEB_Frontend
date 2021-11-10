@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Draggable from "react-draggable";
 import { api } from "../../services/api";
 import { saveAs } from "file-saver";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import { Close, GetApp, NoteAdd, HourglassEmpty, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
+import { Close, GetApp, NoteAdd, HourglassEmpty, FileCopy, ListAlt, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
 import { DataGrid } from "@material-ui/data-grid";
 import Dialog from "@material-ui/core/Dialog";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -19,10 +21,47 @@ import IconButton from "@material-ui/core/IconButton";
 
 import { Toast } from "../../components/toasty";
 import Select from "../../components/materialComponents/Select";
+import {
+    ChangeCliente,
+    ChangeTipoVenda,
+    SetDepOrigem,
+    SetDepDestino,
+    SetCondPag,
+    SetObs,
+    SetCheckedProd,
+    UpdateCarrinho,
+    SetBuyQtt,
+    ResetarDetalhes,
+    ClearCarrinho,
+    EditPedido,
+    SwitchTab
+} from "../../global/actions/VendasAction";
 
-export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, setPedidos, setPedidoDet, setOpen }) => {
+const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, setPedidos, setPedidoDet, setOpen, ...props }) => {
     const [wait, setWait] = useState(false);
     const [doctype, setDoctype] = useState("DANFE");
+
+    const TabIndex = 1
+
+    const {
+        Clientes,
+    } = props.State;
+
+    const {
+        ChangeCliente,
+        ChangeTipoVenda,
+        SetDepOrigem,
+        SetDepDestino,
+        SetCondPag,
+        SetObs,
+        SetCheckedProd,
+        UpdateCarrinho,
+        SetBuyQtt,
+        ResetarDetalhes,
+        ClearCarrinho,
+        EditPedido,
+        SwitchTab
+    } = props;
 
     const handleCloseDialog = () => {
         setActualPedidoInfo({});
@@ -36,6 +75,20 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
             case 'F':
                 return (
                     <>
+                        <Tooltip
+                            title={
+                                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                                    Copiar pedido
+                                </label>
+                            }
+                            placement="top"
+                            arrow
+                            followCursor
+                        >
+                            <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
+                                <FileCopy />
+                            </IconButton>
+                        </Tooltip>
                         <Select
                             onChange={(e) => setDoctype(e.target.value)}
                             value={doctype}
@@ -117,17 +170,49 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
                 )
             case 'S':
                 return (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <HourglassEmpty />
-                        <Typography variant='subtitle2'>Gerando NFe...</Typography>
-                    </div>
+                    <>
+                        <Tooltip
+                            title={
+                                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                                    Copiar pedido
+                                </label>
+                            }
+                            placement="top"
+                            arrow
+                            followCursor
+                        >
+                            <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
+                                <FileCopy />
+                            </IconButton>
+                        </Tooltip>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <HourglassEmpty />
+                            <Typography variant='subtitle2'>Gerando NFe...</Typography>
+                        </div>
+                    </>
                 )
             case 'C':
                 return (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <CancelScheduleSend />
-                        <Typography variant='subtitle2'>Venda cancelada</Typography>
-                    </div>
+                    <>
+                        <Tooltip
+                            title={
+                                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                                    Copiar pedido
+                                </label>
+                            }
+                            placement="top"
+                            arrow
+                            followCursor
+                        >
+                            <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
+                                <FileCopy />
+                            </IconButton>
+                        </Tooltip>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <CancelScheduleSend />
+                            <Typography variant='subtitle2'>Venda cancelada</Typography>
+                        </div>
+                    </>
                 )
             default:
                 return
@@ -176,7 +261,55 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
     };
 
     const handleEditVenda = () => {
-        alert("iniciar edição da venda(trocar colums do datagrid)");
+        ResetarDetalhes()
+        ClearCarrinho()
+
+        if (actualPedidoInfo.ST === 'P') {
+            EditPedido(actualPedidoInfo.Pvc_ID)
+        }
+
+        //escolhe o cliente correto
+        Clientes.forEach((cliente) =>
+            String(cliente.CNPJ) === String(actualPedidoInfo.CNPJ) ? ChangeCliente(cliente) : null
+        );
+
+        //define detalhes do pedido
+        ChangeTipoVenda(String(actualPedidoInfo.Tipo).trim())
+        if (String(actualPedidoInfo.Tipo).trim() === 'R') {
+            SetDepOrigem(String(actualPedidoInfo.DepOrigemId).trim())
+            SetDepDestino(String(actualPedidoInfo.DepDestId).trim())
+        } else if (String(actualPedidoInfo.Tipo).trim() === 'V') {
+            SetCondPag(String(actualPedidoInfo.CpgId).trim())
+        }
+        SetObs(actualPedidoInfo.MsgNF !== null ? String(actualPedidoInfo.MsgNF).trim() : '')
+
+        //adiciono os produtos no carrinho
+        pedidoDet.forEach(produto => SetCheckedProd(produto.ProdId))
+        UpdateCarrinho()
+
+        //corrijo o preco padrao dos itens com o preco do pedido
+        pedidoDet.forEach(produto => {
+            SetBuyQtt({
+                id: produto.ProdId,
+                value: produto.FatConversao !== null ? produto.PvdQtd / produto.FatConversao : produto.PvdQtd,
+                field: 'Quantidade'
+            })
+
+            SetBuyQtt({
+                id: produto.ProdId,
+                value: produto.PvdVlrUnit,
+                field: 'Vlr'
+            })
+
+            SetBuyQtt({
+                id: produto.ProdId,
+                value: produto.PdvVlrDesc !== null ? produto.PdvVlrDesc : 0,
+                field: 'Desconto'
+            })
+        })
+        
+        // setOpen(false)
+        SwitchTab(0)
     };
 
     const handleRequestNFE = async () => {
@@ -273,7 +406,10 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-                Detalhes da Venda
+                <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <ListAlt />
+                    Detalhes da Venda
+                </div>
             </DialogTitle>
             <DialogContent>
                 <div className="XAlign" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: '8px' }}>
@@ -316,6 +452,32 @@ export const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedid
         </Dialog >
     )
 }
+
+const mapDispatchToProps = (dispatch) =>
+    bindActionCreators(
+        {
+            ChangeCliente,
+            ChangeTipoVenda,
+            SetDepOrigem,
+            SetDepDestino,
+            SetCondPag,
+            SetObs,
+            SetCheckedProd,
+            UpdateCarrinho,
+            SetBuyQtt,
+            ResetarDetalhes,
+            ClearCarrinho,
+            EditPedido,
+            SwitchTab
+        },
+        dispatch
+    );
+
+const mapStateToProps = (store) => ({
+    State: store.VendaState,
+});
+
+export const PedidoDetailsModal = connect(mapStateToProps, mapDispatchToProps)(DetailsModal)
 
 function PaperComponent(props) {
     return (
@@ -415,6 +577,14 @@ const columns = [
         align: "right",
     },
     {
+        field: "PdvVlrDesc",
+        headerName: "Desconto",
+        width: 90,
+        editable: false,
+        sortable: false,
+        align: "right",
+    },
+    {
         field: "PvdVlrTotal",
         headerName: "Vlr. Total",
         width: 90,
@@ -433,6 +603,7 @@ const PedidoDetToDatagrid = (pedidoDet) => {
             Produto: det.Produto,
             PvdQtd: det.PvdQtd,
             PvdVlrUnit: det.PvdVlrUnit,
+            PdvVlrDesc: det.PdvVlrDesc,
             PvdVlrTotal: det.PvdVlrTotal,
         })
     );

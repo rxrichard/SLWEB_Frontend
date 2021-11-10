@@ -55,7 +55,10 @@ function Entrega(props) {
 
   const defineCliente = (cliente) => {
     if (cliente === "") {
-      ChooseCliente("");
+      ChooseCliente({
+        Nome_Fantasia: '',
+        CNPJss: '',
+      });
       ChangeEndereco("");
     } else {
       Clientes.map((client) => {
@@ -307,15 +310,35 @@ const dataMinima = (DDL = 0) => {
 };
 
 const enderecoEntrega = (cliente) => {
-  return `${
-    cliente.Logradouro === null ? "-" : cliente.Logradouro.trim()
-  }, número: ${
-    cliente.Número === null ? "-" : cliente.Número.trim()
-  }, complemento: ${
-    cliente.Complemento === null ? "-" : cliente.Complemento.trim()
-  }, bairro: ${cliente.Bairro === null ? "-" : cliente.Bairro.trim()}, CEP: ${
-    cliente.CEP === null ? "-" : cliente.CEP.trim()
-  }, ${cliente.Município === null ? "-" : cliente.Município.trim()}, ${
-    cliente.UF === null ? "-" : cliente.UF.trim()
-  }`;
+  let enderecoCompleto = ''
+
+  if (cliente.Logradouro !== null) {
+    enderecoCompleto = enderecoCompleto.concat(cliente.Logradouro.trim())
+  }
+
+  if (cliente.Número !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.Número.trim()}`)
+  }
+
+  if (cliente.Complemento !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.Complemento.trim()}`)
+  }
+
+  if (cliente.Bairro !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.Bairro.trim()}`)
+  }
+
+  if (cliente.Município !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.Município.trim()}`)
+  }
+
+  if (cliente.UF !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.UF.trim()}`)
+  }
+
+  if (cliente.CEP !== null) {
+    enderecoCompleto = enderecoCompleto.concat(`, ${cliente.CEP.trim()}`)
+  }
+
+  return enderecoCompleto
 };
