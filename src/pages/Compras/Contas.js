@@ -18,7 +18,7 @@ import {
   SetRetira,
 } from "../../global/actions/ComprasAction";
 
-import { Close, InsertDriveFile, Block } from "@material-ui/icons";
+import { Close, InsertDriveFile, Block, ListAlt } from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import { DataGrid } from "@material-ui/data-grid";
@@ -146,7 +146,10 @@ const Contas = (props) => {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Detalhes do Pedido
+          <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+            <ListAlt />
+            Detalhes do Pedido
+          </div>
         </DialogTitle>
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>

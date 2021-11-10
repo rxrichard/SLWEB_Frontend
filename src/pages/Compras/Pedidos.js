@@ -14,7 +14,7 @@ import { Toast } from "../../components/toasty";
 import { ChangeTab } from "../../global/actions/ComprasAction";
 import { Table } from "../../components/table";
 
-import { Close, Block } from "@material-ui/icons";
+import { Close, Block, ListAlt } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -116,7 +116,10 @@ function Pedidos(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Detalhes do Pedido
+          <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+            <ListAlt />
+            Detalhes do Pedido
+          </div>
         </DialogTitle>
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
@@ -152,7 +155,7 @@ function Pedidos(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
           {pedidoDet.Status === "Processando" ? (
             <Button
               color="primary"
@@ -238,6 +241,7 @@ const mapDispatchToProps = (dispatch) =>
 
 export default connect(mapStateToProps, mapDispatchToProps)(Pedidos);
 //estilo célula
+
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,

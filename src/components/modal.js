@@ -3,18 +3,19 @@ import { Button, Icon, Modal } from "react-materialize";
 import { GOBACK_BUTTON_COLOR } from "../misc/colors";
 
 export default function ModalOld(props) {
-    const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
+  
   return (
     <Modal
-      actions={[props.actions, 
-        <Button
-          modal="close"
-          {...props}
-          style={{ backgroundColor: GOBACK_BUTTON_COLOR, color: "#000", boxShadow: 'none' }}
-        >
-          <Icon left>close</Icon>
-          Fechar
-        </Button>
+      actions={[props.actions,
+      <Button
+        modal="close"
+        {...props}
+        style={{ backgroundColor: GOBACK_BUTTON_COLOR, color: "#000", boxShadow: 'none' }}
+      >
+        <Icon left>close</Icon>
+        Fechar
+      </Button>
       ]}
       bottomSheet={false}
       fixedFooter={false}
@@ -29,7 +30,7 @@ export default function ModalOld(props) {
         onCloseStart: e => setOpen(false),
         onOpenEnd: null,
         onOpenStart: e => {
-            setOpen(true)
+          setOpen(true)
         },
         opacity: 0.5,
         outDuration: 250,

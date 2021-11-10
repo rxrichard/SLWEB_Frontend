@@ -29,19 +29,13 @@ export default class CentralEmails extends React.Component {
       //requisição inicial para obter dados essenciais da pagina
       const response = await api.get("/emails/history");
 
-      if (response.status === 200) {
-        this.setState({
-          loaded: true,
-          EmailHistory: response.data.log,
-          EmailHistoryFiltered: response.data.log,
-          Modelos: response.data.Modelos
-        });
-      } else {
-        throw Error;
-      }
-    } catch (err) {
-      Toast("Falha na comunicação", "error");
-    }
+      this.setState({
+        loaded: true,
+        EmailHistory: response.data.log,
+        EmailHistoryFiltered: response.data.log,
+        Modelos: response.data.Modelos
+      });
+    } catch (err) { }
   }
 
   Filter(value, event) {
@@ -127,7 +121,7 @@ export default class CentralEmails extends React.Component {
                   </Button>
                 }
               >
-                  <Emissao modelos={this.state.Modelos} />
+                <Emissao modelos={this.state.Modelos} />
               </Modal>
             </div>
           </div>

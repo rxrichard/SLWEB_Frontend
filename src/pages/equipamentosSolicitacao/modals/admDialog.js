@@ -77,14 +77,11 @@ function DraggableDialog(props) {
         prev: prevDate,
       });
 
-      if (response.status !== 200) throw Error;
-
       Toast('Atualização gravada', 'update', toastId, 'success')
       setUpdated(true);
       handleClose();
     } catch (err) {
       setWait(false);
-      Toast('Falha ao gravar atualização', 'update', toastId, 'error')
     }
   };
 

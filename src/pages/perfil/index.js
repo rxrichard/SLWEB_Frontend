@@ -100,7 +100,6 @@ function Perfil() {
           setWait(false);
           break;
         default:
-          Toast('Não foi possivel alterar sua senha, contate o suporte', 'update', toastId, 'error')
           setWait(false);
           break;
       }
@@ -126,13 +125,10 @@ function Perfil() {
         email: newEmail,
       });
 
-      if (response.status === 400) throw Error;
-
       Toast('Email atualizado com sucesso!', 'update', toastId, 'success')
       setWait(false);
       setInfo({ ...info, Email: newEmail });
     } catch (err) {
-      Toast('Falha na comunicação', 'update', toastId, 'error')
       setWait(false);
     }
   };
@@ -152,11 +148,8 @@ function Perfil() {
         newTax: newTaxa,
       });
 
-      if (response.status === 400) throw Error;
-
       Toast('Taxa atualizada!', 'update', toastId, 'success')
     } catch (err) {
-      Toast('Falha na comunicação', 'update', toastId, 'error')
     }
   };
 

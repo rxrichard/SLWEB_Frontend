@@ -19,13 +19,8 @@ function Exemplo() {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("");
 
-        if (response.status === 200) {
           setLoaded(true);
-        } else {
-          throw Error;
-        }
       } catch (err) {
-        Toast('Falha na comunicação', 'error')
       }
     }
 
