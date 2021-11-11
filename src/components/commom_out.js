@@ -47,5 +47,6 @@ export const Box = Styled.div`
     }    
 `
 export const Logo = Styled.img`
-    height:30%;
+    height: 30%;
+    width: unset;
 `
