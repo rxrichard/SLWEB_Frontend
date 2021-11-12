@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import "moment/locale/pt-br";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
