@@ -86,13 +86,21 @@ export const Panel = Styled.div`
     box-shadow: 0px -0px 5px 3px rgba(0, 0, 0, 0.2);
     padding: 20px 20px 30px 20px;
     
-    min-height: calc(100% - 64px);
-    min-width:calc(100% - 73px);
+    height: calc(100% - 64px);
+    width: calc(100% - 73px);
+    
+    //novo sidebar
+    @media (max-width: 960px) {
+        height: calc(100% - 64px);
+        width: calc(100% - 0px);
+        margin-left: 0px;
+        margin-top: 64px;
+    }
     
     //novo sidebar
     @media (max-width: 600px) {
-        min-height: calc(100% - 48px);
-        min-width: calc(100%-  53px);
+        height: calc(100% - 48px);
+        width: calc(100% - 0px);
         margin-left: 0px;
         margin-top: 48px;
   }

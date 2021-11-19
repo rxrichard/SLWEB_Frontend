@@ -71,7 +71,7 @@ function Compras(props) {
         const response = await api.get("/compras/produtos");
         LoadInsumos(response.data);
       } catch (err) {
-        Toast("Falha na comunicação", "error");
+        
       }
     }
     loadProdutos();
@@ -455,11 +455,11 @@ const totalPedido = (carrinho) => {
       Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra);
   });
 
-  return Number.parseFloat(aux).toFixed(2);
+  return String(Number.parseFloat(aux).toFixed(2)).replace('.', ',');
 };
 
 const MinFrete = (min, retira) => {
-  return retira ? "0.00" : Number(min).toFixed(2);
+  return retira ? "0,00" : String(Number(min).toFixed(2)).replace('.', ',');
 };
 
 const verifyPedido = (pedido, retira, MinCompra) => {
@@ -562,7 +562,9 @@ const columns = [
     description: "Cálculo do Valor Unitário x Quantidade",
     width: 90,
     valueGetter: (params) =>
-      params.getValue(params.id, "Quantidade") *
-      params.getValue(params.id, "VlrUn"),
+      String(Number.parseFloat(
+        params.getValue(params.id, "Quantidade") *
+        params.getValue(params.id, "VlrUn"),
+      ).toFixed(2)).replace('.', ',')
   },
 ];

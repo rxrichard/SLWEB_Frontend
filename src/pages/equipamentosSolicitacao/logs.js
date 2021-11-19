@@ -21,7 +21,7 @@ export default class Logs extends React.Component {
 
   async componentDidMount() {
     try {
-      const response = await api.get("/equip/requests");
+      const response = await api.get("/equip/requests/own");
 
       this.setState({ logs: response.data, loaded: true });
     } catch (err) {

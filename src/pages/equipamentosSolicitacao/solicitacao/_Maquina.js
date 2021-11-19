@@ -61,7 +61,7 @@ function Requisicao(props) {
       Ativos.map((ativo) => {
         if (ativo.MaqModelo === maq) {
           ChangeMaquina(ativo);
-          api.get(`/equip/default/${ativo.MaqModId}`).then((response) => {
+          api.get(`/equip/requests/default/${ativo.MaqModId}`).then((response) => {
             LoadConfigPadrao(response.data);
           });
         }

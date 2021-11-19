@@ -82,13 +82,17 @@ function Vendas(props) {
   //componentDidMount
   useEffect(() => {
     async function Load() {
-      const response = await api.get("/vendas/produtos");
-
-      LoadInsumos(Array.isArray(response.data.Produtos) ? response.data.Produtos : []);
-      LoadClientes(Array.isArray(response.data.Clientes) ? response.data.Clientes : []);
-      LoadPagamentos(response.data.CodPag);
-      LoadDepositos(response.data.Depositos);
-      setLoaded(true);
+      try{
+        const response = await api.get("/vendas/produtos");
+  
+        LoadInsumos(Array.isArray(response.data.Produtos) ? response.data.Produtos : []);
+        LoadClientes(Array.isArray(response.data.Clientes) ? response.data.Clientes : []);
+        LoadPagamentos(response.data.CodPag);
+        LoadDepositos(response.data.Depositos);
+        setLoaded(true);
+      }catch (err){
+        
+      }
     }
     Load();
   }, [LoadInsumos, LoadClientes, LoadPagamentos, LoadDepositos]);
@@ -424,7 +428,7 @@ const totalPedido = (carrinho) => {
     aux += item.FatConversao !== null ? (item.VVenda - item.DVenda) * (item.QVenda * item.FatConversao) : (item.VVenda - item.DVenda) * item.QVenda;
   });
 
-  return Number.parseFloat(aux).toFixed(2);
+  return String(Number.parseFloat(aux).toFixed(2)).replace('.', ',');
 };
 
 const fromStore2Datagrid = (carrinho) => {
@@ -508,7 +512,7 @@ const columns = [
         fontWeight: 'bold',
         color: RED_PRIMARY,
       }}>
-        {params.value}
+        {String(params.value).replace('.', ',')}
       </div>
     ),
     renderEditCell: (params) => (
@@ -517,6 +521,8 @@ const columns = [
           fontWeight: 'bold',
           color: RED_PRIMARY,
         }}
+        decimalSeparator=','
+        thousandSeparator='.'
         autoFocus={true}
         decimalScale={4}
         fixedDecimalScale={false}
@@ -530,7 +536,7 @@ const columns = [
             {
               id: params.id,
               field: params.field,
-              value: Number(e.target.value),
+              value: inputNumberString2Number(e.target.value),
             },
             e
           );
@@ -552,7 +558,7 @@ const columns = [
         fontWeight: 'bold',
         color: RED_PRIMARY,
       }}>
-        {params.value}
+        {String(params.value).replace('.', ',')}
       </div>
     ),
     renderEditCell: (params) => (
@@ -563,6 +569,8 @@ const columns = [
         }}
         autoFocus={true}
         decimalScale={4}
+        decimalSeparator=','
+        thousandSeparator='.'
         fixedDecimalScale={false}
         isNumericString
         prefix=""
@@ -574,7 +582,7 @@ const columns = [
             {
               id: params.id,
               field: params.field,
-              value: Number(e.target.value),
+              value: inputNumberString2Number(e.target.value),
             },
             e
           );
@@ -590,10 +598,13 @@ const columns = [
     description: "Cálculo do Valor Unitário x Quantidade",
     width: 120,
     valueGetter: (params) =>
-      (params.getValue(params.id, "Quantidade") * params.getValue(params.id, "Conversao")) *
-      (
-        params.getValue(params.id, "Vlr") - params.getValue(params.id, "Desconto")
-      ),
+      String(Number.parseFloat(
+        (params.getValue(params.id, "Quantidade") * params.getValue(params.id, "Conversao")) *
+        (
+          params.getValue(params.id, "Vlr") - params.getValue(params.id, "Desconto")
+        )
+      ).toFixed(2)).replace('.', ',')
+    ,
   },
 ];
 
@@ -679,4 +690,12 @@ const verifyDTO = (Pedido) => {
   }
 
   return true
+}
+
+const inputNumberString2Number = (numericString) => {
+  return Number(
+    String(numericString)
+      .replace('.', '')
+      .replace(',', '.')
+  )
 }

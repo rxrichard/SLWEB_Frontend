@@ -27,6 +27,7 @@ import {
   ShoppingCart,
   Help,
   AddShoppingCart,
+  Kitchen
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../misc/commom_functions";
@@ -165,6 +166,18 @@ export default function MiniDrawer() {
         </List>
         <Divider />
         <List>
+          <Link
+            to="/equipamentos"
+            style={{ color: GREY_SECONDARY }}
+          >
+            <ListItem button onClick={handleDrawerClose}>
+              <ListItemIcon>
+                <Kitchen />
+              </ListItemIcon>
+
+              <ListItemText primary="Equipamentos" />
+            </ListItem>
+          </Link>
           <Link
             to="/equipamentos/solicitacao"
             style={{ color: GREY_SECONDARY }}

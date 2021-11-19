@@ -11,10 +11,8 @@ export default class Modalzinho extends React.Component {
 
   async componentDidMount() {
     //preencher vizualizado no sistema
-    try {
+    if(this.props.form){
       this.setState({ form: this.props.form });
-    } catch (err) {
-      Toast("Falha ao linkar dados", "error");
     }
   }
 

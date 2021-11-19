@@ -18,12 +18,9 @@ import {
   SetRetira,
 } from "../../global/actions/ComprasAction";
 
-import { Close, InsertDriveFile, Block, ListAlt } from "@material-ui/icons";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import { DataGrid } from "@material-ui/data-grid";
+
 import { withStyles } from "@material-ui/core/styles";
-import Grow from "@material-ui/core/Grow";
+
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -31,14 +28,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import Draggable from "react-draggable";
+
+
 
 import { Table } from "../../components/table";
+import Modal from './ContasModal'
 
 const Contas = (props) => {
   const TabIndex = 1;
@@ -71,7 +65,7 @@ const Contas = (props) => {
         SetMin(response.data.Geral.VlrMinCompra);
         SetRetira(response.data.Geral.Retira);
       } catch (err) {
-        Toast("Falha na comunicação", "error");
+
       }
     }
     loadProdutos();
@@ -84,7 +78,6 @@ const Contas = (props) => {
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
-      Toast("Não foi possivel recuperar os detalhes desse pedido", "error");
     }
   };
 
@@ -113,7 +106,7 @@ const Contas = (props) => {
         setWait(false);
       }
     } catch (err) {
-      Toast("Falha na comunicação", "error");
+
       setWait(false);
     }
   };
@@ -135,93 +128,13 @@ const Contas = (props) => {
         alignItems: "flex-start",
       }}
     >
-      <Dialog
+      <Modal
         open={open}
-        onClose={() => handleCloseDialog()}
-        PaperComponent={PaperComponent}
-        TransitionComponent={Transition}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-            <ListAlt />
-            Detalhes do Pedido
-          </div>
-        </DialogTitle>
-        <DialogContent>
-          <div className="XAlign" style={{ justifyContent: "space-between" }}>
-            <div className="YAlign">
-              <Typography gutterBottom variant="subtitle1">
-                <strong>
-                  {pedidoDet.Status === "Faturado" ? "Emissão" : "Solicitação"}
-                </strong>
-                :{" "}
-                {typeof pedidoDet.Data != "undefined" && pedidoDet.Data != null
-                  ? moment(pedidoDet.Data).utc().format("L")
-                  : "Desconhecido"}
-              </Typography>
-              <Typography gutterBottom variant="subtitle1">
-                <strong>Transportadora:</strong>{" "}
-                {pedidoDet.Transportadora === null
-                  ? "?"
-                  : pedidoDet.Transportadora}
-              </Typography>
-            </div>
-            <Tooltip
-              title={
-                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                  Baixar Boleto
-                </label>
-              }
-              placement="top"
-              arrow
-              followCursor
-            >
-              <IconButton
-                disabled={wait}
-                onClick={() => handleRetriveBoleto(pedidoDet.PedidoId)}
-                color="primary"
-              >
-                <InsertDriveFile />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={
-                typeof pedidoDet.Detalhes != "undefined"
-                  ? pedidoDet.Detalhes
-                  : []
-              }
-              columns={columns}
-              pageSize={5}
-              hideFooter={pedidoDet.Detalhes?.length > 5 ? false : true}
-              disableSelectionOnClick={true}
-              disableColumnMenu={true}
-              loading={typeof pedidoDet.Detalhes == "undefined"}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions style={{ padding: '8px 24px' }}>
-          {pedidoDet.Status === "Processando" ? (
-            <Button
-              color="primary"
-              onClick={() => alert("Cancelamento em desenvolvimento")}
-              startIcon={<Block />}
-            >
-              Cancelar Pedido
-            </Button>
-          ) : null}
-
-          <Button
-            color="primary"
-            onClick={handleCloseDialog}
-            startIcon={<Close />}
-          >
-            Fechar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onClose={handleCloseDialog}
+        Detalhes={pedidoDet}
+        Cooldown={wait}
+        onRequestBoleto={(DOC) => handleRetriveBoleto(DOC)}
+      />
       <Typography variant="h5" gutterBottom>
         Total Mensal
       </Typography>
@@ -244,7 +157,7 @@ const Contas = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <StyledTableRow>
+            <StyledTableRowWithoutHighlight>
               <StyledTableCell
                 style={{
                   "&:hover": {
@@ -289,7 +202,7 @@ const Contas = (props) => {
               <StyledTableCell>
                 {TotalAno && currencyFormat(TotalAno["12"])}
               </StyledTableCell>
-            </StyledTableRow>
+            </StyledTableRowWithoutHighlight>
           </TableBody>
         </Table>
       </TableContainer>
@@ -383,7 +296,7 @@ const Contas = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <StyledTableRow>
+                <StyledTableRowWithoutHighlight>
                   <StyledTableCell
                     style={{
                       background:
@@ -404,7 +317,7 @@ const Contas = (props) => {
                   <StyledTableCell>
                     {currencyFormat(ResumoCompras.LimiteAtual)}
                   </StyledTableCell>
-                </StyledTableRow>
+                </StyledTableRowWithoutHighlight>
               </TableBody>
             </Table>
           </TableContainer>
@@ -426,7 +339,7 @@ const Contas = (props) => {
                   </TableHead>
                   <TableBody>
                     {TotalDuplicatas.map((total) => (
-                      <StyledTableRow>
+                      <StyledTableRowWithoutHighlight>
                         <StyledTableCell>{total.Desc}</StyledTableCell>
                         <StyledTableCell
                           style={{
@@ -444,10 +357,10 @@ const Contas = (props) => {
                         <StyledTableCell>
                           {currencyFormat(Number.parseFloat(total.Vencido) + Number.parseFloat(total.Avencer))}
                         </StyledTableCell>
-                      </StyledTableRow>
+                      </StyledTableRowWithoutHighlight>
                     ))}
                     {aFaturar ? (
-                      <StyledTableRow>
+                      <StyledTableRowWithoutHighlight>
                         <StyledTableCell>A Faturar</StyledTableCell>
                         <StyledTableCell>0,00</StyledTableCell>
                         <StyledTableCell>
@@ -456,7 +369,7 @@ const Contas = (props) => {
                         <StyledTableCell>
                           {currencyFormat(aFaturar)}
                         </StyledTableCell>
-                      </StyledTableRow>
+                      </StyledTableRowWithoutHighlight>
                     ) : null}
                   </TableBody>
                 </Table>
@@ -497,6 +410,19 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 //estilo linha
+const StyledTableRowWithoutHighlight = withStyles((theme) => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+
+    "&:hover": {
+      transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      backgroundColor: "#CCC",
+    },
+  },
+}))(TableRow);
+
 const StyledTableRow = withStyles((theme) => ({
   root: {
     "&:nth-of-type(odd)": {
@@ -566,58 +492,9 @@ const currencyFormat = (currency) => {
   }
 };
 
-function PaperComponent(props) {
-  return (
-    <Draggable
-      handle="#draggable-dialog-title"
-      cancel={'[class*="MuiDialogContent-root"]'}
-    >
-      <Paper {...props} style={{ width: "100%", maxWidth: "900px" }} />
-    </Draggable>
-  );
-}
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Grow {...props} />;
-});
 
-const columns = [
-  { field: "id", headerName: "Código", width: 100, editable: false },
-  {
-    field: "Produto",
-    headerName: "Produto",
-    flex: 1,
-    editable: false,
-  },
-  {
-    field: "UN",
-    headerName: "Un",
-    width: 50,
-    editable: false,
-    sortable: false,
-  },
-  {
-    field: "Quantidade",
-    headerName: "Quantidade",
-    type: "number",
-    width: 125,
-    editable: false,
-  },
-  {
-    field: "VlrUn",
-    headerName: "Valor Unitário",
-    type: "number",
-    sortable: false,
-    width: 130,
-  },
-  {
-    field: "VlrTotal",
-    headerName: "Valor Total",
-    type: "number",
-    description: "Cálculo do Valor Unitário x Quantidade",
-    width: 130,
-    valueGetter: (params) =>
-      params.getValue(params.id, "Quantidade") *
-      params.getValue(params.id, "VlrUn"),
-  },
-];
+
+
+
+

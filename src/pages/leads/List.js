@@ -45,9 +45,6 @@ function CustomizedAccordions(props) {
           type: type,
           motivo: motivo,
         })
-        .catch((err) => {
-          throw new Error(err.response.status);
-        });
 
       const aux = [...leads];
 
@@ -63,12 +60,6 @@ function CustomizedAccordions(props) {
 
       setLeads(aux);
     } catch (err) {
-      if (Number(err.message) === 401) {
-        Toast("Limite de leads já atingido", 'warn');
-      } else if (Number(err.message) === 409) {
-        Toast("Lead assumido por outro franqueado", "error");
-      } 
-      return;
     }
   };
 
@@ -80,7 +71,7 @@ function CustomizedAccordions(props) {
   //         type: "confirm",
   //         motivo: motivo,
   //       })
-  //       .catch((err) => {
+  //       .catch ((err) => {
   //         throw new Error(err.response.status);
   //       });
   //   } catch (err) {
@@ -94,7 +85,7 @@ function CustomizedAccordions(props) {
 
       setHistory(response.data);
     } catch (err) {
-      Toast("Não foi possivel recuperar o historico de desistências do lead", 'error');
+
     }
   };
 

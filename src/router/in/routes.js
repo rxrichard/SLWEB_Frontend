@@ -9,6 +9,7 @@ import notFound from "../../pages/1_NOT_FOUND/index";
 import Perfil from "../../pages/perfil/index";
 import Leads from "../../pages/leads/index";
 import Ajuda from "../../pages/ajuda/index";
+import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/equipamentosSolicitacao/gerenciamento";
 import AdmFranquia from "../../pages/administracao/index";
@@ -40,6 +41,7 @@ function Dashboard(props) {
             <Route exact path="/ajuda" component={Ajuda} />
             <Route exact path="/compras" component={Compras} />
             <Route exact path="/vendas" component={Vendas} />
+            <Route exact path="/equipamentos/" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} /> <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />

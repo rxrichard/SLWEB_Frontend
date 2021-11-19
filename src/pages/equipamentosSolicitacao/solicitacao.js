@@ -58,7 +58,7 @@ function VerticalLinearStepper(props) {
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await api.get("/equip/adresses");
+        const response = await api.get("/equip/requests/adresses");
 
         LoadAtivos(response.data.MaquinasDisponiveis);
         LoadBebidas(response.data.BebidasNovo);
@@ -488,7 +488,7 @@ const handleSubmit = async (
 
   try {
     toastId = Toast('Aguarde...', 'wait')
-    const response = await api.post("/equip", {
+    const response = await api.post("/equip/requests", {
       Solicitacao,
     });
 
@@ -498,7 +498,7 @@ const handleSubmit = async (
     setDesativar(false);
   } catch (err) {
     setDesativar(false);
-    return;
+
   }
 };
 

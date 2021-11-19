@@ -53,7 +53,7 @@ function Pedidos(props) {
         setPedidosAtendidos(response.data.PedidosFaturados);
         setLoaded(true);
       } catch (err) {
-        Toast("Falha na comunicação", "error");
+        
       }
     }
     LoadData();
@@ -68,7 +68,7 @@ function Pedidos(props) {
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
-      Toast("Não foi possivel recuperar os detalhes deste pedido", "error");
+      
     }
   };
 

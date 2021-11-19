@@ -54,7 +54,7 @@ function Perfil() {
           valor: response.data.ParamVlr * 100,
         });
       } catch (err) {
-        Toast('Falha na comunicação', "error");
+        
       }
     }
     loadData();
@@ -71,9 +71,6 @@ function Perfil() {
           token: sessionStorage.getItem("token"),
           password: password,
         })
-        .catch((error) => {
-          throw new Error(error.response.status);
-        });
 
       Toast('Senha atualizada com sucesso!', 'update', toastId, 'success')
       setWait(false);
@@ -83,27 +80,7 @@ function Perfil() {
         confirmacao: "",
       });
     } catch (err) {
-      switch (Number(err.message)) {
-        case 409:
-          Toast('A nova senha diverge da confirmação', 'update', toastId, 'error')
-          setWait(false);
-          break;
-        case 406:
-          Toast('A senha deve possuir no máximo seis caractéres', 'update', toastId, 'error')
-          setWait(false);
-          break;
-        case 405:
-          Toast('A senha atual não está correta', 'update', toastId, 'error')
-          setWait(false);
-          break;
-        case 304:
-          Toast('Nova senha e atual são identicas', 'update', toastId, 'error')
-          setWait(false);
-          break;
-        default:
-          setWait(false);
-          break;
-      }
+      
     }
   };
 

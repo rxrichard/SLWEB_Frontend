@@ -107,7 +107,6 @@ export default class Formulario extends React.Component {
       this.setState({ loading: false, validado: true });
     } catch (err) {
       event.target.value = "";
-      Toast("Código inválido, tente novamente", "error");
       this.setState({ loading: false, validado: false, cod_candidato: null });
     }
   }
