@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../../services/api'
 
-
-
 import { Panel } from '../../components/commom_in'
 import Loading from '../../components/loading_screen'
+import { Toast } from '../../components/toasty'
 
 import Header from './Header'
 import MainSection from './Main'
@@ -49,6 +48,7 @@ const Equipamentos = () => {
   const HandleOpenMiFixModal = () => {
     setMiFixModalState(true)
   }
+
   const HandleOpenReportModal = () => {
     setReportModalState(true)
   }
@@ -71,10 +71,29 @@ const Equipamentos = () => {
     alert(`sincroniza o ${ativo} com a telemetria e ativa o cooldown`)
   }
 
-  const HandleSwitchCliente = (cliente) => {
-    alert(`Troca o ${targetAtivo} de cliente para ${cliente.Nome_Fantasia}`)
-    setLinkModalState(false)
-    setTargetAtivo('')
+  const HandleSwitchCliente = async (cliente) => {
+    let toastId = null
+    let oldPdv = equipamentos.filter(element => String(element.EquiCod) === String(targetAtivo))[0]
+
+    if(oldPdv.CNPJss === cliente.CNPJss){
+      Toast('Ativo já está vinculado ao cliente','warn')
+      return
+    }
+
+    try{
+      toastId = Toast('Aguarde...', 'wait')
+      await api.put('/equip', {
+        oldPdv: oldPdv,
+        newCliente: cliente
+      })
+
+      Toast('Ativo vinculado com sucesso!', 'update', toastId, 'success')
+      setLinkModalState(false)
+      setTargetAtivo('')
+    }catch(err){
+      Toast('Falha ao vincular ativo', 'update', toastId, 'error')
+      console.log(err)
+    }
   }
 
   return !loaded ?

@@ -16,47 +16,50 @@ const AxiosWithConfig = axios.create({
 
 AxiosWithConfig.interceptors.response.use(undefined,
   error => {
-    switch (String(error.response.status)) {
-      case '498':
-        Toast('Sua sessão expirou, faça login novamente', 'error')
-        setTimeout(() => {
-          window.location.assign('/')
-          window.sessionStorage.clear()
-        }, 3000)
-        break;
+    if (typeof error.response.status != "undefined") {
+      switch (String(error.response.status)) {
+        case '498':
+          Toast('Sua sessão expirou, faça login novamente', 'error')
+          // setTimeout(() => {
+          //   window.location.assign('/')
+          //   window.sessionStorage.clear()
+          // }, 3000)
+          break;
 
-      case '400':
-        Toast('Erro, contate o suporte', 'error')
-        break;
+        case '400':
+          Toast('Erro, contate o suporte', 'error')
+          break;
 
-      case '304':
-        Toast('Sem mudança', 'warn')
-        break;
+        case '304':
+          Toast('Sem mudança', 'warn')
+          break;
 
-      case '401':
-        Toast('Não autorizado', 'error')
-        break;
+        case '401':
+          Toast('Não autorizado', 'error')
+          break;
 
-      case '405':
-        Toast('Falha na validação', 'error')
-        break;
+        case '405':
+          Toast('Falha na validação', 'error')
+          break;
 
-      case '406':
-        Toast('Requisitos não cumpridos', 'error')
-        break;
+        case '406':
+          Toast('Requisitos não cumpridos', 'error')
+          break;
 
-      case '409':
-        Toast('Dados conflitantes', 'error')
-        break;
+        case '409':
+          Toast('Dados conflitantes', 'error')
+          break;
 
-      case '412':
-        Toast('Pré-condição não atendida', 'error')
-        break;
+        case '412':
+          Toast('Pré-condição não atendida', 'error')
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } else {
+      Toast('Servidor congestionado, contate o suporte', 'error')
     }
-
     return Promise.reject(error)
   })
 

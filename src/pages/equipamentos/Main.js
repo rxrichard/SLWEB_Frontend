@@ -17,6 +17,7 @@ function MainSection(props) {
         maxHeight: '600px',
         overflow: 'auto',
         borderRadius: '0px 0px 8px 8px',
+        alignItems: 'flex-start'
       }}>
       {props.Ativos.map(item => (
         <div className={classes.root}>

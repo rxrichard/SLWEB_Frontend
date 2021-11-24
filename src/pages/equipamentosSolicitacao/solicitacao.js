@@ -488,7 +488,7 @@ const handleSubmit = async (
 
   try {
     toastId = Toast('Aguarde...', 'wait')
-    const response = await api.post("/equip/requests", {
+    await api.post("/equip/requests", {
       Solicitacao,
     });
 
@@ -497,8 +497,7 @@ const handleSubmit = async (
     ResetarStep(0);
     setDesativar(false);
   } catch (err) {
-    setDesativar(false);
-
+    setDesativar(false)
   }
 };
 

@@ -64,7 +64,7 @@ export default function Forgot() {
           </Button>
         </Link>
       </Box>
-      <Link to="/">
+      <Link to="/PILAO">
         <Button
           icon={<Work />}
         >
