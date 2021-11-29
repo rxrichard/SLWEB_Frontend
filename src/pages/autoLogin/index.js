@@ -41,6 +41,10 @@ export default class autoLogin extends Component {
       case 'compras':
         window.location.assign("/compras");
         break;
+
+      case 'vendas':
+        window.location.assign("/vendas");
+        break;
       default:
         window.location.assign("/");
     }
