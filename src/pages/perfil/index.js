@@ -9,15 +9,14 @@ import Loading from "../../components/loading_screen";
 import InputNumber from '../../components/materialComponents/inputMoney'
 import Card from "../../components/materialComponents/Card";
 import Dialog from "../../components/materialComponents/Dialog";
+import Select from "../../components/materialComponents/Select";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import Button from "../../components/materialComponents/Button";
-import Check from "@material-ui/icons/Check";
-import Settings from "@material-ui/icons/Settings";
-import VpnKey from "@material-ui/icons/VpnKey";
-import Typography from "@material-ui/core/Typography";
+
+import {Settings,VpnKey,Check, AccountCircle } from "@material-ui/icons/";
+import {MenuItem, Typography, TextField, Input, InputAdornment,  }from "@material-ui/core/";
+
 import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
-import Select from "../../components/materialComponents/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 
 function Perfil() {
   const [info, setInfo] = useState({});
@@ -143,8 +142,11 @@ function Perfil() {
           alignItems: "flex-start",
         }}
       >
+
+        {/* DADOS CADASTRAIS */}
         <Card
-          style={{ marginBottom: "8px" }}
+            className="mb8 df df-aling-end  w90 h40 w100m bl-3red bt-3red h-auto"
+          
           action={
             <Dialog
               title="Alterar Senha"
@@ -164,6 +166,9 @@ function Perfil() {
                 </Button>
               }
             >
+
+              
+              
               <InputUnderline
                 value={password.atual}
                 type="password"
@@ -187,9 +192,20 @@ function Perfil() {
             </Dialog>
           }
         >
-          <Typography variant="h5" component="h2">
-            {info.M0_FILIAL[0]}
-          </Typography>
+
+        
+
+        <Input disabled value={info.M0_FILIAL[0]}
+          className="w45"
+          id="input-with-icon-adornment"
+          
+          startAdornment={
+            <InputAdornment position="start">
+              <AccountCircle />
+            </InputAdornment>
+          }
+        />
+
           <Typography variant="body2" color="textSecondary" component="p">
             CNPJ: {maskCNPJ(info.M0_CGC[0])}
           </Typography>
@@ -216,8 +232,11 @@ function Perfil() {
           </Typography>
         </Card>
 
+
+
+        {/* DADOS DE CONTATO */}
         <Card
-          style={{ marginBottom: "8px" }}
+          className="mb8 df df-aling-end w45 w100m  h30 h-auto bl-3red bt-3red"
           action={
             <Dialog
               title="Alterar Email Principal"
@@ -247,6 +266,7 @@ function Perfil() {
             </Dialog>
           }
         >
+
           <Typography variant="h5" component="h2">
             CONTATO
           </Typography>
@@ -270,8 +290,10 @@ function Perfil() {
           </Typography>
         </Card>
 
+
+          {/* DADOS DE IMPOSTO/TAXA */}
         <Card
-          style={{ marginBottom: "8px" }}
+          className="mb8 df df-aling-end  w45 h30  w100m bl-3red bt-3red"
           action={
             <Button
               style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
@@ -296,8 +318,10 @@ function Perfil() {
               i[0].value = "";
             }}
             >
-            <MenuItem value="PERCENTUAL">Percentual</MenuItem>
-            <MenuItem value="VALOR FIXO">Valor fixo</MenuItem>
+            <div className='df-pure'>
+            <MenuItem value="PERCENTUAL" className='df-pure'>Percentual</MenuItem>
+            <MenuItem value="VALOR FIXO" >Valor fixo</MenuItem>
+            </div>
           </Select>
 
           <InputNumber

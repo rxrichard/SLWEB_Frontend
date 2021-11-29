@@ -1,0 +1,96 @@
+.container-form {
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #f2f2f2;
+  background: #d33b48; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to top,
+    #ca3e25,
+    #d33b48
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to top,
+    #ca3e25,
+    #d33b48
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.container-form h4 {
+  text-align: center;
+}
+.container-form .panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-height: 50vh;
+  height: 100%;
+  background-color: #f2f2f294;
+  padding: 5rem;
+  color: #f2f2f2;
+
+  border-radius: 1rem;
+}
+
+.container-modal > p {
+  font-size: 1.5rem;
+}
+.container-form .panel .input-form {
+  all: unset;
+  text-align: center;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  padding: 1.2rem;
+  font-size: 2rem;
+  overflow: hidden;
+  display: flex;
+  flex: 1;
+  color: #f2f2f2;
+}
+
+.container-form .panel .input-form::placeholder {
+  color: #f2f2f2;
+}
+.container-form .panel .input-form:active,
+.container-form .panel .input-form:focus {
+  border-bottom: 1px solid #f2f2f2;
+  color: #f2f2f2;
+}
+
+.container-form .container-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem;
+}
+.container-form .container-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container-form .container-modal button {
+  padding: 1rem;
+  height: 5rem;
+  width: 100%;
+  border-radius: 1rem;
+  font-size: 1.5rem;
+}
+@media only screen and (max-width: 600px) {
+  .container-form .panel {
+    display: flex;
+    width: 95%;
+    height: auto;
+  }
+
+  .container-form .panel .input-form {
+    font-size: 1.5rem;
+    padding: 2rem 1.2rem;
+    color: #fff;
+  }
+}
