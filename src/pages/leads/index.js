@@ -20,7 +20,7 @@ import { Toast } from "../../components/toasty";
 
 function LeadsList(props) {
   const [Loaded, setLoaded] = useState(false);
-  
+
 
   const { LoadLeadsFranqueado, LoadLeadsGeral, LoadLeadsLimite } = props;
   const { LeadsFranqueado, LeadsGeral, Limites } = props.State;
@@ -95,7 +95,12 @@ function LeadsList(props) {
   return !Loaded ? (
     <Loading />
   ) : (
-    <Panel style={{ alignItems: "flex-start", padding: '16px', justifyContent: 'column' }}>
+    <Panel style={{
+      alignItems: "flex-start",
+      padding: '16px',
+      justifyContent: 'column',
+      height: 'unset'
+    }}>
       <AdicionarLead />
       <Assumidos
         Leads={LeadsFranqueado}

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import moment from 'moment'
 
 import { Build, Sync } from '@material-ui/icons'
 import { Typography, Tooltip, Button, makeStyles } from '@material-ui/core';
@@ -71,7 +72,8 @@ function MainSection(props) {
                 disabled={props.isInCooldown}
                 onClick={() => props.onSync(item.EquiCod)}
               >
-                <Sync />
+                {props.isInCooldown !== false ? props.isInCooldown : <Sync />}
+                
               </Button>
             </Tooltip>
           </div>

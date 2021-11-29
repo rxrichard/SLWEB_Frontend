@@ -9,6 +9,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Paper from "@material-ui/core/Paper";
 import Draggable from "react-draggable";
 
+import { RED_SECONDARY } from '../../misc/colors'
+
 function ModalPersonalizado(props) {
     const classes = useStyles();
 
@@ -33,7 +35,7 @@ function ModalPersonalizado(props) {
                             <Typography variant="h6">
                                 {cliente.Nome_Fantasia}
                             </Typography>
-                            <Typography variant='subtitle1'>
+                            <Typography style={{ color: RED_SECONDARY }} variant='subtitle1'>
                                 {cliente.CNPJss}
                             </Typography>
                         </div>

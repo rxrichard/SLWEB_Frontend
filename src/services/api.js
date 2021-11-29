@@ -20,10 +20,10 @@ AxiosWithConfig.interceptors.response.use(undefined,
       switch (String(error.response.status)) {
         case '498':
           Toast('Sua sessão expirou, faça login novamente', 'error')
-          // setTimeout(() => {
-          //   window.location.assign('/')
-          //   window.sessionStorage.clear()
-          // }, 3000)
+          setTimeout(() => {
+            window.location.assign('/')
+            window.sessionStorage.clear()
+          }, 3000)
           break;
 
         case '400':

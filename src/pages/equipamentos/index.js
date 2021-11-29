@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../../services/api'
+import moment from 'moment'
 
 import { Panel } from '../../components/commom_in'
 import Loading from '../../components/loading_screen'
@@ -67,30 +68,60 @@ const Equipamentos = () => {
   }
 
   const HandleSyncTMT = (ativo) => {
-    setCooldownSync(true)
-    alert(`sincroniza o ${ativo} com a telemetria e ativa o cooldown`)
+    //horário inicial e limite em MS(60 segundos de diferença)
+    const eventTime = 1366547460;
+    const currentTime = 1366547400;
+    const diffTime = eventTime - currentTime;
+    let duration = moment.duration(diffTime * 1000, 'milliseconds');
+    const interval = 1000;
+
+    setInterval(() => {
+      duration = moment.duration(duration - interval, 'milliseconds');
+      if (duration.asSeconds() <= 0) {
+        setCooldownSync(false)
+      }else{
+        setCooldownSync(duration.minutes() + ":" + duration.seconds())
+      }
+    }, interval);
+    // const aguardeAte = moment().add('1', 'minute')
+    // setCooldownSync(aguardeAte)
+    // alert(`sincroniza o ${ativo} com a telemetria e ativa o cooldown`)
   }
 
   const HandleSwitchCliente = async (cliente) => {
     let toastId = null
     let oldPdv = equipamentos.filter(element => String(element.EquiCod) === String(targetAtivo))[0]
 
-    if(oldPdv.CNPJss === cliente.CNPJss){
-      Toast('Ativo já está vinculado ao cliente','warn')
+    if (oldPdv.CNPJss === cliente.CNPJss) {
+      Toast('Ativo já está vinculado ao cliente', 'warn')
       return
     }
 
-    try{
+    try {
       toastId = Toast('Aguarde...', 'wait')
-      await api.put('/equip', {
+      const response = await api.put('/equip', {
         oldPdv: oldPdv,
         newCliente: cliente
       })
 
       Toast('Ativo vinculado com sucesso!', 'update', toastId, 'success')
+      setEquipamentos((equipamentos) => {
+        let aux = [...equipamentos];
+
+        aux.forEach(element => {
+          if (String(element.EquiCod) === String(oldPdv.EquiCod)) {
+            element.CNPJss = cliente.CNPJss
+            element.Nome_Fantasia = cliente.Nome_Fantasia
+            element.AnxId = response.data.NewAnxId
+            element.PdvId = response.data.NewPdvId
+          }
+        })
+
+        return aux
+      })
       setLinkModalState(false)
       setTargetAtivo('')
-    }catch(err){
+    } catch (err) {
       Toast('Falha ao vincular ativo', 'update', toastId, 'error')
       console.log(err)
     }
@@ -125,7 +156,7 @@ const Equipamentos = () => {
       <MiFixModal
         open={MiFixModalState}
         onClose={HandleCloseMiFixModal}
-        />
+      />
 
       <ReportModal
         open={reportModalState}
