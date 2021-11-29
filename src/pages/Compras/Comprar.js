@@ -4,16 +4,20 @@ import { bindActionCreators } from "redux";
 
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
+import {
+  CardHeader,
+  ListItemText,
+  Divider,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@material-ui/core/";
+
 import { Table } from "../../components/table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+
 import { ViewList } from "@material-ui/icons";
 
 import { ChangeTab, SetCheckedProd } from "../../global/actions/ComprasAction";
@@ -119,7 +123,7 @@ function TransferList(props) {
       style={{
         width: "100%",
         height: "100%",
-        flexWrap: "wrap !important",
+        flexWrap: "wrap  ",
         alignItems: "flex-start",
       }}
     >

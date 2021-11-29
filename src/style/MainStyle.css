@@ -1,10 +1,14 @@
 /* CSS Global */
 
 @font-face {
-  font-family: "Open Sans" !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  src: url("../../src/assets/font/OpenSans-Bold.ttf") !important; /* IE9 Compat Modes */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../src/assets/font/OpenSans-Bold.ttf"); /* IE9 Compat Modes */
+}
+
+:root{
+  --primary-red: #C8102E;
 }
 
 /* Estilo do scroll */
@@ -26,8 +30,8 @@
 }
 
 body {
-  font-family: "Open Sans" !important;
-  height: 100vh !important;
+  font-family: "Roboto";
+  height: 100vh;
   overflow-x: hidden;
 }
 
@@ -38,15 +42,15 @@ body {
 }
 
 .DefaultSelect {
-  display: block !important;
-  font-size: 1em !important;
-  border: 1px dashed #333 !important;
-  width: 100% !important;
-  height: 36px !important;
+  display: block;
+  font-size: 1em;
+  border: 1px dashed #333;
+  width: 100%;
+  height: 36px;
 }
 
 .datepicker-table-wrapper {
-  color: #000 !important;
+  color: #000;
 }
 
 /*CSS para tabelas no geral*/
@@ -76,7 +80,7 @@ body {
 }
 
 .tableFixHead thead th {
-  background-color: #f5f5f5;
+  background-color: #c8102e;
   z-index: 1;
   position: sticky;
   top: 0;
@@ -91,42 +95,42 @@ body {
 
 .tableFixHead th,
 td {
-  border-bottom: 1px solid black !important;
-  border-right: 1px solid black !important;
-  border-left: 1px solid black !important;
-  border-collapse: collapse !important;
-  line-height: 14px !important;
-  text-overflow: ellipsis !important;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  border-collapse: collapse;
+  line-height: 14px;
+  text-overflow: ellipsis;
 }
 
 .tableFixHead tr {
-  overflow: hidden !important;
-  height: 10px !important;
-  white-space: nowrap !important;
+  overflow: hidden;
+  height: 10px;
+  white-space: nowrap;
 }
 
 .tableFixHead th {
   border-radius: 0px;
-  background-color: #333 !important;
-  color: #f5f5f5 !important;
+  background-color: #333;
+  color: #f5f5f5;
 }
 
 /* padding das celulas do material ui */
 .TableFirstItemCheckbox {
-  padding: 10px 0px 10px 8px !important;
+  padding: 10px 0px 10px 8px;
 }
 
 .TableFirstItemCheckbox:first-child {
-  padding: 0px 0px 0px 0px !important;
+  padding: 0px 0px 0px 0px;
 }
 
 .Toastify__toast {
-  border-radius: 4px !important;
+  border-radius: 4px;
 }
 
 @media only screen and (max-width: 480px) {
   .Toastify__toast {
-    border-radius: 0px !important;
+    border-radius: 0px;
   }
 }
 
@@ -136,7 +140,7 @@ td {
   animation-fill-mode: forwards;
   cursor: pointer;
   margin: 8px;
-  background-color: rgb(255, 253, 132) !important;
+  background-color: rgb(255, 253, 132);
 }
 
 .modal-trigger:not(:hover) {
@@ -145,7 +149,7 @@ td {
   animation-fill-mode: forwards;
   cursor: auto;
   margin: 8px;
-  background-color: rgb(255, 253, 132) !important;
+  background-color: rgb(255, 253, 132);
 }
 
 .modal-trigger:hover td:nth-child(2) {
@@ -193,25 +197,86 @@ td {
   flex-wrap: wrap;
 }
 
+
+/* FONT SIZE */
+
+.f-12 {
+  font-size: 12px;
+}
+
+/* MARGIN*/
+.mb8 {
+  margin-bottom: .5rem;
+  
+}
+
+/*BORDER*/
+.bl-3red{
+  border-left: 3px solid #C8102E;
+}
+
+.bt-3red{
+  border-top: 3px solid #C8102E;
+}
+
+/*DISPLAY*/
+.df{
+  display: flex;
+  justify-content: space-between;
+
+}
+.df-aling-end{
+  align-items: flex-end;
+}
+
+/*width*/
+.w90 {
+  width: 90vw;
+}
+
+.w45 {
+  width: 45vw;
+}
+
+/*HEIGHT*/
+.h30 {
+  height: 30vh;
+}
+.h40 {
+  height: 40vh;
+}
+
+.h45 {
+  height: 45vh;
+}
+
+
+/*Aling*/
+.al-start{
+  text-align: left;
+}
+
+
+
 /* outline do select Material UI */
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #930d18 !important;
-  border-width: 2px !important;
+  border-color: #930d18;
+  border-width: 2px;
 }
 
 /* Titulo em cima do select */
 .MuiFormLabel-root.Mui-focused {
-  color: #930d18 !important;
+  color: #930d18;
 }
 
 /* Underline input underline*/
 .MuiInput-underline::after {
-  border-bottom: 2px solid #930d18 !important;
+  border-bottom: 2px solid #930d18;
 }
 
 /* Dialog close button*/
 .MuiButton-textPrimary {
-  color: #930d18 !important;
+  color: #930d18;
 }
 
 /* Button bg when focus(after click) */
@@ -221,13 +286,13 @@ button:focus {
 }
 
 .TextBold {
-  all: "unset" !important;
-  font-weight: bold !important;
+  all: "unset";
+  font-weight: bold;
 }
 
 .txt {
   color: antiquewhite;
-  font-size: 20px !important;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -295,7 +360,7 @@ button:focus {
   text-align: center;
 
   /* Prevent sidebar from showing a scrollbar on page */
-  overflow: hidden !important;
+  overflow: hidden;
 }
 
 #outer {
@@ -404,19 +469,41 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
-input[type="text"]:not(.browser-default) {
+/* input[type="text"]:not(.browser-default) {
   border-bottom: none;
   box-shadow: none;
   margin-left: 10px;
   margin-right: 10px;
-}
-
+} */
+/* 
 input[type="text"]:not(.browser-default):focus:not([readonly]) {
   border-bottom: none;
   box-shadow: none;
   margin-left: 10px;
-}
+} */
 /* diminuir o tamanho do checkbox*/
 .PrivateSwitchBase-input-51 {
-  transform: scale(0.5) !important;
+  transform: scale(0.5);
+}
+
+@media only screen and (max-width: 1200px) {
+  .w100m {
+    width: 100%;
+  }
+
+  .h-auto {
+    height: auto;
+  }
+  
+}
+
+@media only screen and (max-width: 600px) {
+  .df-mobile{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: auto;
+    width: 100%;
+  }
+
 }

@@ -1,23 +1,21 @@
 
-.error_page{
+.not_found{
   display:flex;
-  justify-content: center;
+  justify-content:space-between;
   align-items: center;
 
   width: 80%;
   margin: 0 auto;
 
   font-family: Roboto, sans-serif;
-
-  max-height: 100vh;
  
 }
-.error_page img{
+.not_found img{
   width: 50%;
   height: 50%;
   
 }
-.lost {
+.not_found_lost {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +23,7 @@
   align-items: center;
   text-align: center;
 
-  width: 30vw;
+  width: 50vw;
 
 }
 
@@ -48,7 +46,7 @@
 }
 
 @media only screen and (max-width: 768px) {
-  .error_page{
+  .not_found{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -57,24 +55,28 @@
     height: 80vh;
     text-align: center;
 
-    width: 100%;
+    width: 50vw;
+    
 
   }
 
-  .error_page img{
+  .not_found img{
     width: 100%;
     margin-bottom: 0;
 
+    width: 50vw;
   }
 
 
-  .lost h1{
+  .not_found_lost h1{
     font-size: 3rem;
     margin-bottom: 0;
+    
+    width: 100%;
   }
-  .lost h3{
+  .not_found_lost h3{
     font-size: 1.2rem;
-    width: 95vw;
+    width: 100%;
   }
   
 }

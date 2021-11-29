@@ -8,20 +8,23 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import Fab from "@material-ui/core/Fab";
 import { ShoppingCart, Add } from "@material-ui/icons";
-import Zoom from "@material-ui/core/Zoom";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import {
+  Zoom,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Badge,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Box,
+  Tooltip,
+} from "@material-ui/core/";
+
 import Draggable from "react-draggable";
-import Paper from "@material-ui/core/Paper";
-import Badge from "@material-ui/core/Badge";
-import Typography from "@material-ui/core/Typography";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
-import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   LoadInsumos,
@@ -40,7 +43,7 @@ import Pedidos from "./Pedidos";
 import { Toast } from "../../components/toasty";
 import Input from "react-number-format";
 import InputMultline from "../../components/materialComponents/InputMultline";
-import { RED_PRIMARY } from '../../misc/colors'
+import { RED_PRIMARY } from "../../misc/colors";
 
 function Compras(props) {
   const classes = useStyles();
@@ -60,7 +63,8 @@ function Compras(props) {
     ClearCarrinho,
   } = props;
 
-  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } = props.State;
+  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } =
+    props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
 
@@ -103,31 +107,35 @@ function Compras(props) {
       Items: Carrinho,
       Obs: obs,
       Retira: retira,
-    }
+    };
 
-    setWait(true)
+    setWait(true);
 
     if (!verifyPedido(LoadDTO, retira, MinCompra)) {
-      setWait(false)
-      return
+      setWait(false);
+      return;
     }
 
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      toastId = Toast("Aguarde...", "wait");
 
       await api.post("/compras/comprar", LoadDTO);
 
-      Toast('Pedido incluído com sucesso!', 'update', toastId, 'success')
+      Toast("Pedido incluído com sucesso!", "update", toastId, "success");
       ClearCarrinho();
       setObs("");
-      setRetira(false)
-      setWait(false)
-
+      setRetira(false);
+      setWait(false);
     } catch (err) {
-      Toast('Falha ao incluir o pedido de compra, verifique a tela "Contas à Pagar"', 'update', toastId, 'error')
-      setWait(false)
+      Toast(
+        'Falha ao incluir o pedido de compra, verifique a tela "Contas à Pagar"',
+        "update",
+        toastId,
+        "error"
+      );
+      setWait(false);
     }
   };
 
@@ -153,7 +161,7 @@ function Compras(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          <div className='XAlign' style={{ justifyContent: 'flex-start' }}>
+          <div className="XAlign" style={{ justifyContent: "flex-start" }}>
             <ShoppingCart className={classes.extendedIcon} />
             Carrinho
           </div>
@@ -177,8 +185,7 @@ function Compras(props) {
 
             <div className="YAlign" style={{ flex: "unset" }}>
               <Typography gutterBottom variant="subtitle1">
-                <strong>Valor mínimo:</strong> R${" "}
-                {MinFrete(MinCompra, retira)}
+                <strong>Valor mínimo:</strong> R$ {MinFrete(MinCompra, retira)}
                 <Typography gutterBottom variant="subtitle1">
                   <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
                 </Typography>
@@ -205,7 +212,7 @@ function Compras(props) {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px' }}>
+        <DialogActions style={{ padding: "8px 24px" }}>
           <Box
             sx={{
               width: "100%",
@@ -215,7 +222,7 @@ function Compras(props) {
               style={{
                 width: "100%",
                 backgroundColor:
-                  (200 - obs.length) < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+                  200 - obs.length < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
               onChange={(e) => setObs(e.target.value)}
               value={obs}
@@ -236,7 +243,11 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button disabled={wait} onClick={(e) => handleBuy(e)} color="primary">
+            <Button
+              disabled={wait}
+              onClick={(e) => handleBuy(e)}
+              color="primary"
+            >
               Comprar
             </Button>
           </Tooltip>
@@ -253,7 +264,9 @@ function Compras(props) {
             followCursor
           >
             <Button
-              disabled={CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true}
+              disabled={
+                CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true
+              }
               onClick={() => UpdateProdutos()}
               color="primary"
             >
@@ -272,7 +285,11 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
+            <Button
+              disabled={wait}
+              onClick={() => ClearCarrinho()}
+              color="primary"
+            >
               Limpar
             </Button>
           </Tooltip>
@@ -288,11 +305,14 @@ function Compras(props) {
             arrow
             followCursor
           >
-            <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
+            <Button
+              disabled={wait}
+              onClick={() => setOpen(false)}
+              color="primary"
+            >
               Fechar
             </Button>
           </Tooltip>
-
         </DialogActions>
       </Dialog>
       <div
@@ -308,9 +328,9 @@ function Compras(props) {
           in={TabIndex === 2 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
-            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
-              }ms`,
-            zIndex: "2",
+            transitionDelay: `${
+              TabIndex === 2 ? transitionDuration.exit : 0
+            }ms`,
           }}
           unmountOnExit
         >
@@ -334,9 +354,9 @@ function Compras(props) {
           timeout={transitionDuration}
           style={{
             marginTop: "8px",
-            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
-              }ms`,
-            zIndex: "2",
+            transitionDelay: `${
+              TabIndex === 2 ? transitionDuration.exit : 0
+            }ms`,
           }}
           unmountOnExit
         >
@@ -463,7 +483,6 @@ const MinFrete = (min, retira) => {
 };
 
 const verifyPedido = (pedido, retira, MinCompra) => {
-
   if (pedido.Items.length === 0) {
     Toast("Nenhum item no carrinho", "warn");
     return false;
@@ -471,23 +490,26 @@ const verifyPedido = (pedido, retira, MinCompra) => {
 
   for (let i = 0; i < pedido.Items.length; i++) {
     if (pedido.Items[i].QCompra === 0) {
-      Toast("Um ou mais produtos do carrinho não tem uma quantidade definida", 'warn');
+      Toast(
+        "Um ou mais produtos do carrinho não tem uma quantidade definida",
+        "warn"
+      );
       return false;
     }
   }
 
   if (pedido.Obs.length > 200) {
-    Toast("Tamanho do campo Observações excede o limite", 'warn');
+    Toast("Tamanho do campo Observações excede o limite", "warn");
     return false;
   }
 
   if (!retira && totalPedido(pedido.Items) < MinCompra) {
-    Toast("Valor total do pedido é menor que o mínimo", 'warn');
+    Toast("Valor total do pedido é menor que o mínimo", "warn");
     return false;
   }
 
-  return true
-}
+  return true;
+};
 
 const transitionDuration = {
   appear: 300,
@@ -512,17 +534,19 @@ const columns = [
     sortable: false,
     editable: true,
     renderCell: (params) => (
-      <div style={{
-        fontWeight: 'bold',
-        color: RED_PRIMARY,
-      }}>
+      <div
+        style={{
+          fontWeight: "bold",
+          color: RED_PRIMARY,
+        }}
+      >
         {params.value}
       </div>
     ),
     renderEditCell: (params) => (
       <Input
         style={{
-          fontWeight: 'bold',
+          fontWeight: "bold",
           color: RED_PRIMARY,
         }}
         autoFocus={true}
@@ -552,7 +576,8 @@ const columns = [
     sortable: false,
     width: 90,
     valueGetter: (params) =>
-      params.getValue(params.id, "Vlr") * params.getValue(params.id, "Conversao"),
+      params.getValue(params.id, "Vlr") *
+      params.getValue(params.id, "Conversao"),
   },
   {
     field: "VlrTotal",

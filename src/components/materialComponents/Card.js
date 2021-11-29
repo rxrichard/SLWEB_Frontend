@@ -6,7 +6,13 @@ import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles({
   root: {
-    minWidth: '300px',
+    minWidth: '400px',
+    maxWidth: '400px',
+    maxHeight: '300px',
+    minHeight: '300px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   bullet: {
     display: "inline-block",
@@ -19,6 +25,8 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
+  
+  
 });
 
 export default function SimpleCard(props) {
