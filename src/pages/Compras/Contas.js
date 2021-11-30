@@ -18,13 +18,8 @@ import {
   SetRetira,
 } from "../../global/actions/ComprasAction";
 
-import { Close, InsertDriveFile, Block, ListAlt } from "@material-ui/icons";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import { DataGrid } from "@material-ui/data-grid";
 import {
   withStyles,
-  Grow,
   TableBody,
   TableCell,
   TableContainer,
@@ -32,14 +27,8 @@ import {
   TableRow,
   Paper,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
 } from "@material-ui/core/";
-
-import Draggable from "react-draggable";
 
 import { Table } from "../../components/table";
 import Modal from './ContasModal'
@@ -138,99 +127,13 @@ const Contas = (props) => {
         alignItems: "flex-start",
       }}
     >
-      <Dialog
+      <Modal
         open={open}
-        onClose={() => handleCloseDialog()}
-        PaperComponent={PaperComponent}
-        TransitionComponent={Transition}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          <div className='XAlign' style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-            <ListAlt />
-            Detalhes do Pedido
-          </div>
-        </DialogTitle>
-        <DialogContent>
-          <div className="XAlign" style={{ justifyContent: "space-between" }}>
-            <div className="YAlign">
-              <Typography gutterBottom variant="subtitle1">
-                <strong>
-                  {pedidoDet.Status === "Faturado" ? "Emissão" : "Solicitação"}
-                </strong>
-                :{" "}
-                {typeof pedidoDet.Data != "undefined" && pedidoDet.Data != null
-                  ? moment(pedidoDet.Data).utc().format("L")
-                  : "Desconhecido"}
-              </Typography>
-              <Typography gutterBottom variant="subtitle1">
-                <strong>Transportadora:</strong>{" "}
-                {pedidoDet.Transportadora === null
-                  ? "?"
-                  : pedidoDet.Transportadora}
-              </Typography>
-            </div>
-            <Tooltip
-              title={
-                <label
-                  style={{
-                    fontSize: "14px",
-                    color: "#FFF",
-                    lineHeight: "20px",
-                  }}
-                >
-                  Baixar Boleto
-                </label>
-              }
-              placement="top"
-              arrow
-              followCursor
-            >
-              <IconButton
-                disabled={wait}
-                onClick={() => handleRetriveBoleto(pedidoDet.PedidoId)}
-                color="primary"
-              >
-                <InsertDriveFile />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={
-                typeof pedidoDet.Detalhes != "undefined"
-                  ? pedidoDet.Detalhes
-                  : []
-              }
-              columns={columns}
-              pageSize={5}
-              hideFooter={pedidoDet.Detalhes?.length > 5 ? false : true}
-              disableSelectionOnClick={true}
-              disableColumnMenu={true}
-              loading={typeof pedidoDet.Detalhes == "undefined"}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions style={{ padding: "8px 24px" }}>
-          {pedidoDet.Status === "Processando" ? (
-            <Button
-              color="primary"
-              onClick={() => alert("Cancelamento em desenvolvimento")}
-              startIcon={<Block />}
-            >
-              Cancelar Pedido
-            </Button>
-          ) : null}
-
-          <Button
-            color="primary"
-            onClick={handleCloseDialog}
-            startIcon={<Close />}
-          >
-            Fechar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onClose={handleCloseDialog}
+        Detalhes={pedidoDet}
+        Cooldown={wait}
+        onRequestBoleto={(DOC) => handleRetriveBoleto(DOC)}
+      />
       <Typography variant="h5" gutterBottom>
         Total Mensal
       </Typography>
@@ -456,7 +359,7 @@ const Contas = (props) => {
                         <StyledTableCell>
                           {currencyFormat(
                             Number.parseFloat(total.Vencido) +
-                              Number.parseFloat(total.Avencer)
+                            Number.parseFloat(total.Avencer)
                           )}
                         </StyledTableCell>
                       </StyledTableRowWithoutHighlight>
@@ -598,10 +501,3 @@ const currencyFormat = (currency) => {
     return "0,00";
   }
 };
-
-
-
-
-
-
-
