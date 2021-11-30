@@ -39,6 +39,7 @@ function NumberFormatCustom(props) {
 
   return (
     <NumberFormat
+      style={{ border: 'none'}}
       {...other}
       getInputRef={inputRef}
       onValueChange={(values) => {

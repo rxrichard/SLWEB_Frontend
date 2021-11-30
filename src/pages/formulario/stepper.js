@@ -6,13 +6,12 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { BasicInfo } from './BasicInfo'
-import { Partner } from './Partner'
-import { Goods } from './GoodsAndProfits'
-import { Profile } from './ProfileAndExp'
-import { Society } from './Society'
-import { Expect } from './Expec'
-import { End } from './FinalScreen'
+import { BasicInfo } from './sections/BasicInfo'
+import { Partner } from './sections/Partner'
+import { Goods } from './sections/GoodsAndProfits'
+import { Profile } from './sections/ExpAndSoc'
+import { Expect } from './sections/Expec'
+import { End } from './sections/FinalScreen'
 
 function getStepContent(stepIndex, formulario, FormHandler) {
   switch (stepIndex) {
@@ -25,8 +24,6 @@ function getStepContent(stepIndex, formulario, FormHandler) {
     case 3:
       return <Profile Form={formulario} FormHandler={FormHandler} />;
     case 4:
-      return <Society Form={formulario} FormHandler/>;
-    case 5:
       return <Expect Form={formulario} FormHandler={FormHandler} />;
     default:
       return 'Unknown stepIndex';
@@ -59,7 +56,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
           </Step>
         ))}
       </Stepper>
-      <div>
+      <div style={{ textAlign: 'start' }}>
         {activeStep === steps.length ? (
           <div>
             <End Form={props.Form} />
@@ -104,5 +101,5 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ['Dados Básicos', 'Conjugê & Dependentes', 'Bens & Renda', 'Perfil & Experiência', 'Sociedade', 'Expectativas'];
+  return ['Dados Básicos', 'Conjugê & Dependentes', 'Bens & Renda', 'Experiência & Sociedade', 'Expectativas'];
 }

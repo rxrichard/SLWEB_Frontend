@@ -25,8 +25,6 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
-  
-  
 });
 
 export default function SimpleCard(props) {
@@ -34,7 +32,7 @@ export default function SimpleCard(props) {
 
   return (
     <Card className={classes.root} {...props}>
-      <CardContent>{props.children}</CardContent>
+      <CardContent style={props.contentStyle}>{props.children}</CardContent>
       <CardActions>{props.action}</CardActions>
     </Card>
   );

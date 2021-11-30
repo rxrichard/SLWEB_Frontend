@@ -16,9 +16,9 @@ import Typography from "@material-ui/core/Typography";
 
 import { Panel, Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
-import Modal from "../../components/modal";
 
 import Stepper from './stepper'
+import CodeView from './codeInsertView'
 
 export const Formulario = () => {
   const [codCandidato, setCodCandidato] = useState(null)
@@ -433,10 +433,6 @@ export const Formulario = () => {
     return false;
   }
 
-  
-
-  
-
   //baixa form word da rede
   const handleRetriveWORD = async (event) => {
     event.target.disabled = true;
@@ -465,20 +461,21 @@ export const Formulario = () => {
         justifyContent: "center",
         alignContent: "center",
         height: "unset",
+        textAlign: "center",
       }}
     >
       <h4>Questionário para Análise de Perfil</h4>
       <Panel
         style={isMdUp ? {
           justifyContent: "flex-start",
-          marginTop: "10vh",
+          margin: "10vh 0vh 0vh 0vh",
           maxWidth: "90vw",
           minHeight: "65vh",
           flexDirection: "column",
           fontSize: "1.50vw",
         } : {
           justifyContent: "center",
-          marginTop: "10%",
+          margin: "10% 0% 0% 0%",
           maxWidth: "100vw",
           minHeight: "80vh",
           flexDirection: "column",
@@ -487,55 +484,11 @@ export const Formulario = () => {
         }}
       >
         {codCandidato === null ? (
-          <div style={divAlinha2}>
-            <input
-              onChange={(e) => {
-                e.persist();
-                handleInsereCodigo(e.target.value, e);
-              }}
-              autoFocus={true}
-              disabled={false}
-              style={{
-                all: "unset",
-                textAlign: "center",
-                border: "1px solid #000",
-                borderRadius: "5px",
-                padding: "10px",
-                fontSize: "2vw",
-              }}
-              type="text"
-              placeholder="Código de acesso"
-            />
-            <div className="YAlign" style={{ justifyContent: "center", alignItems: "center"}}>
-              <Typography variant='h5' >Não possui um código?</Typography>
-
-              <Modal
-                actions={
-                  <Button
-                    style={{ marginRight: "10px" }}
-                    onClick={(e) => handleSolicitaCodigo(e)}
-                  >
-                    <Icon left>send</Icon>Solicitar
-                  </Button>
-                }
-                header="Solicitar código de acesso"
-                trigger={
-                  <Button>
-                    Clique aqui
-                    <Icon right small>
-                      contact_mail
-                    </Icon>
-                  </Button>
-                }
-              >
-                <Input
-                  style={{ width: '100%' }}
-                  onChange={(e) => handleChangeEmail(e)}
-                  label="Email"
-                />
-              </Modal>
-            </div>
-          </div>
+          <CodeView 
+            onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
+            onCodeRequest={(e) => handleSolicitaCodigo(e)}
+            onEmailChange={(e) => handleChangeEmail(e)}
+          />
         ) : null}
 
         {loading ? (
@@ -556,15 +509,6 @@ export const Formulario = () => {
 }
 
 export default Formulario
-
-const divAlinha2 = {
-  display: "flex",
-  flex: "1",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  alignContent: "center",
-  alignItems: "center",
-};
 
 const initialState = {
   Nome_Completo: null,

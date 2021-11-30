@@ -21,39 +21,6 @@ export const content = () => {
         formalmente no contrato social, é imprescindível que seja
         enviado um questionário para cada pessoa envolvida
       </p>
-      
-
-      {/* INICIO DO FORMULARIO */}
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <div
-          style={{
-            ...divAlinha,
-            borderRight: "1px solid #c1c1c1",
-            borderBottom: "1px solid #c1c1c1",
-            paddingRight: "calc(1vw - 1px)",
-          }}
-        >
-          
-          
-
-          
-          
-
-          
-        </div>
-        <div
-          style={{
-            ...divAlinha,
-            borderLeft: "1px solid #c1c1c1",
-            borderBottom: "1px solid #c1c1c1",
-            paddingLeft: "calc(1vw - 1px)",
-          }}
-        >
-          
-
-          
-        </div>
-      </div>
     </div>
   )
 }

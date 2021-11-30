@@ -13,8 +13,8 @@ import Select from "../../components/materialComponents/Select";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import Button from "../../components/materialComponents/Button";
 
-import {Settings,VpnKey,Check, AccountCircle } from "@material-ui/icons/";
-import {MenuItem, Typography, TextField, Input, InputAdornment,  }from "@material-ui/core/";
+import { Settings, VpnKey, Check, AccountCircle } from "@material-ui/icons/";
+import { MenuItem, Typography, TextField, Input, InputAdornment, } from "@material-ui/core/";
 
 import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
 
@@ -53,7 +53,7 @@ function Perfil() {
           valor: response.data.ParamVlr * 100,
         });
       } catch (err) {
-        
+
       }
     }
     loadData();
@@ -79,7 +79,7 @@ function Perfil() {
         confirmacao: "",
       });
     } catch (err) {
-      
+
     }
   };
 
@@ -145,8 +145,10 @@ function Perfil() {
 
         {/* DADOS CADASTRAIS */}
         <Card
-            className="mb8 df df-aling-end  w90 h40 w100m bl-3red bt-3red h-auto"
-          
+          className="mb8 df df-aling-end  w90 h40 w100m bl-3red bt-3red h-auto"
+          contentStyle={{
+            height: '100%',
+          }}
           action={
             <Dialog
               title="Alterar Senha"
@@ -167,8 +169,8 @@ function Perfil() {
               }
             >
 
-              
-              
+
+
               <InputUnderline
                 value={password.atual}
                 type="password"
@@ -193,43 +195,50 @@ function Perfil() {
           }
         >
 
-        
 
-        <Input disabled value={info.M0_FILIAL[0]}
-          className="w45"
-          id="input-with-icon-adornment"
-          
-          startAdornment={
-            <InputAdornment position="start">
-              <AccountCircle />
-            </InputAdornment>
-          }
-        />
+          <div className='YAlign' style={{
+            height: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}>
+            <Input disabled value={String(info.M0_FILIAL[0]).trim()}
+              className="w45"
+              id="input-with-icon-adornment"
 
-          <Typography variant="body2" color="textSecondary" component="p">
-            CNPJ: {maskCNPJ(info.M0_CGC[0])}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            FILIAL: {info.M0_CODFIL[0]}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            IE: {info.M0_INSC}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            NIRE: {info.M0_NIRE}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            CNAE: {info.M0_CNAE}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            FPAS: {info.M0_FPAS}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Consultor: {info.Consultor}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Natureza Jurídica: {info.M0_NATJUR}
-          </Typography>
+              startAdornment={
+                <InputAdornment position="start">
+                  <AccountCircle />
+                </InputAdornment>
+              }
+            />
+
+            <div>
+              <Typography variant="body2" color="textSecondary" component="p">
+                CNPJ: {maskCNPJ(info.M0_CGC[0])}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                FILIAL: {info.M0_CODFIL[0]}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                IE: {info.M0_INSC}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                NIRE: {info.M0_NIRE}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                CNAE: {info.M0_CNAE}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                FPAS: {info.M0_FPAS}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Consultor: {info.Consultor}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Natureza Jurídica: {info.M0_NATJUR}
+              </Typography>
+            </div>
+          </div>
         </Card>
 
 
@@ -237,6 +246,9 @@ function Perfil() {
         {/* DADOS DE CONTATO */}
         <Card
           className="mb8 df df-aling-end w45 w100m  h30 h-auto bl-3red bt-3red"
+          contentStyle={{
+            height: '100%',
+          }}
           action={
             <Dialog
               title="Alterar Email Principal"
@@ -266,34 +278,44 @@ function Perfil() {
             </Dialog>
           }
         >
-
-          <Typography variant="h5" component="h2">
-            CONTATO
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Email: {info.Email.trim()}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Endereço: {info.M0_ENDCOB}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Bairro: {info.M0_BAIRCOB}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            CEP: {maskCEP(info.M0_CEPCOB)}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Estado: {info.M0_ESTCOB}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Município: {info.M0_CIDCOB}
-          </Typography>
+          <div className='YAlign' style={{
+            height: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}>
+            <Typography variant="h5" component="h2">
+              CONTATO
+            </Typography>
+            <div>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Email: {info.Email.trim()}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Endereço: {info.M0_ENDCOB}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Bairro: {info.M0_BAIRCOB}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                CEP: {maskCEP(info.M0_CEPCOB)}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Estado: {info.M0_ESTCOB}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Município: {info.M0_CIDCOB}
+              </Typography>
+            </div>
+          </div>
         </Card>
 
 
-          {/* DADOS DE IMPOSTO/TAXA */}
+        {/* DADOS DE IMPOSTO/TAXA */}
         <Card
           className="mb8 df df-aling-end  w45 h30  w100m bl-3red bt-3red"
+          contentStyle={{
+            height: '100%',
+          }}
           action={
             <Button
               style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
@@ -305,33 +327,42 @@ function Perfil() {
             </Button>
           }
         >
-          <Typography variant="h5" component="h2">
-            TAXAS
-          </Typography>
-          <Select
-            label="Tipo"
-            value={newTaxa.tipo}
-            onChange={(e) => {
-              setNewTaxa({ tipo: e.target.value, valor: 0 });
-              const i = document.querySelectorAll("input");
-              
-              i[0].value = "";
-            }}
-            >
-            <div className='df-pure'>
-            <MenuItem value="PERCENTUAL" className='df-pure'>Percentual</MenuItem>
-            <MenuItem value="VALOR FIXO" >Valor fixo</MenuItem>
-            </div>
-          </Select>
+          <div className='YAlign' style={{
+            height: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}>
+            <Typography variant="h5" component="h2">
+              TAXAS
+            </Typography>
+            <div>
+              <Select
+                label="Tipo"
+                value={newTaxa.tipo}
+                onChange={(e) => {
+                  setNewTaxa({ tipo: e.target.value, valor: 0 });
+                  const i = document.querySelectorAll("input");
 
-          <InputNumber
-            style={{ marginTop: '8px', maxWidth: '100px'}}
-            decimais={newTaxa.tipo === "PERCENTUAL" ? 0 : 2}
-            onChange={(e) => setNewTaxa({ ...newTaxa, valor: e.target.value })}
-            label={newTaxa.tipo === "PERCENTUAL" ? "Porcentagem(%)" : "Valor(R$)"}
-            disabled={false}
-            value={newTaxa.valor}
-          />
+                  i[0].value = "";
+                }}
+              >
+                <MenuItem value="PERCENTUAL">Percentual</MenuItem>
+                <MenuItem value="VALOR FIXO">Valor fixo</MenuItem>
+              </Select>
+
+              <InputNumber
+                style={{
+                  marginTop: '8px',
+                  maxWidth: '130px',
+                }}
+                decimais={newTaxa.tipo === "PERCENTUAL" ? 0 : 2}
+                onChange={(e) => setNewTaxa({ ...newTaxa, valor: e.target.value })}
+                label={newTaxa.tipo === "PERCENTUAL" ? "Porcentagem(%)" : "Valor(R$)"}
+                disabled={false}
+                value={newTaxa.valor}
+              />
+            </div>
+          </div>
         </Card>
       </div>
     </Panel>

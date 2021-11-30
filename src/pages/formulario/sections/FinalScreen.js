@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Button, TextInput, Icon } from "react-materialize";
 
+import Typography from '@material-ui/core/Typography';
+
 export const End = (props) => {
   return (
     <>
@@ -60,6 +62,20 @@ export const End = (props) => {
             label={<Icon>attach_file</Icon>}
           />
         </div>
+        <Typography>Caso encontre dificuldades ao enviar o formulário, tente baixar o arquivo para edição no Microsoft Word</Typography>
+        <Button
+          onClick={(e) => {
+            e.persist();
+            this.handleRetriveWORD(e);
+          }}
+          tooltipMenuItems={{
+            position: "top",
+          }}
+          tooltip="Se preferir, faça o download do formulário e abra com o Microsoft Word"
+        >
+          <Icon left>file_download</Icon>
+          DOWNLOAD
+        </Button>
       </div>
       <div style={{ ...divStyle, justifyContent: "flex-end" }}>
         <Button
@@ -74,20 +90,7 @@ export const End = (props) => {
         >
           <Icon left>send</Icon>Enviar
         </Button>
-        <Button
-          style={{ marginLeft: "10px" }}
-          onClick={(e) => {
-            e.persist();
-            this.handleRetriveWORD(e);
-          }}
-          tooltipMenuItems={{
-            position: "top",
-          }}
-          tooltip="Se preferir, faça o download do formulário e abra com o Microsoft Word"
-        >
-          <Icon left>file_download</Icon>
-          Formulário WORD
-        </Button>
+        
       </div>
     </>
   )

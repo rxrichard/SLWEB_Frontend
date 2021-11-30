@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+
+import { ptBR } from "@material-ui/data-grid";
 import "moment/locale/pt-br";
 import moment from "moment";
 
 import { ToastyContainer } from "./components/toasty";
 import { PALETTE_RED_PRIMARY, PALETTE_GREY_PRIMARY } from "./misc/colors";
-import { ptBR } from "@material-ui/data-grid";
 
 import Main from "./router/main";
 

@@ -14,6 +14,7 @@ function NumberFormatCustom(props) {
   return (
     <NumberFormat
       {...other}
+      style={{ paddingLeft: '8px' }}
       getInputRef={inputRef}
       onValueChange={(values) => {
         onChange({
@@ -62,6 +63,7 @@ function InputAdornments(props) {
   return (
     <div style={props.style} className={classes.root}>
       <TextField
+        
         name="numberformat"
         id="formatted-numberformat-input"
         label={props.label}
@@ -89,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
+    
   },
   margin: {
     margin: '0px',

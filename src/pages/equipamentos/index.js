@@ -83,9 +83,8 @@ const Equipamentos = () => {
         setCooldownSync(duration.minutes() + ":" + duration.seconds())
       }
     }, interval);
-    // const aguardeAte = moment().add('1', 'minute')
-    // setCooldownSync(aguardeAte)
-    // alert(`sincroniza o ${ativo} com a telemetria e ativa o cooldown`)
+    
+    alert(`sincroniza o ${ativo} com a telemetria e ativa o cooldown`)
   }
 
   const HandleSwitchCliente = async (cliente) => {
