@@ -26,10 +26,10 @@ export const Expect = (props) => {
   }
 
   return (
-    <div className="XAlign" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px' }}>
+    <div style={divBorder}>
+      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px', justifyContent: 'flex-start' }}>
         <Typography>
-          52. Na fase inicial, eventualmente, faz-se necessária uma
+          Na fase inicial, eventualmente, faz-se necessária uma
           cobertura dos custos fixos da franquia, por motivo do
           negócio ainda não atingir uma maturidade suficiente. Nesse
           caso, existe disponibilidade de capital para um eventual
@@ -38,6 +38,7 @@ export const Expect = (props) => {
         </Typography>
         <Select
           width="200px"
+          MBottom='8px'
           label="Selecione..."
           onChange={(e) =>
             props.FormHandler({
@@ -50,7 +51,7 @@ export const Expect = (props) => {
           <MenuItem value="Sim">Sim</MenuItem>
           <MenuItem value="Não">Não</MenuItem>
         </Select>
-        <Typography>53. Como você conheceu a Pilão Professional?</Typography>
+        <Typography>Como você conheceu a Pilão Professional?</Typography>
         <InputMultline
           onChange={(e) =>
             props.FormHandler({
@@ -58,14 +59,12 @@ export const Expect = (props) => {
               Conhece_Pilao: e.target.value,
             })
           }
+          style={{ marginBottom: '8px' }}
           value={props.Form.Conhece_Pilao}
           label="Especifique..."
         />
-
-
-
         <Typography>
-          55. Qual foi a característica do negócio que mais pesou na
+          Qual foi a característica do negócio que mais pesou na
           escolha da Pilão Professional?
         </Typography>
         <InputMultline
@@ -75,12 +74,13 @@ export const Expect = (props) => {
               Caracteristica_Peso: e.target.value,
             })
           }
+          style={{ marginBottom: '8px' }}
           value={props.Form.Caracteristica_Peso}
           label="Especifique...   "
         />
 
         <Typography>
-          56. Numa franquia, a padronização é algo muito importante.
+          Numa franquia, a padronização é algo muito importante.
           Acrescenta-se ainda que a franqueadora tem sob sua
           responsabilidade a organização da rede em geral, bem como o
           cuidado com a manutenção da competitividade do negócio. Por
@@ -92,6 +92,7 @@ export const Expect = (props) => {
         </Typography>
         <Select
           width="200px"
+          MBottom='8px'
           label="Selecione..."
           onChange={(e) =>
             props.FormHandler({
@@ -106,7 +107,7 @@ export const Expect = (props) => {
         </Select>
 
         <Typography>
-          57. No que se refere ao lucro líquido que uma franquia pode
+          No que se refere ao lucro líquido que uma franquia pode
           oferecer, por mês em média (ao final de um ano, o lucro
           médio por mês), no total (no caso de existirem sócios, o
           lucro total, não a parte de cada sócio), existem alguns
@@ -117,6 +118,7 @@ export const Expect = (props) => {
         </Typography>
         <Select
           width="200px"
+          MBottom='8px'
           label="Selecione..."
           onChange={(e) =>
             props.FormHandler({
@@ -131,7 +133,7 @@ export const Expect = (props) => {
         </Select>
 
         <Typography>
-          58. Devido à natureza da relação, rotineiramente a franquia
+          Devido à natureza da relação, rotineiramente a franquia
           deve fornecer as mais diversas informações para a
           franqueadora. Por exemplo, no que se refere aos resultados
           financeiros, existe o acompanhamento do desempenho de todas
@@ -144,6 +146,7 @@ export const Expect = (props) => {
         </Typography>
         <Select
           width="200px"
+          MBottom='8px'
           label="Selecione..."
           onChange={(e) =>
             props.FormHandler({
@@ -157,9 +160,9 @@ export const Expect = (props) => {
           <MenuItem value="Não">Não</MenuItem>
         </Select>
       </div>
-      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px' }}>
+      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px', justifyContent: 'flex-start' }}>
         <Typography>
-          54. Seguindo a sua opinião pessoal, por favor, numere por
+          Seguindo a sua opinião pessoal, por favor, numere por
           ordem de sua preferência, os motivos que o fizeram decidir
           pela franquia Pilão Professional (colocando o número 01 para
           o mais importante – primeiro - e respectivamente numerando
@@ -193,6 +196,17 @@ export const Expect = (props) => {
     </div>
   )
 }
+
+const divBorder = {
+  display: "flex",
+  padding: "10px 10px 10px 10px",
+  marginBottom: "10px",
+  width: "100%",
+  flexDirection: "row",
+  border: "1px solid #c1c1c1",
+  borderRadius: "1vw",
+  flexWrap: 'wrap',
+};
 
 const divStyle = {
   display: "Flex",

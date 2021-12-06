@@ -9,9 +9,9 @@ import InputMultline from "../../../components/materialComponents/InputMultline"
 
 export const Goods = (props) => {
   return (
-    <div className="XAlign" style={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px' }}>
-        <Typography variant='subtitle1'>22. CLT?</Typography>
+    <div style={divBorder}>
+      <div className="YAlign" style={{ textAlign: 'start', justifyContent: 'flex-start' }}>
+        <Typography variant='subtitle1'>CLT?</Typography>
         <div className="XAlign" style={{ justifyContent: 'flex-start' }}>
           <Select
             width="200px"
@@ -37,13 +37,13 @@ export const Goods = (props) => {
                 })
               }
               value={props.Form.Rend_Mensal}
-              label="23. Rendimento mensal"
+              label="Rendimento mensal"
               />
               ) : null}
         </div>
 
 
-        <Typography variant='subtitle1'>27. Residencia:</Typography>
+        <Typography variant='subtitle1'>Residencia:</Typography>
         <div className="XAlign" style={{ justifyContent: 'flex-start' }}>
           <Select
             width="200px"
@@ -73,12 +73,12 @@ export const Goods = (props) => {
                 })
               }
               value={props.Form.Residencia_Mensal}
-              label="28. Valor mensal"
+              label="Valor mensal"
               />
               ) : null}
         </div>
 
-        <Typography variant='subtitle1'>29. Possui veículo?</Typography>
+        <Typography variant='subtitle1'>Possui veículo?</Typography>
         <Select
           width="200px"
           label="Selecione..."
@@ -93,7 +93,7 @@ export const Goods = (props) => {
           <MenuItem value="Sim">Sim</MenuItem>
           <MenuItem value="Não">Não</MenuItem>
         </Select>
-        <Typography variant='subtitle1'>30. Possui Imóvel?</Typography>
+        <Typography variant='subtitle1'>Possui Imóvel?</Typography>
         <Select
           width="200px"
           label="Selecione..."
@@ -110,7 +110,7 @@ export const Goods = (props) => {
         </Select>
 
         <Typography variant='subtitle1'>
-          32. Teve recolhimento de imposto de renda no ultimo ano?
+          Teve recolhimento de imposto de renda no ultimo ano?
         </Typography>
         <div className="XAlign" style={{ justifyContent: 'flex-start' }}>
           <Select
@@ -138,15 +138,15 @@ export const Goods = (props) => {
                   })
                 }
                 value={props.Form.Recolhimento_QTD}
-                label="33. Quantia:"
+                label="Quantia:"
                 />
               <Typography variant='subtitle1'>*Sem considerar eventual valor restituído</Typography>
             </div>
           ) : null}
         </div>
       </div>
-      <div className="YAlign" style={{ textAlign: 'start' }}>
-        <Typography variant='subtitle1'>35. Qual sua renda familiar mensal?</Typography>
+      <div className="YAlign" style={{ textAlign: 'start', justifyContent: 'flex-start' }}>
+        <Typography variant='subtitle1'>Qual sua renda familiar mensal?</Typography>
         <Input
           onChange={(e) =>
             props.FormHandler({
@@ -157,7 +157,7 @@ export const Goods = (props) => {
           value={props.Form.Renda_Familiar}
           label="Especifique..."
           />
-        <Typography variant='subtitle1'>36. Como é composta sua renda familiar?</Typography>
+        <Typography variant='subtitle1'>Como é composta sua renda familiar?</Typography>
         <InputMultline
           onChange={(e) =>
             props.FormHandler({
@@ -170,7 +170,7 @@ export const Goods = (props) => {
           />
 
         <Typography variant='subtitle1'>
-          31. Qual sua expectativa de retorno para esse investimento?
+          Qual sua expectativa de retorno para esse investimento?
         </Typography>
         <Select
           width="200px"
@@ -188,7 +188,7 @@ export const Goods = (props) => {
           <MenuItem value="30+">30+ meses</MenuItem>
         </Select>
         <Typography variant='subtitle1'>
-          34. Qual a origem do capital disponível para a abertura do
+          Qual a origem do capital disponível para a abertura do
           negócio com a Pilão Professional?
         </Typography>
         <InputMultline
@@ -202,7 +202,7 @@ export const Goods = (props) => {
           label="Especifique..."
         />
         <Typography variant='subtitle1'>
-          37. Qual a disponibilidade para investimento na franquia, em
+          Qual a disponibilidade para investimento na franquia, em
           dinheiro, sem considerar empréstimos ou linhas de crédito?
         </Typography>
         <Input
@@ -219,6 +219,17 @@ export const Goods = (props) => {
     </div>
   )
 }
+
+const divBorder = {
+  display: "flex",
+  padding: "10px 10px 10px 10px",
+  marginBottom: "10px",
+  width: "100%",
+  flexDirection: "row",
+  border: "1px solid #c1c1c1",
+  borderRadius: "1vw",
+  flexWrap: 'wrap',
+};
 
 const divStyle = {
   display: "Flex",

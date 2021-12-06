@@ -10,10 +10,10 @@ import InputMultline from "../../../components/materialComponents/InputMultline"
 
 export const Profile = (props) => {
   return (
-    <div className="XAlign" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px' }}>
+    <div style={divBorder}>
+      <div className="YAlign" style={{ textAlign: 'start', minWidth: '400px', justifyContent: 'flex-start' }}>
         <Typography>
-          38. Tem/Teve empresa própria e/ou tem experiencia como
+          Tem/Teve empresa própria e/ou tem experiencia como
           profissional autônomo?
         </Typography>
         <Select
@@ -33,7 +33,7 @@ export const Profile = (props) => {
         </Select>
 
         <Typography>
-          40. Qual a sua formação escolar/acadêmica (especificar grau
+          Qual a sua formação escolar/acadêmica (especificar grau
           e área se houver)?
         </Typography>
         <InputMultline
@@ -50,7 +50,7 @@ export const Profile = (props) => {
         />
 
         <Typography>
-          41. De forma simplificada, nos conte sobre suas últimas
+          De forma simplificada, nos conte sobre suas últimas
           experiências profissionais.
         </Typography>
         <InputMultline
@@ -63,7 +63,7 @@ export const Profile = (props) => {
           value={props.Form.Ult_exp}
           label="Especifique..."
         />
-        <Typography>42. Haverá sociedade neste negócio?</Typography>
+        <Typography>Haverá sociedade neste negócio?</Typography>
         <Select
           width="200px"
           label="Selecione..."
@@ -83,7 +83,7 @@ export const Profile = (props) => {
 
 
         <Typography>
-          50. Você já teve algum empreendimento em sociedade com
+          Você já teve algum empreendimento em sociedade com
           alguém?
         </Typography>
         <Select
@@ -103,7 +103,7 @@ export const Profile = (props) => {
 
         {props.Form.T_Empreendimento === "Sim" ? (
           <>
-            <Typography>51. Como foi a experiência?</Typography>
+            <Typography>Como foi a experiência?</Typography>
             <InputMultline
               onChange={(e) =>
                 props.FormHandler({
@@ -117,11 +117,11 @@ export const Profile = (props) => {
           </>
         ) : null}
       </div>
-      <div className="YAlign" style={{ textAlign: 'start' }}>
+      <div className="YAlign" style={{ textAlign: 'start', height: '100%' }}>
         {props.Form.T_Empresa === "Sim" ? (
-          <>
+          <><Typography variant='subtitle1' gutterBottom>Sobre experiência como autônomo/proprietário de empresa:</Typography>
             <Typography>
-              39. Especifique detalhadamente qual a atividade, se
+              Especifique detalhadamente qual a atividade, se
               existiam sócios, quais os rendimentos mensais, qual a
               quantidade de horas de trabalho por dia em média e qual
               o capital social: No caso do negócio não mais existir,
@@ -145,6 +145,12 @@ export const Profile = (props) => {
 
         {props.Form.Sociedade === "Sim" ? (
           <>
+            <Typography
+              variant='subtitle1'
+              gutterBottom
+            >
+              Sobre sócio na franquia:
+            </Typography>
             <div style={divStyle}>
               <Input
                 onChange={(e) =>
@@ -155,8 +161,8 @@ export const Profile = (props) => {
                   })
                 }
                 value={props.Form.Nome_Socio}
-                label="43. Nome do sócio"
-                />
+                label="Nome do sócio"
+              />
               <Input
                 onChange={(e) =>
                   props.FormHandler({
@@ -165,10 +171,10 @@ export const Profile = (props) => {
                   })
                 }
                 value={props.Form.Socio_Vinculo}
-                label="44. Tipo de vinculo"
-                />
+                label="Tipo de vinculo"
+              />
             </div>
-            <Typography>45. Há quanto tempo se conhecem?</Typography>
+            <Typography>Há quanto tempo se conhecem?</Typography>
             <Input
               onChange={(e) =>
                 props.FormHandler({
@@ -179,7 +185,7 @@ export const Profile = (props) => {
               value={props.Form.Tempo_ConheceSocio}
               label="Especifique..."
             />
-            <Typography>46. O que já realizaram juntos?</Typography>
+            <Typography>O que já realizaram juntos?</Typography>
             <InputMultline
               onChange={(e) =>
                 props.FormHandler({
@@ -192,7 +198,7 @@ export const Profile = (props) => {
             />
 
             <Typography>
-              47. Essa pessoa vai ser sócia no contrato de concessão
+              Essa pessoa vai ser sócia no contrato de concessão
               da franquia ou apenas vai participar no contrato da
               empresa (pessoa jurídica) que vai operar a franquia?
               Especificar em que condições e em qual proporção
@@ -208,7 +214,7 @@ export const Profile = (props) => {
               label="Especifique...   "
             />
             <Typography>
-              48. Havendo sociedada, essa pessoa participará do
+              Havendo sociedada, essa pessoa participará do
               investimento?
             </Typography>
             <Select
@@ -227,7 +233,7 @@ export const Profile = (props) => {
             </Select>
             {props.Form.Part_invest === "Sim" ? (
               <>
-                <Typography>49. Em qual proporção?</Typography>
+                <Typography>Em qual proporção?</Typography>
                 <Input
                   onChange={(e) =>
                     props.FormHandler({
@@ -246,6 +252,17 @@ export const Profile = (props) => {
     </div>
   )
 }
+
+const divBorder = {
+  display: "flex",
+  padding: "10px 10px 10px 10px",
+  marginBottom: "10px",
+  width: "100%",
+  flexDirection: "row",
+  border: "1px solid #c1c1c1",
+  borderRadius: "1vw",
+  flexWrap: 'wrap',
+};
 
 const divStyle = {
   display: "Flex",

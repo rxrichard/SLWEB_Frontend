@@ -1,82 +1,112 @@
-import React from "react";
-
-//Meio de comunicação
+import React, { useState, useEffect } from "react";
+import moment from 'moment'
 import { api } from "../../services/api";
 
-//"Placeholder" da página enquanto dados são carregados no
+import {
+  Typography,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  withStyles
+} from '@material-ui/core'
+
 import Loading from "../../components/loading_screen";
-
-import { convertData } from "../../misc/commom_functions";
-
-//import de elementos visuais
-import { Panel, Container } from "../../components/commom_in";
-import { Toast } from "../../components/toasty";
-import { Icon, Button } from "react-materialize";
+import { converStyledTableCellata } from "../../misc/commom_functions";
+import { Panel } from "../../components/commom_in";
 import { Table } from "../../components/table";
-import Modal from "../../components/modal";
 
-import Modalzinho from "./modal/index";
+import Modal from "./modal/details";
 
-export default class FormsAcompanhamento extends React.Component {
-  state = {
-    formularios: [],
-    loaded: false,
-  };
+const FormsAcompanhamento = () => {
+  const [formularios, setFormularios] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
-  async componentDidMount() {
-    try {
-      //requisição inicial para obter dados essenciais da pagina
-      const response = await api.get("/form/all");
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await api.get("/form/all");
 
-      this.setState({ loaded: true, formularios: response.data });
-    } catch (err) {
+        setLoaded(true)
+        setFormularios(response.data);
+      } catch (err) {
+
+      }
     }
-  }
+    loadData()
+  }, [])
 
-  render() {
-    return !this.state.loaded ? (
-      <Loading />
-    ) : (
-      <Container>
-        <Panel>
-          <Table>
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Status</th>
-                <th>Preenchimento</th>
-                <th>Nome</th>
-                <th>Inspecionar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.formularios.map((form) => (
-                <tr>
-                  <td>{form.CodCandidato}</td>
-                  <td>{form.PREENCHIDO ? "Preenchido" : "Não preenchido"}</td>
-                  <td>
-                    {form.DtPreenchimento
-                      ? convertData(form.DtPreenchimento)
-                      : ""}
-                  </td>
-                  <td>{form.NomeCompleto}</td>
-                  <td>
-                    <Modal
-                      header={`Formulário ${form.CodCandidato}`}
-                      trigger={<Button
-                      >
-                        <Icon center>visibility</Icon>
-                      </Button>}
-                    >
-                      <Modalzinho form={form} />
-                    </Modal>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Panel>
-      </Container>
-    );
-  }
+  return !loaded ? (
+    <Loading />
+  ) : (
+    <Panel style={{ justifyContent: "flex-start", alignItems: "center" }}>
+      <Typography variant="h5" gutterBottom>
+        Formulários de interesse
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table
+          size="small"
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Código</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell>Preenchimento</StyledTableCell>
+              <StyledTableCell>Nome</StyledTableCell>
+              <StyledTableCell>Inspecionar</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {formularios.map((form) => (
+              <StyledTableRow key={form.CodCandidato}>
+                <StyledTableCell align="center">{form.CodCandidato}</StyledTableCell>
+                <StyledTableCell align="center">{form.PREENCHIDO ? "Preenchido" : "Não preenchido"}</StyledTableCell>
+                <StyledTableCell align="center">
+                  {form.DtPreenchimento === null ? '' : moment(form.DtPreenchimento).format('DD/MM/YYYY')}
+                </StyledTableCell>
+                <StyledTableCell align="center">{form.NomeCompleto}</StyledTableCell>
+                <StyledTableCell align="center">
+                  <Modal
+                    form={form}
+                    title={`Formulário ${form.CodCandidato}`}
+                    preenchido={form.PREENCHIDO}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Panel>
+  );
 }
+
+export default FormsAcompanhamento;
+
+//estilo célula
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+//estilo linha
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+
+    "&:hover": {
+      transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      backgroundColor: "#CCC",
+      cursor: "auto",
+    },
+  },
+}))(TableRow);

@@ -48,9 +48,9 @@ export const Partner = (props) => {
   }
 
   return (
-    <div className="XAlign" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div className="YAlign" style={{ textAlign: 'start' }}>
-        <Typography variant='subtitle1'>15. Estado Civil:</Typography>
+    <div style={divBorder}>
+      <div className="YAlign" style={{ textAlign: 'start', justifyContent: 'flex-start' }}>
+        <Typography variant='subtitle1'>Estado Civil:</Typography>
         <div>
           <div style={divStyle}>
             <input
@@ -138,7 +138,7 @@ export const Partner = (props) => {
           </div>
         </div>
 
-        <Typography variant='subtitle1'>24. Possui filhos?</Typography>
+        <Typography variant='subtitle1'>Possui filhos?</Typography>
         <Select
           width="200px"
           MBottom='8px'
@@ -262,6 +262,17 @@ export const Partner = (props) => {
     </div>
   )
 }
+
+const divBorder = {
+  display: "flex",
+  padding: "10px 10px 10px 10px",
+  marginBottom: "10px",
+  width: "100%",
+  flexDirection: "row",
+  border: "1px solid #c1c1c1",
+  borderRadius: "1vw",
+  flexWrap: 'wrap',
+};
 
 const divStyle = {
   display: "Flex",

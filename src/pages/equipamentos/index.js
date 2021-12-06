@@ -34,7 +34,6 @@ const Equipamentos = () => {
         setClientes(response.data.Clientes)
         setLoaded(true)
       } catch (error) {
-        console.log(error)
       }
     }
 
@@ -122,7 +121,6 @@ const Equipamentos = () => {
       setTargetAtivo('')
     } catch (err) {
       Toast('Falha ao vincular ativo', 'update', toastId, 'error')
-      console.log(err)
     }
   }
 

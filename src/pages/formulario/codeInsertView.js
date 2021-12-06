@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Button, Icon } from "react-materialize";
-import Typography from "@material-ui/core/Typography";
+import { ContactMail, LabelImportant } from '@material-ui/icons'
+import { Typography, Button } from "@material-ui/core";
 
-import Modal from "../../components/modal";
+import Dialog from "../../components/materialComponents/Dialog";
 import Input from "../../components/materialComponents/InputUnderline";
 
 const CodeView = (props) => {
@@ -30,22 +30,22 @@ const CodeView = (props) => {
       <div className="YAlign" style={{ justifyContent: "center", alignItems: "center" }}>
         <Typography variant='h5' >Não possui um código?</Typography>
 
-        <Modal
-          actions={
+        <Dialog
+          onOpen={() => props.onEmailChange('')}
+          disabled={false}
+          buttonStyle={{ marginTop: '8px' }}
+          icone={<ContactMail />}
+          botao='Clique aqui!'
+          title='Solicitar acesso ao formulário'
+          action={
             <Button
-              style={{ marginRight: "10px" }}
+              variant="contained"
+              color="primary"
+              disabled={props.fetching}
               onClick={(e) => props.onCodeRequest(e)}
+              startIcon={<LabelImportant />}
             >
-              <Icon left>send</Icon>Solicitar
-            </Button>
-          }
-          header="Solicitar código de acesso"
-          trigger={
-            <Button>
-              Clique aqui
-              <Icon right small>
-                contact_mail
-              </Icon>
+              Solicitar
             </Button>
           }
         >
@@ -54,7 +54,7 @@ const CodeView = (props) => {
             onChange={(e) => props.onEmailChange(e)}
             label="Email"
           />
-        </Modal>
+        </Dialog>
       </div>
     </div>
   )

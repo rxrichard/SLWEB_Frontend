@@ -8,7 +8,7 @@ export const BasicInfo = (props) => {
     <div style={divBorder}>
       <div style={divStyle2}>
         <Input
-          label="1. Nome completo"
+          label="Nome completo"
           value={props.Form.Nome_Completo}
           onChange={(e) =>
             props.FormHandler({
@@ -27,7 +27,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.DtNascimento}
-          label="2. Dt. de nascimento"
+          label="Dt. de nascimento"
         />
         <Input
           onChange={(e) =>
@@ -39,7 +39,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.RG}
-          label="3. RG"
+          label="RG"
         />
         <Input
           onChange={(e) =>
@@ -51,7 +51,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.CPF}
-          label="4. CPF"
+          label="CPF"
           />
       </div>
 
@@ -66,7 +66,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Logradouro}
-          label="5. Logradouro"
+          label="Logradouro"
           />
 
         <Input
@@ -79,7 +79,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Número}
-          label="6. Número"
+          label="Número"
           />
         <Input
           onChange={(e) =>
@@ -91,7 +91,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Complemento}
-          label="7. Complemento"
+          label="Complemento"
           />
       </div>
 
@@ -106,7 +106,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Bairro}
-          label="8. Bairro"
+          label="Bairro"
           />
         <Input
           onChange={(e) =>
@@ -118,7 +118,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Municipio}
-          label="9. Município"
+          label="Município"
           />
         <Input
           onChange={(e) =>
@@ -130,7 +130,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Estado}
-          label="10. Estado"
+          label="Estado"
           />
         <Input
           onChange={(e) =>
@@ -141,7 +141,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.CEP}
-          label="11. CEP"
+          label="CEP"
           />
       </div>
 
@@ -156,7 +156,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Email}
-          label="12. Email"
+          label="Email"
           />
         <Input
           onChange={(e) =>
@@ -168,7 +168,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Tel_Residencial}
-          label="13. Telefone residencial"
+          label="Telefone residencial"
           />
         <Input
           onChange={(e) =>
@@ -180,7 +180,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Celular}
-          label="14. Celular"
+          label="Celular"
         />
       </div>
     </div>
@@ -189,7 +189,8 @@ export const BasicInfo = (props) => {
 
 const divBorder = {
   display: "flex",
-  padding: "10px 10px 0px 10px",
+  padding: "10px 10px 10px 10px",
+  marginBottom: "10px",
   width: "100%",
   flexDirection: "column",
   border: "1px solid #c1c1c1",

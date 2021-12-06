@@ -30,7 +30,8 @@ import {
   ShoppingCart,
   Help,
   AddShoppingCart,
-  Kitchen
+  Kitchen,
+  PermContactCalendar,
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../misc/commom_functions";
@@ -46,7 +47,7 @@ export default function MiniDrawer() {
   const stylePC = useStyles_FULL()
   const styleCELL = useStyles_CELL()
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [classes, setClasses] = React.useState(stylePC);
 
   useEffect(() => {
@@ -208,6 +209,20 @@ export default function MiniDrawer() {
                   </ListItemIcon>
 
                   <ListItemText primary="Solicitações" />
+                </ListItem>
+              </Link>
+            </List>
+            <List>
+              <Link
+                to="/administracao/formularios"
+                style={{ color: GREY_SECONDARY }}
+              >
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <PermContactCalendar />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Formulários" />
                 </ListItem>
               </Link>
             </List>
