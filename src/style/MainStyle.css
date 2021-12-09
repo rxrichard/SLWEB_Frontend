@@ -1,13 +1,13 @@
 /* CSS Global */
 
-@font-face {
-  font-family: "Roboto";
+/* @font-face {
+  font-family: "Open Sans" !important;
   font-style: normal;
   font-weight: 400;
-  src: url("../../src/assets/font/OpenSans-Bold.ttf"); /* IE9 Compat Modes */
-}
+  src: url("../../src/assets/font/OpenSans-Bold.ttf");
+} */
 
-:root{
+:root {
   --primary-red: #C8102E;
 }
 
@@ -30,7 +30,7 @@
 }
 
 body {
-  font-family: "Roboto";
+  /* font-family: "Roboto"; */
   height: 100vh;
   overflow-x: hidden;
 }
@@ -77,6 +77,11 @@ body {
 .tableFixHead {
   overflow-y: auto;
   color: #000;
+  border-radius: 4px;
+}
+
+.tableFixHead table {
+  border-collapse: unset !important;
 }
 
 .tableFixHead thead th {
@@ -95,10 +100,10 @@ body {
 
 .tableFixHead th,
 td {
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
-  border-left: 1px solid black;
-  border-collapse: collapse;
+  border-bottom: 2px solid black;
+  /* border-right: 1px solid black;
+  border-left: 1px solid black; */
+  border-radius: 0px;
   line-height: 14px;
   text-overflow: ellipsis;
 }
@@ -113,6 +118,40 @@ td {
   border-radius: 0px;
   background-color: #333;
   color: #f5f5f5;
+}
+
+.tableFixHead th:first-child {
+  border-radius: 4px 0px 0px 0px;
+}
+
+.tableFixHead th:last-child {
+  border-radius: 0px 4px 0px 0px;
+}
+
+.tableFixHead tbody>tr:last-child {
+  border-radius: 0px 0px 4px 4px;
+}
+
+.tableFixHead tbody>tr:last-child>td:first-child {
+  border-radius: 0px 0px 0px 4px;
+}
+
+.tableFixHead tbody>tr:last-child>td:last-child {
+  border-radius: 0px 0px 4px 0px;
+}
+
+.tableFixHead tbody>tr:last-child>td {
+  border-bottom: 1px solid #000;
+}
+
+.tableFixHead tbody>tr>td:first-child {
+  border-radius: 0px;
+  border-left: 1px solid #000;
+}
+
+.tableFixHead tbody>tr>td:last-child {
+  border-radius: 0px;
+  border-right: 1px solid #000;
 }
 
 /* padding das celulas do material ui */
@@ -175,6 +214,7 @@ td {
 .floatRight {
   float: right;
 }
+
 .floatLeft {
   float: left;
 }
@@ -207,25 +247,26 @@ td {
 /* MARGIN*/
 .mb8 {
   margin-bottom: .5rem;
-  
+
 }
 
 /*BORDER*/
-.bl-3red{
+.bl-3red {
   border-left: 3px solid #C8102E;
 }
 
-.bt-3red{
+.bt-3red {
   border-top: 3px solid #C8102E;
 }
 
 /*DISPLAY*/
-.df{
+.df {
   display: flex;
   justify-content: space-between;
 
 }
-.df-aling-end{
+
+.df-aling-end {
   align-items: flex-end;
 }
 
@@ -242,6 +283,7 @@ td {
 .h30 {
   height: 30vh;
 }
+
 .h40 {
   height: 40vh;
 }
@@ -252,7 +294,7 @@ td {
 
 
 /*Aling*/
-.al-start{
+.al-start {
   text-align: left;
 }
 
@@ -324,21 +366,23 @@ button:focus {
   color: #c8102e;
 }
 
-.dropdown-content li > a {
+.dropdown-content li>a {
   color: #333333;
 }
-.dropdown-content li > a > i {
+
+.dropdown-content li>a>i {
   margin-left: 10%;
   color: #8a8a8a;
 }
 
-.dropdown-content li > a:hover {
+.dropdown-content li>a:hover {
   color: #c8102e;
   background-color: #fff;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
-.dropdown-content li > a:hover > i {
+
+.dropdown-content li>a:hover>i {
   color: #c8102e;
 }
 
@@ -421,6 +465,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #fff;
     color: #000;
   }
+
   100% {
     background-color: #ddd;
     color: #000000;
@@ -432,6 +477,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #ddd;
     color: #000;
   }
+
   100% {
     color: #000;
     background-color: #fff;
@@ -442,6 +488,7 @@ input[type="number"]::-webkit-outer-spin-button {
   0% {
     background-color: #38b5a0;
   }
+
   100% {
     background-color: none;
   }
@@ -452,6 +499,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 1em;
     font-weight: normal;
   }
+
   100% {
     font-size: 1.2em;
     font-weight: normal;
@@ -463,6 +511,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 1.2em;
     font-weight: normal;
   }
+
   100% {
     font-size: 1em;
     font-weight: normal;
@@ -494,13 +543,14 @@ input[type="text"]:not(.browser-default):focus:not([readonly]) {
   .h-auto {
     height: auto;
   }
-  
+
 }
 
 @media only screen and (max-width: 600px) {
-  .df-mobile{
+  .df-mobile {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     flex-wrap: wrap;
     height: auto;
     width: 100%;

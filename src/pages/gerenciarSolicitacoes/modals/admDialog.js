@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { api } from "../../../services/api";
 import Draggable from "react-draggable";
-import { TextInput } from "react-materialize";
+
+import { Settings, Check, Close } from "@material-ui/icons/";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
+  Typography,
+  TextField
+} from "@material-ui/core";
 
 import Button from "../../../components/materialComponents/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Paper from "@material-ui/core/Paper";
-import Settings from "@material-ui/icons/Settings";
-import Check from "@material-ui/icons/Check";
-import Close from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-
 import { roleLevel, convertData } from "../../../misc/commom_functions";
 import {
   REACT_APP_SISTEMA_ROLE_LEVEL,
@@ -55,7 +55,7 @@ function DraggableDialog(props) {
       await api.put("/equip/requests/check", {
         ID: Req.OSCId,
       });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleClose = () => {
@@ -70,7 +70,7 @@ function DraggableDialog(props) {
 
     try {
       toastId = Toast('Aguarde...', 'wait')
-      const response = await api.put("/equip/requests/validate", {
+      await api.put("/equip/requests/validate", {
         OSID: Req.OSCId,
         action: action,
         reject: rejectReason,
@@ -148,7 +148,7 @@ function DraggableDialog(props) {
             SUDO
           )}
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
           <Button
             style={{
               color: `${wait ? "#CCCCCC" : RED_SECONDARY}`,
@@ -421,15 +421,15 @@ const ShowControlls = (
             alignItems: "flex-end",
           }}
         >
-          <TextInput
-            data-lenght={250}
+          <TextField
+            id="standard-basic"
+            label="Motivo"
             onChange={(e) => setReject(e.target.value)}
             style={{
               margin: "0px 8px 0px 0px",
               width: "170px",
               borderBottom: "1px solid #AAA",
             }}
-            placeholder="Motivo"
           />
           <Button
             style={{
@@ -506,15 +506,15 @@ const ShowControlls = (
             alignItems: "flex-end",
           }}
         >
-          <TextInput
-            data-lenght={250}
+          <TextField
+            id="standard-basic"
+            label="Motivo"
             onChange={(e) => setReject(e.target.value)}
             style={{
               margin: "0px 8px 0px 0px",
               width: "170px",
               borderBottom: "1px solid #AAA",
             }}
-            placeholder="Motivo"
           />
           <Button
             style={{

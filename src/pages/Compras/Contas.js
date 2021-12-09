@@ -3,21 +3,9 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
 import { saveAs } from "file-saver";
-
-//Meio de comunicação
 import { api } from "../../services/api";
 
-//"Placeholder" da página enquanto dados são carregados no
-import Loading from "../../components/loading_screen";
-
-//import de elementos visuais
-import { Toast } from "../../components/toasty";
-import {
-  ChangeTab,
-  SetMin,
-  SetRetira,
-} from "../../global/actions/ComprasAction";
-
+import { Receipt } from '@material-ui/icons'
 import {
   withStyles,
   TableBody,
@@ -30,15 +18,27 @@ import {
   Button,
 } from "@material-ui/core/";
 
+import {
+  ChangeTab,
+  SetMin,
+  SetRetira,
+} from "../../global/actions/ComprasAction";
+
+import Loading from "../../components/loading_screen";
+import { Toast } from "../../components/toasty";
+
 import { Table } from "../../components/table";
-import Modal from './ContasModal'
+import ContaModal from './modals/ContasModal'
+import PagamentoModal from './modals/PagamentoModal'
 
 const Contas = (props) => {
   const TabIndex = 1;
-
-  const [open, setOpen] = useState(false);
+  
+  const [contaModalOpen, setContaModalOpen] = useState(false);
+  const [pagamentoModalOpen, setPagamentoModalOpen] = useState(false);
   const [wait, setWait] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
   const [ResumoCompras, setResumo] = useState([]);
   const [Duplicatas, setDuplicatas] = useState([]);
   const [aFaturar, setAFaturar] = useState(null);
@@ -70,14 +70,27 @@ const Contas = (props) => {
     loadProdutos();
   }, [ChangeTab, SetMin, SetRetira]);
 
-  const handleLoadDet = async (DOC) => {
-    setOpen(true);
+  const handleOpenContaDialog = async (DOC) => {
+    setContaModalOpen(true);
     try {
       const response = await api.get(`/compras/pedidos/detalhes/${DOC}/DOC`);
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
     }
+  };
+
+  const handleCloseContaDialog = () => {
+    setPedidoDet({});
+    setContaModalOpen(false);
+  };
+
+  const handleOpenPagamentoDialog = async () => {
+    setPagamentoModalOpen(true)
+  }
+
+  const handleClosePagamentoDialog = () => {
+    setPagamentoModalOpen(false)
   };
 
   const handleRetriveBoleto = async (DOC) => {
@@ -110,11 +123,6 @@ const Contas = (props) => {
     }
   };
 
-  const handleCloseDialog = () => {
-    setPedidoDet({});
-    setOpen(false);
-  };
-
   return !loaded ? (
     <Loading />
   ) : (
@@ -127,12 +135,20 @@ const Contas = (props) => {
         alignItems: "flex-start",
       }}
     >
-      <Modal
-        open={open}
-        onClose={handleCloseDialog}
+      <ContaModal
+        open={contaModalOpen}
+        onClose={handleCloseContaDialog}
         Detalhes={pedidoDet}
         Cooldown={wait}
-        onRequestBoleto={(DOC) => handleRetriveBoleto(DOC)}
+        onRequestBoleto={
+          (DOC) => handleRetriveBoleto(DOC)
+        }
+      />
+
+      <PagamentoModal
+        open={pagamentoModalOpen}
+        onClose={handleClosePagamentoDialog}
+        duplicatas={Duplicatas}
       />
       <Typography variant="h5" gutterBottom>
         Total Mensal
@@ -245,7 +261,7 @@ const Contas = (props) => {
                             : null,
                         }}
                         key={dup.E1_NUM}
-                        onClick={() => handleLoadDet(dup.E1_NUM)}
+                        onClick={() => handleOpenContaDialog(dup.E1_NUM)}
                       >
                         <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
                         <StyledTableCell>
@@ -281,6 +297,20 @@ const Contas = (props) => {
               </TableBody>
             </Table>
           </TableContainer>
+          {Duplicatas.length > 0 ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{
+                width: "100%",
+                borderRadius: '0px 0px 5px 5px'
+              }}
+              startIcon={<Receipt />}
+              onClick={handleOpenPagamentoDialog}
+            >
+              Informar pagamento
+            </Button>
+          ) : null}
         </div>
         <div style={{ marginTop: "16px" }}>
           <Typography variant="h5" gutterBottom>

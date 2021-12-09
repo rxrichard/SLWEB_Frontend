@@ -1,16 +1,18 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Dialog from "@material-ui/core/Dialog";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import CloseIcon from "@material-ui/icons/Close";
-import Slide from "@material-ui/core/Slide";
+import { Close } from "@material-ui/icons";
+import { 
+  makeStyles,
+  Dialog,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Slide
+ } from "@material-ui/core";
 
-import { GREY_SECONDARY } from "../../misc/colors";
-import Loading from "../../components/loading_screen";
+import { GREY_SECONDARY } from "../../../misc/colors";
+import Loading from "../../../components/loading_screen";
 
 const FullScreenDialog = (props) => {
   const classes = useStyles();
@@ -30,7 +32,7 @@ const FullScreenDialog = (props) => {
               onClick={() => props.onClose()}
               aria-label="close"
               >
-              <CloseIcon />
+              <Close />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               Chamados MiFix

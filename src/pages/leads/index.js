@@ -10,13 +10,12 @@ import {
   LoadLeadsLimite,
 } from "../../global/actions/LeadAction";
 
-import AdicionarLead from './AddLead'
+import AdicionarLead from './modals/AddLead'
 import Assumidos from './LeadsAssumidos'
 import Disponiveis from './LeadsDisponiveis'
 
 import { Panel } from "../../components/commom_in";
 import Loading from "../../components/loading_screen";
-import { Toast } from "../../components/toasty";
 
 function LeadsList(props) {
   const [Loaded, setLoaded] = useState(false);
@@ -107,7 +106,9 @@ function LeadsList(props) {
         ContAssumidos={Limites[0].Tentativas}
         ContMax={Limites[0].MaxTentativas}
       />
-      <Disponiveis Leads={LeadsGeral} />
+      <Disponiveis
+        Leads={LeadsGeral}
+      />
     </Panel>
   );
 }

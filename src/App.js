@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import { ptBR } from "@material-ui/data-grid";

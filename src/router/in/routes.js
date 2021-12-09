@@ -11,7 +11,7 @@ import Leads from "../../pages/leads/index";
 import Ajuda from "../../pages/ajuda/index";
 import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
-import GerenciarEquip from "../../pages/equipamentosSolicitacao/gerenciamento";
+import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../components/Home";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
@@ -43,7 +43,8 @@ function Dashboard(props) {
             <Route exact path="/vendas" component={Vendas} />
             <Route exact path="/equipamentos/" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
-            <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} /> <Route exact path="/administracao/franquia" component={AdmFranquia} />
+            <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
+            <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
             <Route exact path="/administracao/emails" component={CentralEmails} />
             <Route path="*" component={notFound} />

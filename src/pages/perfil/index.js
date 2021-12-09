@@ -14,7 +14,7 @@ import InputUnderline from "../../components/materialComponents/InputUnderline";
 import Button from "../../components/materialComponents/Button";
 
 import { Settings, VpnKey, Check, AccountCircle } from "@material-ui/icons/";
-import { MenuItem, Typography, TextField, Input, InputAdornment, } from "@material-ui/core/";
+import { MenuItem, Typography, Input, InputAdornment, } from "@material-ui/core/";
 
 import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
 
@@ -98,7 +98,7 @@ function Perfil() {
 
     try {
       toastId = Toast('Aguarde...', 'wait')
-      const response = await api.put("/profile/email", {
+      await api.put("/profile/email", {
         email: newEmail,
       });
 
@@ -120,7 +120,7 @@ function Perfil() {
 
     try {
       toastId = Toast('Aguarde...', 'wait')
-      const response = await api.put("/profile/tax", {
+      await api.put("/profile/tax", {
         token: sessionStorage.getItem("token"),
         newTax: newTaxa,
       });

@@ -2,20 +2,22 @@ import React from 'react';
 import Draggable from "react-draggable";
 import moment from "moment";
 
-import { Close, InsertDriveFile, Block, ListAlt } from "@material-ui/icons";
 import { DataGrid } from "@material-ui/data-grid";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import Grow from "@material-ui/core/Grow";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+import { Close, InsertDriveFile, ListAlt } from "@material-ui/icons";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Grow,
+  IconButton,
+  Tooltip,
+  Typography,
+  Paper,
+} from "@material-ui/core/";
 
-import Loading from "../../components/loading_screen";
+import Loading from "../../../components/loading_screen";
 
 function ContasModal(props) {
   const whichContentShow = () => {
@@ -52,7 +54,7 @@ function ContasModal(props) {
               }
               placement="top"
               arrow
-              followCursor
+
             >
               <IconButton
                 disabled={props.Cooldown}
@@ -91,7 +93,7 @@ function ContasModal(props) {
             }
             placement="top"
             arrow
-            followCursor
+
           >
             <IconButton
               disabled={props.Cooldown}

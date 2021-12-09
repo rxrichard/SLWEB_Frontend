@@ -66,7 +66,7 @@ function Vender(props) {
 
   useEffect(() => {
     SwitchTab(0)
-  }, [])
+  }, [SwitchTab])
 
   const handleToggle = (value) => () => {
     SetCheckedProd(value.ProdId[0]);

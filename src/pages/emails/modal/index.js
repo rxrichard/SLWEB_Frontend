@@ -1,8 +1,7 @@
 import React from "react";
-
 import { api } from "../../../services/api";
 
-import { Textarea } from "react-materialize";
+import { TextField } from '@material-ui/core'
 
 export default class ConfigEmissao extends React.Component {
   state = {
@@ -17,11 +16,11 @@ export default class ConfigEmissao extends React.Component {
     Dest.value = "";
 
     try {
-      const response = api.get(`/emails/recipients/${value}`);
+      api.get(`/emails/recipients/${value}`);
 
-    
+
     } catch (err) {
-      
+
     }
   }
 
@@ -58,11 +57,17 @@ export default class ConfigEmissao extends React.Component {
           <div style={divColuna}>
             <div style={divMetade}>
               <div style={divLinha}>
-                <Textarea
+                <TextField
+                  id="standard-basic"
+                  disabled
+                  label="Destinatários?"
+                  value={this.state.Destinatarios}
+                />
+                {/* <Textarea
                   id="Destinatários"
                   disabled
                   defaultValue={this.state.Destinatarios}
-                />
+                /> */}
                 <input
                   id="chave"
                   type="checkbox"

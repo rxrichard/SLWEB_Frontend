@@ -8,11 +8,11 @@ import Loading from "../../components/loading_screen";
 import { Table } from "../../components/table";
 import { Toast } from "../../components/toasty";
 import { dateCheck, convertData } from "../../misc/commom_functions";
-import AdmDialog from "./modals/admDialog";
-import HistoryDialog from "./modals/historyDialog";
 import Button from "../../components/materialComponents/Button";
 import { RED_SECONDARY } from "../../misc/colors";
 
+import AdmDialog from "../gerenciarSolicitacoes/modals/admDialog";
+import HistoryDialog from "../gerenciarSolicitacoes/modals/historyDialog";
 export default class Logs extends React.Component {
   state = {
     logs: [],
@@ -81,7 +81,11 @@ export default class Logs extends React.Component {
     return !this.state.loaded ? (
       <Loading />
     ) : this.state.logs.length > 0 ? ( //Se nao tiver nenhum log, nem mostra a estrutura da tabela
-      <Table hoverable={true} responsive={true} centered>
+      <Table
+        hoverable={true}
+        responsive={true}
+        centered
+      >
         <thead>
           <tr>
             <th>Solicitação Nº</th>
@@ -100,7 +104,7 @@ export default class Logs extends React.Component {
             <tr>
               <td align="center">{log.OSCId}</td>
               <td align="center">{log.OSCStatus}</td>
-              <td align="center">{this.showStatus(log)}</td>
+              <td align="center"><strong>{this.showStatus(log)}</strong></td>
               <td align="center">{convertData(log.OSCDtSolicita)}</td>
               <td align="center">{convertData(log.OSCDtPretendida)}</td>
               <td align="center">

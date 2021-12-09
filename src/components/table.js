@@ -9,7 +9,7 @@ export const Table = props => (
       width: `${props.width}%`,
       maxHeight: '70vh',
       minWidth: '55%',
-      border: '1px solid black',
+      borderBottom: '1px solid black',
       // fontSize: '0.8em',
     }}
   >

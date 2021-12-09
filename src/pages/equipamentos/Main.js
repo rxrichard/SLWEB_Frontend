@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment'
 
 import { Build, Sync } from '@material-ui/icons'
 import { Typography, Tooltip, Button, makeStyles } from '@material-ui/core';
@@ -11,17 +10,19 @@ function MainSection(props) {
 
   return (
     <div
-      className="XAlign"
+      className="YAlign"
       style={{
         flex: '1',
+        width: '100%',
         border: `1px solid ${GREY_PRIMARY}`,
         maxHeight: '600px',
         overflow: 'auto',
         borderRadius: '0px 0px 8px 8px',
-        alignItems: 'flex-start'
+        alignItems: 'center',
+        justifyContent: 'flex-start',
       }}>
       {props.Ativos.map(item => (
-        <div className={classes.root}>
+        <div className={classes.root} key={item.EquiCod}>
           <div className="YAlign">
             <Typography variant="h6">
               {item.Nome_Fantasia}
@@ -43,7 +44,7 @@ function MainSection(props) {
               }
               placement="left"
               arrow
-              followCursor
+               
             >
               <Button
                 style={{ marginBottom: '8px' }}
@@ -64,7 +65,7 @@ function MainSection(props) {
               }
               placement="left"
               arrow
-              followCursor
+               
             >
               <Button
                 color={props.isInCooldown ? "secondary" : "primary"}
@@ -94,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: '8px 16px',
-    margin: '8px 16px',
     borderBottom: '1px solid #ccc',
 
     '&:last-child': {

@@ -8,7 +8,6 @@ import Loading from "../../components/loading_screen";
 //import de elementos visuais
 import { Panel, Container } from "../../components/commom_in";
 import { Table } from "../../components/table";
-import { Toast } from "../../components/toasty";
 import Input from '../../components/materialComponents/InputUnderline'
 
 function Franquia() {

@@ -1,21 +1,16 @@
 import React from "react";
-
-//Meio de comunicação
 import { api } from "../../services/api";
-//"Placeholder" da página enquanto dados são carregados no
-import Loading from "../../components/loading_screen";
 
-import { convertData } from "../../misc/commom_functions";
-
-import Emissao from './modal/index'
+import { TextField, Button } from '@material-ui/core'
 
 //import de elementos visuais
-import { TextInput, Button } from "react-materialize";
+import { convertData } from "../../misc/commom_functions";
 import { Panel, Container } from "../../components/commom_in";
-import { Toast } from "../../components/toasty";
 import { Table } from "../../components/table";
 import Modal from "../../components/modal";
+import Loading from "../../components/loading_screen";
 
+import Emissao from './modal/index'
 export default class CentralEmails extends React.Component {
   state = {
     loaded: false,
@@ -108,15 +103,27 @@ export default class CentralEmails extends React.Component {
                 marginRight: "1%",
               }}
             >
-              <TextInput
+              <TextField
+                id="standard-basic"
+                label="Filtrar por filial"
                 onChange={(e) => this.Filter(e.target.value, e)}
-                placeholder="Filtrar por filial"
               />
               <Modal
-                actions={<Button>Enviar</Button>}
+                actions={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    >
+                    Enviar
+                  </Button>
+                }
                 header="Disparar Email"
                 trigger={
-                  <Button style={{ marginTop: "10px" }} node="button">
+                  <Button
+                  variant="outlined"
+                  color="secondary"
+                    node="button"
+                  >
                     Disparar emails
                   </Button>
                 }

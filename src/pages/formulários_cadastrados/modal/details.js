@@ -28,7 +28,7 @@ const Modalzinho = (props) => {
     }
 
     loadData();
-  }, [])
+  }, [props.form])
 
   return (
     <div>

@@ -14,7 +14,6 @@ import {
 } from '@material-ui/core'
 
 import Loading from "../../components/loading_screen";
-import { converStyledTableCellata } from "../../misc/commom_functions";
 import { Panel } from "../../components/commom_in";
 import { Table } from "../../components/table";
 
@@ -47,7 +46,9 @@ const FormsAcompanhamento = () => {
       </Typography>
       <TableContainer component={Paper}>
         <Table
-          size="small"
+          hoverable={true}
+          responsive={false}
+          centered
         >
           <TableHead>
             <TableRow>

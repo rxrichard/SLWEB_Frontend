@@ -233,7 +233,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
               {FixPedido !== null ? 'Atualizar' : 'Gravar'}
@@ -248,7 +248,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button
               disabled={CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true}
@@ -267,7 +267,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
               Limpar
@@ -282,7 +282,7 @@ function Vendas(props) {
             }
             placement="right"
             arrow
-            followCursor
+             
           >
             <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
               Fechar

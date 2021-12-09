@@ -172,7 +172,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Conj_Nome}
-                label="16. Nome do(a) cônjuge"
+                label="Nome do(a) cônjuge"
                 />
               <Input
                 onChange={(e) =>
@@ -182,7 +182,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Conj_DtNascimento}
-                label="17. Data de Nascimento"
+                label="Data de Nascimento"
                 />
             </div>
             <div style={divStyle}>
@@ -194,7 +194,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Conj_CPF}
-                label="18. CPF"
+                label="CPF"
                 />
               <Input
                 onChange={(e) =>
@@ -204,7 +204,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Conj_RG}
-                label="19. RG"
+                label="RG"
                 />
             </div>
             <div style={divStyle}>
@@ -216,7 +216,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.TUnião}
-                label="20. Tempo de união"
+                label="Tempo de união"
                 />
               <Input
                 onChange={(e) =>
@@ -226,7 +226,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Conj_RendMensal}
-                label="21. Rendimento mensal"
+                label="Rendimento mensal"
                 />
             </div>
           </>
@@ -243,7 +243,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Qtd_filhos}
-                label="25. Quantos:"
+                label="Quantos:"
                 />
               <Input
                 onChange={(e) =>
@@ -253,7 +253,7 @@ export const Partner = (props) => {
                   })
                 }
                 value={props.Form.Idd_filhos}
-                label="26. Idades:"
+                label="Idades:"
               />
             </div>
           </>

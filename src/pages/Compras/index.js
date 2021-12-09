@@ -241,7 +241,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button
               disabled={wait}
@@ -261,7 +261,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button
               disabled={
@@ -283,7 +283,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-            followCursor
+             
           >
             <Button
               disabled={wait}
@@ -303,7 +303,7 @@ function Compras(props) {
             }
             placement="right"
             arrow
-            followCursor
+             
           >
             <Button
               disabled={wait}

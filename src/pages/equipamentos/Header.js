@@ -1,10 +1,15 @@
 import React from 'react';
+import moment from 'moment'
+import { Link } from "react-router-dom";
 
+import { ErrorOutline, Room, PlaylistAddCheck, Add } from '@material-ui/icons'
 import { Typography, Button } from '@material-ui/core';
 
 import { GREY_SECONDARY } from '../../misc/colors'
 
 const Header = (props) => {
+  const shouldEnableConfirmButtom = moment().isBetween(moment(props.confirmPeriodRef[0].de, "DD/MM/YYYY"), moment(props.confirmPeriodRef[0].ate, "DD/MM/YYYY"))
+
   return (
     <div
       className="XAlign"
@@ -25,6 +30,7 @@ const Header = (props) => {
           variant="contained"
           disabled={false}
           onClick={() => props.onOpenReportModal()}
+          startIcon={<ErrorOutline />}
         >
           Reportar problema
         </Button>
@@ -32,8 +38,9 @@ const Header = (props) => {
           style={{ marginBottom: '8px', width: '230px' }}
           color="primary"
           variant="contained"
-          disabled={false}
+          disabled={true}
           onClick={() => props.onOpenMiFixModal()}
+          startIcon={<Room />}
         >
           Chamados MiFix
         </Button>
@@ -41,20 +48,39 @@ const Header = (props) => {
           style={{ marginBottom: '8px', width: '230px' }}
           color="primary"
           variant="contained"
-          disabled={true}
-          onClick={() => {}}
+          disabled={!shouldEnableConfirmButtom}
+          onClick={() => props.onOpenConfirmModal()}
+          startIcon={<PlaylistAddCheck />}
         >
           Confirmar instalações
         </Button>
       </div>
 
       <div className="YAlign" style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <Typography variant="h4" style={{ color: '#fff' }}>
+        <Typography
+          variant="h4"
+          style={{ color: '#fff' }}
+          gutterBottom
+        >
           Equipamentos: {props.EquipamentosTotal}
         </Typography>
-        <Typography variant="h4" style={{ color: '#fff' }}>
+        <Typography
+          variant="h4"
+          style={{ color: '#fff' }}
+          gutterBottom
+        >
           Aguardando instalação: {props.EquipamentosStandyBy}
         </Typography>
+        <Link to="/equipamentos/solicitacao">
+          <Button
+            style={{ width: '230px' }}
+            color="primary"
+            variant="contained"
+            startIcon={<Add />}
+          >
+            Solicitar Equipamento
+          </Button>
+        </Link>
       </div>
 
     </div>

@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import moment from 'moment'
 import Draggable from "react-draggable";
-import { api } from '../../services/api'
+import { api } from '../../../services/api'
 
 import { Close, Add } from '@material-ui/icons'
-import { makeStyles } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
+import {
+  makeStyles,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  MenuItem,
+  Typography,
+  Tooltip
+} from "@material-ui/core";
 
-import Select from "../../components/materialComponents/Select";
-import InputMultline from "../../components/materialComponents/InputMultline";
-import { RED_SECONDARY, GREY_SECONDARY } from '../../misc/colors'
-import { Toast } from '../../components/toasty'
+
+import Select from "../../../components/materialComponents/Select";
+import InputMultline from "../../../components/materialComponents/InputMultline";
+import { RED_SECONDARY, GREY_SECONDARY } from '../../../misc/colors'
+import { Toast } from '../../../components/toasty'
 
 function ModalPersonalizado(props) {
   const [ativo, setAtivo] = useState('')
@@ -177,7 +180,7 @@ function ModalPersonalizado(props) {
                   onChange={(e) => SwitchOcorrencia(e.target.value)}
                 >
                   {problemas.map((problema) =>
-                    <MenuItem value={problema}>{problema}</MenuItem>
+                    <MenuItem key={problema} value={problema}>{problema}</MenuItem>
                   )}
                 </Select>
                 <Select
@@ -190,7 +193,7 @@ function ModalPersonalizado(props) {
                   onChange={(e) => setAtivo(e.target.value)}
                 >
                   {props.Ativos.map(ativo => (
-                    <MenuItem value={ativo.EquiCod}>{ativo.EquiCod}</MenuItem>
+                    <MenuItem key={ativo.EquiCod} value={ativo.EquiCod}>{ativo.EquiCod}</MenuItem>
                   ))}
                 </Select>
                 <InputMultline
@@ -212,8 +215,8 @@ function ModalPersonalizado(props) {
             </div>
 
             <div style={{ height: "100%" }}>
-              {reports.map(report => (
-                <div className={classes.root} style={{ height: "100%" }}>
+              {reports.map((report, index) => (
+                <div key={index} className={classes.root} style={{ height: "100%" }}>
                   <div className="XAlign" style={{ flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <Select
                       width="250px"
@@ -224,7 +227,7 @@ function ModalPersonalizado(props) {
                       disabled
                     >
                       {problemas.map((problema) =>
-                        <MenuItem value={problema}>{problema}</MenuItem>
+                        <MenuItem key={problema} value={problema}>{problema}</MenuItem>
                       )}
                     </Select>
                     <Select
@@ -253,7 +256,7 @@ function ModalPersonalizado(props) {
                       }
                       placement="top"
                       arrow
-                      followCursor
+
                     >
                       <Button
                         onClick={() => handleCloseReport(report)}

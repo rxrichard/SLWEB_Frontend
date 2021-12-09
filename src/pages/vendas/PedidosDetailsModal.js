@@ -41,8 +41,6 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
     const [wait, setWait] = useState(false);
     const [doctype, setDoctype] = useState("DANFE");
 
-    const TabIndex = 1
-
     const {
         Clientes,
     } = props.State;
@@ -83,7 +81,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <FileCopy />
@@ -109,7 +107,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton
                                 disabled={wait}
@@ -132,7 +130,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleCancel()} color="primary">
                                 <Block />
@@ -146,7 +144,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <Edit />
@@ -160,7 +158,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleRequestNFE()} color="primary">
                                 <NoteAdd />
@@ -179,7 +177,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <FileCopy />
@@ -202,7 +200,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                             }
                             placement="top"
                             arrow
-                            followCursor
+                             
                         >
                             <IconButton disabled={wait} onClick={() => handleEditVenda()} color="secondary">
                                 <FileCopy />

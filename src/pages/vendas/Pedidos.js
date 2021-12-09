@@ -15,7 +15,6 @@ import Paper from "@material-ui/core/Paper";
 
 import { Table } from "../../components/table";
 import Loading from "../../components/loading_screen";
-import { Toast } from "../../components/toasty";
 
 import { PedidoDetailsModal } from './PedidosDetailsModal'
 import { SwitchTab } from '../../global/actions/VendasAction'
@@ -26,6 +25,10 @@ function Pedidos(props) {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoDet, setPedidoDet] = useState([]);
   const [actualPedidoInfo, setActualPedidoInfo] = useState({});
+  
+  const {
+    SwitchTab
+  } = props;
 
   useEffect(() => {
     async function LoadData() {
@@ -39,7 +42,7 @@ function Pedidos(props) {
       }
     }
     LoadData();
-  }, []);
+  }, [SwitchTab]);
 
   async function handleLoadDet(pedido) {
     setOpen(true);
@@ -54,11 +57,7 @@ function Pedidos(props) {
       
     }
   }
-
-  const {
-    SwitchTab
-  } = props;
-
+  
   return !loaded ? (
     <Loading />
   ) : (

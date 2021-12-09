@@ -54,7 +54,8 @@ export const LeadsReducer = (state = initialState, action) => {
     case MOVE_LEAD:
       return {
         ...state,
-        LeadsFranqueado: [...state.LeadsFranqueado, action.Lead]
+        LeadsFranqueado: [...state.LeadsFranqueado, action.Lead],
+        LeadsGeral: state.LeadsGeral.filter((lead) => String(lead.Id) !== String(action.Lead.Id)),
       };
 
     default:
