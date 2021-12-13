@@ -33,7 +33,7 @@ import PagamentoModal from './modals/PagamentoModal'
 
 const Contas = (props) => {
   const TabIndex = 1;
-  
+
   const [contaModalOpen, setContaModalOpen] = useState(false);
   const [pagamentoModalOpen, setPagamentoModalOpen] = useState(false);
   const [wait, setWait] = useState(false);
@@ -143,8 +143,8 @@ const Contas = (props) => {
         onRequestBoleto={
           (DOC) => handleRetriveBoleto(DOC)
         }
+        type={0}
       />
-
       <PagamentoModal
         open={pagamentoModalOpen}
         onClose={handleClosePagamentoDialog}

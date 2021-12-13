@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Draggable from "react-draggable";
+import { api } from '../../../services/api'
 
 import { Close, Receipt, Check } from "@material-ui/icons";
 import {
@@ -40,36 +41,63 @@ function ContasModal(props) {
       return
     }
 
+    let qtdArquivos = formData.getAll('formData').length
+
     //verificar se o cara escolheu algum arquivo
-    if (formData.getAll('formData').length < 1) {
+    if (qtdArquivos < 1) {
       Toast('Anexe pelo menos um arquivo de imagem ou PDF que comprove o pagamento da duplicata', 'warn')
       setFetching(false)
       return
     }
 
-    try {
+    const nomeDaPasta = confirmDuplicatas.toString().replace(/,/g, '-')
 
+    let toastId = null
+    
+    try {
+      toastId = Toast('Enviando...', 'wait')
+
+      //enviar primeiro os arquivos
+      await api.post(`/compras/duplicatas/report/file/${qtdArquivos > 1 ? "S" : "N"}/${nomeDaPasta}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      })
+
+      //enviar as duplicatas para ignorar
+      await api.post('/compras/duplicatas/report/', {
+        serie: props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0], 
+        nf: confirmDuplicatas[0]
+      })
 
       //se tudo der certo eu recarrego a pagina ou atualizo o state Dupliacatas(se não der mto trabalho)
-      //zerar os inputs depois de enviar os arquivos
+      //zerar os inputs depois de enviar os arquivos(se eu não reiniciar a página)
       for (let i = 0; i < arquivos.length; i++) {
         arquivos[i].value = null
       }
       setFetching(false)
       setConfirmDuplicatas([])
       getFileNames(makeFormData(getFiles()))
+      Toast('Duplicata compensada', 'update', toastId, 'success')
     } catch (err) {
+      Toast('Falha ao compensar duplicata', 'update', toastId, 'error')
       setFetching(false)
     }
   }
 
   const handleClickDuplicata = (NumNFE, checked) => {
-    if (checked && confirmDuplicatas.indexOf(NumNFE) === -1) {
-      setConfirmDuplicatas([...confirmDuplicatas, NumNFE])
-      return
-    } else if (!checked && confirmDuplicatas.indexOf(NumNFE) !== -1) {
-      setConfirmDuplicatas(confirmDuplicatas.filter(duplicata => duplicata !== NumNFE))
-      return
+    // if (checked && confirmDuplicatas.indexOf(NumNFE) === -1) {
+    //   setConfirmDuplicatas([...confirmDuplicatas, NumNFE])
+    //   return
+    // } else if (!checked && confirmDuplicatas.indexOf(NumNFE) !== -1) {
+    //   setConfirmDuplicatas(confirmDuplicatas.filter(duplicata => duplicata !== NumNFE))
+    //   return
+    // } else {
+    //   setConfirmDuplicatas([])
+    // }
+
+    if (checked) {
+      setConfirmDuplicatas([NumNFE])
     } else {
       setConfirmDuplicatas([])
     }
@@ -151,7 +179,7 @@ function ContasModal(props) {
               }}
             >
               <Typography variant='body1'>
-                <strong>Selecione o(s) comprovante(s)</strong>
+                <strong>Selecione o comprovante</strong>
               </Typography>
               <NewFileInput
                 ContainerStyle={{
@@ -161,13 +189,13 @@ function ContasModal(props) {
                   width: '80%',
                 }}
                 onChange={() => getFileNames(makeFormData(getFiles()))}
-                multiple
+                multiple={false}
                 name="upload"
                 accept="application/pdf,image/png, image/jpeg"
                 label={
                   <div className="XAlign">
                     <Icon>attach_file</Icon>
-                    UPLOAD
+                    ANEXAR
                   </div>
                 }
               />
@@ -194,8 +222,8 @@ function ContasModal(props) {
                     paddingTop: '4px'
                   }}
                 >
-                  <strong>
-                    Selecione a(s) duplicata(s) paga(s)
+                  <strong style={{ color: 'rgba(0, 0, 0, 0.87)' }}>
+                    Selecione a duplicata paga
                   </strong>
                 </FormLabel>
                 <FormGroup>
@@ -213,11 +241,13 @@ function ContasModal(props) {
                           value={duplicata.E1_NUM}
                         />
                       }
-                      label={`${duplicata.E1_NUM} (R$ ${duplicata.E1_VALOR})`}
+                      label={<>
+                        <strong>{duplicata.E1_NUM}</strong> (R$ {duplicata.E1_VALOR})
+                      </>}
                     />
                   ))}
                 </FormGroup>
-                <FormHelperText>*Seleciona apenas as quais o comprovante se refere</FormHelperText>
+                {/* <FormHelperText>*Seleciona apenas as quais o comprovante se refere</FormHelperText> */}
               </FormControl>
             </div>
           </div>
