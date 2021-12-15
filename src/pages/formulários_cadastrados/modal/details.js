@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { saveAs } from "file-saver";
+import { api } from '../../../services/api';
 
 import { Visibility, GetApp, Close } from '@material-ui/icons'
 import {
@@ -13,6 +15,7 @@ import {
 } from '@material-ui/core/'
 
 import { GREY_SECONDARY } from '../../../misc/colors'
+import { Toast } from '../../../components/toasty'
 
 const Modalzinho = (props) => {
   const [form, setForm] = useState({});
@@ -29,6 +32,28 @@ const Modalzinho = (props) => {
 
     loadData();
   }, [props.form])
+
+  const handleDownloadPDF = async () => {
+    let toastId = null
+    try {
+      toastId = Toast('Buscando...', 'wait')
+
+      const response = await api.get(`/form/pdf/${form.CodCandidato}`, {
+        responseType: "arraybuffer",
+      })
+
+      Toast('Encontrado!', 'update', toastId, 'success')
+
+      //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+      saveAs(blob, `Form_${form.CodCandidato}_${new Date().getTime()}.pdf`);
+    } catch (err) {
+      Toast('Falha ao recuperar PDF do servidor', 'update', toastId, 'error')
+      console.log(err)
+    }
+  }
 
   return (
     <div>
@@ -61,11 +86,18 @@ const Modalzinho = (props) => {
             <Typography variant="h6" className={classes.title}>
               {props.title}
             </Typography>
+            <Button
+              color="inherit"
+              onClick={() => handleDownloadPDF()}
+            >
+              Baixar PDF
+            </Button>
           </Toolbar>
         </AppBar>
         <div className="YAlign">
           <div style={divAlinha}>
             <div style={divColuna}>
+
               <div style={divMetade}>
                 <h5>Dados Pessoais</h5>
                 <div style={divLinha}>
@@ -128,6 +160,7 @@ const Modalzinho = (props) => {
                 )}
 
               </div>
+
               <div style={divMetade}>
                 <h5>Rendimento e Experiencia</h5>
                 <div style={divLinha}>
@@ -246,9 +279,11 @@ const Modalzinho = (props) => {
                   </Typography>
                 </div>
               </div>
+
             </div>
 
             <div style={divColuna}>
+
               <div style={divMetade}>
                 <h5>Estado civil e Familia</h5>
                 <div style={divLinha}>
@@ -270,10 +305,10 @@ const Modalzinho = (props) => {
                       </Typography>
                     </div>
                     <div style={divLinha}>
-                      <Typography gutterBottom>CPF: <strong style={{ color: 'red' }}>{form.CPFConj}</strong></Typography>
+                      <Typography gutterBottom>RG: <strong style={{ color: 'red' }}>{form.RGConj}</strong></Typography>
                     </div>
                     <div style={divLinha}>
-                      <Typography gutterBottom>RG: <strong style={{ color: 'red' }}>{form.RGConj}</strong></Typography>
+                      <Typography gutterBottom>CPF: <strong style={{ color: 'red' }}>{form.CPFConj}</strong></Typography>
                     </div>
                     <div style={divLinha}>
                       <Typography gutterBottom>
@@ -308,6 +343,7 @@ const Modalzinho = (props) => {
                   </>
                 )}
               </div>
+
               <div style={divMetade}>
                 <h5>Sócio</h5>
                 <div style={divLinha}>
@@ -369,6 +405,7 @@ const Modalzinho = (props) => {
                   </div>
                 )}
               </div>
+
               <div style={divMetade}>
                 <h5>Bens</h5>
                 <div style={divLinha}>
@@ -395,6 +432,37 @@ const Modalzinho = (props) => {
                   </Typography>
                 </div>
               </div>
+              
+              <div style={{
+                display: "flex",
+                width: "100%",
+                padding: "1vw",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                border: "1px solid #c1c1c1",
+              }}>
+                <h5>Prioridades</h5>
+                {afirmacoes.map((afirmacao, index) => (
+                  <div
+                    style={divStyle}
+                    key={index}
+                  >
+                    <input
+                      disabled
+                      id={index}
+                      value={String(form.Notas).split(',')[index]}
+                      maxLength={2}
+                      style={inputStyle}
+                      type="text"
+                    />
+                    <Typography>
+                      {afirmacao}
+                    </Typography>
+                  </div>
+                ))}
+              </div>
+
               <div style={divMetade}>
                 <h5>Arquivos</h5>
                 <Button
@@ -406,6 +474,7 @@ const Modalzinho = (props) => {
                   Baixar documentos
                 </Button>
               </div>
+              
             </div>
           </div>
         </div>
@@ -419,6 +488,20 @@ export default Modalzinho
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const afirmacoes = [
+  'Serviço de apoio prestado da franqueadora.',
+  'Investimento. A equação financeira entre o quanto é investido e o tempo que demora e haver o retorno desse valor.',
+  'Status. Reconhecimento social que ganhará tornando-se um franqueado Pilão Professional.',
+  'Afinidade com a marca Pilão.',
+  'Lucratividade. Quanto é o potencial de lucro mensal.',
+  'Segurança e solidez. Garantidas pelos fatos de ser uma empresa líder no segmento.',
+  'Afinidade com o produto café.',
+  'Pelos conceitos, valores e cultura (transparência, afetividade, seriedade, etc); percebidos durante o processo de conhecimento da franquia.',
+  'Força comercial da marca. Pelo tanto que a marca é conhecida pelo consumidor, faz propagandas e terá capacidade de gerar vendas nas unidades franqueadas.',
+  'Indicação de um amigo ou conhecido.',
+  'Referências positivas de franqueado(s) da rede Pilão Professional.',
+]
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -471,4 +554,23 @@ const divColuna = {
   flexDirection: "column",
   justifyContent: "flex-start",
   alignContent: "flex-start",
+};
+
+const divStyle = {
+  display: "Flex",
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  marginBottom: "2%",
+};
+
+const inputStyle = {
+  width: "20px",
+  textAlign: "center",
+  height: "unset",
+  border: "1px solid #9e9e9e",
+  marginRight: "10px",
+  color: 'red',
+  fontWeight: 'bold',
 };

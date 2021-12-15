@@ -198,7 +198,7 @@ function ModalPersonalizado(props) {
                 </Select>
                 <InputMultline
                   style={{ margin: "0px 8px 8px 8px", height: "100%" }}
-                  value={obs}
+                  value={String(obs).trim()}
                   id="outlined-basic"
                   label="Observações"
                   variant="outlined"
@@ -242,7 +242,7 @@ function ModalPersonalizado(props) {
                     </Select>
                     <InputMultline
                       style={{ margin: "0px 8px 8px 8px", height: "100%" }}
-                      value={report.EqKODesc}
+                      value={report.EqKODesc !== null ? String(report.EqKODesc).trim() : ''}
                       id="outlined-basic"
                       label="Observações"
                       variant="outlined"

@@ -20,6 +20,7 @@ function MainSection(props) {
         borderRadius: '0px 0px 8px 8px',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        flexWrap: 'noWrap',
       }}>
       {props.Ativos.map(item => (
         <div className={classes.root} key={item.EquiCod}>

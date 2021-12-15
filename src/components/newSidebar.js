@@ -170,7 +170,7 @@ export default function MiniDrawer() {
         </List>
         <Divider />
         <List>
-          {/* <Link
+          <Link
             to="/equipamentos"
             style={{ color: GREY_SECONDARY }}
           >
@@ -181,7 +181,7 @@ export default function MiniDrawer() {
 
               <ListItemText primary="Equipamentos" />
             </ListItem>
-          </Link> */}
+          </Link>
           <Link
             to="/equipamentos/solicitacao"
             style={{ color: GREY_SECONDARY }}
