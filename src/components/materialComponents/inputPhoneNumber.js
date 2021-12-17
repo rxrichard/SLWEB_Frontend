@@ -27,9 +27,10 @@ function NumberFormatCustom(props) {
           },
         });
       }}
-      thousandSeparator
       isNumericString
       prefix="$"
+      format="(##) # ####-####"
+      mask="_"
     />
   );
 }
@@ -40,13 +41,14 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function FormattedInputs() {
+export default function FormattedInputs(props) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    numberformat: '1320',
+    numberformat: '',
   });
 
   const handleChange = (event) => {
+    props.onChange(event)
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -56,8 +58,13 @@ export default function FormattedInputs() {
   return (
     <div className={classes.root}>
       <TextField
-        label="react-number-format"
-        value={values.numberformat}
+        style={props.style}
+        label={props.label}
+        value={
+          typeof props.value != "undefined" && props.value !== null
+        ? props.value
+        : ""
+      }
         onChange={handleChange}
         name="numberformat"
         id="formatted-numberformat-input"

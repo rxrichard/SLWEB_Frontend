@@ -198,7 +198,7 @@ function ModalPersonalizado(props) {
                 </Select>
                 <InputMultline
                   style={{ margin: "0px 8px 8px 8px", height: "100%" }}
-                  value={String(obs).trim()}
+                  value={String(obs)}
                   id="outlined-basic"
                   label="Observações"
                   variant="outlined"

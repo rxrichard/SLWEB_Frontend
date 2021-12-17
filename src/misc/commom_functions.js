@@ -142,3 +142,7 @@ export const roleLevel = () => {
       return 0;
   }
 };
+
+export const toValidString = (string, sub = '') => {
+  return string === null ? sub : String(string).trim();
+}

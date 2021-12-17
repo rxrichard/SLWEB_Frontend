@@ -113,8 +113,9 @@ export const Formulario = () => {
     //faz upload do formulario
     try {
       toastId = Toast('Enviando dados...', 'wait')
-      await api.post(
-        "/form",
+
+      //envia o formulario
+      await api.post("/form",
         {
           form: form,
         },
@@ -125,26 +126,17 @@ export const Formulario = () => {
         }
       );
 
-      Toast('Dados salvos!', 'update', toastId, 'success')
-    } catch (err) {
-      Toast('Falha ao salvar os dados', 'update', toastId, 'error')
-      event.target.disabled = false
-      shouldFinishForm = false;
-    }
-
-    //faz o upload das fotos
-    try {
-      toastId = Toast('Enviando arquivos...', 'wait')
+      //envia os arquivos
       await api.post("/form/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "proto-cod": codCandidato,
         },
-      });
+      })
 
-      Toast('Arquivos enviados!', 'update', toastId, 'success')
+      Toast('Dados salvos!', 'update', toastId, 'success')
     } catch (err) {
-      Toast('Falha ao enviar arquivos', 'update', toastId, 'error')
+      Toast('Falha ao salvar os dados, se o erro persistir baixe o arquivo Word e nos envie com as respostas pelo email informado no arquivo.', 'update', toastId, 'error')
       event.target.disabled = false
       shouldFinishForm = false;
     }
@@ -154,7 +146,7 @@ export const Formulario = () => {
     } else {
       setTimeout(() => window.location.reload(), 3000);
     }
-    
+
     return shouldFinishForm
   }
 

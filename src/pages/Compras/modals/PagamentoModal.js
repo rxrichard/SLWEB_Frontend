@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Draggable from "react-draggable";
 import { api } from '../../../services/api'
 
@@ -16,7 +16,6 @@ import {
   FormControl,
   FormGroup,
   FormControlLabel,
-  FormHelperText,
   Checkbox
 } from "@material-ui/core/";
 import { Icon } from "react-materialize";
@@ -53,7 +52,7 @@ function ContasModal(props) {
     const nomeDaPasta = confirmDuplicatas.toString().replace(/,/g, '-')
 
     let toastId = null
-    
+
     try {
       toastId = Toast('Enviando...', 'wait')
 
@@ -66,19 +65,22 @@ function ContasModal(props) {
 
       //enviar as duplicatas para ignorar
       await api.post('/compras/duplicatas/report/', {
-        serie: props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0], 
+        serie: props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0],
         nf: confirmDuplicatas[0]
       })
 
       //se tudo der certo eu recarrego a pagina ou atualizo o state Dupliacatas(se não der mto trabalho)
       //zerar os inputs depois de enviar os arquivos(se eu não reiniciar a página)
-      for (let i = 0; i < arquivos.length; i++) {
-        arquivos[i].value = null
-      }
-      setFetching(false)
-      setConfirmDuplicatas([])
-      getFileNames(makeFormData(getFiles()))
+      // for (let i = 0; i < arquivos.length; i++) {
+      //   arquivos[i].value = null
+      // }
+      // setFetching(false)
+      // setConfirmDuplicatas([])
+      // getFileNames(makeFormData(getFiles()))
       Toast('Duplicata compensada', 'update', toastId, 'success')
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
     } catch (err) {
       Toast('Falha ao compensar duplicata', 'update', toastId, 'error')
       setFetching(false)

@@ -381,7 +381,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Vendas);
 const ProdutosMarcados = (ProdList, Marcados) => {
   let count = 0;
   ProdList.forEach((prod) =>
-    Marcados.indexOf(prod.ProdId[0]) !== -1 ? count++ : null
+    Marcados.indexOf(prod.ProdId) !== -1 ? count++ : null
   );
 
   return count;
@@ -436,7 +436,7 @@ const fromStore2Datagrid = (carrinho) => {
 
   carrinho.forEach((item) => {
     aux.push({
-      id: item.ProdId[0],
+      id: item.ProdId,
       Produto: item.Produto,
       Quantidade: item.QVenda,
       Vlr: item.VVenda,
@@ -611,7 +611,7 @@ const columns = [
 const CarrinhoMarcados = (CarrinhoList, Marcados) => {
   let count = 0;
   CarrinhoList.forEach((prod) =>
-    Marcados.indexOf(prod.ProdId[0]) !== -1 ? count++ : null
+    Marcados.indexOf(prod.ProdId) !== -1 ? count++ : null
   );
 
   return count;

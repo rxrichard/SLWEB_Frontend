@@ -473,6 +473,7 @@ const Modalzinho = (props) => {
                 >
                   Baixar documentos
                 </Button>
+                <Typography>Local: X:\Franquia\SLWEB\DOCS\{form.CodCandidato}</Typography>
               </div>
               
             </div>

@@ -105,24 +105,22 @@ const Equipamentos = () => {
     let duration = moment.duration(diffTime * 1000, 'milliseconds');
     const interval = 1000;
 
-    setInterval(() => {
+    let IntervalId
+    IntervalId = setInterval(() => {
       duration = moment.duration(duration - interval, 'milliseconds');
       if (duration.asSeconds() <= 0) {
         setCooldownSync(false)
+        clearInterval(IntervalId)
       } else {
         setCooldownSync(duration.minutes() + ":" + duration.seconds())
       }
     }, interval);
 
-    let toastId = null
-
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      Toast('Atualização enviada ao TMT', 'info')
       await api.get(`/tel/update/WYSI/${ativo}`)
-
-      Toast('Atualização enviada ao TMT', 'update', toastId, 'success')
+      
     } catch (err) {
-      Toast('Falha ao aplicar atualização ao TMT, tente mais tarde.', 'update', toastId, 'error')
     }
   }
 

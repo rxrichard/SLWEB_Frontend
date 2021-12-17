@@ -272,7 +272,7 @@ function Perfil() {
                 value={newEmail}
                 disabled={wait}
                 type="text"
-                label={`Atual: ${info.Email.trim()}`}
+                label={`Atual: ${info.Email.trim()}`.split(';')[0].concat('...')}
                 onChange={(e) => setNewEmail(e)}
               />
             </Dialog>

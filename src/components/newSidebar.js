@@ -47,7 +47,7 @@ export default function MiniDrawer() {
   const stylePC = useStyles_FULL()
   const styleCELL = useStyles_CELL()
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [classes, setClasses] = React.useState(stylePC);
 
   useEffect(() => {

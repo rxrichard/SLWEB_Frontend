@@ -69,7 +69,7 @@ function Vender(props) {
   }, [SwitchTab])
 
   const handleToggle = (value) => () => {
-    SetCheckedProd(value.ProdId[0]);
+    SetCheckedProd(value.ProdId);
   };
 
   const handleSwitchCliente = (CNPJ) => {
@@ -201,33 +201,33 @@ function Vender(props) {
             </TableHead>
             <TableBody>
               {Produtos.map((prod, i) => {
-                const labelId = `transfer-list-all-item-${prod.ProdId[0]}-label`;
+                const labelId = `transfer-list-all-item-${prod.ProdId}-label`;
 
                 return (
                   <StyledTableRow
-                    key={prod.ProdId[0]}
+                    key={prod.ProdId}
                     onClick={handleToggle(prod)}
                   >
                     <StyledTableCell style={{ textAlign: 'center', padding: '0px' }}>
                       <input
                         style={{ margin: "0px" }}
-                        checked={Checked.indexOf(prod.ProdId[0]) !== -1}
+                        checked={Checked.indexOf(prod.ProdId) !== -1}
                         tabIndex={-1}
                         disableRipple
                         inputProps={{ "aria-labelledby": labelId }}
                         type="checkbox"
-                        value={prod.ProdId[0]}
+                        value={prod.ProdId}
                       />
                     </StyledTableCell>
 
-                    <StyledTableCell>{prod.ProdId[0]}</StyledTableCell>
+                    <StyledTableCell>{prod.ProdId}</StyledTableCell>
 
                     <StyledTableCell>
                       <ListItemText primary={String(prod.Produto).trim()} />
                     </StyledTableCell>
                     <StyledTableCell>
                       <ListItemText
-                        primary={Number.parseFloat(prod.PvnVlr).toFixed(4)}
+                        primary={Number.parseFloat(prod.PrVenda).toFixed(4)}
                       />
                     </StyledTableCell>
                   </StyledTableRow>
@@ -315,7 +315,7 @@ const useStyles = makeStyles((theme) => ({
 const ProdutosMarcados = (ProdList, Marcados) => {
   let count = 0;
   ProdList.forEach((prod) =>
-    Marcados.indexOf(prod.ProdId[0]) !== -1 ? count++ : null
+    Marcados.indexOf(prod.ProdId) !== -1 ? count++ : null
   );
 
   return count;

@@ -151,19 +151,19 @@ export const VendasReducer = (state = initialState, action) => {
 
       if (campo === "Quantidade") {
         _newCarrinho.forEach((item) => {
-          if (String(item.ProdId[0]) === String(action.ProdId)) {
+          if (String(item.ProdId) === String(action.ProdId)) {
             item.QVenda = action.Qtd;
           }
         });
       } else if (campo === "Vlr") {
         _newCarrinho.forEach((item) => {
-          if (String(item.ProdId[0]) === String(action.ProdId)) {
+          if (String(item.ProdId) === String(action.ProdId)) {
             item.VVenda = action.Qtd;
           }
         });
       } else if (campo === "Desconto") {
         _newCarrinho.forEach((item) => {
-          if (String(item.ProdId[0]) === String(action.ProdId)) {
+          if (String(item.ProdId) === String(action.ProdId)) {
             item.DVenda = action.Qtd;
           }
         });
@@ -182,15 +182,15 @@ export const VendasReducer = (state = initialState, action) => {
 
       //Adiciono produto ao carrinho
       state.Produtos.forEach((Prod) => {
-        if (state.Checked.indexOf(Prod.ProdId[0]) !== -1) {
+        if (state.Checked.indexOf(Prod.ProdId) !== -1) {
           newCarrinho.push(Prod);
-          FoundID.push(Prod.ProdId[0]);
+          FoundID.push(Prod.ProdId);
         }
       });
 
       //Remove os produtos adicionados ao carrinho da lista de produtos
       newProdutos = state.Produtos.filter(
-        (prod) => FoundID.indexOf(prod.ProdId[0]) === -1
+        (prod) => FoundID.indexOf(prod.ProdId) === -1
       );
 
       //removo da lista de marcados os que eu acabei de adicionar ao carrinho
@@ -211,15 +211,15 @@ export const VendasReducer = (state = initialState, action) => {
 
       //Adiciono aos produtos itens removidos do carrinho apos zerar a Qtd. Compra
       state.Carrinho.forEach((Prod) => {
-        if (state.Checked.indexOf(Prod.ProdId[0]) !== -1) {
+        if (state.Checked.indexOf(Prod.ProdId) !== -1) {
           newProdutos_.push({ ...Prod, QVenda: 0, VVenda: Prod.PrVenda });
-          FoundID_.push(Prod.ProdId[0]);
+          FoundID_.push(Prod.ProdId);
         }
       });
 
       //Removo os itens do carrinho
       newCarrinho_ = state.Carrinho.filter(
-        (prod) => FoundID_.indexOf(prod.ProdId[0]) === -1
+        (prod) => FoundID_.indexOf(prod.ProdId) === -1
       );
 
       //removo da lista de marcados os que eu acabei de voltar pra produtos
