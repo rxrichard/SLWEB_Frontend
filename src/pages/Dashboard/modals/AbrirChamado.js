@@ -7,12 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Paper
-
+  Paper,
+  Typography
 } from '@material-ui/core';
 import TextField from '../../../components/materialComponents/InputUnderline'
 import { toValidString } from '../../../misc/commom_functions'
 import InputPhone from '../../../components/materialComponents/inputPhoneNumber'
+import { RED_PRIMARY } from '../../../misc/colors'
 
 function ModalPersonalizado(props) {
   return (
@@ -29,9 +30,16 @@ function ModalPersonalizado(props) {
 
         <DialogContent>
           <div className="YAlign">
+            <Typography
+              style={{ color: RED_PRIMARY }}
+              variant="subtitle1"
+              gutterBottom
+            >
+              Contato
+            </Typography>
             <div
               className="XAlign"
-              style={{ width: "100%", justifyContent: "space-between" }}
+              style={{ width: "100%", justifyContent: "space-between", borderBottom: '1px dashed #CCC', marginBottom: '8px', paddingBottom: '8px' }}
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
@@ -54,13 +62,22 @@ function ModalPersonalizado(props) {
                 label="Telefone"
               />
             </div>
-
+            <Typography
+              style={{ color: RED_PRIMARY }}
+              variant="subtitle1"
+              gutterBottom
+            >
+              Endereço da máquina
+            </Typography>
             <div
               className="XAlign"
               style={{ width: "100%", justifyContent: "space-between" }}
             >
               <TextField
-                style={{ margin: "0px 0px 8px 0px", width: "100%" }}
+                style={{
+                  margin: "0px 0px 8px 0px",
+                  width: "100%"
+                }}
                 value={toValidString(props.Details.Endereco.Logradouro)}
                 id="outlined-basic"
                 label="Logradouro"

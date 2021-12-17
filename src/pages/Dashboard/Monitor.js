@@ -22,10 +22,12 @@ import {
   Email
 } from '@material-ui/icons/';
 
-import MiFixModal from './modals/AbrirChamado'
 import Loading from '../../components/loading_screen'
 import { toValidString } from '../../misc/commom_functions'
 import { Toast } from '../../components/toasty'
+
+import MiFixModal from './modals/AbrirChamado'
+import DetalhesModal from './modals/Detalhes'
 
 function Home() {
   const classes = useStyles();
@@ -33,8 +35,10 @@ function Home() {
   const [loaded, setLoaded] = useState(false);
   const [telemetrias, setTelemetrias] = useState([]);
   const [expand, setExpand] = useState(false);
-  const [target, setTarget] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
+  const [target, setTarget] = useState({});
+  const [modalChamadoOpen, setModalChamadoOpen] = useState(false);
+  const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
+  const [modalDetailsDesc, setModalDetailsDesc] = useState('');
   const [editableDetails, setEditableDetails] = useState(editableDetailsEmptyExample);
 
   useEffect(() => {
@@ -51,13 +55,13 @@ function Home() {
     LoadData()
   }, [])
 
-  const handleOpenModal = (TMT) => {
+  const handleOpenChamadoModal = (TMT) => {
     if (String(TMT.LeitOk).trim() !== 'KO') {
       return
     }
 
     setTarget(TMT)
-    setModalOpen(true)
+    setModalChamadoOpen(true)
     setEditableDetails({
       Email: TMT.Email,
       Telefone: "",
@@ -73,9 +77,22 @@ function Home() {
     })
   }
 
-  const handleCloseModal = () => {
-    setModalOpen(false)
+  const handleCloseChamadoModal = () => {
+    setModalChamadoOpen(false)
+    setTarget({})
     setEditableDetails(editableDetailsEmptyExample)
+  }
+
+  const handleOpenDetailsModal = (TMT, desc) => {
+    setTarget(TMT)
+    setModalDetailsDesc(desc)
+    setModalDetailsOpen(true)
+  }
+
+  const handleCloseDetailsModal = () => {
+    setTarget({})
+    setModalDetailsDesc('')
+    setModalDetailsOpen(false)
   }
 
   const handleAbrirChamado = async (TMT) => {
@@ -94,7 +111,7 @@ function Home() {
 
     const DTO = {
       Ativo: TMT.EquiCod,
-      UltLeitura: moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss"),
+      UltLeitura: TMT.MáxDeDataLeitura !== null ? moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss") :  'Desconhecido',
       Franqueado: TMT.GrupoVenda,
       Email: toValidString(editableDetails.Email),
       Contato: toValidString(editableDetails.Telefone),
@@ -120,14 +137,14 @@ function Home() {
         DTO,
       })
 
-      setModalOpen(false)
+      setModalChamadoOpen(false)
       Toast('Chamado aberto!', 'update', toastId, 'success')
     } catch (err) {
       Toast('Falha ao abrir chamado, tente novamente', 'update', toastId, 'error')
     }
   }
 
-  const handleShowDetails = (equicod) => {
+  const handleRevealDetails = (equicod) => {
     setExpand((expand) => {
       if (String(expand) === String(equicod)) {
         return false
@@ -145,12 +162,14 @@ function Home() {
         borderBottom: `5px solid #000`,
         borderLeft: `1px solid #CCC`,
         borderRight: `1px solid #CCC`,
-        borderTop: `1px solid #CCC`
+        borderTop: `1px solid #CCC`,
+        maxHeight: '100%',
+        overflow: 'auto'
       }}
     >
       <MiFixModal
-        open={modalOpen}
-        onClose={handleCloseModal}
+        open={modalChamadoOpen}
+        onClose={handleCloseChamadoModal}
         title='Abrir chamado MiFix'
         onChangeDetails={setEditableDetails}
         Details={editableDetails}
@@ -165,6 +184,13 @@ function Home() {
           </Button>
         }
       />
+      <DetalhesModal
+        open={modalDetailsOpen}
+        onClose={handleCloseDetailsModal}
+        title={`${modalDetailsDesc} da máquina ${target.EquiCod}`}
+        TMT={target}
+        tipo={modalDetailsDesc}
+      />
       <List
         aria-labelledby="nested-list-subheader"
         subheader={
@@ -177,12 +203,11 @@ function Home() {
         }
         className={classes.root}
       >
-
         {telemetrias.map(telemetria => (
           <>
             <ListItem
               button
-              onClick={() => handleShowDetails(telemetria.EquiCod)}
+              onClick={() => handleRevealDetails(telemetria.EquiCod)}
               className={classes.lines}
             >
               <ListItemIcon>
@@ -199,7 +224,7 @@ function Home() {
                   />
                 }
               </ListItemIcon>
-              <ListItemText primary={telemetria.EquiCod} secondary={`Última leitura: ${moment(telemetria.MáxDeDataLeitura).utc().format('DD/MM/YYY')}`} />
+              <ListItemText primary={telemetria.EquiCod} secondary={`Última leitura: ${telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).utc().format('DD/MM/YYY') : 'Desconhecido'}`} />
 
               <ListItemText primary={
                 <div style={{
@@ -231,8 +256,9 @@ function Home() {
                 >
                   <div
                     className={classes.infoContainer}
+                    onClick={() => handleOpenDetailsModal(telemetria, 'Leituras')}
                   >
-                    <Typography>Leituras (semana)</Typography>
+                    <Typography>Leituras (nesta semana)</Typography>
                     <Typography
                       style={{
                         fontWeight: 'bold',
@@ -242,6 +268,7 @@ function Home() {
                   </div>
                   <div
                     className={classes.infoContainer}
+                    onClick={() => handleOpenDetailsModal(telemetria, 'Contador')}
                   >
                     <Typography>Contador (Geral)</Typography>
                     <Typography
@@ -253,8 +280,9 @@ function Home() {
                   </div>
                   <div
                     className={classes.infoContainer}
+                    onClick={() => handleOpenDetailsModal(telemetria, 'Produção de doses')}
                   >
-                    <Typography>Doses (semana)</Typography>
+                    <Typography>Doses (nesta semana)</Typography>
                     <Typography
                       style={{
                         fontWeight: 'bold',
@@ -266,7 +294,7 @@ function Home() {
                 <Button
                   style={{ margin: '10px 8px' }}
                   disabled={String(telemetria.LeitOk).trim() !== 'KO'}
-                  onClick={() => handleOpenModal(telemetria)}
+                  onClick={() => handleOpenChamadoModal(telemetria)}
                   color="primary"
                   variant="contained"
                   startIcon={<Email />}
