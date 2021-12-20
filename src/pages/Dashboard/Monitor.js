@@ -160,8 +160,8 @@ function Home() {
         width: "100%",
         borderRadius: '0px 0px 4px 4px',
         borderBottom: `5px solid #000`,
-        borderLeft: `1px solid #CCC`,
-        borderRight: `1px solid #CCC`,
+        borderLeft: `1px solid #000`,
+        borderRight: `1px solid #000`,
         borderTop: `1px solid #CCC`,
         maxHeight: '100%',
         overflow: 'auto'

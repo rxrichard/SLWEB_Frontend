@@ -49,24 +49,22 @@ function ContasModal(props) {
       return
     }
 
-    const nomeDaPasta = confirmDuplicatas.toString().replace(/,/g, '-')
-
     let toastId = null
+
+    formData.append('serie', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0])
+    formData.append('nf', confirmDuplicatas[0])
+    formData.append('valor', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_VALOR)
+    formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
+    formData.append('folderName', confirmDuplicatas.toString().replace(/,/g, '-'))
 
     try {
       toastId = Toast('Enviando...', 'wait')
 
       //enviar primeiro os arquivos
-      await api.post(`/compras/duplicatas/report/file/${qtdArquivos > 1 ? "S" : "N"}/${nomeDaPasta}`, formData, {
+      await api.post(`/compras/duplicatas/report/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         },
-      })
-
-      //enviar as duplicatas para ignorar
-      await api.post('/compras/duplicatas/report/', {
-        serie: props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0],
-        nf: confirmDuplicatas[0]
       })
 
       //se tudo der certo eu recarrego a pagina ou atualizo o state Dupliacatas(se não der mto trabalho)

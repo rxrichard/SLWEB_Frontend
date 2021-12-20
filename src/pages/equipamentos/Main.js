@@ -71,7 +71,7 @@ function MainSection(props) {
               <Button
                 color={props.isInCooldown ? "secondary" : "primary"}
                 variant="outlined"
-                disabled={props.isInCooldown}
+                disabled={props.isInCooldown || item.Nome_Fantasia === null}
                 onClick={() => props.onSync(item.EquiCod)}
               >
                 {props.isInCooldown !== false ? props.isInCooldown : <Sync />}
