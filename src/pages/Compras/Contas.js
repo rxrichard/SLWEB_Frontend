@@ -100,7 +100,7 @@ const Contas = (props) => {
     try {
       toastId = Toast("Buscando...", "wait");
 
-      const response = await api.get(`/compras/retrivepdf/${DOC}`, {
+      const response = await api.get(`/compras/retriveboleto/${DOC}`, {
         responseType: "arraybuffer",
       });
 
@@ -112,6 +112,36 @@ const Contas = (props) => {
 
         //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
         saveAs(blob, `BOLETO_NF_${DOC}.pdf`);
+        setWait(false);
+      } else {
+        Toast("Documento não encontrado", "update", toastId, "error");
+        setWait(false);
+      }
+    } catch (err) {
+
+      setWait(false);
+    }
+  };
+
+  const handleRetriveNota = async (DOC) => {
+    setWait(true);
+    let toastId = null;
+
+    try {
+      toastId = Toast("Buscando...", "wait");
+
+      const response = await api.get(`/compras/retrivenfe/${DOC}`, {
+        responseType: "arraybuffer",
+      });
+
+      //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
+      if (response.data.byteLength > 28) {
+        Toast("Encontrado!", "update", toastId, "success");
+        //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
+        const blob = new Blob([response.data], { type: "application/pdf" });
+
+        //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+        saveAs(blob, `NF_${DOC}.pdf`);
         setWait(false);
       } else {
         Toast("Documento não encontrado", "update", toastId, "error");
@@ -142,6 +172,9 @@ const Contas = (props) => {
         Cooldown={wait}
         onRequestBoleto={
           (DOC) => handleRetriveBoleto(DOC)
+        }
+        onRequestNFe={
+          (DOC) => handleRetriveNota(DOC)
         }
         type={0}
       />
@@ -278,7 +311,7 @@ const Contas = (props) => {
                           {moment(dup.DtVenc).utc().format("L")}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {currencyFormat(dup.E1_VALOR)}
+                          {currencyFormat(dup.E1_SALDO)}
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -480,9 +513,9 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
     if (duplicatasTotal.length === 0) {
       duplicatasTotal.push({
         Desc: dup.E1Desc,
-        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : 0,
-        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
-        Total: Number(dup.E1_VALOR),
+        Avencer: dup.Status === "Avencer" ? Number(dup.E1_SALDO) : 0,
+        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_SALDO),
+        Total: Number(dup.E1_SALDO),
       });
       return;
     }
@@ -493,13 +526,13 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
           ...duplicatasTotal[i],
           Avencer:
             dup.Status === "Avencer"
-              ? Number(duplicatasTotal[i].Avencer) + Number(dup.E1_VALOR)
+              ? Number(duplicatasTotal[i].Avencer) + Number(dup.E1_SALDO)
               : Number(duplicatasTotal[i].Avencer),
           Vencido:
             dup.Status === "Avencer"
               ? Number(duplicatasTotal[i].Vencido)
-              : Number(duplicatasTotal[i].Vencido) + Number(dup.E1_VALOR),
-          Total: Number(duplicatasTotal[i].Total) + Number(dup.E1_VALOR),
+              : Number(duplicatasTotal[i].Vencido) + Number(dup.E1_SALDO),
+          Total: Number(duplicatasTotal[i].Total) + Number(dup.E1_SALDO),
         };
         achou = true;
         break;
@@ -509,9 +542,9 @@ const DefineTotalDuplicatas = (duplicatas = []) => {
     if (!achou) {
       duplicatasTotal.push({
         Desc: dup.E1Desc,
-        Avencer: dup.Status === "Avencer" ? Number(dup.E1_VALOR) : 0,
-        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_VALOR),
-        Total: Number(dup.E1_VALOR),
+        Avencer: dup.Status === "Avencer" ? Number(dup.E1_SALDO) : 0,
+        Vencido: dup.Status === "Avencer" ? 0 : Number(dup.E1_SALDO),
+        Total: Number(dup.E1_SALDO),
       });
     }
     achou = false;

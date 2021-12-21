@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 
-import NewSidebar from '../../components/newSidebar'
+import Sidebar from '../../components/sidebar/sidebar'
 
 //import de telas
 import notFound from "../../pages/1_NOT_FOUND/index";
@@ -32,7 +32,7 @@ function Dashboard(props) {
       }}
     >
       <Router id="Out">
-        <NewSidebar />
+        <Sidebar />
         <div id="App">
           <Switch>
             <Route exact path="/" component={Home} />

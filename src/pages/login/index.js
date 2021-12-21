@@ -17,6 +17,7 @@ import { RED_PRIMARY } from '../../misc/colors'
 function Login() {
   const [user_code, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
     sessionStorage.removeItem("token");
@@ -24,27 +25,35 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
-    let toastId = null 
+    if (
+      (user_code.trim() === "" || user_code === null)
+      ||
+      (password.trim() === "" || password === null)
+    ) {
+      Toast('Filial ou Senha não informados', 'warn')
+      return
+    }
+
+    let toastId = null
+
     try {
       toastId = Toast('Aguarde...', 'wait')
-      
+      setFetching(true)
+
       const response = await api.post("/auth/", {
         user_code: user_code,
         password: password,
       });
 
-      if (response.data.token) {
-        Toast('Conectado!', 'update', toastId, 'success')
-        sessionStorage.setItem("token", response.data.token);
-        sessionStorage.setItem("usuario", response.data.nome);
-        sessionStorage.setItem("role", response.data.role);
-        window.location.assign("/");
-      } else {
-        Toast('Filial ou Senha incorretas!', 'update', toastId, 'error')
-        sessionStorage.clear();
-      }
+      Toast('Conectado!', 'update', toastId, 'success')
+
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("role", response.data.role);
+
+      window.location.assign("/");
     } catch (err) {
-      Toast('Falha na conexão', 'update', toastId, 'error')
+      Toast('Filial ou senha incorretos', 'update', toastId, 'error')
+      setFetching(false)
     }
   };
 
@@ -67,7 +76,13 @@ function Login() {
           }}
         />
         <Button
-          style={{ minWidth: "60%", marginBottom: "8px", backgroundColor: RED_PRIMARY, color: '#FFFFFF' }}
+          style={{
+            minWidth: "60%",
+            marginBottom: "8px",
+            backgroundColor: RED_PRIMARY,
+            color: '#FFFFFF'
+          }}
+          disabled={fetching}
           icon={<Input />}
           onClick={() => {
             handleLogin();

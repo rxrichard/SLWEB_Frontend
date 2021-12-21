@@ -3,7 +3,7 @@ import Draggable from "react-draggable";
 import moment from "moment";
 
 import { DataGrid } from "@material-ui/data-grid";
-import { Close, InsertDriveFile, ListAlt } from "@material-ui/icons";
+import { Close, InsertDriveFile, ListAlt, Receipt } from "@material-ui/icons";
 import {
   Dialog,
   DialogActions,
@@ -59,6 +59,23 @@ function ContasModal(props) {
               <IconButton
                 disabled={props.Cooldown}
                 onClick={() => props.onRequestBoleto(props.Detalhes.PedidoId)}
+                color="primary"
+              >
+                <Receipt />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Baixar NFe
+                </label>
+              }
+              placement="top"
+              arrow
+            >
+              <IconButton
+                disabled={props.Cooldown}
+                onClick={() => props.onRequestNFe(props.Detalhes.PedidoId)}
                 color="primary"
               >
                 <InsertDriveFile />

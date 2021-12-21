@@ -63,7 +63,9 @@ export default function DraggableDialog(props) {
           {props.title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>{props.children}</DialogContentText>
+          <DialogContentText>
+            {props.children}
+            </DialogContentText>
         </DialogContent>
         <DialogActions style={{ padding: '8px 24px'}}>
           {props.action}

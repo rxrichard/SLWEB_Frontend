@@ -1,6 +1,6 @@
 import Styled from 'styled-components'
 
-import background from '../assets/login_fig.png'
+import background from '../assets/bg.jpg'
 
 export const Container = Styled.div`
     display: flex;
@@ -11,8 +11,10 @@ export const Container = Styled.div`
     align-items: flex-end;
     
     background-image: url(${background});
-    background-repeat: no-repeat;
-    background-size: 100vh;
+    background-repeat: no-repeat ;
+    background-size: 100vh; 
+    background-position: left;
+    object-fit: cover;
 `
 
 export const Box = Styled.div`

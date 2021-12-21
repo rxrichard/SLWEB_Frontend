@@ -19,7 +19,6 @@ export default class autoLogin extends Component {
 
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
-        sessionStorage.setItem("usuario", response.data.nome);
         sessionStorage.setItem('role', response.data.role);
 
         this.redirectWindow(targetWindow);

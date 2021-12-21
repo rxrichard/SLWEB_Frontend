@@ -53,7 +53,7 @@ function ContasModal(props) {
 
     formData.append('serie', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0])
     formData.append('nf', confirmDuplicatas[0])
-    formData.append('valor', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_VALOR)
+    formData.append('valor', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_SALDO)
     formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
     formData.append('folderName', confirmDuplicatas.toString().replace(/,/g, '-'))
 
@@ -242,7 +242,7 @@ function ContasModal(props) {
                         />
                       }
                       label={<>
-                        <strong>{duplicata.E1_NUM}</strong> (R$ {duplicata.E1_VALOR})
+                        <strong>{duplicata.E1_NUM}</strong> (R$ {duplicata.E1_SALDO})
                       </>}
                     />
                   ))}
