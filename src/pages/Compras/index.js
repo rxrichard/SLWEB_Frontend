@@ -148,7 +148,7 @@ function Compras(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Contas a Pagar", "Comprar", "Pedidos"]}>
+      <MenuAbas titles={["Contas a Pagar", "Comprar", "Pedidos realizados"]}>
         <Contas />
         <Comprar />
         <Pedidos />

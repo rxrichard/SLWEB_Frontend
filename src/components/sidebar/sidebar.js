@@ -33,8 +33,8 @@ import {
   AddShoppingCart,
   Kitchen,
   PermContactCalendar,
-  Settings
 } from "@material-ui/icons/";
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 
 import { roleLevel } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
@@ -223,6 +223,19 @@ export default function MiniDrawer() {
             justifyContent: 'flex-start'
           }}>
             <Divider />
+            {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
+              <List>
+                <ListItem
+                  button
+                  onClick={handleOpenModal}
+                >
+                  <ListItemIcon>
+                    <SyncAltIcon  />
+                  </ListItemIcon>
+                  <ListItemText primary="Filiais" />
+                </ListItem>
+              </List>
+            ) : null}
             <List>
               <Link to="/perfil" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>
@@ -350,19 +363,7 @@ export default function MiniDrawer() {
             flexDirection: 'column',
             justifyContent: 'flex-end'
           }}>
-            {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
-              <List>
-                <ListItem
-                  button
-                  onClick={handleOpenModal}
-                >
-                  <ListItemIcon>
-                    <Settings />
-                  </ListItemIcon>
-                  <ListItemText primary="Filiais" />
-                </ListItem>
-              </List>
-            ) : null}
+    
           </div>
         </div>
       </Drawer>

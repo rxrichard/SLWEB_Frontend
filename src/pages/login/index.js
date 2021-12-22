@@ -25,6 +25,7 @@ function Login() {
   }, []);
 
   const handleLogin = async () => {
+  
     if (
       (user_code.trim() === "" || user_code === null)
       ||
@@ -59,7 +60,7 @@ function Login() {
 
   return (
     <Container style={{ backgroundColor: RED_PRIMARY }}>
-      <Box>
+      <Box onSubmit={handleLogin}>
         <Logo src={Image} alt="Pilão professional" />
         <InputUnderline
           label="Filial"
