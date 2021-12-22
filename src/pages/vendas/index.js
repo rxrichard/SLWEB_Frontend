@@ -177,7 +177,7 @@ function Vendas(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Vender", "Vendas"]} activeTab={TabIndex}>
+      <MenuAbas titles={["Vender", "Vendas realizadas"]} activeTab={TabIndex}>
         <Vender />
         <Pedidos />
       </MenuAbas>

@@ -17,7 +17,7 @@ export const Container = Styled.div`
     object-fit: cover;
 `
 
-export const Box = Styled.div`
+export const Box = Styled.form`
     display: flex;
     flex-direction: column;
     align-items: center;
