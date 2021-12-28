@@ -5,12 +5,19 @@ import Monitor from './Monitor'
 // import News from './News'
 
 const Dashboard = () => {
-return (
-    <Panel>
-        <Monitor />
-        {/* <News /> */}
-    </Panel>
-)
-}
 
+    if(window.innerWidth < 768){
+        
+return (
+        <Monitor />
+)
+}else{
+    return (
+        <Panel>
+            <Monitor />
+            {/* <News /> */}
+        </Panel>
+    )
+}
+}
 export default Dashboard
