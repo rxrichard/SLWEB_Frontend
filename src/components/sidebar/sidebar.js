@@ -33,8 +33,9 @@ import {
   AddShoppingCart,
   Kitchen,
   PermContactCalendar,
+  SyncAlt as SyncAltIcon,
+  EmojiFoodBeverage
 } from "@material-ui/icons/";
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
 
 import { roleLevel } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
@@ -224,17 +225,20 @@ export default function MiniDrawer() {
           }}>
             <Divider />
             {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
-              <List>
-                <ListItem
-                  button
-                  onClick={handleOpenModal}
-                >
-                  <ListItemIcon>
-                    <SyncAltIcon  />
-                  </ListItemIcon>
-                  <ListItemText primary="Filiais" />
-                </ListItem>
-              </List>
+              <>
+                <List>
+                  <ListItem
+                    button
+                    onClick={handleOpenModal}
+                  >
+                    <ListItemIcon>
+                      <SyncAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Filiais" />
+                  </ListItem>
+                </List>
+                <Divider />
+              </>
             ) : null}
             <List>
               <Link to="/perfil" style={{ color: GREY_SECONDARY }}>
@@ -320,8 +324,6 @@ export default function MiniDrawer() {
                       <ListItemText primary="Solicitações" />
                     </ListItem>
                   </Link>
-                </List>
-                <List>
                   <Link
                     to="/administracao/formularios"
                     style={{ color: GREY_SECONDARY }}
@@ -338,6 +340,18 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
+            <List>
+              <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <EmojiFoodBeverage />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Coletas" />
+                </ListItem>
+              </Link>
+            </List>
+            <Divider />
             <List>
               <Link to="/ajuda" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>
@@ -363,7 +377,6 @@ export default function MiniDrawer() {
             flexDirection: 'column',
             justifyContent: 'flex-end'
           }}>
-    
           </div>
         </div>
       </Drawer>

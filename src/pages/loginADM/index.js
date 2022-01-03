@@ -20,7 +20,9 @@ export default function LoginADM() {
   const [fetching, setFetching] = useState(false);
 
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
     if (
       (adm_code === null || adm_code.trim() === '')
       ||
@@ -58,7 +60,7 @@ export default function LoginADM() {
   return (
     <Container style={{ backgroundColor: GREY_PRIMARY }}>
       
-      <Box onSubmit={handleLogin}>
+      <Box onSubmit={(e) => handleLogin(e)}>
         
         <Logo src={Image} alt="Pilão professional" />
         <Input
@@ -85,7 +87,7 @@ export default function LoginADM() {
           }}
           disabled={fetching}
           icon={<InputIcon />}
-          onClick={() => handleLogin()}
+          onClick={(e) => handleLogin(e)}
         >
           Acessar
         </Button>

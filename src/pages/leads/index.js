@@ -98,7 +98,8 @@ function LeadsList(props) {
       alignItems: "flex-start",
       padding: '16px',
       justifyContent: 'column',
-      height: 'unset'
+      flexWrap: 'noWrap',
+      overflow: 'auto'
     }}>
       <AdicionarLead />
       <Assumidos

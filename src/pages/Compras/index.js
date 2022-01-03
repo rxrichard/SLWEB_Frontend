@@ -52,6 +52,85 @@ function Compras(props) {
   const [wait, setWait] = useState(false);
   const [obs, setObs] = useState("");
   const [retira, setRetira] = useState(false);
+  const [aVista, setAVista] = useState(false);
+
+  const columns = [
+    { field: "id", headerName: "Código", width: 100, editable: false },
+    {
+      field: "Produto",
+      headerName: "Produto",
+      flex: 1,
+      editable: false,
+    },
+    {
+      field: "Quantidade",
+      headerName: "Qtd",
+      type: "number",
+      hasFocus: true,
+      width: 90,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => (
+        <div
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+        >
+          {params.value}
+        </div>
+      ),
+      renderEditCell: (params) => (
+        <Input
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+          autoFocus={true}
+          decimalScale={0}
+          fixedDecimalScale={true}
+          isNumericString
+          prefix=""
+          allowNegative={false}
+          onChange={(e) => {
+            params.api.setEditCellValue(
+              {
+                id: params.id,
+                field: params.field,
+                value: Number(e.target.value),
+              },
+              e
+            );
+          }}
+          value={params.value}
+        />
+      ),
+    },
+    {
+      field: "VlrUn",
+      headerName: "Valor Un.",
+      type: "number",
+      sortable: false,
+      width: 90,
+      valueGetter: (params) =>
+        params.getValue(params.id, "Vlr") *
+        params.getValue(params.id, "Conversao") *
+        (aVista ? 0.95 : 1),
+    },
+    {
+      field: "VlrTotal",
+      headerName: "Total",
+      type: "number",
+      sortable: false,
+      description: "Cálculo do Valor Unitário x Quantidade",
+      width: 90,
+      valueGetter: (params) =>
+        String(Number.parseFloat(
+          params.getValue(params.id, "Quantidade") *
+          params.getValue(params.id, "VlrUn"),
+        ).toFixed(2)).replace('.', ',')
+    },
+  ]
 
   const {
     LoadInsumos,
@@ -63,7 +142,7 @@ function Compras(props) {
     ClearCarrinho,
   } = props;
 
-  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, Retira } =
+  const { TabIndex, Carrinho, Checked, Produtos, MinCompra, PodeRetirar } =
     props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
@@ -75,7 +154,7 @@ function Compras(props) {
         const response = await api.get("/compras/produtos");
         LoadInsumos(response.data);
       } catch (err) {
-        
+
       }
     }
     loadProdutos();
@@ -107,6 +186,7 @@ function Compras(props) {
       Items: Carrinho,
       Obs: obs,
       Retira: retira,
+      AVista: aVista,
     };
 
     setWait(true);
@@ -127,6 +207,7 @@ function Compras(props) {
       ClearCarrinho();
       setObs("");
       setRetira(false);
+      setAVista(false);
       setWait(false);
     } catch (err) {
       Toast(
@@ -148,7 +229,7 @@ function Compras(props) {
         justifyContent: "flex-start",
       }}
     >
-      <MenuAbas titles={["Contas a Pagar", "Comprar", "Pedidos realizados"]}>
+      <MenuAbas titles={["Contas a Pagar", "Comprar", "Compras realizadas"]}>
         <Contas />
         <Comprar />
         <Pedidos />
@@ -169,25 +250,36 @@ function Compras(props) {
 
         <DialogContent>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
-            {Retira ? (
+            <div className="YAlign" style={{ flex: "unset" }}>
+              {PodeRetirar ? (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className={classes.checkbox}
+                      checked={retira}
+                      onChange={(e) => setRetira(e.target.checked)}
+                    />
+                  }
+                  label="Franqueado Retira"
+                />
+              ) : null}
               <FormControlLabel
                 control={
                   <Checkbox
                     className={classes.checkbox}
-                    checked={retira}
-                    onChange={(e) => setRetira(e.target.checked)}
-                    name="gilad"
+                    checked={aVista}
+                    onChange={(e) => setAVista(e.target.checked)}
                   />
                 }
-                label="Franqueado Retira"
+                label="Pagamento à Vista (-5%)"
               />
-            ) : null}
+            </div>
 
             <div className="YAlign" style={{ flex: "unset" }}>
               <Typography gutterBottom variant="subtitle1">
                 <strong>Valor mínimo:</strong> R$ {MinFrete(MinCompra, retira)}
                 <Typography gutterBottom variant="subtitle1">
-                  <strong>Total do Pedido:</strong> R${totalPedido(Carrinho)}
+                  <strong>Total do Pedido:</strong> R${totalPedido(Carrinho, aVista)}
                 </Typography>
               </Typography>
             </div>
@@ -241,7 +333,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button
               disabled={wait}
@@ -261,7 +353,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button
               disabled={
@@ -283,7 +375,7 @@ function Compras(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button
               disabled={wait}
@@ -303,7 +395,7 @@ function Compras(props) {
             }
             placement="right"
             arrow
-             
+
           >
             <Button
               disabled={wait}
@@ -328,9 +420,8 @@ function Compras(props) {
           in={TabIndex === 2 && ProdutosMarcados(Produtos, Checked) > 0}
           timeout={transitionDuration}
           style={{
-            transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >
@@ -354,9 +445,8 @@ function Compras(props) {
           timeout={transitionDuration}
           style={{
             marginTop: "8px",
-            transitionDelay: `${
-              TabIndex === 2 ? transitionDuration.exit : 0
-            }ms`,
+            transitionDelay: `${TabIndex === 2 ? transitionDuration.exit : 0
+              }ms`,
           }}
           unmountOnExit
         >
@@ -408,7 +498,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   checkbox: {
-    transform: "scale(0.4)",
+    transform: "scale(0.3)",
     marginLeft: "8px",
   },
 }));
@@ -467,12 +557,12 @@ const fromStore2Datagrid = (carrinho) => {
   return aux;
 };
 
-const totalPedido = (carrinho) => {
+const totalPedido = (carrinho, aVista) => {
   let aux = 0;
 
   carrinho.forEach((item) => {
     aux +=
-      Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra);
+      Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra) * (aVista ? 0.95 : 1)
   });
 
   return String(Number.parseFloat(aux).toFixed(2)).replace('.', ',');
@@ -503,7 +593,7 @@ const verifyPedido = (pedido, retira, MinCompra) => {
     return false;
   }
 
-  if (!retira && totalPedido(pedido.Items) < MinCompra) {
+  if (!retira && Number.parseFloat(totalPedido(pedido.Items)) < Number.parseFloat(MinCompra)) {
     Toast("Valor total do pedido é menor que o mínimo", "warn");
     return false;
   }
@@ -517,79 +607,4 @@ const transitionDuration = {
   exit: 300,
 };
 
-const columns = [
-  { field: "id", headerName: "Código", width: 100, editable: false },
-  {
-    field: "Produto",
-    headerName: "Produto",
-    flex: 1,
-    editable: false,
-  },
-  {
-    field: "Quantidade",
-    headerName: "Qtd",
-    type: "number",
-    hasFocus: true,
-    width: 90,
-    sortable: false,
-    editable: true,
-    renderCell: (params) => (
-      <div
-        style={{
-          fontWeight: "bold",
-          color: RED_PRIMARY,
-        }}
-      >
-        {params.value}
-      </div>
-    ),
-    renderEditCell: (params) => (
-      <Input
-        style={{
-          fontWeight: "bold",
-          color: RED_PRIMARY,
-        }}
-        autoFocus={true}
-        decimalScale={0}
-        fixedDecimalScale={true}
-        isNumericString
-        prefix=""
-        allowNegative={false}
-        onChange={(e) => {
-          params.api.setEditCellValue(
-            {
-              id: params.id,
-              field: params.field,
-              value: Number(e.target.value),
-            },
-            e
-          );
-        }}
-        value={params.value}
-      />
-    ),
-  },
-  {
-    field: "VlrUn",
-    headerName: "Valor Un.",
-    type: "number",
-    sortable: false,
-    width: 90,
-    valueGetter: (params) =>
-      params.getValue(params.id, "Vlr") *
-      params.getValue(params.id, "Conversao"),
-  },
-  {
-    field: "VlrTotal",
-    headerName: "Total",
-    type: "number",
-    sortable: false,
-    description: "Cálculo do Valor Unitário x Quantidade",
-    width: 90,
-    valueGetter: (params) =>
-      String(Number.parseFloat(
-        params.getValue(params.id, "Quantidade") *
-        params.getValue(params.id, "VlrUn"),
-      ).toFixed(2)).replace('.', ',')
-  },
-];
+

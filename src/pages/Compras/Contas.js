@@ -21,7 +21,7 @@ import {
 import {
   ChangeTab,
   SetMin,
-  SetRetira,
+  SetPodeRetirar,
 } from "../../global/actions/ComprasAction";
 
 import Loading from "../../components/loading_screen";
@@ -45,8 +45,9 @@ const Contas = (props) => {
   const [TotalDuplicatas, setTotalDuplicatas] = useState([]);
   const [TotalAno, setTotalAno] = useState([]);
   const [pedidoDet, setPedidoDet] = useState({});
+  const [tipoDuplicata, setTipoDuplicata] = useState(null);
 
-  const { ChangeTab, SetMin, SetRetira } = props;
+  const { ChangeTab, SetMin, SetPodeRetirar } = props;
 
   //component did mount
   useEffect(() => {
@@ -62,18 +63,20 @@ const Contas = (props) => {
         setAFaturar(response.data.AFaturar[0].Total);
         setLoaded(true);
         SetMin(response.data.Geral.VlrMinCompra);
-        SetRetira(response.data.Geral.Retira);
+        SetPodeRetirar(response.data.Geral.Retira);
       } catch (err) {
 
       }
     }
     loadProdutos();
-  }, [ChangeTab, SetMin, SetRetira]);
+  }, [ChangeTab, SetMin, SetPodeRetirar]);
 
   const handleOpenContaDialog = async (DOC) => {
     setContaModalOpen(true);
+    setTipoDuplicata(DOC.E1Desc);
+
     try {
-      const response = await api.get(`/compras/pedidos/detalhes/${DOC}/DOC`);
+      const response = await api.get(`/compras/pedidos/detalhes/${DOC.E1_NUM}/DOC`);
       setPedidoDet(response.data);
     } catch (err) {
       setPedidoDet({});
@@ -83,6 +86,7 @@ const Contas = (props) => {
   const handleCloseContaDialog = () => {
     setPedidoDet({});
     setContaModalOpen(false);
+    setTipoDuplicata(null);
   };
 
   const handleOpenPagamentoDialog = async () => {
@@ -176,7 +180,7 @@ const Contas = (props) => {
         onRequestNFe={
           (DOC) => handleRetriveNota(DOC)
         }
-        type={0}
+        type={tipoDuplicata}
       />
       <PagamentoModal
         open={pagamentoModalOpen}
@@ -294,7 +298,7 @@ const Contas = (props) => {
                             : null,
                         }}
                         key={dup.E1_NUM}
-                        onClick={() => handleOpenContaDialog(dup.E1_NUM)}
+                        onClick={() => handleOpenContaDialog(dup)}
                       >
                         <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
                         <StyledTableCell>
@@ -459,7 +463,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       ChangeTab,
       SetMin,
-      SetRetira,
+      SetPodeRetirar,
     },
     dispatch
   );

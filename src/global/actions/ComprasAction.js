@@ -20,7 +20,8 @@ export const SetMin = (value) => ({
   type: COMPRA_SET_MIN_COMPRA,
   min: value,
 });
-export const SetRetira = (value) => ({
+
+export const SetPodeRetirar = (value) => ({
   type: COMPRA_SET_RETIRA,
   retira: value,
 });

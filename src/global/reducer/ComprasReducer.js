@@ -16,7 +16,7 @@ const initialState = {
   Produtos: [],
   Carrinho: [],
   MinCompra: 0,
-  Retira: false,
+  PodeRetirar: false,
 
 
   Checked: [],
@@ -46,7 +46,7 @@ export const ComprasReducer = (state = initialState, action) => {
     case COMPRA_SET_RETIRA:
       return {
         ...state,
-        Retira: action.retira,
+        PodeRetirar: action.retira,
       };
 
     case COMPRA_MOVE_PRODUTOS_2_CARRINHO:
