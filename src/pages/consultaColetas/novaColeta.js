@@ -9,7 +9,8 @@ import {
   useMediaQuery,
   Button,
   MenuItem,
-  Typography
+  Typography,
+  Divider
 } from '@material-ui/core';
 
 import Select from '../../components/materialComponents/Select'
@@ -21,7 +22,16 @@ export const NovaColeta = (props) => {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
+  const [leiturasDisponiveis, setLeiturasDisponiveis] = useState([]);
+  const [margemLeitura, setMargemLeitura] = useState({
+    de: null,
+    deID: null,
+    ate: null,
+    ateID: null,
+    excluir: null
+  });
   const [detalhes, setDetalhes] = useState({
+    EquiCod: '',
     Cliente: null,
     CNPJ: null,
     AnxId: null,
@@ -30,12 +40,30 @@ export const NovaColeta = (props) => {
     ProximaColeta: null,
     ContadorAnterior: null,
     ProximaColetaMes: null,
+    Zerou: null,
   })
 
   const handleRequestDetails = async (eqdata) => {
+    if (typeof eqdata == 'undefined') {
+      handleClearNovaLeituraStates()
+      return;
+    }
+
     try {
-      const response = await api.get(`/coletas/historico/${eqdata.EquiCod}`)
+      const response = await api.get(`/coletas/historico/${eqdata.EquiCod}/${eqdata.AnxId}`)
+
+      setLeiturasDisponiveis(response.data.LeiturasDisponiveis)
+
+      setMargemLeitura({
+        de: response.data.UltColeta[0] ? response.data.UltColeta[0].UltimaColeta : null,
+        deID: response.data.UltColeta[0] ? response.data.LeiturasDisponiveis.filter(leit => leit.DataLeitura === response.data.UltColeta[0].UltimaColeta)[0].LeituraId : null,
+        ate: null,
+        ateID: null,
+        excluir: response.data.UltColeta[0] ? response.data.UltColeta[0].UltimaColeta : null
+      })
+
       setDetalhes({
+        EquiCod: eqdata.EquiCod,
         Cliente: String(eqdata.AnxDesc).trim(),
         CNPJ: eqdata.CNPJss,
         AnxId: eqdata.AnxId,
@@ -44,20 +72,52 @@ export const NovaColeta = (props) => {
         ProximaColeta: response.data.UltColeta[0] ? response.data.UltColeta[0].ProximaColeta : null,
         ContadorAnterior: response.data.UltColeta[0] ? response.data.UltColeta[0].ContadorAnterior : null,
         ProximaColetaMes: response.data.UltColeta[0] ? response.data.UltColeta[0].ProximaColetaMes : null,
+        Zerou: response.data.UltColeta[0] ? response.data.UltColeta[0].Zerou : null,
       })
+
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const handleClearNovaLeituraStates = () => {
+    setLeiturasDisponiveis([])
+    setMargemLeitura({
+      de: null,
+      deID: null,
+      ate: null,
+      ateID: null,
+      excluir: null
+    })
+    setDetalhes({
+      EquiCod: '',
+      Cliente: null,
+      CNPJ: null,
+      AnxId: null,
+      PdvId: null,
+      UltimaColeta: null,
+      ProximaColeta: null,
+      ContadorAnterior: null,
+      ProximaColetaMes: null,
+      Zerou: null,
+    })
   }
 
   useEffect(() => {
     props.handleCloseModal()
   }, [isMdUp])
 
+  useEffect(() => {
+    if (margemLeitura.de !== null && margemLeitura.ate !== null) {
+      alert('buscar leitura')
+      console.log(margemLeitura)
+    }
+  }, [margemLeitura])
+
   return isMdUp ? (
     <Paper className={classes.root}>
       <div className={classes.container}>
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura)}
       </div>
     </Paper>
   ) : (
@@ -74,7 +134,7 @@ export const NovaColeta = (props) => {
         onClose={props.handleCloseModal}
         title='Nova Coleta'
       >
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura)}
       </NovaColetaModal>
     </>
   )
@@ -123,7 +183,10 @@ const WhichContentShow = (
   equipamentos,
   detalhes,
   classes,
-  handleLookForPastData
+  handleLookForPastData,
+  leituras,
+  margem,
+  setMargem
 ) => {
   return (
     <>
@@ -135,19 +198,21 @@ const WhichContentShow = (
           MLeft="8px"
           label="Equipamento"
           disabled={false}
-          value=''
-          onChange={(e) => handleLookForPastData(e.target.value)}
+          value={detalhes.EquiCod}
+          onChange={(e) => handleLookForPastData(equipamentos.filter(eq => eq.EquiCod === e.target.value)[0])}
         >
           {equipamentos.map((eq) => (
             <MenuItem
-              value={eq}
+              value={eq.EquiCod}
               key={eq.EquiCod}
             >
               {eq.EquiCod}
             </MenuItem>
           ))}
         </Select>
-        <div className={classes.infoBox}>
+        <div
+          className={classes.infoBox}
+        >
           <Typography
             style={{
               fontWeight: 'bold',
@@ -161,6 +226,7 @@ const WhichContentShow = (
           </Typography>
         </div>
       </section>
+      <Divider />
       <section className={classes.sectionRow}>
         <div className={classes.infoBox}>
           <Typography
@@ -203,7 +269,7 @@ const WhichContentShow = (
               fontSize: '1.2rem'
             }}
           >
-            Não
+            {detalhes.Zerou === null ? '-' : detalhes.Zerou === 'N' ? 'Não' : 'Sim'}
           </Typography>
         </div>
         <div className={classes.infoBox}>
@@ -217,10 +283,104 @@ const WhichContentShow = (
               fontSize: '1.2rem'
             }}
           >
-            9
+            {detalhes.ProximaColeta === null ? '-' : Number(detalhes.ProximaColeta) - 1}
           </Typography>
         </div>
       </section>
+      <Divider />
+      <section
+        className={classes.sectionRow}
+        style={{
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+        }}
+      >
+        <Select
+          width="150px"
+          MBottom="8px"
+          MTop="8px"
+          MRight="8px"
+          MLeft="8px"
+          label="Leitura de:"
+          disabled={margem.de === null || margem.de === margem.ate ? false : true}
+          value={margem.de === null ? '' : margem.de}
+          onChange={(e) => setMargem({
+            de: e.target.value,
+            deID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
+            ate: e.target.value,
+            ateID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
+            excluir: null
+          })
+          }
+        >
+          {
+            leituras.map((leitura) =>
+              <MenuItem
+                value={leitura.DataLeitura}
+              >
+                {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
+              </MenuItem>
+            )
+          }
+        </Select>
+        <Select
+          width="150px"
+          MBottom="8px"
+          MTop="8px"
+          MRight="8px"
+          MLeft="8px"
+          label="Leitura até:"
+          disabled={margem.de === null || margem.de === margem.ate ? true : false}
+          value={margem.ate === null ? '' : margem.ate}
+          onChange={(e) => setMargem(oldObj => {
+            return {
+              ...oldObj,
+              ate: e.target.value,
+              ateID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
+            }
+          })
+          }
+        >
+          {leituras.filter(leit => leit.DataLeitura !== margem.excluir).reverse().map((leitura) =>
+            <MenuItem
+              value={leitura.DataLeitura}
+            >
+              {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
+            </MenuItem>
+          )}
+        </Select>
+      </section>
+      <section className={classes.sectionRow}>
+        <div className={classes.infoBox}>
+          <Typography
+          >
+            Zerar máquina
+          </Typography>
+          <Typography
+            style={{
+              fontWeight: 'bold',
+              fontSize: '1.2rem'
+            }}
+          >
+            Sim / Não
+          </Typography>
+        </div>
+        <div className={classes.infoBox}>
+          <Typography
+          >
+            Referencia
+          </Typography>
+          <Typography
+            style={{
+              fontWeight: 'bold',
+              fontSize: '1.2rem'
+            }}
+          >
+            Selecionar mes
+          </Typography>
+        </div>
+      </section>
+      <Divider />
     </>
   )
 }

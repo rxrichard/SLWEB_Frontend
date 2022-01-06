@@ -18,8 +18,6 @@ import {
 } from "@material-ui/core/";
 
 const ContasModal = (props) => {
-  console.log(props.type)
-
   const whichContentShow = () => {
     if (props.type === 'Compra') {
       return (

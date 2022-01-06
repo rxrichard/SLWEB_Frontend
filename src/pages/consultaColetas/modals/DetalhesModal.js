@@ -10,7 +10,8 @@ import {
   Toolbar,
   IconButton,
   Slide,
-  Typography
+  Typography,
+  Button
 } from '@material-ui/core';
 
 export const DetalhesModal = (props) => {
@@ -34,6 +35,9 @@ export const DetalhesModal = (props) => {
             {props.title}
           </Typography>
         </Toolbar>
+        <Button>
+          Faturar
+        </Button>
       </AppBar>
       <div className={classes.container}>
         <section className={classes.sectionColumn}>

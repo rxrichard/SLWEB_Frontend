@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment'
 
 
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
+import { ExpandLess as ExpandLessIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   Accordion,
@@ -22,10 +22,10 @@ export const Consultas = (props) => {
   return (
     <Paper className={classes.root}>
       <Accordion
-        defaultExpanded
+        expanded
       >
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandLessIcon />}
           aria-controls="panel1c-content"
           id="panel1c-header"
         >
@@ -77,11 +77,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '70%',
     height: '100%',
-    overflow: 'auto',
+
+    '&:first-child> div': {
+      height: '100%',
+    },
 
     '&:first-child> div > div:last-child': {
       overflowY: 'auto',
-      height: '100%',
+      height: 'calc(100% - 70px)',
       minHeight: 'unset !important',
     }
   },
