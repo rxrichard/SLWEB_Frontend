@@ -23,6 +23,7 @@ export const NovaColeta = (props) => {
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   const [leiturasDisponiveis, setLeiturasDisponiveis] = useState([]);
+  const [leituraDoses, setLeituraDoses] = useState([]);
   const [margemLeitura, setMargemLeitura] = useState({
     de: null,
     deID: null,
@@ -82,6 +83,7 @@ export const NovaColeta = (props) => {
 
   const handleClearNovaLeituraStates = () => {
     setLeiturasDisponiveis([])
+    setLeituraDoses([])
     setMargemLeitura({
       de: null,
       deID: null,
@@ -108,16 +110,20 @@ export const NovaColeta = (props) => {
   }, [isMdUp])
 
   useEffect(() => {
-    if (margemLeitura.de !== null && margemLeitura.ate !== null) {
-      alert('buscar leitura')
-      console.log(margemLeitura)
+    async function getQtd() {
+      if (margemLeitura.de !== null && margemLeitura.ate !== null) {
+        const response = await api.get(`/coletas/novacoleta/${margemLeitura.deID}/${margemLeitura.ateID}/${detalhes.AnxId}/${detalhes.PdvId}`)
+
+        setLeituraDoses(response.data.Coleta)
+      }
     }
+    getQtd()
   }, [margemLeitura])
 
   return isMdUp ? (
     <Paper className={classes.root}>
       <div className={classes.container}>
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses)}
       </div>
     </Paper>
   ) : (
@@ -134,7 +140,7 @@ export const NovaColeta = (props) => {
         onClose={props.handleCloseModal}
         title='Nova Coleta'
       >
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses)}
       </NovaColetaModal>
     </>
   )
@@ -154,6 +160,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "flex-start",
     height: '100%',
     width: '100%',
+    minWidth: '430px'
   },
   infoBox: {
     display: 'flex',
@@ -186,7 +193,8 @@ const WhichContentShow = (
   handleLookForPastData,
   leituras,
   margem,
-  setMargem
+  setMargem,
+  leituraDoses
 ) => {
   return (
     <>
@@ -292,7 +300,8 @@ const WhichContentShow = (
         className={classes.sectionRow}
         style={{
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
+          flexWrap: 'nowrap',
+          alignItems: 'center',
         }}
       >
         <Select
@@ -305,10 +314,10 @@ const WhichContentShow = (
           disabled={margem.de === null || margem.de === margem.ate ? false : true}
           value={margem.de === null ? '' : margem.de}
           onChange={(e) => setMargem({
-            de: e.target.value,
-            deID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
-            ate: e.target.value,
-            ateID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
+            de: e.target.value !== '' ? e.target.value : null,
+            deID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+            ate: e.target.value !== '' ? e.target.value : null,
+            ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
             excluir: null
           })
           }
@@ -323,6 +332,13 @@ const WhichContentShow = (
             )
           }
         </Select>
+        <Typography
+          style={{
+            fontWeight: 'bold',
+            fontSize: '1.2rem'
+          }}>
+          &#x2192;
+        </Typography>
         <Select
           width="150px"
           MBottom="8px"
@@ -335,8 +351,8 @@ const WhichContentShow = (
           onChange={(e) => setMargem(oldObj => {
             return {
               ...oldObj,
-              ate: e.target.value,
-              ateID: leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId,
+              ate: e.target.value !== '' ? e.target.value : null,
+              ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
             }
           })
           }
@@ -354,7 +370,7 @@ const WhichContentShow = (
         <div className={classes.infoBox}>
           <Typography
           >
-            Zerar máquina
+            Consumo
           </Typography>
           <Typography
             style={{
@@ -362,25 +378,68 @@ const WhichContentShow = (
               fontSize: '1.2rem'
             }}
           >
-            Sim / Não
-          </Typography>
-        </div>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Referencia
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            Selecionar mes
+            {
+              (leituras.filter(leit => leit.DataLeitura === margem.ate)[0] && margem.ate !== null && margem.de ?
+                leituras.filter(leit => leit.DataLeitura === margem.ate)[0].Contador
+                :
+                0)
+              -
+              (leituras.filter(leit => leit.DataLeitura === margem.de)[0] && margem.de !== null && margem.ate !== null ?
+                leituras.filter(leit => leit.DataLeitura === margem.de)[0].Contador
+                :
+                0)
+            } DOSES
           </Typography>
         </div>
       </section>
       <Divider />
+      <section
+        className='YAlign'
+        style={{ height: '100%', width: '100%', justifyContent: 'flex-start' }}
+      >
+        {leituraDoses.map(leit => (
+          <div
+            className='XAlign'
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              padding: '0px 8px 1px 8px',
+              borderBottom: '1px solid #CCC',
+              flexWrap: 'nowrap'
+            }}
+          >
+            <div className='YAlign'>
+              <Typography variant='subtitle1'>
+                <strong
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                  {leit.Produto}
+                </strong>
+              </Typography>
+              <Typography variant='subtitle2'>(Seleção {leit.Selecao})</Typography>
+            </div>
+            <div
+              className='YAlign'
+              style={{ 
+                alignItems: 'flex-end',
+                flexWrap: 'nowrap',
+              }}
+            >
+              <Typography variant='subtitle1'>
+                Pagas: <strong>{leit.Consumo.Real}</strong>
+              </Typography>
+              <Typography variant='subtitle2'>
+                Teste: <strong>{leit.Consumo.Teste}</strong>
+              </Typography>
+            </div>
+          </div>
+        ))}
+      </section>
     </>
   )
 }

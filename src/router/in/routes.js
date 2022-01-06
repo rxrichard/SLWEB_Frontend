@@ -42,7 +42,7 @@ function Dashboard(props) {
             <Route exact path="/ajuda" component={Ajuda} />
             <Route exact path="/compras" component={Compras} />
             <Route exact path="/vendas" component={Vendas} />
-            <Route exact path="/equipamentos/" component={Equipamentos} />
+            <Route exact path="/equipamentos" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
             <Route exact path="/administracao/franquia" component={AdmFranquia} />
