@@ -21,13 +21,9 @@ import nfeLogo from '../../../assets/svg/NFe.svg';
 
 import Loading from "../../../components/loading_screen";
 
-function ContasModal(props) {
+const ContasModal = (props) => {
   const whichContentShow = () => {
-    if (!props.Detalhes.PedidoId) {
-      return (
-        <Loading />
-      )
-    } else if (props.Detalhes.Detalhes?.length > 0) {
+    if (props.type === 'Compra') {
       return (
         <>
           <div className="XAlign" style={{ justifyContent: "space-between" }}>
@@ -101,37 +97,43 @@ function ContasModal(props) {
           </div>
         </>
       )
-    } else {
-      return (<>
-        <div className="XAlign" style={{ justifyContent: "flex-end" }}>
-          <Tooltip
-            title={
-              <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
-                Baixar Boleto
-              </label>
-            }
-            placement="top"
-            arrow
+    } else if (props.type === 'Royalties') {
+      return (
+        <>
+          <div className="XAlign" style={{ justifyContent: "flex-end" }}>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Baixar Boleto
+                </label>
+              }
+              placement="top"
+              arrow
 
-          >
-            <IconButton
-              disabled={props.Cooldown}
-              onClick={() => props.onRequestBoleto(props.Detalhes.PedidoId)}
-              color="primary"
             >
-              <InsertDriveFile />
-            </IconButton>
-          </Tooltip>
-        </div>
-        <div className="YAlign" style={{ height: 200, width: "100%", alignItems: 'center' }}>
-          <Typography variant="h4">
-            Cobrança de Royalties
-          </Typography>
-          <Typography variant="subtitle1">
-            (15% sobre vendas anteriores ao mês referente)
-          </Typography>
-        </div>
-      </>)
+              <IconButton
+                disabled={props.Cooldown}
+                onClick={() => props.onRequestBoleto(props.Detalhes.PedidoId)}
+                color="primary"
+              >
+                <InsertDriveFile />
+              </IconButton>
+            </Tooltip>
+          </div>
+          <div className="YAlign" style={{ height: 200, width: "100%", alignItems: 'center' }}>
+            <Typography variant="h4">
+              Cobrança de Royalties
+            </Typography>
+            <Typography variant="subtitle1">
+              (15% sobre vendas anteriores ao mês referente)
+            </Typography>
+          </div>
+        </>
+      )
+    } else {
+      return (
+        <></>
+      )
     }
   }
 
@@ -222,8 +224,3 @@ const columns = [
       params.getValue(params.id, "VlrUn"),
   },
 ];
-
-export const capitalizeMonthFirstLetter = (month) => {
-  return month.charAt(0).toUpperCase() + month.slice(1)
-}
-

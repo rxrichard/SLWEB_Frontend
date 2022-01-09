@@ -105,6 +105,7 @@ export const Panel = Styled.div`
         width: calc(100% - 0px);
         margin-left: 0px;
         margin-top: 48px;
+        padding: 20px 0px 0px 0px;
   }
 `;
 

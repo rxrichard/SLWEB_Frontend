@@ -33,7 +33,11 @@ const Disponiveis = (props) => {
   }, [props.Leads])
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      width: '100%'
+    }}>
       <div
         style={{
           display: "flex",

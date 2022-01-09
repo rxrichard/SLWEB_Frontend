@@ -146,3 +146,7 @@ export const roleLevel = () => {
 export const toValidString = (string, sub = '') => {
   return string === null || typeof string == 'undefined'? sub : String(string).trim();
 }
+
+export const capitalizeMonthFirstLetter = (month) => {
+  return month.charAt(0).toUpperCase() + month.slice(1)
+}

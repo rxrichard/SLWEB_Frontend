@@ -13,11 +13,12 @@ import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import AdmFranquia from "../../pages/administracao/index";
-import Home from "../../pages/Dashboard/Index";
+import Home from "../../pages/dashboard/Index";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
 import Compras from '../../pages/compras/index'
 import Vendas from '../../pages/vendas/index'
+import Coletas from '../../pages/consultaColetas/index'
 
 function Dashboard(props) {
   return (
@@ -41,12 +42,13 @@ function Dashboard(props) {
             <Route exact path="/ajuda" component={Ajuda} />
             <Route exact path="/compras" component={Compras} />
             <Route exact path="/vendas" component={Vendas} />
-            <Route exact path="/equipamentos/" component={Equipamentos} />
+            <Route exact path="/equipamentos" component={Equipamentos} />
             <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
             <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
             <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
             <Route exact path="/administracao/emails" component={CentralEmails} />
+            <Route exact path="/leituras" component={Coletas} />
             <Route path="*" component={notFound} />
           </Switch>
         </div>

@@ -24,8 +24,8 @@ function Login() {
     sessionStorage.removeItem("usuario");
   }, []);
 
-  const handleLogin = async () => {
-  
+  const handleLogin = async (e) => {
+    e.preventDefault()
     if (
       (user_code.trim() === "" || user_code === null)
       ||
@@ -60,7 +60,7 @@ function Login() {
 
   return (
     <Container style={{ backgroundColor: RED_PRIMARY }}>
-      <Box onSubmit={handleLogin}>
+      <Box onSubmit={(e) => handleLogin(e)}>
         <Logo src={Image} alt="Pilão professional" />
         <InputUnderline
           label="Filial"
@@ -85,9 +85,7 @@ function Login() {
           }}
           disabled={fetching}
           icon={<Input />}
-          onClick={() => {
-            handleLogin();
-          }}
+          onClick={(e) =>  handleLogin(e)}
         >
           Acessar
         </Button>

@@ -225,7 +225,7 @@ function Home() {
                   />
                 }
               </ListItemIcon>
-              <ListItemText primary={telemetria.EquiCod} secondary={`Última leitura: ${telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).utc().format('DD/MM/YYY') : 'Desconhecido'}`} />
+              <ListItemText primary={telemetria.EquiCod} secondary={`Última leitura: ${telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).utc().format('DD/MM/YYYY') : 'Desconhecido'}`} />
 
               <ListItemText primary={
                 <div style={{

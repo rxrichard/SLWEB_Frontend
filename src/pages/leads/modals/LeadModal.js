@@ -121,6 +121,11 @@ const LeadModal = (props) => {
   return (
     <>
       <DefaultButton
+        style={{ 
+          whiteSpace: "nowrap", 
+          minWidth: '170px',
+          overflow: 'hidden',
+         }}
         variant="outlined"
         color="primary"
         onClick={handleClickOpenModal}
