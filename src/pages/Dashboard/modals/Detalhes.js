@@ -12,6 +12,7 @@ import {
   Grid,
   makeStyles
 } from '@material-ui/core';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { toValidString } from '../../../misc/commom_functions'
 import { RED_PRIMARY } from '../../../misc/colors'
@@ -27,21 +28,26 @@ function ModalPersonalizado(props) {
         PaperComponent={PaperComponent}
         aria-labelledby="draggable-dialog-title"
       >
-        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+        <div         style={{ display:"flex",justifyContent:"space-around", flexDirection:"row" }}>
+        <DialogTitle style={{ cursor: "move"}} id="draggable-dialog-title">
+          
           {props.title}
         </DialogTitle>
-
+        <Button
+            onClick={props.onClose}
+            color="primary"
+            
+          >
+           Fechar <CloseIcon/>
+          </Button>
+          </div>
+        
         <DialogContent>
           {whichContentShow(props.TMT, props.tipo, classes)}
         </DialogContent>
         <DialogActions style={{ padding: '8px 24px' }}>
           {props.action}
-          <Button
-            onClick={props.onClose}
-            color="secondary"
-          >
-            Fechar
-          </Button>
+       
         </DialogActions>
       </Dialog>
     </div>
@@ -84,12 +90,16 @@ const whichContentShow = (TMT, type, classes) => {
       return (
         <Grid className={classes.gridPai} container spacing={3}>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há quatro semanas</Typography>
-            <Paper className={classes.paper}>
-              <Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>
-                {toValidString(TMT['Ql-4'], 0)}
-              </Typography>
-            </Paper>
+            <Typography variant="subtitle2">Esta semana</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Ql0, 0)}</Typography></Paper>
+          </Grid>
+          <Grid item className={classes.grid} xs={15} sm={2}>
+            <Typography variant="subtitle2">Há uma semana</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-1'], 0)}</Typography></Paper>
+          </Grid>
+          <Grid item className={classes.grid} xs={15} sm={2}>
+            <Typography variant="subtitle2">Há duas semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-2'], 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
             <Typography variant="subtitle2">Há três semanas</Typography>
@@ -100,16 +110,12 @@ const whichContentShow = (TMT, type, classes) => {
             </Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-2'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há uma semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-1'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Ql0, 0)}</Typography></Paper>
+            <Typography variant="subtitle2">Há quatro semanas</Typography>
+            <Paper className={classes.paper}>
+              <Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>
+                {toValidString(TMT['Ql-4'], 0)}
+              </Typography>
+            </Paper>
           </Grid>
         </Grid>
       )
@@ -117,24 +123,24 @@ const whichContentShow = (TMT, type, classes) => {
       return (
         <Grid className={classes.gridPai} container spacing={3}>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há quatro semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-4'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há três semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-3'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-2'], 0)}</Typography></Paper>
+            <Typography variant="subtitle2">Esta semana</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Con0, 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
             <Typography variant="subtitle2">Há uma semana</Typography>
             <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-1'], 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Con0, 0)}</Typography></Paper>
+            <Typography variant="subtitle2">Há duas semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-2'], 0)}</Typography></Paper>
+          </Grid>
+          <Grid item className={classes.grid} xs={15} sm={2}>
+            <Typography variant="subtitle2">Há três semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-3'], 0)}</Typography></Paper>
+          </Grid>
+          <Grid item className={classes.grid} xs={15} sm={2}>
+            <Typography variant="subtitle2">Há quatro semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-4'], 0)}</Typography></Paper>
           </Grid>
         </Grid>
       )
@@ -142,20 +148,20 @@ const whichContentShow = (TMT, type, classes) => {
       return (
         <Grid className={classes.gridPai} container spacing={3}>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há três semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd3, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd2, 0)}</Typography></Paper>
+            <Typography variant="subtitle2">Esta semana</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd, 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
             <Typography variant="subtitle2">Há uma semana</Typography>
             <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd1, 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd, 0)}</Typography></Paper>
+            <Typography variant="subtitle2">Há duas semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd2, 0)}</Typography></Paper>
+          </Grid>
+          <Grid item className={classes.grid} xs={15} sm={2}>
+            <Typography variant="subtitle2">Há três semanas</Typography>
+            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd3, 0)}</Typography></Paper>
           </Grid>
           <Grid item className={classes.grid} xs={15} sm={2}>
             <Typography variant="subtitle2">Total Mensal</Typography>

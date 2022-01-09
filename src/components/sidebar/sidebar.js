@@ -149,7 +149,6 @@ export default function MiniDrawer() {
       <FiliaisModal
         open={openModal}
         onClose={handleCloseModal}
-        title='Filiais'
         Filiais={usersListFiltered}
         onSelect={filial => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
@@ -241,7 +240,7 @@ export default function MiniDrawer() {
               </>
             ) : null}
             <List>
-              <Link to="/perfil" style={{ color: GREY_SECONDARY }}>
+              <Link to="/perfil" style={{ color: GREY_SECONDARY }} title="Perfil">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Person />
@@ -250,7 +249,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Perfil" />
                 </ListItem>
               </Link>
-              <Link to="/leads" style={{ color: GREY_SECONDARY }}>
+              <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <PersonPinCircle />
@@ -262,7 +261,7 @@ export default function MiniDrawer() {
             </List>
             <Divider />
             <List>
-              <Link to="/compras" style={{ color: GREY_SECONDARY }}>
+              <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <AddShoppingCart />
@@ -271,7 +270,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Compras" />
                 </ListItem>
               </Link>
-              <Link to="/vendas" style={{ color: GREY_SECONDARY }}>
+              <Link to="/vendas" style={{ color: GREY_SECONDARY }} title="Vendas">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <ShoppingCart />
@@ -286,6 +285,7 @@ export default function MiniDrawer() {
               <Link
                 to="/equipamentos"
                 style={{ color: GREY_SECONDARY }}
+                title="Equipamentos"
               >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -298,6 +298,7 @@ export default function MiniDrawer() {
               <Link
                 to="/equipamentos/solicitacao"
                 style={{ color: GREY_SECONDARY }}
+                title="Solicitação de Equipamentos"
               >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -315,6 +316,7 @@ export default function MiniDrawer() {
                   <Link
                     to="/equipamentos/solicitacao/management"
                     style={{ color: GREY_SECONDARY }}
+                    title="Gestao de solicitacoes de equipamentos"
                   >
                     <ListItem button onClick={handleDrawerClose}>
                       <ListItemIcon>
@@ -327,6 +329,7 @@ export default function MiniDrawer() {
                   <Link
                     to="/administracao/formularios"
                     style={{ color: GREY_SECONDARY }}
+                    title="Formularios de interesses"
                   >
                     <ListItem button onClick={handleDrawerClose}>
                       <ListItemIcon>
@@ -353,7 +356,7 @@ export default function MiniDrawer() {
             </List>
             <Divider /> */}
             <List>
-              <Link to="/ajuda" style={{ color: GREY_SECONDARY }}>
+              <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Help />
@@ -362,7 +365,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Ajuda" />
                 </ListItem>
               </Link>
-              <ListItem button onClick={handleLogout}>
+              <ListItem button onClick={handleLogout} title="Sair">
                 <ListItemIcon>
                   <ExitToApp />
                 </ListItemIcon>

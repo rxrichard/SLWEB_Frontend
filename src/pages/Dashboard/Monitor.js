@@ -168,6 +168,7 @@ function Home() {
       }}
     >
       <MiFixModal
+        
         open={modalChamadoOpen}
         onClose={handleCloseChamadoModal}
         title='Abrir chamado MiFix'
@@ -230,7 +231,7 @@ function Home() {
                 <div style={{
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
                 }}>
                   {telemetria.AnxDesc}
                 </div>
@@ -247,7 +248,8 @@ function Home() {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  
                 }}
               >
                 <div
@@ -346,6 +348,10 @@ const useStyles = makeStyles((theme) => ({
     '&:last-child': {
       borderBottom: 'none'
     }
+  },
+  teste: {
+    width: '100%',
+    backgroundColor:'#ff2'
   }
 }));
 

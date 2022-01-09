@@ -37,6 +37,8 @@ import {
     SwitchTab
 } from "../../global/actions/VendasAction";
 
+import nfeLogo from '../../assets/svg/NFe.svg';
+
 const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, setPedidos, setPedidoDet, setOpen, ...props }) => {
     const [wait, setWait] = useState(false);
     const [doctype, setDoctype] = useState("DANFE");
@@ -161,7 +163,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
                              
                         >
                             <IconButton disabled={wait} onClick={() => handleRequestNFE()} color="primary">
-                                <NoteAdd />
+                            <img src={nfeLogo} width='23px' height='23px' />
                             </IconButton>
                         </Tooltip>
                     </>
