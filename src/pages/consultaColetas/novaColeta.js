@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { api } from '../../services/api'
 
+import { Add as AddIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   Paper,
-  useTheme,
   useMediaQuery,
   Button,
   MenuItem,
   Typography,
-  Divider
+  Divider,
+  Fab
 } from '@material-ui/core';
 
 import Select from '../../components/materialComponents/Select'
@@ -19,8 +20,7 @@ import { NovaColetaModal } from './modals/NovaColeta';
 
 export const NovaColeta = (props) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const isMdUp = useMediaQuery('@media (min-width: 1500px)');
 
   const [leiturasDisponiveis, setLeiturasDisponiveis] = useState([]);
   const [leituraDoses, setLeituraDoses] = useState([]);
@@ -51,6 +51,7 @@ export const NovaColeta = (props) => {
     }
 
     try {
+      setLeituraDoses([]);
       const response = await api.get(`/coletas/historico/${eqdata.EquiCod}/${eqdata.AnxId}`)
 
       setLeiturasDisponiveis(response.data.LeiturasDisponiveis)
@@ -105,6 +106,16 @@ export const NovaColeta = (props) => {
     })
   }
 
+  const handleGravaColeta = async() => {
+    try{
+      const response = await api.post('', {
+        
+      })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
     props.handleCloseModal()
   }, [isMdUp])
@@ -123,24 +134,34 @@ export const NovaColeta = (props) => {
   return isMdUp ? (
     <Paper className={classes.root}>
       <div className={classes.container}>
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses, setLeituraDoses)}
       </div>
     </Paper>
   ) : (
     <>
-      <Button
-        onClick={props.handleOpenModal}
-        variant="contained"
-        color="primary"
+      <div
+        style={{
+          position: "absolute",
+          right: "50px",
+          bottom: "50px",
+          alignItems: "unset",
+        }}
       >
-        Nova Coleta
-      </Button>
+        <Fab
+          color="primary"
+          onClick={props.handleOpenModal}
+          variant="extended"
+        >
+          <AddIcon className={classes.extendedIcon} />
+          Nova Coleta
+        </Fab>
+      </div>
       <NovaColetaModal
         open={props.open}
         onClose={props.handleCloseModal}
         title='Nova Coleta'
       >
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses)}
+        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses, setLeituraDoses)}
       </NovaColetaModal>
     </>
   )
@@ -148,7 +169,7 @@ export const NovaColeta = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '30%',
+    minWidth: '30%',
     height: '100%',
     overflowY: 'auto',
     marginLeft: '8px',
@@ -184,6 +205,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: "space-around",
   },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const WhichContentShow = (
@@ -194,10 +218,17 @@ const WhichContentShow = (
   leituras,
   margem,
   setMargem,
-  leituraDoses
+  leituraDoses,
+  setLeituraDoses
 ) => {
   return (
     <>
+      <Typography
+        variant='h5'
+        style={{ margin: '8px 0px 0px 8px' }}
+      >
+        Nova Coleta
+      </Typography>
       <section className={classes.sectionRow}>
         <Select
           width="150px"
@@ -235,167 +266,151 @@ const WhichContentShow = (
         </div>
       </section>
       <Divider />
-      <section className={classes.sectionRow}>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Última Coleta
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            {detalhes.UltimaColeta === null ? '-' : moment(detalhes.UltimaColeta).format('DD/MM/YYYY')}
-          </Typography>
-        </div>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Contador
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            {detalhes.ContadorAnterior === null ? '-' : detalhes.ContadorAnterior}
-          </Typography>
-        </div>
-      </section>
-      <section className={classes.sectionRow}>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Zerou
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            {detalhes.Zerou === null ? '-' : detalhes.Zerou === 'N' ? 'Não' : 'Sim'}
-          </Typography>
-        </div>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Coletas Realizadas
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            {detalhes.ProximaColeta === null ? '-' : Number(detalhes.ProximaColeta) - 1}
-          </Typography>
-        </div>
-      </section>
-      <Divider />
-      <section
-        className={classes.sectionRow}
-        style={{
-          justifyContent: 'space-between',
-          flexWrap: 'nowrap',
-          alignItems: 'center',
-        }}
-      >
-        <Select
-          width="150px"
-          MBottom="8px"
-          MTop="8px"
-          MRight="8px"
-          MLeft="8px"
-          label="Leitura de:"
-          disabled={margem.de === null || margem.de === margem.ate ? false : true}
-          value={margem.de === null ? '' : margem.de}
-          onChange={(e) => setMargem({
-            de: e.target.value !== '' ? e.target.value : null,
-            deID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
-            ate: e.target.value !== '' ? e.target.value : null,
-            ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
-            excluir: null
-          })
-          }
+      {detalhes.EquiCod !== '' ? (
+        <section className={classes.sectionRow}>
+          <div className={classes.infoBox}>
+            <Typography
+            >
+              Última Coleta
+            </Typography>
+            <Typography
+              style={{
+                fontWeight: 'bold',
+                fontSize: '1.2rem'
+              }}
+            >
+              {detalhes.UltimaColeta === null ? '-' : moment(detalhes.UltimaColeta).format('DD/MM/YYYY')}
+            </Typography>
+          </div>
+          <div className={classes.infoBox}>
+            <Typography
+            >
+              Contador
+            </Typography>
+            <Typography
+              style={{
+                fontWeight: 'bold',
+                fontSize: '1.2rem'
+              }}
+            >
+              {detalhes.ContadorAnterior === null ? '-' : detalhes.ContadorAnterior}
+            </Typography>
+          </div>
+        </section>
+      ) : null}
+      {detalhes.EquiCod !== '' ? (
+        <section
+          className={classes.sectionRow}
+          style={{
+            justifyContent: 'space-between',
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+          }}
         >
-          {
-            leituras.map((leitura) =>
+          <Select
+            width="150px"
+            MBottom="8px"
+            MTop="8px"
+            MRight="8px"
+            MLeft="8px"
+            label="Leitura de:"
+            disabled={margem.de === null || margem.de === margem.ate ? false : true}
+            value={margem.de === null ? '' : margem.de}
+            onChange={(e) => {
+              setLeituraDoses([])
+              setMargem({
+                de: e.target.value !== '' ? e.target.value : null,
+                deID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                ate: e.target.value !== '' ? e.target.value : null,
+                ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                excluir: null
+              })
+            }}
+          >
+            {
+              leituras.map((leitura) =>
+                <MenuItem
+                  value={leitura.DataLeitura}
+                >
+                  {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
+                </MenuItem>
+              )
+            }
+          </Select>
+          <Typography
+            style={{
+              fontWeight: 'bold',
+              fontSize: '1.2rem'
+            }}>
+            &#x2192;
+          </Typography>
+          <Select
+            width="150px"
+            MBottom="8px"
+            MTop="8px"
+            MRight="8px"
+            MLeft="8px"
+            label="Leitura até:"
+            disabled={margem.de === null || margem.de === margem.ate ? true : false}
+            value={margem.ate === null ? '' : margem.ate}
+            onChange={(e) => {
+              setLeituraDoses([])
+              setMargem(oldObj => {
+                return {
+                  ...oldObj,
+                  ate: e.target.value !== '' ? e.target.value : null,
+                  ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                }
+              })
+            }
+            }
+          >
+            {leituras.filter(leit => leit.DataLeitura !== margem.excluir).reverse().map((leitura) =>
               <MenuItem
                 value={leitura.DataLeitura}
               >
                 {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
               </MenuItem>
-            )
-          }
-        </Select>
-        <Typography
-          style={{
-            fontWeight: 'bold',
-            fontSize: '1.2rem'
-          }}>
-          &#x2192;
-        </Typography>
-        <Select
-          width="150px"
-          MBottom="8px"
-          MTop="8px"
-          MRight="8px"
-          MLeft="8px"
-          label="Leitura até:"
-          disabled={margem.de === null || margem.de === margem.ate ? true : false}
-          value={margem.ate === null ? '' : margem.ate}
-          onChange={(e) => setMargem(oldObj => {
-            return {
-              ...oldObj,
-              ate: e.target.value !== '' ? e.target.value : null,
-              ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
-            }
-          })
-          }
-        >
-          {leituras.filter(leit => leit.DataLeitura !== margem.excluir).reverse().map((leitura) =>
-            <MenuItem
-              value={leitura.DataLeitura}
+            )}
+          </Select>
+        </section>
+      ) : null}
+      {detalhes.EquiCod !== '' && margem.ate !== null && margem.de !== null ? (
+        <section className={classes.sectionRow}>
+          <div className={classes.infoBox}>
+            <Typography
             >
-              {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
-            </MenuItem>
-          )}
-        </Select>
-      </section>
-      <section className={classes.sectionRow}>
-        <div className={classes.infoBox}>
-          <Typography
-          >
-            Consumo
-          </Typography>
-          <Typography
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.2rem'
-            }}
-          >
-            {
-              (leituras.filter(leit => leit.DataLeitura === margem.ate)[0] && margem.ate !== null && margem.de ?
-                leituras.filter(leit => leit.DataLeitura === margem.ate)[0].Contador
-                :
-                0)
-              -
-              (leituras.filter(leit => leit.DataLeitura === margem.de)[0] && margem.de !== null && margem.ate !== null ?
-                leituras.filter(leit => leit.DataLeitura === margem.de)[0].Contador
-                :
-                0)
-            } DOSES
-          </Typography>
-        </div>
-      </section>
+              Consumo
+            </Typography>
+            <Typography
+              style={{
+                fontWeight: 'bold',
+                fontSize: '1.2rem'
+              }}
+            >
+              {
+                (leituras.filter(leit => leit.DataLeitura === margem.ate)[0] && margem.ate !== null && margem.de !== null ?
+                  leituras.filter(leit => leit.DataLeitura === margem.ate)[0].Contador
+                  :
+                  0)
+                -
+                (leituras.filter(leit => leit.DataLeitura === margem.de)[0] && margem.de !== null && margem.ate !== null ?
+                  leituras.filter(leit => leit.DataLeitura === margem.de)[0].Contador
+                  :
+                  0)
+              } DOSES
+            </Typography>
+          </div>
+        </section>
+      ) : null}
       <Divider />
       <section
         className='YAlign'
-        style={{ height: '100%', width: '100%', justifyContent: 'flex-start' }}
+        style={{
+          height: '100%',
+          width: '100%',
+          justifyContent: 'flex-start'
+        }}
       >
         {leituraDoses.map(leit => (
           <div
@@ -410,7 +425,9 @@ const WhichContentShow = (
               flexWrap: 'nowrap'
             }}
           >
-            <div className='YAlign'>
+            <div
+              className='YAlign'
+            >
               <Typography variant='subtitle1'>
                 <strong
                   style={{
@@ -425,7 +442,7 @@ const WhichContentShow = (
             </div>
             <div
               className='YAlign'
-              style={{ 
+              style={{
                 alignItems: 'flex-end',
                 flexWrap: 'nowrap',
               }}
@@ -440,6 +457,19 @@ const WhichContentShow = (
           </div>
         ))}
       </section>
+      <Divider />
+      <Button
+        variant='contained'
+        color='primary'
+        style={{
+          width: '100%',
+          borderRadius: '0px 0px 4px 4px',
+        }}
+        disabled={leituraDoses.length === 0}
+        onClick={() => alert('Ainda não implementado')}
+      >
+        GRAVAR COLETA
+      </Button>
     </>
   )
 }

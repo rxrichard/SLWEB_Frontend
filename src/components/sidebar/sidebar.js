@@ -340,7 +340,7 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            {/* <List>
+            <List>
               <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -351,7 +351,7 @@ export default function MiniDrawer() {
                 </ListItem>
               </Link>
             </List>
-            <Divider /> */}
+            <Divider />
             <List>
               <Link to="/ajuda" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>

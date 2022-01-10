@@ -75,7 +75,7 @@ export const Consultas = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '70%',
+    minWidth: '70%',
     height: '100%',
 
     '&:first-child> div': {
@@ -86,6 +86,10 @@ const useStyles = makeStyles((theme) => ({
       overflowY: 'auto',
       height: 'calc(100% - 70px)',
       minHeight: 'unset !important',
+
+      '@media (max-width: 800px)': {
+        height: 'calc(100% - 100px)',
+      }
     }
   },
   heading: {
@@ -123,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     color: theme.palette.primary.main,
     textDecoration: 'none',
-    
+
     '&:hover': {
       textDecoration: 'underline',
     },
