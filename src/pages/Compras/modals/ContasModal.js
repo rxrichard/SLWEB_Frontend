@@ -17,6 +17,10 @@ import {
   Paper,
 } from "@material-ui/core/";
 
+import nfeLogo from '../../../assets/svg/NFe.svg';
+
+import Loading from "../../../components/loading_screen";
+
 const ContasModal = (props) => {
   const whichContentShow = () => {
     if (props.type === 'Compra') {
@@ -72,7 +76,7 @@ const ContasModal = (props) => {
                 onClick={() => props.onRequestNFe(props.Detalhes.PedidoId)}
                 color="primary"
               >
-                <InsertDriveFile />
+                <img src={nfeLogo} width='23px' height='23px' />
               </IconButton>
             </Tooltip>
           </div>

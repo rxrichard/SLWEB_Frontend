@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 
-import { Panel } from "../../components/commom_in";
+import { Container, Panel } from "../../components/commom_in";
 import { maskCNPJ, maskCEP } from "../../misc/commom_functions";
 import { Toast } from "../../components/toasty";
 import Loading from "../../components/loading_screen";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
-import InputNumber from '../../components/materialComponents/inputMoney'
+import InputNumber from "../../components/materialComponents/inputMoney";
 import Card from "../../components/materialComponents/Card";
 import Dialog from "../../components/materialComponents/Dialog";
 import Select from "../../components/materialComponents/Select";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import Button from "../../components/materialComponents/Button";
+import CreateIcon from '@mui/icons-material/Create';
 
-import { Settings, VpnKey, Check, AccountCircle } from "@material-ui/icons/";
-import { MenuItem, Typography, Input, InputAdornment, } from "@material-ui/core/";
+import { Settings, VpnKey, Check } from "@material-ui/icons/";
+import {
+  MenuItem,
+  Typography,
+  Input,
+  InputAdornment,
+} from "@material-ui/core/";
 
+import { Divider, Chip } from "@mui/material";
 import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
 
 function Perfil() {
+  const classes = useStyles();
   const [info, setInfo] = useState({});
   const [password, setPassword] = useState({});
   const [newEmail, setNewEmail] = useState(null);
   const [newTaxa, setNewTaxa] = useState({
-    tipo: '',
-    valor: 0
+    tipo: "",
+    valor: 0,
   });
   const [loaded, setLoaded] = useState(false);
   const [wait, setWait] = useState(false);
@@ -52,35 +61,31 @@ function Perfil() {
           tipo: response.data.ParamTxt,
           valor: response.data.ParamVlr * 100,
         });
-      } catch (err) {
-
-      }
+      } catch (err) {}
     }
     loadData();
   }, []);
 
   const handleChangePassword = async () => {
     setWait(true);
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
-      await api
-        .put("/profile/password", {
-          token: sessionStorage.getItem("token"),
-          password: password,
-        })
+      toastId = Toast("Aguarde...", "wait");
 
-      Toast('Senha atualizada com sucesso!', 'update', toastId, 'success')
+      await api.put("/profile/password", {
+        token: sessionStorage.getItem("token"),
+        password: password,
+      });
+
+      Toast("Senha atualizada com sucesso!", "update", toastId, "success");
       setWait(false);
       setPassword({
         atual: "",
         nova: "",
         confirmacao: "",
       });
-    } catch (err) {
-
-    }
+    } catch (err) {}
   };
 
   const handleChangeEmail = async () => {
@@ -89,20 +94,20 @@ function Perfil() {
       newEmail === null ||
       typeof newEmail == "undefined"
     ) {
-      Toast("Preencha um email valido", 'warn');
+      Toast("Preencha um email valido", "warn");
       return;
     }
 
     setWait(true);
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      toastId = Toast("Aguarde...", "wait");
       await api.put("/profile/email", {
         email: newEmail,
       });
 
-      Toast('Email atualizado com sucesso!', 'update', toastId, 'success')
+      Toast("Email atualizado com sucesso!", "update", toastId, "success");
       setWait(false);
       setInfo({ ...info, Email: newEmail });
     } catch (err) {
@@ -111,51 +116,115 @@ function Perfil() {
   };
 
   const handleChangeTax = async () => {
-    if (newTaxa.valor === '' || newTaxa.valor === null) {
-      Toast('Preencha algum valor para a taxa', 'warn')
-      return
+    if (newTaxa.valor === "" || newTaxa.valor === null) {
+      Toast("Preencha algum valor para a taxa", "warn");
+      return;
     }
 
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      toastId = Toast("Aguarde...", "wait");
       await api.put("/profile/tax", {
         token: sessionStorage.getItem("token"),
         newTax: newTaxa,
       });
 
-      Toast('Taxa atualizada!', 'update', toastId, 'success')
-    } catch (err) {
-    }
+      Toast("Taxa atualizada!", "update", toastId, "success");
+    } catch (err) {}
   };
 
   return !loaded ? (
     <Loading />
   ) : (
-    <Panel>
-      <div
-        className="XAlign"
-        style={{
-          justifyContent: "space-evenly",
-          flexWrap: "wrap",
-          alignItems: "flex-start",
-        }}
-      >
+    <div style={{ marginTop: "58px" }}>
+      {/* NOME PERFIL */}
+      <Panel>
+        <div className={classes.left}>
+          <div className={classes.PerfilBase}>
+            <div className={classes.Avatar}>
+              <img
+                src={
+                  "https://www.seekpng.com/png/full/41-410093_circled-user-icon-user-profile-icon-png.png"
+                }
+                alt="logo"
+              />
+              <p disabled>{String(info.M0_FILIAL[0]).trim()}</p>
+            </div>
 
-        {/* DADOS CADASTRAIS */}
-        <Card
-          className="mb8 df df-aling-end  w90 h40 w100m bl-3red bt-3red h-auto"
-          contentStyle={{
-            height: '100%',
-          }}
-          action={
-            <Dialog
+            {/*DADOS FRANQUIA */}
+            <div className={classes.Dados}>
+              <p className={classes.title}>Razão Social: {info.M0_FILIAL[0]}</p>
+              <p className={classes.title}>
+                CNPJ: {maskCNPJ(info.M0_CGC[0])} || IE: {info.M0_INSC}
+              </p>
+
+              <div className={classes.information}>
+                <div className={classes.infoContainer}>
+                  <h5 className={classes.titleBox}>FILIAL</h5>
+                  <p className={classes.Relevant}>
+                    {String(info.M0_CODFIL[0]).trim()}
+                  </p>
+                </div>
+
+                <div className={classes.infoContainer}>
+                  <h5 className={classes.titleBox}>
+                    CERTIFICADO DIGITAL VÁLIDO ATÉ
+                  </h5>
+                  <p className={classes.Relevant}>
+                    {String(info.M0_CODFIL[0]).trim()}
+                  </p>
+                </div>
+
+                <div className={classes.infoContainer}>
+                  <h5 className={classes.titleBox}>
+                    CONTRATO DE FRANQUIA VÁLIDO ATÉ
+                  </h5>
+                  <p className={classes.Relevant}>
+                      ------
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Divider />
+
+          <div className={classes.PerfilBase}>
+            <div className={classes.perfilInfo}>
+              <div className={classes.infoContactL}>
+                <h5>Informações de contato</h5>
+
+                <p>
+                  <b>CNPJ: </b>
+                  {maskCNPJ(info.M0_CGC[0])}
+                </p>
+                <p>
+                  <b>Inscrição estadual:</b>
+                  {info.M0_INSC}
+                </p>
+                <p>
+                  <b>Email: </b> {info.Email.trim()}
+                </p>
+
+                <p>
+                  <b>Endereço:</b> {info.M0_ENDCOB}, {info.M0_BAIRCOB} -{" "}
+                  {info.M0_CIDCOB}/{info.M0_ESTCOB} - CEP:{" "}
+                  {maskCEP(info.M0_CEPCOB)}
+                </p>
+              </div>
+
+              {/*BUTTONS */}
+
+              {/* EDITAR SENHA*/ }
+
+              <div className={classes.infoContactR}>
+                <Dialog
               title="Alterar Senha"
               botao="Alterar Senha"
               icone={<VpnKey />}
               action={
-                <Button
+                <Button className={classes.buttons}
                   style={{
                     backgroundColor: wait ? GREY_LIGHT : RED_SECONDARY,
                     color: "#FFFFFF",
@@ -168,8 +237,6 @@ function Perfil() {
                 </Button>
               }
             >
-
-
 
               <InputUnderline
                 value={password.atual}
@@ -192,70 +259,15 @@ function Perfil() {
                 onChange={(e) => setPassword({ ...password, confirmacao: e })}
               />
             </Dialog>
-          }
-        >
 
+            {/* editar email*/ }
 
-          <div className='YAlign' style={{
-            height: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start'
-          }}>
-            <Input disabled value={String(info.M0_FILIAL[0]).trim()}
-              className="w45"
-              id="input-with-icon-adornment"
-
-              startAdornment={
-                <InputAdornment position="start">
-                  <AccountCircle />
-                </InputAdornment>
-              }
-            />
-
-            <div>
-              <Typography variant="body2" color="textSecondary" component="p">
-                CNPJ: {maskCNPJ(info.M0_CGC[0])}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                FILIAL: {info.M0_CODFIL[0]}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                IE: {info.M0_INSC}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                NIRE: {info.M0_NIRE}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                CNAE: {info.M0_CNAE}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                FPAS: {info.M0_FPAS}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Consultor: {info.Consultor}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Natureza Jurídica: {info.M0_NATJUR}
-              </Typography>
-            </div>
-          </div>
-        </Card>
-
-
-
-        {/* DADOS DE CONTATO */}
-        <Card
-          className="mb8 df df-aling-end w45 w100m  h30 h-auto bl-3red bt-3red"
-          contentStyle={{
-            height: '100%',
-          }}
-          action={
             <Dialog
               title="Alterar Email Principal"
               botao="Alterar Email"
               icone={<Settings />}
               action={
-                <Button
+                <Button className={classes.buttons}
                   style={{
                     backgroundColor: wait ? GREY_LIGHT : RED_SECONDARY,
                     color: "#FFFFFF",
@@ -276,66 +288,27 @@ function Perfil() {
                 onChange={(e) => setNewEmail(e)}
               />
             </Dialog>
-          }
-        >
-          <div className='YAlign' style={{
-            height: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start'
-          }}>
-            <Typography variant="h5" component="h2">
-              CONTATO
-            </Typography>
-            <div>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Email: {info.Email.trim()}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Endereço: {info.M0_ENDCOB}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Bairro: {info.M0_BAIRCOB}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                CEP: {maskCEP(info.M0_CEPCOB)}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Estado: {info.M0_ESTCOB}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Município: {info.M0_CIDCOB}
-              </Typography>
-            </div>
-          </div>
-        </Card>
 
-
-        {/* DADOS DE IMPOSTO/TAXA */}
-        <Card
-          className="mb8 df df-aling-end  w45 h30  w100m bl-3red bt-3red"
-          contentStyle={{
-            height: '100%',
-          }}
-          action={
-            <Button
-              style={{ backgroundColor: RED_SECONDARY, color: "#FFFFFF" }}
-              icon={<Check />}
-              disabled={false}
-              onClick={() => handleChangeTax()}
+             {/* Editar taxa */ }
+             <Dialog
+              title="Alterar Taxa"
+              botao="Alterar taxa"
+              icone={<CreateIcon />}
+              action={
+                <Button className={classes.buttons}
+                  style={{
+                    backgroundColor: wait ? GREY_LIGHT : RED_SECONDARY,
+                    color: "#FFFFFF",
+                  }}
+                  icon={<Check />}
+                  disabled={wait}
+                  onClick={() => handleChangeEmail()}
+                >
+                  Salvar
+                </Button>
+              }
             >
-              Salvar
-            </Button>
-          }
-        >
-          <div className='YAlign' style={{
-            height: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start'
-          }}>
-            <Typography variant="h5" component="h2">
-              TAXAS
-            </Typography>
-            <div>
+             <div>
               <Select
                 label="Tipo"
                 value={newTaxa.tipo}
@@ -362,11 +335,163 @@ function Perfil() {
                 value={newTaxa.valor}
               />
             </div>
+            </Dialog>
+
+             
+                
+              </div>
+            </div>
           </div>
-        </Card>
-      </div>
-    </Panel>
+        </div>
+      </Panel>
+    </div>
   );
 }
 
 export default Perfil;
+
+const useStyles = makeStyles((theme) => ({
+  left: {
+    alignItems: "left",
+  },
+  PerfilBase: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    ["@media (max-width:768px)"]: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  },
+  Avatar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    textAlign: "center",
+    ["@media (max-width:768px)"]: {},
+
+    "& p": {
+      width: "15rem",
+      fontSize: "1rem",
+      fontWeight: "bold",
+    },
+
+    "& img": {
+      width: "15rem",
+      height: "15rem",
+      borderRadius: "50%",
+      border: "7px solid #fff",
+      boxShadow: "0px 0px 10px #888888",
+      marginRight: "2rem",
+      ["@media (max-width:768px)"]: {
+        marginRight: "0rem",
+      },
+    },
+  },
+  information: {
+    display: "flex",
+
+    ["@media (max-width:768px)"]: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  },
+  infoContainer: {
+    display: "flex",
+    flexDirection: "column",
+    border: "1px solid #0000001f",
+    boxShadow: "0px 0px 5px #888888",
+    borderRadius: "5px",
+    color: "#0e0e0e",
+    backgroundColor: "#fff",
+    padding: "10px 20px",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "10px 8px",
+    width: "15rem",
+    maxwidth: "15rem",
+    maxHeight: "10rem",
+
+    "&:hover": {
+      transition: "200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      cursor: "pointer",
+      transform: "scale(1.05)",
+    },
+  },
+  perfilInfo: {
+    display: "flex",
+    width: "100%",
+    ["@media (max-width:768px)"]: {
+      flexDirection: "column",
+      width: "100%",
+      maxWidth: "100%",
+    },
+  },
+  infoContactL: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: "45vw",
+    maxWidth: "45vw",
+    alignItems: "left",
+
+    "& p": {
+      fontSize: "1rem",
+      margin: ".75rem 0",
+    },
+
+    ["@media (max-width:768px)"]: {
+      flexDirection: "column",
+      width: "100%",
+      maxWidth: "100%",
+    },
+  },
+  infoContactR: {
+    display: "flex",
+    flexDirection: "column",
+    width: "45vw",
+    maxWidth: "45vw",
+    alignItems: "center",
+
+    "& button": {
+      marginTop: ".5rem",
+      maxWidth: "15rem",
+      width: "15rem",
+      height: "5rem",
+    },
+
+    ["@media (max-width:768px)"]: {
+      flexDirection: "column",
+      width: "100%",
+      maxWidth: "100%",
+
+      "& button": {
+        marginTop: ".5rem",
+        width: "100%",
+        maxWidth: "100%",
+      },
+    },
+  },
+  titleBox: {
+    textAlign: "center",
+    fontSize: "1rem",
+    color: "#888888",
+  },
+  Relevant: {
+    fontWeight: "bolder",
+    fontSize: "1.5rem",
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: "1.1rem",
+  },
+
+  riskin: {
+    width: "100%",
+    height: "1px",
+    backgroundColor: "#000000",
+  },
+}));
