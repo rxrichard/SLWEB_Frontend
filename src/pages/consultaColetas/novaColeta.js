@@ -21,6 +21,7 @@ import { NovaColetaModal } from './modals/NovaColeta';
 export const NovaColeta = (props) => {
   const classes = useStyles();
   const isMdUp = useMediaQuery('@media (min-width: 1500px)');
+  const { handleCloseModal } =  props;
 
   const [leiturasDisponiveis, setLeiturasDisponiveis] = useState([]);
   const [leituraDoses, setLeituraDoses] = useState([]);
@@ -106,19 +107,21 @@ export const NovaColeta = (props) => {
     })
   }
 
-  const handleGravaColeta = async() => {
-    try{
-      const response = await api.post('', {
+  // const handleGravaColeta = async() => {
+  //   try{
+  //     const response = await api.post('', {
         
-      })
-    }catch(err){
-      console.log(err)
-    }
-  }
+  //     })
+
+  //     console.log(response.data)
+  //   }catch(err){
+  //     console.log(err)
+  //   }
+  // }
 
   useEffect(() => {
-    props.handleCloseModal()
-  }, [isMdUp])
+    handleCloseModal()
+  }, [isMdUp, handleCloseModal])
 
   useEffect(() => {
     async function getQtd() {
@@ -129,7 +132,7 @@ export const NovaColeta = (props) => {
       }
     }
     getQtd()
-  }, [margemLeitura])
+  }, [margemLeitura, detalhes.AnxId, detalhes.PdvId])
 
   return isMdUp ? (
     <Paper className={classes.root}>

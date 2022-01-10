@@ -12,7 +12,7 @@ import {
   Grid,
   makeStyles
 } from '@material-ui/core';
-import CloseIcon from '@mui/icons-material/Close';
+import { Close as CloseIcon} from '@material-ui/icons';
 
 import { toValidString } from '../../../misc/commom_functions'
 import { RED_PRIMARY } from '../../../misc/colors'

@@ -19,8 +19,6 @@ import {
 
 import nfeLogo from '../../../assets/svg/NFe.svg';
 
-import Loading from "../../../components/loading_screen";
-
 const ContasModal = (props) => {
   const whichContentShow = () => {
     if (props.type === 'Compra') {
@@ -76,7 +74,12 @@ const ContasModal = (props) => {
                 onClick={() => props.onRequestNFe(props.Detalhes.PedidoId)}
                 color="primary"
               >
-                <img src={nfeLogo} width='23px' height='23px' />
+                <img 
+                src={nfeLogo} 
+                width='23px' 
+                height='23px'
+                alt='NFe Icon'
+                 />
               </IconButton>
             </Tooltip>
           </div>
