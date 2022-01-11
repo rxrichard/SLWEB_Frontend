@@ -21,15 +21,19 @@ import { NovaColetaModal } from './modals/NovaColeta';
 export const NovaColeta = (props) => {
   const classes = useStyles();
   const isMdUp = useMediaQuery('@media (min-width: 1500px)');
-  const { handleCloseModal } =  props;
+  const { handleCloseModal, handleOpenModal } = props;
 
   const [leiturasDisponiveis, setLeiturasDisponiveis] = useState([]);
   const [leituraDoses, setLeituraDoses] = useState([]);
+  const [zerou, setZerou] = useState('N');
+  const [referencia, setReferencia] = useState(moment().startOf('month').toDate());
   const [margemLeitura, setMargemLeitura] = useState({
     de: null,
     deID: null,
+    deCont: null,
     ate: null,
     ateID: null,
+    ateCont: null,
     excluir: null
   });
   const [detalhes, setDetalhes] = useState({
@@ -38,6 +42,7 @@ export const NovaColeta = (props) => {
     CNPJ: null,
     AnxId: null,
     PdvId: null,
+    ConId: null,
     UltimaColeta: null,
     ProximaColeta: null,
     ContadorAnterior: null,
@@ -56,12 +61,14 @@ export const NovaColeta = (props) => {
       const response = await api.get(`/coletas/historico/${eqdata.EquiCod}/${eqdata.AnxId}`)
 
       setLeiturasDisponiveis(response.data.LeiturasDisponiveis)
-
+      
       setMargemLeitura({
         de: response.data.UltColeta[0] ? response.data.UltColeta[0].UltimaColeta : null,
         deID: response.data.UltColeta[0] ? response.data.LeiturasDisponiveis.filter(leit => leit.DataLeitura === response.data.UltColeta[0].UltimaColeta)[0].LeituraId : null,
+        deCont: response.data.UltColeta[0] ? response.data.LeiturasDisponiveis.filter(leit => leit.DataLeitura === response.data.UltColeta[0].UltimaColeta)[0].Contador : null,
         ate: null,
         ateID: null,
+        ateCont: null,
         excluir: response.data.UltColeta[0] ? response.data.UltColeta[0].UltimaColeta : null
       })
 
@@ -71,6 +78,7 @@ export const NovaColeta = (props) => {
         CNPJ: eqdata.CNPJss,
         AnxId: eqdata.AnxId,
         PdvId: eqdata.PdvId,
+        ConId: eqdata.ConId,
         UltimaColeta: response.data.UltColeta[0] ? response.data.UltColeta[0].UltimaColeta : null,
         ProximaColeta: response.data.UltColeta[0] ? response.data.UltColeta[0].ProximaColeta : null,
         ContadorAnterior: response.data.UltColeta[0] ? response.data.UltColeta[0].ContadorAnterior : null,
@@ -89,8 +97,10 @@ export const NovaColeta = (props) => {
     setMargemLeitura({
       de: null,
       deID: null,
+      deCont: null,
       ate: null,
       ateID: null,
+      ateCont: null,
       excluir: null
     })
     setDetalhes({
@@ -99,6 +109,7 @@ export const NovaColeta = (props) => {
       CNPJ: null,
       AnxId: null,
       PdvId: null,
+      ConId: null,
       UltimaColeta: null,
       ProximaColeta: null,
       ContadorAnterior: null,
@@ -107,21 +118,26 @@ export const NovaColeta = (props) => {
     })
   }
 
-  // const handleGravaColeta = async() => {
-  //   try{
-  //     const response = await api.post('', {
-        
-  //     })
+  const handleGravaColeta = async () => {
+    try{
+      const response = await api.post('/coletas/novacoleta/', {
+        Detalhes: detalhes, 
+        Doses: leituraDoses, 
+        Margem: margemLeitura, 
+        Zerou: zerou, 
+        Ref: referencia
+      })
 
-  //     console.log(response.data)
-  //   }catch(err){
-  //     console.log(err)
-  //   }
-  // }
+      console.log(response.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   useEffect(() => {
     handleCloseModal()
-  }, [isMdUp, handleCloseModal])
+    // eslint-disable-next-line
+  }, [isMdUp])
 
   useEffect(() => {
     async function getQtd() {
@@ -132,12 +148,30 @@ export const NovaColeta = (props) => {
       }
     }
     getQtd()
-  }, [margemLeitura, detalhes.AnxId, detalhes.PdvId])
+    // eslint-disable-next-line
+  }, [margemLeitura])
 
   return isMdUp ? (
     <Paper className={classes.root}>
       <div className={classes.container}>
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses, setLeituraDoses)}
+        <Typography
+          variant='h5'
+          style={{ margin: '8px 0px 0px 8px' }}
+        >
+          Nova Coleta
+        </Typography>
+        {WhichContentShow(
+          props.Equipamentos,
+          detalhes,
+          classes,
+          handleRequestDetails,
+          leiturasDisponiveis,
+          margemLeitura,
+          setMargemLeitura,
+          leituraDoses,
+          setLeituraDoses,
+          handleGravaColeta
+        )}
       </div>
     </Paper>
   ) : (
@@ -152,7 +186,7 @@ export const NovaColeta = (props) => {
       >
         <Fab
           color="primary"
-          onClick={props.handleOpenModal}
+          onClick={() => handleOpenModal()}
           variant="extended"
         >
           <AddIcon className={classes.extendedIcon} />
@@ -164,7 +198,17 @@ export const NovaColeta = (props) => {
         onClose={props.handleCloseModal}
         title='Nova Coleta'
       >
-        {WhichContentShow(props.Equipamentos, detalhes, classes, handleRequestDetails, leiturasDisponiveis, margemLeitura, setMargemLeitura, leituraDoses, setLeituraDoses)}
+        {WhichContentShow(
+          props.Equipamentos,
+          detalhes, classes,
+          handleRequestDetails,
+          leiturasDisponiveis,
+          margemLeitura,
+          setMargemLeitura,
+          leituraDoses,
+          setLeituraDoses,
+          handleGravaColeta
+        )}
       </NovaColetaModal>
     </>
   )
@@ -222,16 +266,11 @@ const WhichContentShow = (
   margem,
   setMargem,
   leituraDoses,
-  setLeituraDoses
+  setLeituraDoses,
+  handleGravaColeta
 ) => {
   return (
     <>
-      <Typography
-        variant='h5'
-        style={{ margin: '8px 0px 0px 8px' }}
-      >
-        Nova Coleta
-      </Typography>
       <section className={classes.sectionRow}>
         <Select
           width="150px"
@@ -324,8 +363,10 @@ const WhichContentShow = (
               setMargem({
                 de: e.target.value !== '' ? e.target.value : null,
                 deID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                deCont: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].Contador : null,
                 ate: e.target.value !== '' ? e.target.value : null,
                 ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                ateCont: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].Contador : null,
                 excluir: null
               })
             }}
@@ -334,6 +375,7 @@ const WhichContentShow = (
               leituras.map((leitura) =>
                 <MenuItem
                   value={leitura.DataLeitura}
+                  key={leitura.DataLeitura}
                 >
                   {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
                 </MenuItem>
@@ -363,6 +405,7 @@ const WhichContentShow = (
                   ...oldObj,
                   ate: e.target.value !== '' ? e.target.value : null,
                   ateID: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].LeituraId : null,
+                  ateCont: e.target.value !== '' ? leituras.filter(leit => leit.DataLeitura === e.target.value)[0].Contador : null,
                 }
               })
             }
@@ -371,6 +414,7 @@ const WhichContentShow = (
             {leituras.filter(leit => leit.DataLeitura !== margem.excluir).reverse().map((leitura) =>
               <MenuItem
                 value={leitura.DataLeitura}
+                key={leitura.DataLeitura}
               >
                 {moment(leitura.DataLeitura).utc().format("DD/MM/YYYY HH:mm:ss")}
               </MenuItem>
@@ -427,6 +471,7 @@ const WhichContentShow = (
               borderBottom: '1px solid #CCC',
               flexWrap: 'nowrap'
             }}
+            key={leit.LeituraId}
           >
             <div
               className='YAlign'
@@ -469,7 +514,7 @@ const WhichContentShow = (
           borderRadius: '0px 0px 4px 4px',
         }}
         disabled={leituraDoses.length === 0}
-        onClick={() => alert('Ainda não implementado')}
+        onClick={() => handleGravaColeta()}
       >
         GRAVAR COLETA
       </Button>
