@@ -43,30 +43,37 @@ export const Consultas = (props) => {
             overflowY: 'auto'
           }}
         >
-          {props.Coletas.map(coleta =>
-            <>
-              <AccordionDetails
-                onClick={() => props.onOpenColetaDetails(coleta.AnxId, coleta.PdvId, coleta.FfmSeq, coleta)}
-                button
-                className={classes.details}
-              >
-                <ListItemText primary={coleta.Anexo} secondary={coleta.EquiCod} />
-                <div className={classes.helper}>
-                  <Typography variant="body2" gutterBottom>
-                    <strong>Referencia</strong>
-                    <br />
-                    {capitalizeMonthFirstLetter(moment(coleta.Ref).format('MMMM YYYY'))}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Sequencia</strong>
-                    <br />
-                    {coleta.FfmSeq}
-                  </Typography>
-                </div>
-              </AccordionDetails>
-              <Divider />
-            </>
-          )}
+          {props.Coletas.length === 0 ?
+            <div className='XAlign'>
+              <Typography>
+                Nenhuma coleta gravada
+              </Typography>
+            </div>
+            :
+            props.Coletas.map(coleta =>
+              <>
+                <AccordionDetails
+                  onClick={() => props.onOpenColetaDetails(coleta.AnxId, coleta.PdvId, coleta.FfmSeq, coleta)}
+                  button
+                  className={classes.details}
+                >
+                  <ListItemText primary={coleta.Anexo} secondary={coleta.EquiCod} />
+                  <div className={classes.helper}>
+                    <Typography variant="body2" gutterBottom>
+                      <strong>Referencia</strong>
+                      <br />
+                      {capitalizeMonthFirstLetter(moment(coleta.Ref).utc().format('MMMM YYYY'))}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Sequencia</strong>
+                      <br />
+                      {coleta.FfmSeq}
+                    </Typography>
+                  </div>
+                </AccordionDetails>
+                <Divider />
+              </>
+            )}
         </section>
       </Accordion>
     </Paper>

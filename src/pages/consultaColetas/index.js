@@ -8,6 +8,7 @@ import { Consultas } from './consultas'
 import { NovaColeta } from './novaColeta'
 
 const ConsultaColetas = () => {
+  const [forceUpdate, setForceUpdate] = useState(0)
   const [coletas, setColetas] = useState([])
   const [equipamentos, setEquipamentos] = useState([])
   const [coletaDetalhesModalOpen, setColetaDetalhesModalOpen] = useState(false)
@@ -26,7 +27,11 @@ const ConsultaColetas = () => {
       }
     }
     LoadData()
-  }, [])
+  }, [forceUpdate])
+
+  const handleForceUpdate = () => {
+    setForceUpdate(value => value + 1)
+  }
 
   const handleOpenColetaDetailsModal = async (anxid, pdvid, fseq, coleta) => {
     setColetaDetalhesModalOpen(true)
@@ -74,6 +79,7 @@ const ConsultaColetas = () => {
         open={novaColetaDetalhesModalOpen}
         handleOpenModal={handleOpenNovaColetaModal}
         handleCloseModal={handleCloseNovaColetaModal}
+        onUpdate={handleForceUpdate}
       />
     </Panel>
   )

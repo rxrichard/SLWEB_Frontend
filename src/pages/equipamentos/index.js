@@ -14,6 +14,7 @@ import MiFixModal from './modals/MiFixModal'
 import ReportModal from './modals/ReportModal'
 import LinkModal from './modals/LinkModal'
 import ConfirmModal from './modals/ConfirmModal'
+import QRcodeModal from './modals/QRcodeModal'
 
 const Equipamentos = () => {
   const [loaded, setLoaded] = useState(false);
@@ -21,6 +22,7 @@ const Equipamentos = () => {
   const [MiFixModalState, setMiFixModalState] = useState(false);
   const [reportModalState, setReportModalState] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState(false);
+  const [QRModalState, setQRModalState] = useState(false);
   const [cooldownSync, setCooldownSync] = useState(false);
   const [alreadyReported, setAlreadyReported] = useState(true);
 
@@ -79,6 +81,31 @@ const Equipamentos = () => {
     setReportModalState(true)
   }
 
+  const HandleOpenQRModal = async (ativo) => {
+    setQRModalState(true)
+
+    try {
+      const response = await api.get(`/ativo/qrcode/${ativo}`, {
+        responseType: 'arraybuffer'
+      })
+
+      const png2b64 = _imageEncode(response.data)
+      const imageOutput = document.getElementById('QRCODE')
+
+      imageOutput.src = png2b64
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const _imageEncode = (arrayBuffer) => {
+    // let u8 = new Uint8Array(arrayBuffer)
+    let b64encoded = btoa([].reduce.call(new Uint8Array(arrayBuffer), function (p, c) { return p + String.fromCharCode(c) }, ''))
+    let mimetype = "image/png"
+    return "data:" + mimetype + ";base64," + b64encoded
+  }
+
   const HandleCloseLinkModal = () => {
     setLinkModalState(false)
     setTargetAtivo('')
@@ -95,6 +122,14 @@ const Equipamentos = () => {
   const HandleCloseConfirmModal = () => {
     setConfirmModalState(false)
     setEnderecos([])
+  }
+
+  const HandleCloseQRModal = () => {
+    setQRModalState(false)
+
+    const imageOutput = document.getElementById('QRCODE')
+
+    imageOutput.src = null
   }
 
   const HandleSyncTMT = async (ativo) => {
@@ -119,7 +154,7 @@ const Equipamentos = () => {
     try {
       Toast('Atualização enviada ao TMT', 'info')
       await api.get(`/tel/update/WYSI/${ativo}`)
-      
+
     } catch (err) {
     }
   }
@@ -195,7 +230,8 @@ const Equipamentos = () => {
 
       <MainSection
         Ativos={equipamentos}
-        onOpenModal={(ativo) => HandleOpenLinkModal(ativo)}
+        onOpenLinkModal={(ativo) => HandleOpenLinkModal(ativo)}
+        onOpenQRModal={(ativo) => HandleOpenQRModal(ativo)}
         isInCooldown={cooldownSync}
         onSync={HandleSyncTMT}
       />
@@ -236,6 +272,21 @@ const Equipamentos = () => {
           </Button>
         }
       />
+
+      <QRcodeModal
+        open={QRModalState}
+        onClose={HandleCloseQRModal}
+        title='QR Code'
+      >
+        <img
+          alt='QR CODE'
+          id='QRCODE'
+          style={{
+            width: '200px',
+            height: '200px',
+          }}
+        />
+      </QRcodeModal>
     </Panel>
 }
 
