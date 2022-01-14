@@ -17,6 +17,7 @@ import {
   VENDA_SET_OBS,
   VENDA_LOAD_DEPOSITOS,
   VENDA_EDIT_PEDIDO,
+  VENDA_LOAD_CONSULTA_COLETAS_CARGA,
   VENDA_CHANGE_TAB_INDEX
 } from "./VendasActionTypes";
 
@@ -91,6 +92,11 @@ export const SetBuyQtt = (value) => ({
   ProdId: value.id,
   Qtd: value.value,
   campo: value.field,
+});
+
+export const SetColetaCarga = (value) => ({
+  type: VENDA_LOAD_CONSULTA_COLETAS_CARGA,
+  carga: value
 });
 
 export const ResetarDetalhes = () => ({

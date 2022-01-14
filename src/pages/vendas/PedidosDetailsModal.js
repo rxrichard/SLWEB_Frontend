@@ -286,6 +286,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
     } else if (String(actualPedidoInfo.Tipo).trim() === 'V') {
       SetCondPag(String(actualPedidoInfo.CpgId).trim())
     }
+    
     SetObs(actualPedidoInfo.MsgNF !== null ? String(actualPedidoInfo.MsgNF).trim() : '')
 
     //adiciono os produtos no carrinho
@@ -427,9 +428,6 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
             style={{ all: "unset", display: "flex", flexDirection: "row" }}
           >
             {extraControls(actualPedidoInfo.ST)}
-
-
-
           </div>
         </div>
         <div style={{ height: 400, width: "100%" }}>

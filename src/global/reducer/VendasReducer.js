@@ -17,6 +17,7 @@ import {
   VENDA_SET_OBS,
   VENDA_LOAD_DEPOSITOS,
   VENDA_EDIT_PEDIDO,
+  VENDA_LOAD_CONSULTA_COLETAS_CARGA,
   VENDA_CHANGE_TAB_INDEX
 } from "../actions/VendasActionTypes";
 
@@ -37,7 +38,9 @@ const initialState = {
 
   Checked: [],
   TabIndex: 0,
-  FixPedido: null
+  FixPedido: null,
+
+  cargaColetas: null
 };
 
 export const VendasReducer = (state = initialState, action) => {
@@ -230,6 +233,12 @@ export const VendasReducer = (state = initialState, action) => {
         Produtos: newProdutos_,
         Carrinho: newCarrinho_,
         Checked: newChecked_,
+      };
+
+    case VENDA_LOAD_CONSULTA_COLETAS_CARGA:
+      return {
+        ...state,
+        cargaColetas: action.carga
       };
 
     case VENDA_CLEAR_CART:

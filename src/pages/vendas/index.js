@@ -38,6 +38,8 @@ import {
   LoadClientes,
   LoadPagamentos,
   LoadDepositos,
+  ChangeCliente,
+  SetColetaCarga
 } from "../../global/actions/VendasAction";
 import Vender from "./Vender";
 import Pedidos from "./Pedidos";
@@ -61,6 +63,8 @@ function Vendas(props) {
     LoadClientes,
     LoadPagamentos,
     LoadDepositos,
+    ChangeCliente,
+    SetColetaCarga
   } = props;
 
   const {
@@ -75,6 +79,8 @@ function Vendas(props) {
     RemOrigem,
     RemDestino,
     FixPedido,
+    cargaColetas,
+    Clientes
   } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
@@ -82,16 +88,20 @@ function Vendas(props) {
   //componentDidMount
   useEffect(() => {
     async function Load() {
-      try{
+      try {
         const response = await api.get("/vendas/produtos");
-  
+
         LoadInsumos(Array.isArray(response.data.Produtos) ? response.data.Produtos : []);
         LoadClientes(Array.isArray(response.data.Clientes) ? response.data.Clientes : []);
         LoadPagamentos(response.data.CodPag);
         LoadDepositos(response.data.Depositos);
         setLoaded(true);
-      }catch (err){
-        
+
+        if (cargaColetas !== null) {
+          cargaFilaColetas()
+        }
+      } catch (err) {
+        console.log(err)
       }
     }
     Load();
@@ -166,6 +176,40 @@ function Vendas(props) {
     }
   };
 
+  const cargaFilaColetas = () => {
+    ResetarDetalhes()
+    ClearCarrinho()
+
+    Clientes.forEach((cliente) =>
+      String(cliente.CNPJ) === String(cargaColetas.CNPJ) ? ChangeCliente(cliente) : null
+    );
+
+    cargaColetas.Items.forEach(item => SetCheckedProd(item.ProdId))
+    UpdateCarrinho()
+
+    cargaColetas.Items.forEach(item => {
+      SetBuyQtt({
+        id: item.ProdId,
+        value: item.QVenda,
+        field: 'Quantidade'
+      })
+
+      SetBuyQtt({
+        id: item.ProdId,
+        value: item.VVenda,
+        field: 'Vlr'
+      })
+
+      SetBuyQtt({
+        id: item.ProdId,
+        value: item.DVenda,
+        field: 'Desconto'
+      })
+    })
+
+    SetColetaCarga(null)
+  }
+
   return !loaded ? (
     <Loading />
   ) : (
@@ -233,7 +277,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button disabled={wait} onClick={(e) => handleSubmit(e)} color="primary">
               {FixPedido !== null ? 'Atualizar' : 'Gravar'}
@@ -248,7 +292,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button
               disabled={CarrinhoMarcados(Carrinho, Checked) > 0 && !wait ? false : true}
@@ -267,7 +311,7 @@ function Vendas(props) {
             }
             placement="top"
             arrow
-             
+
           >
             <Button disabled={wait} onClick={() => ClearCarrinho()} color="primary">
               Limpar
@@ -282,7 +326,7 @@ function Vendas(props) {
             }
             placement="right"
             arrow
-             
+
           >
             <Button disabled={wait} onClick={() => setOpen(false)} color="primary">
               Fechar
@@ -372,6 +416,8 @@ const mapDispatchToProps = (dispatch) =>
       LoadClientes,
       LoadPagamentos,
       LoadDepositos,
+      ChangeCliente,
+      SetColetaCarga
     },
     dispatch
   );

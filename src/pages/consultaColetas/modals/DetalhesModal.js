@@ -1,4 +1,7 @@
 import React from "react";
+import { useHistory } from 'react-router-dom'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import moment from 'moment';
 
 import { DataGrid } from "@material-ui/data-grid";
@@ -11,12 +14,37 @@ import {
   IconButton,
   Slide,
   Typography,
+  Button
 } from '@material-ui/core';
+import { SetColetaCarga } from '../../../global/actions/VendasAction'
 
-export const DetalhesModal = (props) => {
+const DetalhesModalWithRedux = (props) => {
   const classes = useStyles()
+  const history = useHistory()
+  const {
+    SetColetaCarga
+  } = props;
 
   const DetalhesFormatado = fromProps2Datagrid(props.detalhes.Detalhes);
+
+  const handleLoadVendas = (coleta) => {
+    let carga = {
+      Cliente: coleta.CNPJ,
+      Items: []
+    }
+
+    coleta.Detalhes.forEach((item) => {
+      carga.Items.push({
+        ProdId: item.ProdId,
+        VVenda: item.PvpVvn1,
+        QVenda: item.FfdQtdFaturar,
+        DVenda: 0
+      })
+    })
+
+    SetColetaCarga(carga)
+    history.push('/vendas')
+  }
 
   return (
     <Dialog
@@ -33,6 +61,12 @@ export const DetalhesModal = (props) => {
           <Typography variant="h6" className={classes.title}>
             {props.title}
           </Typography>
+          <Button
+            color="inherit"
+            onClick={() => handleLoadVendas(props.detalhes)}
+          >
+            Faturar
+          </Button>
         </Toolbar>
       </AppBar>
       <div className={classes.container}>
@@ -137,6 +171,20 @@ export const DetalhesModal = (props) => {
   );
 }
 
+const mapStateToProps = (store) => ({
+  State: store.VendaState,
+})
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      SetColetaCarga
+    }
+    , dispatch
+  )
+
+export const DetalhesModal = connect(mapStateToProps, mapDispatchToProps)(DetalhesModalWithRedux);
+
 const useStyles = makeStyles((theme) => ({
   infoBox: {
     display: 'flex',
@@ -224,7 +272,7 @@ const columns = [
     width: 80,
     editable: false,
     sortable: false,
-    renderCell: (params) => String(Number(params.value).toFixed(2)).replace('.',','),
+    renderCell: (params) => String(Number(params.value).toFixed(2)).replace('.', ','),
   },
   {
     field: "Prec2",
@@ -232,6 +280,6 @@ const columns = [
     width: 80,
     editable: false,
     sortable: false,
-    renderCell: (params) => Number(params.value).toFixed(2).replace('.',','),
+    renderCell: (params) => Number(params.value).toFixed(2).replace('.', ','),
   },
 ]

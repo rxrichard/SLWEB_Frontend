@@ -14,6 +14,7 @@ import InputUnderline from "../../components/materialComponents/InputUnderline";
 import Button from "../../components/materialComponents/Button";
 import { Create as CreateIcon } from '@material-ui/icons';
 
+import AnnonProfileIcon from '../../assets/annon_profile_icon.png'
 import { Settings, VpnKey, Check } from "@material-ui/icons/";
 import {
   MenuItem,
@@ -138,9 +139,7 @@ function Perfil() {
         <div className={classes.PerfilBase}>
           <div className={classes.Avatar}>
             <img
-              src={
-                "https://www.seekpng.com/png/full/41-410093_circled-user-icon-user-profile-icon-png.png"
-              }
+              src={AnnonProfileIcon}
               alt="logo"
             />
             <p disabled>{String(info.M0_FILIAL[0]).trim()}</p>
@@ -330,9 +329,6 @@ function Perfil() {
                   />
                 </div>
               </Dialog>
-
-
-
             </div>
           </div>
         </div>
@@ -365,6 +361,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     textAlign: "center",
+    paddingTop: '8px',
 
     "@media (max-width:768px)": {
 
@@ -416,8 +413,12 @@ const useStyles = makeStyles((theme) => ({
 
     "&:hover": {
       transition: "200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-      cursor: "pointer",
       transform: "scale(1.05)",
+    },
+
+    "&:not(hover)": {
+      transition: "200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      transform: "scale(1)",
     },
   },
   perfilInfo: {
@@ -455,7 +456,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     width: "45vw",
     maxWidth: "45vw",
-    alignItems: "center",
+    alignItems: "flex-end",
 
     "& button": {
       marginTop: ".5rem",
@@ -469,6 +470,7 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
       maxWidth: "100%",
       paddingBottom: "8px",
+      alignItems: "flex-start",
 
       "& button": {
         marginTop: ".5rem",

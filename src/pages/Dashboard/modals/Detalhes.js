@@ -12,7 +12,7 @@ import {
   Grid,
   makeStyles
 } from '@material-ui/core';
-import { Close as CloseIcon} from '@material-ui/icons';
+import { Close as CloseIcon } from '@material-ui/icons';
 
 import { toValidString } from '../../../misc/commom_functions'
 import { RED_PRIMARY } from '../../../misc/colors'
@@ -28,26 +28,24 @@ function ModalPersonalizado(props) {
         PaperComponent={PaperComponent}
         aria-labelledby="draggable-dialog-title"
       >
-        <div         style={{ display:"flex",justifyContent:"space-around", flexDirection:"row" }}>
-        <DialogTitle style={{ cursor: "move"}} id="draggable-dialog-title">
-          
-          {props.title}
-        </DialogTitle>
-        <Button
+        <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row" }}>
+          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+
+            {props.title}
+          </DialogTitle>
+          <Button
             onClick={props.onClose}
             color="primary"
-            
           >
-           Fechar <CloseIcon/>
+            Fechar <CloseIcon />
           </Button>
-          </div>
-        
+        </div>
+
         <DialogContent>
           {whichContentShow(props.TMT, props.tipo, classes)}
         </DialogContent>
         <DialogActions style={{ padding: '8px 24px' }}>
           {props.action}
-       
         </DialogActions>
       </Dialog>
     </div>
