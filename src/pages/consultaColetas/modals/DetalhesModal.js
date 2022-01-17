@@ -34,12 +34,28 @@ const DetalhesModalWithRedux = (props) => {
     }
 
     coleta.Detalhes.forEach((item) => {
-      carga.Items.push({
-        ProdId: item.ProdId,
-        VVenda: item.PvpVvn1,
-        QVenda: item.FfdQtdFaturar,
-        DVenda: 0
+      let repetido = false
+
+      //verifico se tem um mesmo produto em mais de uma posição, e se tiver eu somo as QTDs com o que já tem
+      carga.Items.forEach((cargaItem, index) => {
+        if (cargaItem.ProdId === item.ProdId) {
+          repetido = true
+          carga.Items[index] = {
+            ...cargaItem,
+            QVenda: cargaItem.QVenda + item.FfdQtdFaturar,
+          }
+        }
       })
+
+      //se não for um produto repetido adiciono ele a carga
+      if (!repetido) {
+        carga.Items.push({
+          ProdId: item.ProdId,
+          VVenda: item.PvpVvn1,
+          QVenda: item.FfdQtdFaturar,
+          DVenda: 0
+        })
+      }
     })
 
     SetColetaCarga(carga)

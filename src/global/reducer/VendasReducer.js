@@ -136,11 +136,11 @@ export const VendasReducer = (state = initialState, action) => {
       } else {
         let _newChecked = [...state.Checked];
         let indexOfProd = _newChecked.indexOf(action.value);
-
+        
         indexOfProd < 0
-          ? _newChecked.push(action.value)
-          : _newChecked.splice(indexOfProd, 1);
-
+        ? _newChecked.push(action.value)
+        : _newChecked.splice(indexOfProd, 1);
+        
         return {
           ...state,
           Checked: _newChecked,
@@ -248,8 +248,8 @@ export const VendasReducer = (state = initialState, action) => {
         Carrinho: [],
         Checked: [],
       };
-
-    case VENDA_RESET_DETALHES:
+      
+      case VENDA_RESET_DETALHES:
       return {
         ...state,
         Cliente: {},

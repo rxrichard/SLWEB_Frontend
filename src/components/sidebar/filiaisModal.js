@@ -49,15 +49,21 @@ function ModalPersonalizado(props) {
                 minWidth: '400px'
               }}
             >
-              {props.Filiais.map((filial, index) => (
-                <>
-                  <ListItem button onClick={() => props.onSelect(filial.M0_CODFIL)}>
-                    <ListItemText primary={filial.M0_CODFIL} />
-                    <ListItemText primary={filial.GrupoVenda} />
-                  </ListItem>
-                  <Divider />
-                </>
-              ))}
+              {props.Filiais.length === 0 ?
+                <ListItem button onClick={() => { }}>
+                  <ListItemText primary='' />
+                  <ListItemText primary='Carregando Filiais...' />
+                </ListItem>
+                :
+                props.Filiais.map((filial, index) => (
+                  <>
+                    <ListItem button onClick={() => props.onSelect(filial.M0_CODFIL)}>
+                      <ListItemText primary={filial.M0_CODFIL} />
+                      <ListItemText primary={filial.GrupoVenda} />
+                    </ListItem>
+                    <Divider />
+                  </>
+                ))}
             </List>
           </div>
         </DialogContent>

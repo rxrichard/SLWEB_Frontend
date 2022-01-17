@@ -8,7 +8,7 @@ import { Typography, Button } from '@material-ui/core';
 import { GREY_SECONDARY } from '../../misc/colors'
 
 const Header = (props) => {
-  const shouldEnableConfirmButtom = moment().isBetween(moment(props.confirmPeriodRef[0].de, "DD/MM/YYYY"), moment(props.confirmPeriodRef[0].ate, "DD/MM/YYYY"))
+  const shouldEnableConfirmButtom = props.confirmPeriodRef[0] ? moment().isBetween(moment(props.confirmPeriodRef[0].de, "DD/MM/YYYY"), moment(props.confirmPeriodRef[0].ate, "DD/MM/YYYY")) : false
 
   return (
     <div

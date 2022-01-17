@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from 'moment';
 import { api } from "../../services/api";
 
 import { Panel } from "../../components/commom_in";
@@ -26,6 +27,7 @@ import { RED_SECONDARY, GREY_LIGHT } from "../../misc/colors";
 function Perfil() {
   const classes = useStyles();
   const [info, setInfo] = useState({});
+  const [vencCert, setVencCert] = useState(null);
   const [password, setPassword] = useState({});
   const [newEmail, setNewEmail] = useState(null);
   const [newTaxa, setNewTaxa] = useState({
@@ -45,18 +47,19 @@ function Perfil() {
         });
 
         if (
-          response.data === {} ||
-          response.data === null ||
-          typeof response.data == "undefined" ||
-          !response.data
+          response.data.Franqueado === {} ||
+          response.data.Franqueado === null ||
+          typeof response.data.Franqueado == "undefined" ||
+          !response.data.Franqueado
         )
           throw Error;
 
-        setInfo(response.data);
+        setInfo(response.data.Franqueado);
+        setVencCert(response.data.VencCert)
         setLoaded(true);
         setNewTaxa({
-          tipo: response.data.ParamTxt,
-          valor: response.data.ParamVlr * 100,
+          tipo: response.data.Franqueado.ParamTxt,
+          valor: response.data.Franqueado.ParamVlr * 100,
         });
       } catch (err) { }
     }
@@ -165,7 +168,7 @@ function Perfil() {
                   CERTIFICADO DIGITAL VÁLIDO ATÉ
                 </h5>
                 <p className={classes.Relevant}>
-                  ------
+                  {vencCert === null ? '------' : vencCert}
                 </p>
               </div>
 

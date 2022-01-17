@@ -97,9 +97,7 @@ function Vendas(props) {
         LoadDepositos(response.data.Depositos);
         setLoaded(true);
 
-        if (cargaColetas !== null) {
-          cargaFilaColetas()
-        }
+        cargaFilaColetas(response.data.Clientes)
       } catch (err) {
         console.log(err)
       }
@@ -176,13 +174,16 @@ function Vendas(props) {
     }
   };
 
-  const cargaFilaColetas = () => {
-    ResetarDetalhes()
-    ClearCarrinho()
+  const cargaFilaColetas = (ClientesNaoDoRedux) => {
+    if (cargaColetas === null) {
+      return
+    }
 
-    Clientes.forEach((cliente) =>
-      String(cliente.CNPJ) === String(cargaColetas.CNPJ) ? ChangeCliente(cliente) : null
-    );
+    ClientesNaoDoRedux.forEach((cliente) => {
+      if (String(cliente.CNPJ) === String(cargaColetas.Cliente)) {
+        ChangeCliente(cliente)
+      }
+    });
 
     cargaColetas.Items.forEach(item => SetCheckedProd(item.ProdId))
     UpdateCarrinho()
