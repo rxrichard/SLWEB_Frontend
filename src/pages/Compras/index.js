@@ -314,11 +314,11 @@ function Compras(props) {
               style={{
                 width: "100%",
                 backgroundColor:
-                  200 - obs.length < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
+                  100 - obs.length < 0 ? "rgb(255, 0, 0, 0.5)" : "inherit",
               }}
               onChange={(e) => setObs(e.target.value)}
               value={obs}
-              label={`Obs.(${200 - obs.length})`}
+              label={`Obs.(${100 - obs.length})`}
               fullWidth={true}
             />
           </Box>
@@ -588,7 +588,7 @@ const verifyPedido = (pedido, retira, MinCompra) => {
     }
   }
 
-  if (pedido.Obs.length > 200) {
+  if (pedido.Obs.length > 100) {
     Toast("Tamanho do campo Observações excede o limite", "warn");
     return false;
   }

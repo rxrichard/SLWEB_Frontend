@@ -39,7 +39,8 @@ import {
   LoadPagamentos,
   LoadDepositos,
   ChangeCliente,
-  SetColetaCarga
+  SetColetaCarga,
+  ChangeTipoVenda
 } from "../../global/actions/VendasAction";
 import Vender from "./Vender";
 import Pedidos from "./Pedidos";
@@ -64,7 +65,8 @@ function Vendas(props) {
     LoadPagamentos,
     LoadDepositos,
     ChangeCliente,
-    SetColetaCarga
+    SetColetaCarga,
+    ChangeTipoVenda
   } = props;
 
   const {
@@ -79,8 +81,7 @@ function Vendas(props) {
     RemOrigem,
     RemDestino,
     FixPedido,
-    cargaColetas,
-    Clientes
+    cargaColetas
   } = props.State;
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
@@ -103,6 +104,7 @@ function Vendas(props) {
       }
     }
     Load();
+    // eslint-disable-next-line
   }, [LoadInsumos, LoadClientes, LoadPagamentos, LoadDepositos]);
 
   //componentWillUnmount
@@ -185,7 +187,14 @@ function Vendas(props) {
       }
     });
 
-    cargaColetas.Items.forEach(item => SetCheckedProd(item.ProdId))
+    ChangeTipoVenda('V')
+
+    cargaColetas.Items.forEach(item => {
+      if (item.ProdId) {
+        SetCheckedProd(item.ProdId)
+      }
+    })
+    
     UpdateCarrinho()
 
     cargaColetas.Items.forEach(item => {
@@ -418,7 +427,8 @@ const mapDispatchToProps = (dispatch) =>
       LoadPagamentos,
       LoadDepositos,
       ChangeCliente,
-      SetColetaCarga
+      SetColetaCarga,
+      ChangeTipoVenda
     },
     dispatch
   );

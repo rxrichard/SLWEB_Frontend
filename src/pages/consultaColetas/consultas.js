@@ -57,6 +57,16 @@ export const Consultas = (props) => {
                   button
                   className={classes.details}
                 >
+                  <div
+                    style={{
+                      background: 'red',
+                      height: '124px',
+                      width: '40px',
+                      marginRight: '8px',
+                      borderRadius: '8px 0px 0px 8px'
+                    }}>
+                    excluir
+                  </div>
                   <ListItemText primary={coleta.Anexo} secondary={coleta.EquiCod} />
                   <div className={classes.helper}>
                     <Typography variant="body2" gutterBottom>

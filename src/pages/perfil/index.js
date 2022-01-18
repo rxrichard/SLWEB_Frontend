@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
 import { api } from "../../services/api";
 
 import { Panel } from "../../components/commom_in";
@@ -413,6 +412,7 @@ const useStyles = makeStyles((theme) => ({
     width: "15rem",
     maxwidth: "15rem",
     maxHeight: "10rem",
+    cursor: "default",
 
     "&:hover": {
       transition: "200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
