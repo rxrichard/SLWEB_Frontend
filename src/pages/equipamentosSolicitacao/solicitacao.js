@@ -419,11 +419,11 @@ const handleSubmit = async (
     return;
   }
 
-  if (Solicitacao.Gabinete === "") {
-    Toast("Selecione se deseja um gabinete acompanhando a máquina", 'warn');
-    setDesativar(false);
-    return;
-  }
+  // if (Solicitacao.Gabinete === "") {
+  //   Toast("Selecione se deseja um gabinete acompanhando a máquina", 'warn');
+  //   setDesativar(false);
+  //   return;
+  // }
 
   if (Solicitacao.Abastecimento === "") {
     Toast("Selecione o sistema de abastecimento hídrico", 'warn');

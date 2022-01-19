@@ -168,12 +168,12 @@ function Home() {
       }}
     >
       <MiFixModal
-        
         open={modalChamadoOpen}
         onClose={handleCloseChamadoModal}
         title='Abrir chamado MiFix'
         onChangeDetails={setEditableDetails}
         Details={editableDetails}
+        UltChamado={target.UltChamado}
         action={
           <Button
             onClick={() => handleAbrirChamado(target)}

@@ -7,7 +7,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import {
   ChangeCorporativa,
   ChooseInibCopos,
-  ChooseGabinete,
+  // ChooseGabinete,
   ChooseAbastecimento,
   ChooseChip,
   ChooseAntena,
@@ -19,7 +19,7 @@ function Detalhes(props) {
   const {
     ChangeCorporativa,
     ChooseInibCopos,
-    ChooseGabinete,
+    // ChooseGabinete,
     ChooseAbastecimento,
     ChooseChip,
     ChooseAntena,
@@ -28,12 +28,12 @@ function Detalhes(props) {
   const {
     InibirCopos,
     Corporativa,
-    Gabinete,
+    // Gabinete,
     Abastecimento,
     Chip,
     AntExt,
     Maquina,
-    PermiteGab,
+    // PermiteGab,
   } = props.State;
 
   return (
@@ -66,7 +66,7 @@ function Detalhes(props) {
         </Selecao>
       ) : null}
 
-      <Selecao
+      {/* <Selecao
         width="200px"
         MLeft="8px"
         MBottom="8px"
@@ -78,7 +78,7 @@ function Detalhes(props) {
       >
         <MenuItem value={true}>Sim</MenuItem>
         <MenuItem value={false}>Não</MenuItem>
-      </Selecao>
+      </Selecao> */}
 
       <Selecao
         width="200px"
@@ -135,7 +135,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       ChangeCorporativa,
       ChooseInibCopos,
-      ChooseGabinete,
+      // ChooseGabinete,
       ChooseAbastecimento,
       ChooseChip,
       ChooseAntena,

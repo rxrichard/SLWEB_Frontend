@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import Draggable from "react-draggable";
 
 import {
@@ -30,6 +31,19 @@ function ModalPersonalizado(props) {
 
         <DialogContent>
           <div className="YAlign">
+            {props.UltChamado !== null ?
+              <Typography
+                style={{
+                  width: '100%',
+                  textAlign: 'right'
+                }}
+                variant="subtitle1"
+                gutterBottom
+              >
+                <strong>Último chamado aberto em {moment(props.UltChamado).format('DD/MM/YYYY')}</strong>
+              </Typography>
+              : null
+            }
             <Typography
               style={{ color: RED_PRIMARY }}
               variant="subtitle1"

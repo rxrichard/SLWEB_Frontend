@@ -353,7 +353,7 @@ const initialState = {
 
   InibirCopos: "",
   Corporativa: "",
-  Gabinete: "",
+  Gabinete: false,
   Abastecimento: "",
   Chip: "",
   AntExt: "",
@@ -385,7 +385,7 @@ const resetedState = {
 
   InibirCopos: "",
   Corporativa: "",
-  Gabinete: "",
+  Gabinete: false,
   Abastecimento: "",
   Chip: "",
   AntExt: "",

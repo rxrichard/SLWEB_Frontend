@@ -34,7 +34,8 @@ import {
   Kitchen,
   PermContactCalendar,
   SyncAlt as SyncAltIcon,
-  EmojiFoodBeverage
+  EmojiFoodBeverage,
+  StoreMallDirectory
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -256,6 +257,18 @@ export default function MiniDrawer() {
                   </ListItemIcon>
 
                   <ListItemText primary="Leads" />
+                </ListItem>
+              </Link>
+            </List>
+            <Divider />
+            <List>
+              <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <StoreMallDirectory />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Pontos de Venda" />
                 </ListItem>
               </Link>
             </List>
