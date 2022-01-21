@@ -6,7 +6,7 @@ import { HomeWork } from '@material-ui/icons'
 
 import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
 
-export const PdvItem = ({ PDV, i }) => {
+export const PdvItem = ({ PDV, i, onOpenModal }) => {
   const classes = useStyles({
     color: PDV.PdvStatus === 'A' ? RED_PRIMARY : GREY_SECONDARY,
     background: 'unset',
@@ -14,7 +14,10 @@ export const PdvItem = ({ PDV, i }) => {
   })
 
   return (
-    <div className={classes.box}>
+    <div 
+    className={classes.box}
+    onClick={() => onOpenModal(i)}
+    >
       <HomeWork fontSize='large' />
       <Typography
         variant='body1'

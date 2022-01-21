@@ -3,7 +3,7 @@ import React from 'react'
 import { PdvItem } from './pdvItem'
 import { makeStyles } from '@material-ui/core'
 
-export const PdvList = ({ PDVs }) => {
+export const PdvList = ({ PDVs, onOpenModal }) => {
   const classes = useStyles()
 
   return (
@@ -12,6 +12,7 @@ export const PdvList = ({ PDVs }) => {
         <PdvItem
           PDV={pdv}
           i={index}
+          onOpenModal={onOpenModal}
         />
       )}
     </div>

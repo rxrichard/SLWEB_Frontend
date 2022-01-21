@@ -24,7 +24,7 @@ import NewFileInput from '../../../components/FileInput'
 import { Toast } from '../../../components/toasty'
 
 function ContasModal(props) {
-  const [confirmDuplicatas, setConfirmDuplicatas] = useState([])
+  const [confirmDuplicatas, setConfirmDuplicatas] = useState(null)
   const [fileNames, setFileNames] = useState([])
   const [fetching, setFetching] = useState(false)
 
@@ -34,8 +34,8 @@ function ContasModal(props) {
     const formData = makeFormData(arquivos)
 
     //verificar se o cara marcou alguma duplicata
-    if (confirmDuplicatas.length === 0) {
-      Toast('Selecione pelo menos uma duplicata a ser compensada', 'warn')
+    if (confirmDuplicatas === null) {
+      Toast('Selecione uma duplicata a ser compensada', 'warn')
       setFetching(false)
       return
     }
@@ -51,11 +51,12 @@ function ContasModal(props) {
 
     let toastId = null
 
-    formData.append('serie', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_PREFIXO[0])
-    formData.append('nf', confirmDuplicatas[0])
-    formData.append('valor', props.duplicatas.filter(dup => String(dup.E1_NUM) === String(confirmDuplicatas[0]))[0].E1_SALDO)
+    formData.append('serie', confirmDuplicatas.E1_PREFIXO[0])
+    formData.append('parcela', confirmDuplicatas.E1_PARCELA.trim())
+    formData.append('nf', confirmDuplicatas.E1_NUM)
+    formData.append('valor', confirmDuplicatas.E1_SALDO)
     formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
-    formData.append('folderName', confirmDuplicatas.toString().replace(/,/g, '-'))
+    formData.append('folderName', confirmDuplicatas.E1_NUM.trim())
 
     try {
       toastId = Toast('Enviando...', 'wait')
@@ -67,14 +68,6 @@ function ContasModal(props) {
         },
       })
 
-      //se tudo der certo eu recarrego a pagina ou atualizo o state Dupliacatas(se não der mto trabalho)
-      //zerar os inputs depois de enviar os arquivos(se eu não reiniciar a página)
-      // for (let i = 0; i < arquivos.length; i++) {
-      //   arquivos[i].value = null
-      // }
-      // setFetching(false)
-      // setConfirmDuplicatas([])
-      // getFileNames(makeFormData(getFiles()))
       Toast('Duplicata compensada', 'update', toastId, 'success')
       setTimeout(() => {
         window.location.reload()
@@ -85,21 +78,11 @@ function ContasModal(props) {
     }
   }
 
-  const handleClickDuplicata = (NumNFE, checked) => {
-    // if (checked && confirmDuplicatas.indexOf(NumNFE) === -1) {
-    //   setConfirmDuplicatas([...confirmDuplicatas, NumNFE])
-    //   return
-    // } else if (!checked && confirmDuplicatas.indexOf(NumNFE) !== -1) {
-    //   setConfirmDuplicatas(confirmDuplicatas.filter(duplicata => duplicata !== NumNFE))
-    //   return
-    // } else {
-    //   setConfirmDuplicatas([])
-    // }
-
+  const handleClickDuplicata = (checked, index) => {
     if (checked) {
-      setConfirmDuplicatas([NumNFE])
+      setConfirmDuplicatas(props.duplicatas[index])
     } else {
-      setConfirmDuplicatas([])
+      setConfirmDuplicatas(null)
     }
   }
 
@@ -227,7 +210,7 @@ function ContasModal(props) {
                   </strong>
                 </FormLabel>
                 <FormGroup>
-                  {props.duplicatas.map((duplicata) => (
+                  {props.duplicatas.map((duplicata, index) => (
                     <FormControlLabel
                       key={duplicata.E1_NUM}
                       control={
@@ -235,14 +218,27 @@ function ContasModal(props) {
                           style={{
                             transform: 'scale(0.3)'
                           }}
-                          checked={confirmDuplicatas.indexOf(duplicata.E1_NUM) !== -1}
-                          onChange={e => handleClickDuplicata(e.target.value, e.target.checked)}
+                          checked={
+                            confirmDuplicatas !== null &&
+                            confirmDuplicatas.E1_NUM === duplicata.E1_NUM &&
+                            confirmDuplicatas.E1_PREFIXO[0] === duplicata.E1_PREFIXO[0] &&
+                            confirmDuplicatas.E1_PARCELA === duplicata.E1_PARCELA
+                          }
+                          onChange={e => handleClickDuplicata(e.target.checked, index)}
                           name={duplicata.E1_NUM}
-                          value={duplicata.E1_NUM}
+                          value={duplicata}
                         />
                       }
                       label={<>
-                        <strong>{duplicata.E1_NUM}</strong> (R$ {duplicata.E1_SALDO})
+                        <strong>
+                          {duplicata.E1_NUM}
+                          {duplicata.E1_PARCELA.trim() !== '' ?
+                            ` | ${duplicata.E1_PARCELA.trim()}`
+                            :
+                            null
+                          }
+                        </strong>
+                        {` (R$ ${duplicata.E1_SALDO})`}
                       </>}
                     />
                   ))}

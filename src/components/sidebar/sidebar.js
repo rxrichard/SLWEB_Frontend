@@ -35,7 +35,8 @@ import {
   PermContactCalendar,
   SyncAlt as SyncAltIcon,
   EmojiFoodBeverage,
-  StoreMallDirectory
+  StoreMallDirectory,
+  AssignmentInd
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -262,6 +263,15 @@ export default function MiniDrawer() {
             </List>
             <Divider />
             <List>
+              <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <AssignmentInd />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Clientes" />
+                </ListItem>
+              </Link>
               <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>

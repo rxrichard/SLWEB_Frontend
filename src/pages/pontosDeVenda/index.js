@@ -7,16 +7,19 @@ import { api } from "../../services/api";
 import Loading from "../../components/loading_screen";
 
 //import de elementos visuais
-import { Panel, Container } from "../../components/commom_in";
+import { Panel } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 
 import { PdvList } from './pdvList'
 import { PdvListOptions } from './options'
+import { DetailsModal } from './modals/detailsModal'
 
 function Exemplo() {
   const [loaded, setLoaded] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
-  const [filtro, setFiltro] = useState();
+  const [targetPDV, setTargetPDV] = useState({});
+  const [filtro, setFiltro] = useState('');
   const [shouldShowInactivePDVs, setShouldShowInactivePDVs] = useState(false);
 
   //componentDidMount
@@ -35,10 +38,26 @@ function Exemplo() {
     LoadData();
   }, []);
 
+  const handleOpenDetailsModal = (index) => {
+    setTargetPDV(PDVs[index])
+    setDetailsModalOpen(true)
+  }
+
+  const handleCloseDetailsModal = () => {
+    setDetailsModalOpen(false)
+    setTargetPDV({})
+  }
+
   return !loaded ? (
     <Loading />
   ) : (
     <Panel style={{ justifyContent: 'space-between' }}>
+      <DetailsModal
+        open={detailsModalOpen}
+        onClose={handleCloseDetailsModal}
+        title='Detalhes do PDV'
+        Details={targetPDV}
+      />
       <PdvListOptions
         onRequestInactivePdvs={setShouldShowInactivePDVs}
         showInactivePdvs={shouldShowInactivePDVs}
@@ -53,6 +72,7 @@ function Exemplo() {
             return false;
           }
         })}
+        onOpenModal={handleOpenDetailsModal}
       />
     </Panel>
   );

@@ -20,6 +20,7 @@ import Compras from '../../pages/compras/index'
 import Vendas from '../../pages/vendas/index'
 import Coletas from '../../pages/consultaColetas/index'
 import PDV from '../../pages/pontosDeVenda/index'
+import Clientes from '../../pages/clientes'
 
 function Dashboard(props) {
   return (
@@ -51,6 +52,7 @@ function Dashboard(props) {
             <Route exact path="/administracao/emails" component={CentralEmails} />
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />
+            <Route exact path="/clientes" component={Clientes} />
             <Route path="*" component={notFound} />
           </Switch>
         </div>
