@@ -1,11 +1,15 @@
 import React from 'react';
 
 import { TextInput, Icon } from "react-materialize";
-import { Button } from '@material-ui/core'
 import { CloudDownload } from '@material-ui/icons'
 
 
-import Typography from '@material-ui/core/Typography';
+import {
+  Typography,
+  Button,
+  MenuItem
+} from '@material-ui/core/';
+import Select from '../../../components/materialComponents/Select'
 
 export const End = (props) => {
   return (
@@ -64,7 +68,31 @@ export const End = (props) => {
           label={<Icon>attach_file</Icon>}
         />
       </div>
-      <Typography>Caso encontre dificuldades ao enviar o formulário, tente baixar o arquivo para edição no Microsoft Word</Typography>
+
+      <Typography
+        gutterBottom
+      >
+        Indique se você recebeu assistência de um de nossos <strong>consultores</strong> para entender melhor a proposta da franquia.
+      </Typography>
+      <Select
+        value={props.Form.Consultor}
+        variant="outlined"
+        onChange={(e) =>
+          props.FormHandler({
+            ...props.Form,
+            Consultor: e.target.value,
+          })}
+        label="Consultor"
+      >
+        <MenuItem value='Alessandro'>Alessandro</MenuItem>
+        <MenuItem value='Richard'>Richard</MenuItem>
+        <MenuItem value='Tatiane'>Tatiane</MenuItem>
+      </Select>
+      <Typography
+        gutterBottom
+      >
+        Caso encontre dificuldades ao enviar o formulário, tente baixar o arquivo para edição no <strong>Microsoft Word</strong>.
+      </Typography>
       <Button
         variant="contained"
         color="secondary"

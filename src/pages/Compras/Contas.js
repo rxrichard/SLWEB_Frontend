@@ -303,7 +303,7 @@ const Contas = (props) => {
                         <StyledTableCell>{dup.E1_NUM}</StyledTableCell>
                         <StyledTableCell>
                           {String(dup.E1_PARCELA).trim() === ""
-                            ? 1
+                            ? "ÚNICA"
                             : dup.E1_PARCELA}
                         </StyledTableCell>
                         <StyledTableCell>{dup.E1Desc}</StyledTableCell>

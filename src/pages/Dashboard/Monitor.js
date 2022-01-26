@@ -63,16 +63,16 @@ function Home() {
     setTarget(TMT)
     setModalChamadoOpen(true)
     setEditableDetails({
-      Email: TMT.Email,
+      Email: toValidString(TMT.Email),
       Telefone: "",
       Endereco: {
-        Logradouro: TMT.PdvLogradouroPV,
-        Numero: TMT.PdvNumeroPV,
-        Bairro: TMT.PdvBairroPV,
-        Complemento: TMT.PdvComplementoPV,
-        Cidade: TMT.PdvCidadePV,
-        UF: TMT.PdvUfPV,
-        CEP: TMT.PdvCEP,
+        Logradouro: toValidString(TMT.PdvLogradouroPV),
+        Numero: toValidString(TMT.PdvNumeroPV),
+        Bairro: toValidString(TMT.PdvBairroPV),
+        Complemento: toValidString(TMT.PdvComplementoPV),
+        Cidade: toValidString(TMT.PdvCidadePV),
+        UF: toValidString(TMT.PdvUfPV),
+        CEP: toValidString(TMT.PdvCEP),
       }
     })
   }

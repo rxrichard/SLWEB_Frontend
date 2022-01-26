@@ -12,7 +12,6 @@ import {
   Typography
 } from '@material-ui/core';
 import TextField from '../../../components/materialComponents/InputUnderline'
-import { toValidString } from '../../../misc/commom_functions'
 import InputPhone from '../../../components/materialComponents/inputPhoneNumber'
 import { RED_PRIMARY } from '../../../misc/colors'
 
@@ -57,7 +56,7 @@ function ModalPersonalizado(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
-                value={toValidString(props.Details.Email)}
+                value={props.Details.Email}
                 id="outlined-basic"
                 label="Email"
                 variant="outlined"
@@ -71,7 +70,7 @@ function ModalPersonalizado(props) {
                     return { ...oldState, Telefone: e.target.value }
                   })
                 }
-                value={toValidString(props.Details.Telefone)}
+                value={props.Details.Telefone}
                 style={{ margin: "0px 0px 8px 0px" }}
                 label="Telefone"
               />
@@ -92,7 +91,7 @@ function ModalPersonalizado(props) {
                   margin: "0px 0px 8px 0px",
                   width: "100%"
                 }}
-                value={toValidString(props.Details.Endereco.Logradouro)}
+                value={props.Details.Endereco.Logradouro}
                 id="outlined-basic"
                 label="Logradouro"
                 variant="outlined"
@@ -108,7 +107,7 @@ function ModalPersonalizado(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.Numero)}
+                value={props.Details.Endereco.Numero}
                 id="outlined-basic"
                 label="Numero"
                 variant="outlined"
@@ -118,7 +117,7 @@ function ModalPersonalizado(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.Bairro)}
+                value={props.Details.Endereco.Bairro}
                 id="outlined-basic"
                 label="Bairro"
                 variant="outlined"
@@ -135,7 +134,7 @@ function ModalPersonalizado(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.Complemento)}
+                value={props.Details.Endereco.Complemento}
                 id="outlined-basic"
                 label="Complemento"
                 variant="outlined"
@@ -145,7 +144,7 @@ function ModalPersonalizado(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.Cidade)}
+                value={props.Details.Endereco.Cidade}
                 id="outlined-basic"
                 label="Cidade"
                 variant="outlined"
@@ -162,7 +161,7 @@ function ModalPersonalizado(props) {
             >
               <TextField
                 style={{ margin: "0px 8px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.UF)}
+                value={props.Details.Endereco.UF}
                 id="outlined-basic"
                 label="UF"
                 variant="outlined"
@@ -172,7 +171,7 @@ function ModalPersonalizado(props) {
               />
               <TextField
                 style={{ margin: "0px 0px 8px 0px" }}
-                value={toValidString(props.Details.Endereco.CEP)}
+                value={props.Details.Endereco.CEP}
                 id="outlined-basic"
                 label="CEP"
                 variant="outlined"

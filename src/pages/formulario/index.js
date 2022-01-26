@@ -296,4 +296,5 @@ const initialState = {
   Exp_Sociedade: null,
   Conhece_Pilao: null,
   Caracteristica_Peso: null,
+  Consultor: ''
 }

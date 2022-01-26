@@ -90,7 +90,17 @@ const getSteps = () => {
   return ['Dados Básicos', 'Conjugê & Dependentes', 'Bens & Renda', 'Experiência & Sociedade', 'Expectativas'];
 }
 
-const getContent = (activeStep, Form, WordRequest, FinishForm, ChangeForm, Next, Back, classes, shouldWait) => {
+const getContent = (
+  activeStep,
+  Form,
+  WordRequest,
+  FinishForm,
+  ChangeForm,
+  Next,
+  Back,
+  classes,
+  shouldWait
+) => {
   switch (activeStep) {
     case 6:
       return (
@@ -104,6 +114,7 @@ const getContent = (activeStep, Form, WordRequest, FinishForm, ChangeForm, Next,
           <End
             Form={Form}
             onRequestWord={(e) => WordRequest(e)}
+            FormHandler={ChangeForm}
           />
           <Button onClick={Back}>Voltar</Button>
           <Button

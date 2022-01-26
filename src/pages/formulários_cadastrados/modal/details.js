@@ -280,6 +280,15 @@ const Modalzinho = (props) => {
                 </div>
               </div>
 
+              <div style={divMetade}>
+                <h5>Consultor referência</h5>
+                <div style={divLinha}>
+                  <Typography gutterBottom>
+                    {form.Consultor === '' || form.Consultor === null ? 'Não informado' : form.Consultor}
+                  </Typography>
+                </div>
+              </div>
+
             </div>
 
             <div style={divColuna}>
