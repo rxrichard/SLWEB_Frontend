@@ -85,8 +85,10 @@ export const End = (props) => {
         label="Consultor"
       >
         <MenuItem value='Alessandro'>Alessandro</MenuItem>
+        <MenuItem value='Kauê'>Kauê</MenuItem>
         <MenuItem value='Richard'>Richard</MenuItem>
         <MenuItem value='Tatiane'>Tatiane</MenuItem>
+        <MenuItem value='Outros'>Outros</MenuItem>
       </Select>
       <Typography
         gutterBottom

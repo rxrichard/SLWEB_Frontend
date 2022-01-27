@@ -6,7 +6,7 @@ import {
   TextField
 } from '@material-ui/core/';
 
-export const InputCNPJ = ({ value, onChange, Tipo }) => {
+export const InputCNPJ = ({ value, onChange, Tipo, disabled }) => {
 
   const NumberFormatCustom = (props) => {
     const { inputRef, onChange, ...other } = props;
@@ -42,7 +42,7 @@ export const InputCNPJ = ({ value, onChange, Tipo }) => {
       value={value}
       onChange={(e) => onChange(e)}
       name="CNPJ"
-      disabled={true}
+      disabled={disabled}
       InputProps={{
         inputComponent: NumberFormatCustom,
       }}

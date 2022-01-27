@@ -1,31 +1,31 @@
 import React from 'react';
 
-import { Checkbox, FormControlLabel, makeStyles } from '@material-ui/core';
+import { makeStyles, Button } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons'
 
 import Input from '../../components/materialComponents/InputUnderline'
 
-export const ClienteListOptions = ({ onRequestInactivePdvs, showInactivePdvs, filtro, onChangeFiltro }) => {
+export const ClienteListOptions = ({ filtro, onChangeFiltro, onOpenNewClientesModal }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.container}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            className={classes.checkbox}
-            checked={showInactivePdvs}
-            onChange={(e) => onRequestInactivePdvs(e.target.checked)}
-          />
-        }
-        label="Mostrar PDVs inativos"
+      <Input
+        disabled={false}
+        type='text'
+        label='Pesquisar...'
+        onChange={e => onChangeFiltro(e.target.value)}
+        value={filtro}
       />
-      <Input 
-      disabled={false}
-      onChange={onChangeFiltro}
-      value={filtro}
-      type='text'
-      label='Pesquisar...'
-      />
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        onClick={onOpenNewClientesModal}
+        startIcon={<AddIcon />}
+      >
+        Novo Cliente
+      </Button>
     </div>
   )
 }

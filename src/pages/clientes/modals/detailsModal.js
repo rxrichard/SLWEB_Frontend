@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { api } from '../../../services/api'
 
 import {
   Button,
@@ -26,14 +26,13 @@ import {
   Save as SaveIcon,
   Edit as EditIcon
 } from '@material-ui/icons';
-import { toValidString } from '../../../misc/commom_functions'
 
 import { Toast } from '../../../components/toasty'
-import { InputCNPJ } from '../inputCNPJ'
-import { InputCEP } from '../inputCEP'
-import { InputTel } from '../inputTel'
+import { InputCNPJ } from '../customComponents/inputCNPJ'
+import { InputCEP } from '../customComponents/inputCEP'
+import { InputTel } from '../customComponents/inputTel'
 
-export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler }) => {
+export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler, onUpdate }) => {
   const theme = useTheme();
   const classes = useStyles()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -48,17 +47,16 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
     setAllowEditing(true)
   }
 
-  const handleChangeEditingState = () => {
+  const handleChangeEditingState = async () => {
     setAllowEditing(oldState => !oldState)
 
     if (!allowEditing) {
-      console.log(Details)
+      //desabilitar qualquer ação
+
+      //fazer update do cliente
+      onUpdate(Details)
     }
-    //desabilitar qualquer ação
-    //fazer update do cliente
   }
-
-
 
   return (
     <Dialog
@@ -92,6 +90,8 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Razão Social"
+            multiline
+            maxRows={4}
             value={Details.Razão_Social}
             disabled={true}
             onChange={(e) => DetailsChangeHandler(oldState => ({
@@ -114,6 +114,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
               CNPJ: e.target.value
             }))}
             Tipo={Details.TPessoa}
+            disabled={true}
           />
           {Details.TPessoa === 'J' ? <TextField
             variant='standard'
@@ -265,7 +266,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           }}
         >
           <FormControl className={classes.formControl}>
-            <InputLabel>Tipo de Cliente</InputLabel>
+            <InputLabel>Tipo de Pessoa</InputLabel>
             <Select
               value={Details.TPessoa}
               onChange={(e) => DetailsChangeHandler(oldState => ({

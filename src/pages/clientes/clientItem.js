@@ -36,7 +36,7 @@ export const ClientItem = ({ Cliente, i, onOpenModal }) => {
           variant='body2'
           style={{ textAlign: 'right' }}
         >
-          Cadastro: {moment(Cliente.DtCadastro).format('DD/MM/YYYY')}
+          Cadastro: {Cliente.DtCadastro !== null ? moment(Cliente.DtCadastro).format('DD/MM/YYYY') : 'Desconhecido'}
         </Typography>
       </div>
     </div>
