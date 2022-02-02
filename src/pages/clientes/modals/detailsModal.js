@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { api } from '../../../services/api'
 
 import {
   Button,
@@ -24,10 +23,11 @@ import {
 import {
   Close as CloseIcon,
   Save as SaveIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  ThumbDownAlt as ThumbDownAltIcon,
+  ThumbUpAlt as ThumbUpAltIcon,
 } from '@material-ui/icons';
 
-import { Toast } from '../../../components/toasty'
 import { InputCNPJ } from '../customComponents/inputCNPJ'
 import { InputCEP } from '../customComponents/inputCEP'
 import { InputTel } from '../customComponents/inputTel'
@@ -39,10 +39,10 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
   const [allowEditing, setAllowEditing] = useState(true)
 
   const handleClose = () => {
-    if (!allowEditing) {
-      Toast('Finalize a edição antes de fechar os detalhes do cliente', 'warn')
-      return
-    }
+    // if (!allowEditing) {
+    //   Toast('Finalize a edição antes de fechar os detalhes do cliente', 'warn')
+    //   return
+    // }
     onClose();
     setAllowEditing(true)
   }
@@ -140,7 +140,12 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             style={{ width: '100%' }}
           />
         </section>
-        <section className={classes.line}>
+        <section
+          className={classes.line}
+          style={{
+            justifyContent: 'space-between',
+          }}
+        >
           <TextField
             variant='standard'
             label="DDD"
@@ -159,6 +164,19 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
               Fone: e.target.value
             }))}
             disabled={allowEditing}
+          />
+          <TextField
+            variant='standard'
+            label="Contato"
+            value={Details.Contato_Empresa}
+            disabled={allowEditing}
+            onChange={(e) => DetailsChangeHandler(oldState => ({
+              ...oldState,
+              Contato_Empresa: e.target.value
+            }))}
+            style={{
+              maxWidth: '150px',
+            }}
           />
         </section>
         <section className={classes.line}>
@@ -279,20 +297,18 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
               <MenuItem value='F'>Física</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            variant='standard'
-            label="Contato"
-            value={Details.Contato_Empresa}
-            disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Contato_Empresa: e.target.value
-            }))}
-          />
+
         </section>
       </DialogContent>
 
       <DialogActions>
+        <Button
+          onClick={() => alert(Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar')}
+          color="primary"
+          startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
+        >
+          {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
+        </Button>
         <Button
           onClick={handleChangeEditingState}
           color="primary"

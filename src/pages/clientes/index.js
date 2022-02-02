@@ -71,7 +71,7 @@ function Clientes() {
     })
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      toastId = Toast('Atualizando...', 'wait')
 
       await api.put('/client', {
         cliente: updatedClient
@@ -88,6 +88,19 @@ function Clientes() {
     } catch (err) {
       Toast('Falha ao atualizar cliente', 'update', toastId, 'error')
       setTargetCliente(clientes[indexCliente])
+    }
+  }
+
+  const validNewClientCNPJ = async (Tipo, Chave) => {
+    try {
+      const response = await api.get(`/client/${Chave}/${Tipo}`)
+
+      return response.data
+    } catch (err) {
+      return {
+        ClienteValido: false,
+        wsInfo: null
+      }
     }
   }
 
@@ -116,6 +129,8 @@ function Clientes() {
         open={newClientModalOpen}
         onClose={handleCloseNewClientModal}
         title='Cadastrar Cliente'
+        handleValidNewClientCNPJ={validNewClientCNPJ}
+        onUpdateClientesArray={setClientes}
       />
     </Panel>
   )

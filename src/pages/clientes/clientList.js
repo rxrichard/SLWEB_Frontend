@@ -10,6 +10,7 @@ export const ClientList = ({ Clientes, onOpenModal }) => {
     <div className={classes.container}>
       {Clientes.map((cliente, index) =>
         <ClientItem
+          key={`${String(cliente.A1_COD).trim()}${String(cliente.A1_LOJA).trim()}`}
           Cliente={cliente}
           i={index}
           onOpenModal={onOpenModal}

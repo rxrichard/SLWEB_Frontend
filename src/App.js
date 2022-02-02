@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 
 import { ptBR } from "@material-ui/data-grid";
 import "moment/locale/pt-br";
@@ -23,7 +23,7 @@ const App = () => {
 
 export default App;
 
-const theme = createMuiTheme(
+const theme = createTheme(
   {
     palette: {
       primary: PALETTE_RED_PRIMARY,

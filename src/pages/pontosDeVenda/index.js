@@ -8,7 +8,7 @@ import Loading from "../../components/loading_screen";
 
 //import de elementos visuais
 import { Panel } from "../../components/commom_in";
-import { Toast } from "../../components/toasty";
+// import { Toast } from "../../components/toasty";
 
 import { PdvList } from './pdvList'
 import { PdvListOptions } from './options'

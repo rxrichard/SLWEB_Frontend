@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../../services/api'
 
 import {
   Button,
@@ -12,7 +13,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  TextField
 } from '@material-ui/core/';
 import {
   useTheme,
@@ -29,14 +31,98 @@ import { InputCNPJ } from '../customComponents/inputCNPJ'
 import { InputCEP } from '../customComponents/inputCEP'
 import { InputTel } from '../customComponents/inputTel'
 
-export const NewClientModal = ({ open, onClose, title }) => {
+export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ, onUpdateClientesArray }) => {
   const theme = useTheme();
   const classes = useStyles()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [newClient, setNewClient] = useState(newClientInitialState)
+  const [verificouCNPJ, setVerificouCNPJ] = useState(false)
+  const [clienteValido, setClienteValido] = useState(false)
+  const [wait, setWait] = useState(false)
 
   const handleClose = () => {
     onClose();
+    resetarGeral()
+  }
+
+  useEffect(() => {
+    async function valid() {
+      if ((newClient.CNPJ.length === 14 && newClient.TPessoa === 'J') || (newClient.CNPJ.length === 11 && newClient.TPessoa === 'F')) {
+        let toastId = null
+
+        setWait(true)
+        toastId = Toast(`Validando ${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'}...`, 'wait')
+
+        try {
+          const validation = await handleValidNewClientCNPJ(newClient.TPessoa, newClient.CNPJ)
+
+          if (validation.ClienteValido) {
+            Toast(`${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} válido para cadastro!`, 'update', toastId, 'success')
+          } else {
+            Toast(`${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} inválido para cadastro, contate o suporte para esclarecimento.`, 'update', toastId, 'error')
+          }
+
+          setWait(false)
+          setVerificouCNPJ(true)
+          setClienteValido(validation.ClienteValido)
+          setNewClient({
+            ...newClient,
+            Nome_Fantasia: validation.wsInfo.fantasia,
+            Razão_Social: validation.wsInfo.nome,
+            Logradouro: validation.wsInfo.logradouro,
+            Número: validation.wsInfo.numero,
+            Complemento: validation.wsInfo.complemento,
+            Bairro: validation.wsInfo.bairro,
+            CEP: String(validation.wsInfo.cep).replace(/[-,./]/g, ''),
+            Município: validation.wsInfo.municipio,
+            UF: validation.wsInfo.uf,
+            Email: validation.wsInfo.email,
+          })
+        } catch (err) {
+          Toast(`Falha ao validar ${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'}`, 'update', toastId, 'error')
+        }
+      }
+    }
+    valid()
+    // eslint-disable-next-line
+  }, [newClient.CNPJ, newClient.TPessoa])
+
+  const resetarGeral = () => {
+    setClienteValido(false)
+    setVerificouCNPJ(false)
+    setNewClient(newClientInitialState)
+    setWait(false)
+  }
+
+  const handleCadastraCliente = async () => {
+    if (!validFields(newClient)) {
+      return
+    }
+    let toastId = null
+
+    setWait(true)
+    toastId = Toast('Criando Cliente...', 'wait')
+
+    try {
+      const response = await api.post('/client/new', {
+        cliente: newClient
+      })
+
+      Toast('Cliente adicionado', 'update', toastId, 'success')
+      setWait(false)
+      handleClose()
+
+      onUpdateClientesArray(oldState => {
+        let aux = [...oldState]
+        aux.unshift(response.data.ClienteCadastrado)
+        return aux
+      })
+
+    } catch (err) {
+      Toast('Falha ao adicionar cliente', 'update', toastId, 'error')
+      setWait(false)
+    }
   }
 
   return (
@@ -62,13 +148,18 @@ export const NewClientModal = ({ open, onClose, title }) => {
             <InputLabel>Tipo de Pessoa</InputLabel>
             <Select
               value={newClient.TPessoa}
-              onChange={(e) => setNewClient(
-                oldState => ({
-                  ...oldState,
-                  TPessoa: e.target.value,
-                  CNPJ: e.target.value === 'F' ? String(oldState.CNPJ).slice(0, 11) : String(oldState.CNPJ)
-                })
-              )}
+              disabled={wait}
+              onChange={(e) => {
+                setNewClient(
+                  oldState => ({
+                    ...oldState,
+                    TPessoa: e.target.value,
+                    CNPJ: ''
+                  })
+                )
+                setClienteValido(false)
+                setVerificouCNPJ(false)
+              }}
               style={{ width: '120px' }}
             >
               <MenuItem value='J'>Jurídica</MenuItem>
@@ -77,21 +168,280 @@ export const NewClientModal = ({ open, onClose, title }) => {
           </FormControl>
           <InputCNPJ
             value={newClient.CNPJ}
-            onChange={e => setNewClient(
-              oldState => ({
-                ...oldState,
-                CNPJ: e.target.value
-              })
-            )}
+            disabled={wait}
+            onChange={e => {
+              setNewClient(
+                oldState => ({
+                  ...oldState,
+                  CNPJ: e.target.value
+                })
+              )
+              setClienteValido(false)
+              setVerificouCNPJ(false)
+            }}
             Tipo={newClient.TPessoa}
-            disabled={false}
           />
         </section>
+        {verificouCNPJ ?
+          clienteValido ?
+            (
+              <>
+                <section className={classes.line}>
+                  <TextField
+                    variant='standard'
+                    label="Nome Fantasia"
+                    value={newClient.Nome_Fantasia}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Nome_Fantasia: e.target.value
+                      }))
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                </section>
+
+                <section className={classes.line}>
+                  <TextField
+                    variant='standard'
+                    label="Razão Social"
+                    multiline
+                    maxRows={4}
+                    value={newClient.Razão_Social}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Razão_Social: e.target.value
+                      }))
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                </section>
+                <section
+                  className={classes.line}
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TextField
+                    variant='standard'
+                    label="IE"
+                    value={newClient.TPessoa === 'J' ? newClient.IE : 'ISENTO'}
+                    disabled={newClient.TPessoa === 'J' && wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(
+                        oldState => ({
+                          ...oldState,
+                          IE: e.target.value
+                        })
+                      )
+                    }}
+                  />
+                </section>
+                <section className={classes.line}>
+                  <TextField
+                    variant='standard'
+                    label="Email"
+                    value={newClient.Email}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Email: e.target.value
+                      }))
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                </section>
+                <section
+                  className={classes.line}
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <>
+                    <TextField
+                      variant='standard'
+                      label="DDD"
+                      value={newClient.DDD}
+                      disabled={wait}
+                      onChange={(e) => {
+                        e.persist()
+                        setNewClient(oldState => ({
+                          ...oldState,
+                          DDD: e.target.value
+                        }))
+                      }}
+                      style={{ width: '40px', marginRight: '8px' }}
+                    />
+                    <InputTel
+                      value={newClient.Fone}
+                      onChange={(e) => {
+                        setNewClient(oldState => ({
+                          ...oldState,
+                          Fone: e.target.value
+                        }))
+                      }}
+                      disabled={wait}
+                    />
+                  </>
+                  <TextField
+                    variant='standard'
+                    label="Contato"
+                    value={newClient.Contato_Empresa}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Contato_Empresa: e.target.value
+                      }))
+                    }}
+                  />
+                </section>
+                <section className={classes.line}>
+                  <TextField
+                    variant='standard'
+                    label="Logradouro"
+                    value={newClient.Logradouro}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Logradouro: e.target.value
+                      }))
+                    }}
+                    multiline
+                    maxRows={4}
+                    style={{ width: '100%' }}
+                  />
+                </section>
+                <section
+                  className={classes.line}
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TextField
+                    variant='standard'
+                    label="Bairro"
+                    value={newClient.Bairro}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Bairro: e.target.value
+                      }))
+                    }}
+                    style={{ width: '70%' }}
+                  />
+                  <TextField
+                    variant='standard'
+                    label="Número"
+                    value={newClient.Número}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Número: e.target.value
+                      }))
+                    }}
+                    style={{ width: '15%' }}
+                  />
+                </section>
+                <section
+                  className={classes.line}
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TextField
+                    variant='standard'
+                    label="Município"
+                    value={newClient.Município}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Município: e.target.value
+                      }))
+                    }}
+                    style={{ width: '70%' }}
+                  />
+                  <TextField
+                    variant='standard'
+                    label="UF"
+                    value={newClient.UF}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        UF: e.target.value
+                      }))
+                    }}
+                    style={{ width: '15%' }}
+                  />
+                </section>
+                <section
+                  className={classes.line}
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <InputCEP
+                    value={newClient.CEP}
+                    onChange={(e) => setNewClient(oldState => ({
+                      ...oldState,
+                      CEP: e.target.value
+                    }))}
+                    disabled={wait}
+                  />
+                  <TextField
+                    variant='standard'
+                    label="Complemento"
+                    value={newClient.Complemento}
+                    disabled={wait}
+                    onChange={(e) => {
+                      e.persist()
+                      setNewClient(oldState => ({
+                        ...oldState,
+                        Complemento: e.target.value
+                      }))
+                    }}
+                  />
+                </section>
+              </>
+            )
+            :
+            (
+              <Typography>
+                O CNPJ fornecido já se encontra cadastrado na filial de outro franqueado ou é de um franqueado Pilão Professional, por favor contate o suporte para mais detalhes.
+              </Typography>
+            )
+          :
+          (
+            <Typography>
+              CNPJ ainda não validado
+            </Typography>
+          )
+        }
       </DialogContent>
 
       <DialogActions>
         <Button
-          onClick={() => { }}
+          disabled={wait || !(verificouCNPJ && clienteValido)}
+          onClick={handleCadastraCliente}
           color="primary"
           startIcon={<SaveIcon />}
         >
@@ -164,4 +514,63 @@ const newClientInitialState = {
   DDD: '',
   Fone: '',
   TPessoa: 'J',
+}
+
+const validFields = (newCliente) => {
+  if (newCliente.CNPJ.trim() === '' || newCliente.CNPJ.length > 14) {
+    Toast('Preencha um CNPJ válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Nome_Fantasia.trim() === '' || newCliente.Nome_Fantasia.length > 255) {
+    Toast('Preencha um nome fantasia válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Razão_Social.trim() === '' || newCliente.Razão_Social.length > 255) {
+    Toast('Preencha uma razão social válida', 'warn')
+    return false
+  }
+
+  if (newCliente.Logradouro.trim() === '' || newCliente.Logradouro.length > 255) {
+    Toast('Preencha um logradouro válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Número.trim() === '' || newCliente.Número.length > 20) {
+    Toast('Preencha um número válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Bairro.trim() === '' || newCliente.Bairro.length > 255) {
+    Toast('Preencha um bairro válido', 'warn')
+    return false
+  }
+
+  if (newCliente.CEP.trim() === '' || newCliente.CEP.length > 9) {
+    Toast('Preencha um CEP válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Município.trim() === '' || newCliente.Município.length > 255) {
+    Toast('Preencha um município válido', 'warn')
+    return false
+  }
+
+  if (newCliente.UF.trim() === '' || newCliente.UF.length > 2) {
+    Toast('Preencha uma UF válida', 'warn')
+    return false
+  }
+
+  if (newCliente.DDD.trim() === '' || newCliente.DDD.length > 3) {
+    Toast('Preencha um DDD válido', 'warn')
+    return false
+  }
+
+  if (newCliente.Fone.trim() === '' || newCliente.Fone.length > 12) {
+    Toast('Preencha um número de telefone válido', 'warn')
+    return false
+  }
+
+  return true
 }

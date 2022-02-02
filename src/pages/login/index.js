@@ -75,6 +75,9 @@ function Login() {
           onChange={(e) => {
             setPassword(e);
           }}
+          style={{
+            marginBottom: "8px",
+          }}
         />
         <Button
           style={{
@@ -85,7 +88,7 @@ function Login() {
           }}
           disabled={fetching}
           icon={<Input />}
-          onClick={(e) =>  handleLogin(e)}
+          onClick={(e) => handleLogin(e)}
         >
           Acessar
         </Button>

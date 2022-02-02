@@ -180,6 +180,7 @@ function Home() {
             color="primary"
             variant="contained"
             startIcon={<Email />}
+            disabled={target.UltChamado !== null}
           >
             Abrir chamado
           </Button>

@@ -15,7 +15,7 @@ import {
 
 export default function LoginADM() {
   const [adm_code, setAdmCode] = useState(null);
-  
+
   const [adm_password, setAdmPassword] = useState(null);
   const [fetching, setFetching] = useState(false);
 
@@ -59,9 +59,9 @@ export default function LoginADM() {
 
   return (
     <Container style={{ backgroundColor: GREY_PRIMARY }}>
-      
+
       <Box onSubmit={(e) => handleLogin(e)}>
-        
+
         <Logo src={Image} alt="Pilão professional" />
         <Input
           onChange={(e) => {
@@ -75,6 +75,9 @@ export default function LoginADM() {
             setAdmPassword(e);
           }}
           label="Senha ADM"
+          style={{
+            marginBottom: "8px",
+          }}
         />
 
 
@@ -91,7 +94,7 @@ export default function LoginADM() {
         >
           Acessar
         </Button>
-        
+
       </Box>
       <Link to="/">
         <Button icon={<TagFaces />}>Franqueados</Button>
