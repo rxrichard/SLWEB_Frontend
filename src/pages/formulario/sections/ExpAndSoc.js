@@ -134,7 +134,6 @@ export const Profile = (props) => {
                 props.FormHandler({
                   ...props.Form,
                   Detalhes_Atividade: e.target.value,
-
                 })
               }
               value={props.Form.Detalhes_Atividade}

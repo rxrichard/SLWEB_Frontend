@@ -58,13 +58,13 @@ function Clientes() {
 
     let indexCliente = null
 
+    console.log(updatedClient)
+
     clientes.forEach((cliente, index) => {
       if (
         cliente.GrpVen === updatedClient.GrpVen &&
         cliente.A1_COD === updatedClient.A1_COD &&
-        cliente.A1_LOJA === updatedClient.A1_LOJA &&
-        cliente.CNPJ === updatedClient.CNPJ
-
+        cliente.A1_LOJA === updatedClient.A1_LOJA
       ) {
         indexCliente = index
       }

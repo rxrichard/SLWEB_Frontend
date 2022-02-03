@@ -51,7 +51,7 @@ function Exemplo() {
   return !loaded ? (
     <Loading />
   ) : (
-    <Panel style={{ justifyContent: 'space-between' }}>
+    <Panel style={{ justifyContent: 'flex-start' }}>
       <DetailsModal
         open={detailsModalOpen}
         onClose={handleCloseDetailsModal}

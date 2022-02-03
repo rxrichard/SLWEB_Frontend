@@ -9,7 +9,6 @@ import {
 let TipoCliente = 'J';
 
 export const InputCNPJ = ({ value, onChange, Tipo, disabled }) => {
-
   useEffect(() => {
     TipoCliente = Tipo;
   }, [Tipo]);

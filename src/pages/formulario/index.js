@@ -92,7 +92,7 @@ export const Formulario = () => {
     //Pega todos inputs do tipo arquivos
     const arquivos = document.getElementsByClassName("files");
 
-    // //cria um objeto do tipo formulario
+    //cria um objeto do tipo formulario
     const formData = new FormData();
 
     //poe o conteudo de todos os inputs do tipo arquivo dentro do mesmo formulario
@@ -102,37 +102,33 @@ export const Formulario = () => {
       }
     }
 
-    if (formData.getAll('formData').length < 3) {
-      Toast('Anexe todos os arquivos solicitados', 'warn')
-      setWait(false)
-      return false
-    }
+    // if (formData.getAll('formData').length < 3) {
+    //   Toast('Anexe todos os arquivos solicitados', 'warn')
+    //   setWait(false)
+    //   return false
+    // }
 
     let toastId = null
 
-    //faz upload do formulario
+    //faz upload de tudo
     try {
       toastId = Toast('Enviando dados...', 'wait')
 
       //envia o formulario
-      await api.post("/form",
+      await api.post(`/form/${codCandidato}`,
         {
           form: form,
         },
-        {
-          headers: {
-            "proto-cod": codCandidato,
-          },
-        }
       );
 
       //envia os arquivos
-      await api.post("/form/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "proto-cod": codCandidato,
-        },
-      })
+      await api.post(`/form/upload/${codCandidato}/${formData.getAll('formData').length}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
 
       Toast('Dados salvos!', 'update', toastId, 'success')
     } catch (err) {

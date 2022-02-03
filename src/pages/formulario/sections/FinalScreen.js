@@ -92,8 +92,9 @@ export const End = (props) => {
       </Select>
       <Typography
         gutterBottom
+        style={{ marginTop: "20px" }}
       >
-        Caso encontre dificuldades ao enviar o formulário, tente baixar o arquivo para edição no <strong>Microsoft Word</strong>.
+        Caso encontre dificuldades ao enviar o formulário online, tente baixar o arquivo para edição no <strong>Microsoft Word</strong> e nos encaminhar por email.
       </Typography>
       <Button
         variant="contained"

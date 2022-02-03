@@ -78,10 +78,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Nome Fantasia"
             value={Details.Nome_Fantasia}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Nome_Fantasia: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Nome_Fantasia: e.target.value
+              }))
+            }}
             style={{ width: '100%' }}
           />
         </section>
@@ -94,10 +97,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             maxRows={4}
             value={Details.Razão_Social}
             disabled={true}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Razão_Social: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Razão_Social: e.target.value
+              }))
+            }}
             style={{ width: '100%' }}
           />
         </section>
@@ -118,13 +124,16 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           />
           {Details.TPessoa === 'J' ? <TextField
             variant='standard'
-            label="IE"
+            label="Inscrição Estadual"
             value={Details.IE}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              IE: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                IE: e.target.value
+              }))
+            }}
           /> : null}
         </section>
         <section className={classes.line}>
@@ -133,10 +142,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Email"
             value={Details.Email}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Email: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Email: e.target.value
+              }))
+            }}
             style={{ width: '100%' }}
           />
         </section>
@@ -151,10 +163,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="DDD"
             value={Details.DDD}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              DDD: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                DDD: e.target.value
+              }))
+            }}
             style={{ width: '40px', marginRight: '8px' }}
           />
           <InputTel
@@ -170,10 +185,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Contato"
             value={Details.Contato_Empresa}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Contato_Empresa: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Contato_Empresa: e.target.value
+              }))
+            }}
             style={{
               maxWidth: '150px',
             }}
@@ -185,10 +203,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Logradouro"
             value={Details.Logradouro}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Logradouro: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Logradouro: e.target.value
+              }))
+            }}
             multiline
             maxRows={4}
             style={{ width: '100%' }}
@@ -205,10 +226,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Bairro"
             value={Details.Bairro}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Bairro: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Bairro: e.target.value
+              }))
+            }}
             style={{ width: '70%' }}
           />
           <TextField
@@ -216,10 +240,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Número"
             value={Details.Número}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Número: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Número: e.target.value
+              }))
+            }}
             style={{ width: '15%' }}
           />
         </section>
@@ -234,10 +261,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Município"
             value={Details.Município}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Município: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Município: e.target.value
+              }))
+            }}
             style={{ width: '70%' }}
           />
           <TextField
@@ -245,10 +275,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="UF"
             value={Details.UF}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              UF: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                UF: e.target.value
+              }))
+            }}
             style={{ width: '15%' }}
           />
         </section>
@@ -271,10 +304,13 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Complemento"
             value={Details.Complemento}
             disabled={allowEditing}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Complemento: e.target.value
-            }))}
+            onChange={(e) => {
+              e.persist()
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                Complemento: e.target.value
+              }))
+            }}
           />
         </section>
         <section
@@ -291,7 +327,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
                 ...oldState,
                 TPessoa: e.target.value
               }))}
-              disabled={allowEditing}
+              disabled={true}
             >
               <MenuItem value='J'>Jurídica</MenuItem>
               <MenuItem value='F'>Física</MenuItem>

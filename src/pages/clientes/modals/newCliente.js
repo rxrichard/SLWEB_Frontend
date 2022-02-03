@@ -66,19 +66,22 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
           setWait(false)
           setVerificouCNPJ(true)
           setClienteValido(validation.ClienteValido)
-          setNewClient({
-            ...newClient,
-            Nome_Fantasia: validation.wsInfo.fantasia,
-            Razão_Social: validation.wsInfo.nome,
-            Logradouro: validation.wsInfo.logradouro,
-            Número: validation.wsInfo.numero,
-            Complemento: validation.wsInfo.complemento,
-            Bairro: validation.wsInfo.bairro,
-            CEP: String(validation.wsInfo.cep).replace(/[-,./]/g, ''),
-            Município: validation.wsInfo.municipio,
-            UF: validation.wsInfo.uf,
-            Email: validation.wsInfo.email,
-          })
+
+          if (validation.wsInfo !== null) {
+            setNewClient({
+              ...newClient,
+              Nome_Fantasia: validation.wsInfo.fantasia,
+              Razão_Social: validation.wsInfo.nome,
+              Logradouro: validation.wsInfo.logradouro,
+              Número: validation.wsInfo.numero,
+              Complemento: validation.wsInfo.complemento,
+              Bairro: validation.wsInfo.bairro,
+              CEP: String(validation.wsInfo.cep).replace(/[-,./]/g, ''),
+              Município: validation.wsInfo.municipio,
+              UF: validation.wsInfo.uf,
+              Email: validation.wsInfo.email,
+            })
+          }
         } catch (err) {
           Toast(`Falha ao validar ${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'}`, 'update', toastId, 'error')
         }
@@ -189,38 +192,45 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
                 <section className={classes.line}>
                   <TextField
                     variant='standard'
-                    label="Nome Fantasia"
+                    label={newClient.TPessoa === 'J' ? "Nome Fantasia" : "Nome Completo"}
                     value={newClient.Nome_Fantasia}
                     disabled={wait}
                     onChange={(e) => {
                       e.persist()
                       setNewClient(oldState => ({
                         ...oldState,
-                        Nome_Fantasia: e.target.value
+                        Nome_Fantasia: e.target.value,
+                        Razão_Social: newClient.TPessoa !== 'J' ? e.target.value : oldState.Razão_Social,
+                        Contato_Empresa: newClient.TPessoa !== 'J' ? e.target.value.split(' ')[0] : oldState.Contato_Empresa
                       }))
                     }}
                     style={{ width: '100%' }}
                   />
                 </section>
 
-                <section className={classes.line}>
-                  <TextField
-                    variant='standard'
-                    label="Razão Social"
-                    multiline
-                    maxRows={4}
-                    value={newClient.Razão_Social}
-                    disabled={wait}
-                    onChange={(e) => {
-                      e.persist()
-                      setNewClient(oldState => ({
-                        ...oldState,
-                        Razão_Social: e.target.value
-                      }))
-                    }}
-                    style={{ width: '100%' }}
-                  />
-                </section>
+                {newClient.TPessoa === 'J' ?
+                  <section className={classes.line}>
+                    <TextField
+                      variant='standard'
+                      label="Razão Social"
+                      multiline
+                      maxRows={4}
+                      value={newClient.Razão_Social}
+                      disabled={wait}
+                      onChange={(e) => {
+                        e.persist()
+                        setNewClient(oldState => ({
+                          ...oldState,
+                          Razão_Social: e.target.value
+                        }))
+                      }}
+                      style={{ width: '100%' }}
+                    />
+                  </section>
+                  :
+                  null
+                }
+
                 <section
                   className={classes.line}
                   style={{
@@ -229,9 +239,9 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
                 >
                   <TextField
                     variant='standard'
-                    label="IE"
+                    label="Inscrição Estadual"
                     value={newClient.TPessoa === 'J' ? newClient.IE : 'ISENTO'}
-                    disabled={newClient.TPessoa === 'J' && wait}
+                    disabled={!(newClient.TPessoa === 'J') || wait}
                     onChange={(e) => {
                       e.persist()
                       setNewClient(
@@ -265,7 +275,7 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
                     justifyContent: 'space-between',
                   }}
                 >
-                  <>
+                  <div>
                     <TextField
                       variant='standard'
                       label="DDD"
@@ -290,20 +300,24 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
                       }}
                       disabled={wait}
                     />
-                  </>
-                  <TextField
-                    variant='standard'
-                    label="Contato"
-                    value={newClient.Contato_Empresa}
-                    disabled={wait}
-                    onChange={(e) => {
-                      e.persist()
-                      setNewClient(oldState => ({
-                        ...oldState,
-                        Contato_Empresa: e.target.value
-                      }))
-                    }}
-                  />
+                  </div>
+                  {newClient.TPessoa === 'J' ?
+                    <TextField
+                      variant='standard'
+                      label="Contato"
+                      value={newClient.Contato_Empresa}
+                      disabled={wait}
+                      onChange={(e) => {
+                        e.persist()
+                        setNewClient(oldState => ({
+                          ...oldState,
+                          Contato_Empresa: e.target.value
+                        }))
+                      }}
+                    />
+                    :
+                    null
+                  }
                 </section>
                 <section className={classes.line}>
                   <TextField
@@ -425,14 +439,14 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
             )
             :
             (
-              <Typography>
-                O CNPJ fornecido já se encontra cadastrado na filial de outro franqueado ou é de um franqueado Pilão Professional, por favor contate o suporte para mais detalhes.
+              <Typography style={{ textAlign: 'center', marginTop: '16px' }}>
+                O {newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} fornecido já se encontra <strong>cadastrado na filial de outro franqueado</strong> ou <strong>é de um franqueado Pilão Professional</strong>, por favor contate o suporte para mais detalhes.
               </Typography>
             )
           :
           (
-            <Typography>
-              CNPJ ainda não validado
+            <Typography style={{ textAlign: 'center', marginTop: '16px' }}>
+              {newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} ainda não validado
             </Typography>
           )
         }

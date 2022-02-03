@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    height: 'calc(100% - 100px)',
+    maxHeight: 'calc(100% - 100px)',
     background: 'unset',
     overflowY: 'scroll',
     alignItems: 'center',
