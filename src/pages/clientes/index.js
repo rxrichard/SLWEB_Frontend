@@ -9,8 +9,6 @@ import { DetailsModal } from './modals/detailsModal'
 import { NewClientModal } from './modals/newCliente'
 import { ClienteListOptions } from './options'
 
-import { Toast } from '../../components/toasty'
-
 function Clientes() {
   const [loaded, setLoaded] = useState(false);
   const [filtro, setFiltro] = useState('');
@@ -53,57 +51,6 @@ function Clientes() {
     setNewClientModalOpen(false)
   }
 
-  const handleUpdate = async (updatedClient) => {
-    let toastId = null
-
-    let indexCliente = null
-
-    console.log(updatedClient)
-
-    clientes.forEach((cliente, index) => {
-      if (
-        cliente.GrpVen === updatedClient.GrpVen &&
-        cliente.A1_COD === updatedClient.A1_COD &&
-        cliente.A1_LOJA === updatedClient.A1_LOJA
-      ) {
-        indexCliente = index
-      }
-    })
-
-    try {
-      toastId = Toast('Atualizando...', 'wait')
-
-      await api.put('/client', {
-        cliente: updatedClient
-      })
-
-      Toast('Cliente atualizado', 'update', toastId, 'success')
-      setClientes(oldArray => {
-        let aux = [...oldArray]
-
-        aux[indexCliente] = updatedClient
-
-        return aux
-      })
-    } catch (err) {
-      Toast('Falha ao atualizar cliente', 'update', toastId, 'error')
-      setTargetCliente(clientes[indexCliente])
-    }
-  }
-
-  const validNewClientCNPJ = async (Tipo, Chave) => {
-    try {
-      const response = await api.get(`/client/${Chave}/${Tipo}`)
-
-      return response.data
-    } catch (err) {
-      return {
-        ClienteValido: false,
-        wsInfo: null
-      }
-    }
-  }
-
   return !loaded ? (
     <Loading />
   ) : (
@@ -123,13 +70,12 @@ function Clientes() {
         title='Detalhes do Cliente'
         Details={targetCliente}
         DetailsChangeHandler={setTargetCliente}
-        onUpdate={handleUpdate}
+        updateClientesArray={setClientes}
       />
       <NewClientModal
         open={newClientModalOpen}
         onClose={handleCloseNewClientModal}
         title='Cadastrar Cliente'
-        handleValidNewClientCNPJ={validNewClientCNPJ}
         onUpdateClientesArray={setClientes}
       />
     </Panel>

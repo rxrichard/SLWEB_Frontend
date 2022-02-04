@@ -49,7 +49,7 @@ export default class Logs extends React.Component {
       const blob = new Blob([response.data], { type: "application/pdf" });
 
       //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
-      saveAs(blob, `OS_${dateCheck()}.pdf`);
+      saveAs(blob, `OS${OSID}_${dateCheck()}.pdf`);
     } catch (err) {
       Toast('Falha ao recuperar PDF do servidor', 'update', toastId, 'error')
     }

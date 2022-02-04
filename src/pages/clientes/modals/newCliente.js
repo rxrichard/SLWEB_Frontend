@@ -31,7 +31,7 @@ import { InputCNPJ } from '../customComponents/inputCNPJ'
 import { InputCEP } from '../customComponents/inputCEP'
 import { InputTel } from '../customComponents/inputTel'
 
-export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ, onUpdateClientesArray }) => {
+export const NewClientModal = ({ open, onClose, title, onUpdateClientesArray }) => {
   const theme = useTheme();
   const classes = useStyles()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -55,9 +55,9 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
         toastId = Toast(`Validando ${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'}...`, 'wait')
 
         try {
-          const validation = await handleValidNewClientCNPJ(newClient.TPessoa, newClient.CNPJ)
+          const response = await api.get(`/client/${newClient.CNPJ}/${newClient.TPessoa}`)
 
-          if (validation.ClienteValido) {
+          if (response.data.ClienteValido) {
             Toast(`${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} válido para cadastro!`, 'update', toastId, 'success')
           } else {
             Toast(`${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} inválido para cadastro, contate o suporte para esclarecimento.`, 'update', toastId, 'error')
@@ -65,24 +65,25 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
 
           setWait(false)
           setVerificouCNPJ(true)
-          setClienteValido(validation.ClienteValido)
+          setClienteValido(response.data.ClienteValido)
 
-          if (validation.wsInfo !== null) {
+          if (response.data.wsInfo !== null) {
             setNewClient({
               ...newClient,
-              Nome_Fantasia: validation.wsInfo.fantasia,
-              Razão_Social: validation.wsInfo.nome,
-              Logradouro: validation.wsInfo.logradouro,
-              Número: validation.wsInfo.numero,
-              Complemento: validation.wsInfo.complemento,
-              Bairro: validation.wsInfo.bairro,
-              CEP: String(validation.wsInfo.cep).replace(/[-,./]/g, ''),
-              Município: validation.wsInfo.municipio,
-              UF: validation.wsInfo.uf,
-              Email: validation.wsInfo.email,
+              Nome_Fantasia: response.data.wsInfo.fantasia,
+              Razão_Social: response.data.wsInfo.nome,
+              Logradouro: response.data.wsInfo.logradouro,
+              Número: response.data.wsInfo.numero,
+              Complemento: response.data.wsInfo.complemento,
+              Bairro: response.data.wsInfo.bairro,
+              CEP: String(response.data.wsInfo.cep).replace(/[-,./]/g, ''),
+              Município: response.data.wsInfo.municipio,
+              UF: response.data.wsInfo.uf,
+              Email: response.data.wsInfo.email,
             })
           }
         } catch (err) {
+          setWait(false)
           Toast(`Falha ao validar ${newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'}`, 'update', toastId, 'error')
         }
       }
@@ -121,6 +122,8 @@ export const NewClientModal = ({ open, onClose, title, handleValidNewClientCNPJ,
         aux.unshift(response.data.ClienteCadastrado)
         return aux
       })
+
+      resetarGeral()
 
     } catch (err) {
       Toast('Falha ao adicionar cliente', 'update', toastId, 'error')

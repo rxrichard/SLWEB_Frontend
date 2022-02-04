@@ -4,13 +4,13 @@ import moment from 'moment';
 import { makeStyles, Typography } from '@material-ui/core'
 import { Face } from '@material-ui/icons'
 
-import { RED_PRIMARY } from '../../misc/colors'
+import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
 
 export const ClientItem = ({ Cliente, i, onOpenModal }) => {
   const classes = useStyles({
-    color: RED_PRIMARY,
+    color: Cliente.ClienteStatus === 'A' ? RED_PRIMARY : GREY_SECONDARY,
     background: 'unset',
-    border: `1px solid ${RED_PRIMARY}`
+    border: Cliente.ClienteStatus === 'A' ? `1px solid ${RED_PRIMARY}` : `1px solid ${GREY_SECONDARY}`
   })
 
   return (

@@ -16,7 +16,7 @@ const AxiosWithConfig = axios.create({
 
 AxiosWithConfig.interceptors.response.use(undefined,
   error => {
-    if (typeof error.response.status != "undefined") {
+    if (typeof error.response != "undefined" && typeof error.response.status != "undefined") {
       switch (String(error.response.status)) {
         case '498':
           Toast('Sua sessão expirou, faça login novamente', 'error')

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { api } from '../../../services/api'
 
 import {
   Button,
@@ -27,34 +28,111 @@ import {
   ThumbDownAlt as ThumbDownAltIcon,
   ThumbUpAlt as ThumbUpAltIcon,
 } from '@material-ui/icons';
+import { RED_PRIMARY } from '../../../misc/colors'
+import { Toast } from '../../../components/toasty'
 
 import { InputCNPJ } from '../customComponents/inputCNPJ'
 import { InputCEP } from '../customComponents/inputCEP'
 import { InputTel } from '../customComponents/inputTel'
 
-export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler, onUpdate }) => {
+export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler, updateClientesArray }) => {
   const theme = useTheme();
   const classes = useStyles()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [allowEditing, setAllowEditing] = useState(true)
+  const [wait, setWait] = useState(false)
 
   const handleClose = () => {
-    // if (!allowEditing) {
-    //   Toast('Finalize a edição antes de fechar os detalhes do cliente', 'warn')
-    //   return
-    // }
+    if (wait) {
+      return
+    }
     onClose();
     setAllowEditing(true)
+    setWait(false)
   }
 
-  const handleChangeEditingState = async () => {
+  const handleChangeEditingState = async (Cliente) => {
     setAllowEditing(oldState => !oldState)
 
     if (!allowEditing) {
-      //desabilitar qualquer ação
+      let toastId = null
 
-      //fazer update do cliente
-      onUpdate(Details)
+      toastId = Toast('Atualizando...', 'wait')
+      setWait(true)
+
+      try {
+        await api.put('/client', {
+          cliente: Cliente
+        })
+
+        Toast('Cliente atualizado', 'update', toastId, 'success')
+        setWait(false)
+
+        updateClientesArray(oldState => {
+          let clienteIndex = null
+          let aux = [...oldState]
+
+          oldState.forEach((item, index) => {
+            if (item.A1_COD === Cliente.A1_COD && item.A1_LOJA === Cliente.A1_LOJA) {
+              clienteIndex = index
+            }
+          })
+
+          aux[clienteIndex] = Cliente
+
+          return aux
+        })
+      } catch (err) {
+        Toast('Falha ao atualizar cliente', 'update', toastId, 'error')
+        setAllowEditing(false)
+        setWait(false)
+      }
+    }
+  }
+
+  const handleInativar = async (Cliente) => {
+    let toastId = null
+
+    toastId = Toast(Cliente.ClienteStatus === 'A' ? 'Inativando...' : 'Ativando...', 'wait')
+    setWait(true)
+
+    try {
+
+      await api.put('/client/inativar', {
+        COD: Cliente.A1_COD,
+        LOJA: Cliente.A1_LOJA,
+        CNPJ: Cliente.CNPJ,
+        Status: Cliente.ClienteStatus === 'A' ? 'I' : 'A'
+      })
+
+      Toast(Cliente.ClienteStatus === 'A' ? 'Cliente inativado' : 'Cliente ativado', 'update', toastId, 'success')
+      setWait(false)
+
+      DetailsChangeHandler(oldState => ({
+        ...oldState,
+        ClienteStatus: Cliente.ClienteStatus === 'A' ? 'I' : 'A'
+      }))
+
+      updateClientesArray(oldState => {
+        let clienteIndex = null
+        let aux = [...oldState]
+
+        oldState.forEach((item, index) => {
+          if (item.A1_COD === Cliente.A1_COD && item.A1_LOJA === Cliente.A1_LOJA) {
+            clienteIndex = index
+          }
+        })
+
+        aux[clienteIndex] = {
+          ...Cliente,
+          ClienteStatus: Cliente.ClienteStatus === 'A' ? 'I' : 'A'
+        }
+
+        return aux
+      })
+    } catch (err) {
+      Toast(Cliente.ClienteStatus === 'A' ? 'Falha ao inativar cliente' : 'Falha ao ativar cliente', 'update', toastId, 'error')
+      setWait(false)
     }
   }
 
@@ -158,28 +236,30 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             justifyContent: 'space-between',
           }}
         >
-          <TextField
-            variant='standard'
-            label="DDD"
-            value={Details.DDD}
-            disabled={allowEditing}
-            onChange={(e) => {
-              e.persist()
-              DetailsChangeHandler(oldState => ({
+          <div>
+            <TextField
+              variant='standard'
+              label="DDD"
+              value={Details.DDD}
+              disabled={allowEditing}
+              onChange={(e) => {
+                e.persist()
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  DDD: e.target.value
+                }))
+              }}
+              style={{ width: '40px', marginRight: '8px' }}
+            />
+            <InputTel
+              value={Details.Fone}
+              onChange={(e) => DetailsChangeHandler(oldState => ({
                 ...oldState,
-                DDD: e.target.value
-              }))
-            }}
-            style={{ width: '40px', marginRight: '8px' }}
-          />
-          <InputTel
-            value={Details.Fone}
-            onChange={(e) => DetailsChangeHandler(oldState => ({
-              ...oldState,
-              Fone: e.target.value
-            }))}
-            disabled={allowEditing}
-          />
+                Fone: e.target.value
+              }))}
+              disabled={allowEditing}
+            />
+          </div>
           <TextField
             variant='standard'
             label="Contato"
@@ -333,20 +413,33 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
               <MenuItem value='F'>Física</MenuItem>
             </Select>
           </FormControl>
-
+          {Details.ClienteStatus === 'I' ?
+            <Typography
+              style={{
+                color: RED_PRIMARY,
+                fontWeight: 'bold'
+              }}
+            >
+              *INATIVADO*
+            </Typography>
+            :
+            null
+          }
         </section>
       </DialogContent>
 
       <DialogActions>
         <Button
-          onClick={() => alert(Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar')}
+          disabled={wait}
+          onClick={() => handleInativar(Details)}
           color="primary"
           startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
         >
           {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
         </Button>
         <Button
-          onClick={handleChangeEditingState}
+          disabled={wait}
+          onClick={() => handleChangeEditingState(Details)}
           color="primary"
           startIcon={allowEditing ? <EditIcon /> : <SaveIcon />}
         >
