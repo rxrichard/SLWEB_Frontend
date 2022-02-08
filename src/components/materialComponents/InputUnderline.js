@@ -30,7 +30,8 @@ export default function BasicTextFields(props) {
         value={props.value}
         type={props.type}
         label={props.label}
-        onChange={e => handleChange(e)} />
+        onChange={e => handleChange(e)}
+      />
     </form>
   );
 }

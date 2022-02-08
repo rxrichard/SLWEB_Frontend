@@ -449,7 +449,7 @@ export const NewClientModal = ({ open, onClose, title, onUpdateClientesArray }) 
           :
           (
             <Typography style={{ textAlign: 'center', marginTop: '16px' }}>
-              {newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} ainda não validado
+              Insira {newClient.TPessoa === 'J' ? 'CNPJ' : 'CPF'} completo
             </Typography>
           )
         }
@@ -481,10 +481,7 @@ const useStyles = makeStyles(theme => ({
   infoBox: {
     padding: '4px',
     border: '1px solid #ccc',
-  },
-  formControl: {
-    minWidth: 400,
-  },
+  }
 }))
 
 const styles = (theme) => ({

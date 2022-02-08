@@ -29,6 +29,7 @@ import {
   ThumbUpAlt as ThumbUpAltIcon,
 } from '@material-ui/icons';
 import { RED_PRIMARY } from '../../../misc/colors'
+import { toValidString } from '../../../misc/commom_functions'
 import { Toast } from '../../../components/toasty'
 
 import { InputCNPJ } from '../customComponents/inputCNPJ'
@@ -154,7 +155,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Nome Fantasia"
-            value={Details.Nome_Fantasia}
+            value={toValidString(Details.Nome_Fantasia)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -173,7 +174,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             label="Razão Social"
             multiline
             maxRows={4}
-            value={Details.Razão_Social}
+            value={toValidString(Details.Razão_Social)}
             disabled={true}
             onChange={(e) => {
               e.persist()
@@ -203,7 +204,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           {Details.TPessoa === 'J' ? <TextField
             variant='standard'
             label="Inscrição Estadual"
-            value={Details.IE}
+            value={toValidString(Details.IE)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -218,7 +219,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Email"
-            value={Details.Email}
+            value={toValidString(Details.Email)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -240,7 +241,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             <TextField
               variant='standard'
               label="DDD"
-              value={Details.DDD}
+              value={toValidString(Details.DDD)}
               disabled={allowEditing}
               onChange={(e) => {
                 e.persist()
@@ -263,7 +264,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Contato"
-            value={Details.Contato_Empresa}
+            value={toValidString(Details.Contato_Empresa)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -281,7 +282,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Logradouro"
-            value={Details.Logradouro}
+            value={toValidString(Details.Logradouro)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -304,7 +305,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Bairro"
-            value={Details.Bairro}
+            value={toValidString(Details.Bairro)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -318,7 +319,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Número"
-            value={Details.Número}
+            value={toValidString(Details.Número)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -339,7 +340,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Município"
-            value={Details.Município}
+            value={toValidString(Details.Município)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -353,7 +354,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="UF"
-            value={Details.UF}
+            value={toValidString(Details.UF)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
@@ -382,7 +383,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           <TextField
             variant='standard'
             label="Complemento"
-            value={Details.Complemento}
+            value={toValidString(Details.Complemento)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()

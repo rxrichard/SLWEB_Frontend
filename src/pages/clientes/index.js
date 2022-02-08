@@ -12,6 +12,7 @@ import { ClienteListOptions } from './options'
 function Clientes() {
   const [loaded, setLoaded] = useState(false);
   const [filtro, setFiltro] = useState('');
+  const [mostrarInativos, setMostrarInativos] = useState(true);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [newClientModalOpen, setNewClientModalOpen] = useState(false);
   const [clientes, setClientes] = useState([])
@@ -34,7 +35,7 @@ function Clientes() {
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetCliente(clientes[index])
+    setTargetCliente(returnClientesFilter(clientes, mostrarInativos, filtro)[index])
     setDetailsModalOpen(true)
   }
 
@@ -56,12 +57,13 @@ function Clientes() {
   ) : (
     <Panel>
       <ClienteListOptions
-        filtro={filtro}
         onChangeFiltro={setFiltro}
+        mostrarInativos={mostrarInativos}
+        switchInativos={setMostrarInativos}
         onOpenNewClientesModal={handleOpenNewClientModal}
       />
       <ClientList
-        Clientes={clientes}
+        Clientes={returnClientesFilter(clientes, mostrarInativos, filtro)}
         onOpenModal={handleOpenDetailsModal}
       />
       <DetailsModal
@@ -83,3 +85,27 @@ function Clientes() {
 }
 
 export default Clientes;
+
+const returnClientesFilter = (clientes, shouldShowInactive, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return clientes.filter(cliente => {
+    if (shouldShowInactive) {
+      return true
+    } else if (!shouldShowInactive && cliente.ClienteStatus === 'A') {
+      return true
+    } else {
+      return false
+    }
+  }).filter(cliente => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      cliente.Nome_Fantasia.trim().toLowerCase().match(re) || cliente.Razão_Social.trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}

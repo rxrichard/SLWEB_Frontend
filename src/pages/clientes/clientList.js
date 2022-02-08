@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxHeight: 'calc(100% - 100px)',
     background: 'unset',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     alignItems: 'flex-start',
     justifyContent: 'space-evenly',
     borderRadius: '0px 0px 4px 4px',
@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: `1px solid #000`,
     borderRight: `1px solid #000`,
     borderTop: `1px solid #CCC`,
-    paddingTop: '8px'
+    paddingTop: '8px',
+
+    '@media (max-width: 800px)': {
+      maxHeight: 'calc(100% - 150px)',
+    }
   }
 }))
