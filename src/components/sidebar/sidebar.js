@@ -35,7 +35,8 @@ import {
   PermContactCalendar,
   SyncAlt as SyncAltIcon,
   EmojiFoodBeverage,
-  AssignmentInd
+  AssignmentInd,
+  CompassCalibration
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -211,11 +212,14 @@ export default function MiniDrawer() {
             <ChevronLeft />
           </IconButton>
         </div>
+        <Divider />
         <div style={{
           display: "flex",
           flex: '1',
           flexDirection: 'column',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          overflowY: 'auto',
+          overflowX: 'hidden',
         }}>
           <div style={{
             display: "flex",
@@ -223,7 +227,6 @@ export default function MiniDrawer() {
             flexDirection: 'column',
             justifyContent: 'flex-start'
           }}>
-            <Divider />
             {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
               <>
                 <List>
@@ -365,6 +368,17 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
+            <List>
+              <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <CompassCalibration />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Telemetria" />
+                </ListItem>
+              </Link>
+            </List>
             <List>
               <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>

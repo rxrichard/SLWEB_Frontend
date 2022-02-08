@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 'calc(100% - 100px)',
     background: 'unset',
     overflowY: 'auto',
+    overflowX: 'hidden',
     alignItems: 'flex-start',
     justifyContent: 'space-evenly',
     borderRadius: '0px 0px 4px 4px',

@@ -13,7 +13,8 @@ import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import AdmFranquia from "../../pages/administracao/index";
-import Home from "../../pages/dashboard/Index";
+import Home from "../../pages/Dashboard/Index";
+import Monitor from "../../pages/Monitor/Index";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
 import Compras from '../../pages/compras/index'
@@ -53,6 +54,7 @@ function Dashboard(props) {
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />
             <Route exact path="/clientes" component={Clientes} />
+            <Route exact path="/monitor" component={Monitor} />
             <Route path="*" component={notFound} />
           </Switch>
         </div>
