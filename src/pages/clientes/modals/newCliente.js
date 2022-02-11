@@ -32,8 +32,8 @@ import { InputCEP } from '../customComponents/inputCEP'
 import { InputTel } from '../customComponents/inputTel'
 
 export const NewClientModal = ({ open, onClose, title, onUpdateClientesArray }) => {
-  const theme = useTheme();
   const classes = useStyles()
+  const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [newClient, setNewClient] = useState(newClientInitialState)

@@ -5,7 +5,17 @@ import { saveAs } from "file-saver";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { Close, GetApp, HourglassEmpty, FileCopy, ListAlt, Block, Edit, CancelScheduleSend } from "@material-ui/icons";
+import {
+  Close,
+  GetApp,
+  HourglassEmpty,
+  FileCopy,
+  ListAlt,
+  Block,
+  Edit,
+  CancelScheduleSend,
+  FeaturedPlayList
+} from "@material-ui/icons";
 import { DataGrid } from "@material-ui/data-grid";
 import Dialog from "@material-ui/core/Dialog";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -78,6 +88,23 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
             <Tooltip
               title={
                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Gerar PDF
+                </label>
+              }
+              placement="top"
+              arrow
+            >
+              <IconButton
+                disabled={wait}
+                onClick={() => handleRequestPDF(actualPedidoInfo)}
+                color="secondary"
+              >
+                <FeaturedPlayList />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
                   Copiar pedido
                 </label>
               }
@@ -124,6 +151,23 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
       case 'P':
         return (
           <>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Gerar PDF
+                </label>
+              }
+              placement="top"
+              arrow
+            >
+              <IconButton
+                disabled={wait}
+                onClick={() => handleRequestPDF(actualPedidoInfo)}
+                color="secondary"
+              >
+                <FeaturedPlayList />
+              </IconButton>
+            </Tooltip>
             <Tooltip
               title={
                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
@@ -179,6 +223,23 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
             <Tooltip
               title={
                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Gerar PDF
+                </label>
+              }
+              placement="top"
+              arrow
+            >
+              <IconButton
+                disabled={wait}
+                onClick={() => handleRequestPDF(actualPedidoInfo)}
+                color="secondary"
+              >
+                <FeaturedPlayList />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
                   Copiar pedido
                 </label>
               }
@@ -199,6 +260,23 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
       case 'C':
         return (
           <>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Gerar PDF
+                </label>
+              }
+              placement="top"
+              arrow
+            >
+              <IconButton
+                disabled={wait}
+                onClick={() => handleRequestPDF(actualPedidoInfo)}
+                color="secondary"
+              >
+                <FeaturedPlayList />
+              </IconButton>
+            </Tooltip>
             <Tooltip
               title={
                 <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
@@ -247,7 +325,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
 
       //quando não encontra o documento retorna um arraybuffer de 5 bytes(false)
       if (response.data.byteLength > 5) {
-        Toast('Encontrado!', 'update', toastId, 'success')
+        Toast('Documento encontrado!', 'update', toastId, 'success')
         //Converto a String do PDF para BLOB (Necessario pra salvar em pdf)
         const blob = new Blob([response.data], { type: configs.appType });
 
@@ -264,6 +342,32 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
       Toast('Falha na comunicação', 'update', toastId, 'error')
     }
   };
+
+  const handleRequestPDF = async (pedido) => {
+    setWait(true);
+    let toastId = null
+
+    try {
+      toastId = Toast('Gerando PDF...', 'wait')
+
+      const response = await api.get(`/vendas/pedidos/detalhes/PDF/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`,
+        {
+          responseType: "arraybuffer",
+        })
+
+      Toast('PDF pronto!', 'update', toastId, 'success')
+      setWait(false);
+
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+
+      saveAs(blob, `Demonstrativo de Venda - ${pedido.Pvc_ID}.pdf`);
+
+    } catch (err) {
+      Toast('Falha ao gerar PDF', 'update', toastId, 'error')
+      setWait(false);
+    }
+
+  }
 
   const handleEditVenda = () => {
     ResetarDetalhes()
@@ -286,7 +390,7 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
     } else if (String(actualPedidoInfo.Tipo).trim() === 'V') {
       SetCondPag(String(actualPedidoInfo.CpgId).trim())
     }
-    
+
     SetObs(actualPedidoInfo.MsgNF !== null ? String(actualPedidoInfo.MsgNF).trim() : '')
 
     //adiciono os produtos no carrinho

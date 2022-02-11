@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { api } from '../../services/api'
+import { saveAs } from "file-saver";
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, useTheme, } from '@material-ui/core/styles';
 import {
   Close as CloseIcon,
   VpnLock as VpnLockIcon,
   PermDataSetting as PermDataSettingIcon
 } from '@material-ui/icons';
-
 import {
   Button,
   Dialog,
@@ -16,33 +16,62 @@ import {
   DialogActions as MuiDialogActions,
   IconButton,
   Typography,
+  useMediaQuery
 } from '@material-ui/core'
+import { Toast } from '../../components/toasty'
+import { toValidString } from '../../misc/commom_functions'
 
 export const NewsDialog = ({ open, onClose }) => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [vpnPin, setVpnPin] = useState(null)
 
-  const handleRequestVPNFiles = async(type) => {
-    try{
-      const response = await api.get(`/vpn/files/${type}`)
-    
-      if(type === 'ovpn'){
-        //salvar como .ovpn
-      }else if(type === 'pritunl'){
-        //salvar como .pritunl
+  const handleRequestVPNFiles = async (type) => {
+    let toastId = null
+
+    toastId = Toast('Baixando arquivo, aguarde', 'wait')
+    try {
+      const response = await api.get(`/vpn/files/${type}`, {
+        responseType: "arraybuffer",
+      })
+
+      Toast('Download concluído!', 'update', toastId, 'success')
+
+      if (type === 'ovpn') {
+        const blob = new Blob([response.data], { type: 'txt' });
+
+        saveAs(blob, `CONFIGURAÇÃO VPN.ovpn`);
+      } else if (type === 'pritunl') {
+        const blob = new Blob([response.data], { type: 'application/vnd.microsoft.portable-executable' });
+
+        saveAs(blob, `PritUnl.exe`);
       }
-    }catch(err){
-
+    } catch (err) {
+      Toast('Falha no download', 'update', toastId, 'error')
     }
   }
+
+  useEffect(() => {
+    async function LoadData() {
+      try {
+        const response = await api.get('/vpn/pin')
+
+        setVpnPin(response.data.vpn_pin)
+      } catch (err) {
+
+      }
+    }
+    LoadData()
+  }, [])
 
   return (
     <div>
       <Dialog
         onClose={onClose}
-        aria-labelledby="customized-dialog-title"
+        fullScreen={fullScreen}
         open={open}
       >
         <DialogTitle
-          id="customized-dialog-title"
           onClose={onClose}
         >
           Atualização de VPN
@@ -50,7 +79,7 @@ export const NewsDialog = ({ open, onClose }) => {
         <DialogContent
           dividers
           style={{
-            width: '550px'
+            minWidth: '550px'
           }}
         >
           <div
@@ -61,10 +90,22 @@ export const NewsDialog = ({ open, onClose }) => {
               justifyContent: 'flex-start'
             }}
           >
-            <Typography gutterBottom>
+            <Typography
+              gutterBottom
+              style={{
+                width: '100%',
+                textAlign: 'left'
+              }}
+            >
               A VPN da Pilão será <strong>atualizada</strong> para uma nova versão e para tal será necessário instalar o <strong>novo gerenciador de VPN</strong> junto a um <strong>novo arquivo de configuração</strong>.
             </Typography>
-            <Typography gutterBottom>
+            <Typography
+              gutterBottom
+              style={{
+                width: '100%',
+                textAlign: 'left'
+              }}
+            >
               Faça o download dos arquivos abaixo e siga o passo a passo no video para completar a instalação.
             </Typography>
             <div
@@ -87,7 +128,7 @@ export const NewsDialog = ({ open, onClose }) => {
                 startIcon={
                   <VpnLockIcon />
                 }
-                >
+              >
                 Configuração VPN
               </Button>
               <Button
@@ -98,7 +139,7 @@ export const NewsDialog = ({ open, onClose }) => {
                   <PermDataSettingIcon />
                 }
               >
-                PritUnl
+                PritUnl (Gerenciador VPN)
               </Button>
             </div>
             <iframe
@@ -118,6 +159,7 @@ export const NewsDialog = ({ open, onClose }) => {
               allowfullscreen
             />
           </div>
+          {vpnPin !== null ? toValidString(vpnPin) : ''}
         </DialogContent>
         <DialogActions>
           <Button

@@ -8,6 +8,7 @@ import brown from "../../assets/abstract_coffe_brown.png";
 // import yellow from "../../assets/abstract_coffe_yellow.png";
 // import slide1 from "../../assets/slide_1.jpg";
 
+
 function News({ onOpen }) {
   return (
     <Slider
@@ -23,9 +24,9 @@ function News({ onOpen }) {
         <Caption
           placement="right"
         >
-          <h3>Acesse de qualquer computador</h3>
+          <h3>Nova VPN Pilao Professional</h3>
           <h5 className="light grey-text text-lighten-3">
-            Um navegador e acesso à internet é tudo que você precisa!
+            A atualização de VPN para acesso a rede Pilão Professional entra em vigor a partir do dia XX/XX/2022
           </h5>
           <Button
             style={{
@@ -35,7 +36,7 @@ function News({ onOpen }) {
             variant='contained'
             color='secondary'
           >
-            Acordo
+            Saiba mais
           </Button>
         </Caption>
       </Slide>
