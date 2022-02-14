@@ -477,8 +477,9 @@ const useStyles = makeStyles((theme) => ({
 
       "& button": {
         marginTop: ".5rem",
-        width: "100%",
+        width: "95vw",
         maxWidth: "100%",
+        
       },
     },
   },

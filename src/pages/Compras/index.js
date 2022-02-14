@@ -211,7 +211,7 @@ function Compras(props) {
       setWait(false);
     } catch (err) {
       Toast(
-        'Falha ao incluir o pedido de compra, verifique a tela "Contas à Pagar"',
+        'Usuário bloqueado para comprar. Verifique as pendencias na tela "Contas à Pagar"',
         "update",
         toastId,
         "error"

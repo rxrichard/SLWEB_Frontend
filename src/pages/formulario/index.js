@@ -169,33 +169,8 @@ export const Formulario = () => {
   }
 
   return (
-    <Container
-      style={{
-        justifyContent: "center",
-        alignContent: "center",
-        height: "unset",
-        textAlign: "center",
-      }}
-    >
-      <h4>Questionário para Análise de Perfil</h4>
-      <Panel
-        style={isMdUp ? {
-          justifyContent: "flex-start",
-          margin: "10vh 0vh 0vh 0vh",
-          maxWidth: "90vw",
-          minHeight: "65vh",
-          flexDirection: "column",
-          fontSize: "1.50vw",
-        } : {
-          justifyContent: "center",
-          margin: "10% 0% 0% 0%",
-          maxWidth: "100vw",
-          minHeight: "80vh",
-          flexDirection: "column",
-          fontSize: "1.50vw",
-          alignItems: "center",
-        }}
-      >
+    <Container>
+
         {codCandidato === null ? (
           <CodeView
             onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
@@ -226,7 +201,7 @@ export const Formulario = () => {
             />
           </>
         ) : null}
-      </Panel>
+ 
     </Container>
   );
 }
