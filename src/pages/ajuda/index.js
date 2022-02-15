@@ -8,7 +8,7 @@ function Ajuda() {
       <h5>No momento não possuimos suporte online</h5>
       <p>
         Para receber assistencia, entre em contato com:{" "}
-        <strong style={{ fontWeight: "bold" }}>(11) 99794-3788</strong> ou <strong style={{ fontWeight: "bold" }}>(11) 99804-5826</strong>.
+        <strong style={{ fontWeight: "bold" }}>(11) 99804-5826</strong>
       </p>
       <p>
         Ou por email com:{" "}

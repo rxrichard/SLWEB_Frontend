@@ -158,6 +158,8 @@ const verify = (Form, step) => {
     case 0:
       if (Form.Nome_Completo === null || Form.Nome_Completo === "") {
         Toast("Preencha seu nome completo", 'warn');
+      
+        
         return false;
       }
       if (Form.DtNascimento === null || Form.DtNascimento === "") {
