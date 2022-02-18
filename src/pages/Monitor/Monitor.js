@@ -44,7 +44,7 @@ function Home() {
   useEffect(() => {
     async function LoadData() {
       try {
-        const response = await api.get('/dashboard/telemetrias');
+        const response = await api.get('/monitor/telemetrias');
 
         setLoaded(true)
         setTelemetrias(response.data);
@@ -133,7 +133,7 @@ function Home() {
     try {
       toastId = Toast('Abrindo chamado...', 'wait')
 
-      await api.post('/dashboard/telemetrias/chamado', {
+      await api.post('/monitor/telemetrias/chamado', {
         DTO,
       })
 

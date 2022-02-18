@@ -51,7 +51,6 @@ const Modalzinho = (props) => {
       saveAs(blob, `Form_${form.CodCandidato}_${new Date().getTime()}.pdf`);
     } catch (err) {
       Toast('Falha ao recuperar PDF do servidor', 'update', toastId, 'error')
-      console.log(err)
     }
   }
 

@@ -12,7 +12,7 @@ import { ClienteListOptions } from './options'
 function Clientes() {
   const [loaded, setLoaded] = useState(false);
   const [filtro, setFiltro] = useState('');
-  const [mostrarInativos, setMostrarInativos] = useState(true);
+  const [mostrarInativos, setMostrarInativos] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [newClientModalOpen, setNewClientModalOpen] = useState(false);
   const [clientes, setClientes] = useState([])

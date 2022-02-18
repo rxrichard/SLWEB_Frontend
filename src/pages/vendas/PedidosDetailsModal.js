@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment'
 import Draggable from "react-draggable";
 import { api } from "../../services/api";
 import { saveAs } from "file-saver";
@@ -370,6 +371,16 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
   }
 
   const handleEditVenda = () => {
+    if(Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0){
+      Toast('Não é possivel editar pedidos emitidos no mês anterior', 'error')
+      return
+    }
+    
+    if(moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10){
+      Toast('Não é possível editar pedidos com mais de 10 dias', 'error')
+      return 
+    }
+    
     ResetarDetalhes()
     ClearCarrinho()
 
@@ -468,6 +479,16 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
   };
 
   const handleCancel = async () => {
+    if(Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0){
+      Toast('Não é possivel cancelar pedidos emitidos no mês anterior', 'error')
+      return
+    }
+    
+    if(moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10){
+      Toast('Não é possível cancelar pedidos com mais de 10 dias', 'error')
+      return 
+    }
+
     setWait(true)
     let toastId = null
 

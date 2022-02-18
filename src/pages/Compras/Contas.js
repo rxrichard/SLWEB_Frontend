@@ -77,7 +77,10 @@ const Contas = (props) => {
 
     try {
       const response = await api.get(`/compras/pedidos/detalhes/${DOC.E1_NUM}/DOC`);
-      setPedidoDet(response.data);
+      setPedidoDet({
+        Parcela: DOC.E1_PARCELA,
+        ...response.data
+      });
     } catch (err) {
       setPedidoDet({});
     }
@@ -97,14 +100,14 @@ const Contas = (props) => {
     setPagamentoModalOpen(false)
   };
 
-  const handleRetriveBoleto = async (DOC) => {
+  const handleRetriveBoleto = async (Pedido) => {
     setWait(true);
     let toastId = null;
 
     try {
       toastId = Toast("Buscando...", "wait");
 
-      const response = await api.get(`/compras/retriveboleto/${DOC}`, {
+      const response = await api.get(`/compras/retriveboleto/${Pedido.PedidoId}/${Pedido.Parcela.trim() === '' ? 'UNICA' : Pedido.Parcela.trim()}`, {
         responseType: "arraybuffer",
       });
 
@@ -115,7 +118,7 @@ const Contas = (props) => {
         const blob = new Blob([response.data], { type: "application/pdf" });
 
         //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
-        saveAs(blob, `BOLETO_NF_${DOC}.pdf`);
+        saveAs(blob, `BOLETO_NF_${Pedido.PedidoId}_${Pedido.Parcela.trim() === '' ? 'ÚNICA' : Pedido.Parcela.trim()}.pdf`);
         setWait(false);
       } else {
         Toast("Documento não encontrado", "update", toastId, "error");

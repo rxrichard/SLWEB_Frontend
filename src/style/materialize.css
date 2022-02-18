@@ -8112,7 +8112,7 @@ input[type=range]::-ms-thumb {
 }
 
 .slider .slides {
-	background-color: #ff2525;
+	background-color: #bcaaa4;
 	margin: 0;
 	height: 400px
 }

@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { Slider, Slide, Caption } from "react-materialize";
-import { Button } from '@material-ui/core'
+// import { Button } from '@material-ui/core'
 
-import brown from "../../assets/abstract_coffe_brown.png";
+import news from "../../assets/news.jpg";
+import wall from "../../assets/black-white-wall.jpg";
+import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
 // import red from "../../assets/abstract_coffe_red.png";
 // import yellow from "../../assets/abstract_coffe_yellow.png";
 // import slide1 from "../../assets/slide_1.jpg";
@@ -15,12 +17,75 @@ function News({ onOpen }) {
       fullscreen={false}
       options={{
         duration: 500,
-        height: 400,
+        height: 600,
         indicators: true,
         interval: 6000,
       }}
     >
-      <Slide image={<img alt="" src={brown} />}>
+      <Slide
+        image={
+          <img alt="" src={news} />
+        }
+      >
+        <Caption
+          placement="left"
+        >
+          <h3
+            style={{
+              color: RED_PRIMARY,
+              textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
+            }}
+          >PDF de venda disponível</h3>
+          <h5
+            style={{
+              color: GREY_SECONDARY,
+            }}
+            className="light grey-text text-lighten-3"
+          >
+            O PDF com os detalhes da venda já pode ser gerado pela tela de Vendas!
+          </h5>
+        </Caption>
+      </Slide>
+      <Slide
+        image={
+          <img alt="" src={wall} />
+        }
+      >
+        <Caption
+          placement="left"
+        >
+          <h3
+            style={{
+              color: 'yellow',
+              textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
+            }}
+          >
+            Em breve...
+          </h3>
+          <h5
+            style={{
+              color: '#FFF',
+            }}
+          >
+            ¤ Tela de Clientes
+          </h5>
+          <h5
+            style={{
+              color: '#FFF',
+            }}
+          >
+            ¤ Nova VPN
+          </h5>
+          <h5
+            style={{
+              color: '#FFF',
+            }}
+          >
+            ¤ Otimização de telas para o mobile
+          </h5>
+        </Caption>
+      </Slide>
+      {/* <Slide image={<img alt="" src={brown} />}>
         <Caption
           placement="right"
         >
@@ -39,7 +104,7 @@ function News({ onOpen }) {
             Saiba mais
           </Button>
         </Caption>
-      </Slide>
+      </Slide> */}
     </Slider>
   );
 }

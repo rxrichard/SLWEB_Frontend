@@ -95,7 +95,6 @@ const Equipamentos = () => {
       imageOutput.src = png2b64
 
     } catch (err) {
-      console.log(err)
     }
   }
 
