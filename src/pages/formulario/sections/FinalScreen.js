@@ -86,6 +86,7 @@ export const End = (props) => {
       >
         <MenuItem value='Alessandro'>Alessandro</MenuItem>
         <MenuItem value='Kauê'>Kauê</MenuItem>
+        <MenuItem value='Priscila'>Priscila</MenuItem>
         <MenuItem value='Richard'>Richard</MenuItem>
         <MenuItem value='Tatiane'>Tatiane</MenuItem>
         <MenuItem value='Outros'>Outros</MenuItem>

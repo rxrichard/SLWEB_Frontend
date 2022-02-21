@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../../../services/api'
 
 import {
@@ -38,10 +38,15 @@ import { InputTel } from '../customComponents/inputTel'
 
 export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler, updateClientesArray }) => {
   const theme = useTheme();
-  const classes = useStyles()
+  const classes = useStyles();
+  const [backupData, setBackupData] = useState({})
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [allowEditing, setAllowEditing] = useState(true)
   const [wait, setWait] = useState(false)
+
+  useEffect(() => {
+    setBackupData(Details)
+  }, [open])
 
   const handleClose = () => {
     if (wait) {
@@ -430,14 +435,30 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
       </DialogContent>
 
       <DialogActions>
-        <Button
-          disabled={wait}
-          onClick={() => handleInativar(Details)}
-          color="primary"
-          startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
-        >
-          {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
-        </Button>
+        {allowEditing ?
+          <Button
+            disabled={wait}
+            onClick={() => handleInativar(Details)}
+            color="primary"
+            startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
+          >
+            {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
+          </Button>
+          :
+          <Button
+            disabled={wait}
+            onClick={() => {
+              DetailsChangeHandler(backupData)
+              setAllowEditing(true)
+            }
+            }
+            color="secondary"
+            startIcon={<CloseIcon />}
+          >
+            Discartar Alterações
+          </Button>
+        }
+
         <Button
           disabled={wait}
           onClick={() => handleChangeEditingState(Details)}

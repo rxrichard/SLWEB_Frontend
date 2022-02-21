@@ -85,7 +85,6 @@ export const NovaColeta = (props) => {
       })
 
     } catch (err) {
-      console.log(err)
     }
   }
 
@@ -135,7 +134,6 @@ export const NovaColeta = (props) => {
       props.onUpdate()
     } catch (err) {
       Toast('Falha ao gravar coleta', "update", toastId, "error");
-      console.log(err)
     }
   }
 

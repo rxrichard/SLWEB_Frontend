@@ -24,7 +24,7 @@ function Home(props) {
   useEffect(() => {
     async function LoadData() {
       try {
-        const response = await api.get('/dashboard/telemetrias');
+        const response = await api.get('/monitor/telemetrias');
 
         setLoaded(true)
         setTelemetrias(response.data);
@@ -113,6 +113,8 @@ function Home(props) {
   return(
     <>
     
+=======
+
         {telemetrias.map(telemetria => (
           <Cards client={telemetria.AnxDesc} equipCod={telemetria.EquiCod}/>
         ))}

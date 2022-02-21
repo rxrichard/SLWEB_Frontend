@@ -1,4 +1,5 @@
 import React from "react";
+import { api } from '../../../services/api'
 import { useHistory } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -17,6 +18,7 @@ import {
   Button
 } from '@material-ui/core';
 import { SetColetaCarga } from '../../../global/actions/VendasAction'
+import { Toast } from '../../../components/toasty'
 
 const DetalhesModalWithRedux = (props) => {
   const classes = useStyles()
@@ -27,7 +29,84 @@ const DetalhesModalWithRedux = (props) => {
 
   const DetalhesFormatado = fromProps2Datagrid(props.detalhes.Detalhes);
 
-  const handleLoadVendas = (coleta) => {
+  const handleLoadVendas = async (coleta) => {
+    let dadosMinimo = null
+    let diferenca = null
+
+    let toastId = null;
+
+    toastId = Toast("Contabilizando doses...", "wait");
+
+    try {
+      const response = await api.get(`/coletas/detalhes/minimo/${coleta.EquiCod}`)
+
+      dadosMinimo = response.data.DadosParaCalculoDeMinimo;
+
+      Toast("Cálculo de doses concluído", "update", toastId, "success");
+    } catch (err) {
+      Toast('Falha ao calcular doses', "update", toastId, "error");
+      return
+    }
+
+    if (
+      Number(dadosMinimo.CalcFatId) < 255 &&
+      (String(dadosMinimo.AnxFatMinimo).trim() === 'S' || String(dadosMinimo.PdvConsMin).trim() === 'S')
+    ) {
+      let minimoColeta = 0
+
+      if (String(dadosMinimo.AnxTipMin) === 'D') {
+        //calculo de doses na coleta
+        coleta.Detalhes.forEach((item) => {
+          minimoColeta = minimoColeta + Number(item.FfdQtdFaturar)
+        })
+      } else {
+        //calculo de R$ na coleta
+        coleta.Detalhes.forEach((item) => {
+          minimoColeta = minimoColeta + (Number(item.FfdQtdFaturar) * Number(item.PvpVvn1))
+        })
+      }
+
+      if (String(dadosMinimo.AnxTipMin) === 'D' && Number(dadosMinimo.PdvConsDose) > minimoColeta) {
+        //se o minimo por dose não for atingido
+        if (dadosMinimo.AnxMinMoeda === 'S') {
+          //considerar já pago para calculo do minimo
+          diferenca = {
+            ProdId: 12708,
+            VVenda: Number(dadosMinimo.PdvConsValor),
+            QVenda: Number(dadosMinimo.PdvConsDose) - minimoColeta,
+            DVenda: 0
+          }
+        } else {
+          //desconsiderar já pago para calculo do minimo
+          diferenca = {
+            ProdId: 12708,
+            VVenda: Number(dadosMinimo.PdvConsValor),
+            QVenda: Number(dadosMinimo.PdvConsDose),
+            DVenda: 0
+          }
+        }
+      } else if (String(dadosMinimo.AnxTipMin) === 'R' && (Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor)) > minimoColeta) {
+        //se o minimo em R$ não for atingido
+        if (dadosMinimo.AnxMinMoeda === 'S') {
+          //considerar já pago para calculo do minimo
+          diferenca = {
+            ProdId: 12708,
+            VVenda: (Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor)) - minimoColeta,
+            QVenda: 1,
+            DVenda: 0
+          }
+        }else{
+          //desconsiderar já pago para calculo do minimo
+          diferenca = {
+            ProdId: 12708,
+            VVenda: Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor),
+            QVenda: 1,
+            DVenda: 0
+          }
+        }
+      }
+    }
+
     let carga = {
       Cliente: coleta.CNPJ,
       Items: []
@@ -57,6 +136,10 @@ const DetalhesModalWithRedux = (props) => {
         })
       }
     })
+
+    if(diferenca !== null){
+      carga.Items.push(diferenca)
+    }
 
     SetColetaCarga(carga)
     history.push('/vendas')

@@ -457,6 +457,14 @@ export const NewClientModal = ({ open, onClose, title, onUpdateClientesArray }) 
 
       <DialogActions>
         <Button
+          disabled={wait}
+          onClick={resetarGeral}
+          color="secondary"
+          startIcon={<CloseIcon />}
+        >
+          Limpar
+        </Button>
+        <Button
           disabled={wait || !(verificouCNPJ && clienteValido)}
           onClick={handleCadastraCliente}
           color="primary"

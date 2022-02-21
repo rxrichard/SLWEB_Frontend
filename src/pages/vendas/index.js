@@ -100,7 +100,6 @@ function Vendas(props) {
 
         cargaFilaColetas(response.data.Clientes)
       } catch (err) {
-        console.log(err)
       }
     }
     Load();

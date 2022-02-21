@@ -23,7 +23,6 @@ const ConsultaColetas = () => {
         setColetas(response.data.Coletas)
         setEquipamentos(response.data.Equipamentos)
       } catch (err) {
-        console.log(err)
       }
     }
     LoadData()
@@ -41,7 +40,6 @@ const ConsultaColetas = () => {
 
       setColetaDetalhes({ ...coleta, Detalhes: response.data.Detalhes })
     } catch (err) {
-      console.log(err)
     }
   }
 

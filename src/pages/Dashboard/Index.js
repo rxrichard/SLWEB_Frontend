@@ -5,7 +5,7 @@ import News from './News'
 import { NewsDialog } from './NewsDialog'
 
 const Dashboard = () => {
-  const [newsModalOpen, setNewsModalOpen] = useState(true)
+  const [newsModalOpen, setNewsModalOpen] = useState(false)
 
   const handleOpenNewsModal = () => {
     setNewsModalOpen(true)

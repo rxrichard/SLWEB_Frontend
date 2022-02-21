@@ -35,7 +35,7 @@ import {
   PermContactCalendar,
   SyncAlt as SyncAltIcon,
   EmojiFoodBeverage,
-  AssignmentInd,
+  // AssignmentInd,
   CompassCalibration
 } from "@material-ui/icons/";
 
@@ -264,7 +264,7 @@ export default function MiniDrawer() {
               </Link>
             </List>
             <Divider />
-            <List>
+            {/* <List>
               <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -274,7 +274,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Clientes" />
                 </ListItem>
               </Link>
-              {/* <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+              <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <StoreMallDirectory />
@@ -282,9 +282,9 @@ export default function MiniDrawer() {
 
                   <ListItemText primary="Pontos de Venda" />
                 </ListItem>
-              </Link> */}
+              </Link>
             </List>
-            <Divider />
+            <Divider /> */}
             <List>
               <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
                 <ListItem button onClick={handleDrawerClose}>

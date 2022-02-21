@@ -54,7 +54,7 @@ const ContasModal = (props) => {
             >
               <IconButton
                 disabled={props.Cooldown}
-                onClick={() => props.onRequestBoleto(props.Detalhes.PedidoId)}
+                onClick={() => props.onRequestBoleto(props.Detalhes)}
                 color="primary"
               >
                 <Receipt />
@@ -116,7 +116,7 @@ const ContasModal = (props) => {
             >
               <IconButton
                 disabled={props.Cooldown}
-                onClick={() => props.onRequestBoleto(props.Detalhes.PedidoId)}
+                onClick={() => props.onRequestBoleto(props.Detalhes)}
                 color="primary"
               >
                 <InsertDriveFile />

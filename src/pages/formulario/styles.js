@@ -120,9 +120,10 @@ export const Button = styled.button`
   margin-top: 1rem;
   color: ${(props) => props.color};
   font-size: 1.5rem;
-
+  
   &:hover {
-    
+    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    cursor: pointer;
     box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
     background-color: ${(props) => props.hover};
     color: ${(props) => props.colorH || "#fff"};};	
