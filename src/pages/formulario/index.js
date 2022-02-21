@@ -9,7 +9,7 @@ import { saveAs } from "file-saver";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import { Panel, Container } from "../../components/commom_in";
+import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 
 import Stepper from './stepper'
@@ -26,6 +26,7 @@ export const Formulario = () => {
 
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
 
   const handleInsereCodigo = async (codigo, event) => {
     if (!Number.isSafeInteger(Number(codigo))) {

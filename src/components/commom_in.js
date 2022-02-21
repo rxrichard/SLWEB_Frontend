@@ -79,16 +79,16 @@ export const Panel = Styled.div`
     margin-top: 64px;
     margin-left: 73px; //novo sidebar
     display: flex;
-    justify-content: flex-start;
+    flex-direction: ${(props) => props.flexDirection || 'column'};
+    justify-content:  ${(props) =>props.jContent || 'flex-start'};
     align-items: center;
     flex-wrap: wrap;
-    flex-direction: column;
     background-color: none;
-    border: 1px solid #ccc;
-    box-shadow: 0px -0px 5px 3px rgba(0, 0, 0, 0.2);
+    border: ${(props) => props.border||'1px solid #ccc' } ;
+    box-shadow: ${(props) => props.boxShadow|| '0px -0px 5px 3px rgba(0, 0, 0, 0.2)'};
     padding: 20px 20px 30px 20px;
     
-    height: calc(100% - 64px);
+    height:  calc(100% - 64px);
     width: calc(100% - 73px);
     
     //novo sidebar

@@ -10,7 +10,7 @@ const Dashboard = () => {
         )
     } else {
         return (
-            <Panel>
+            <Panel boxShadow='none' border={'none'} flexDirection='row' jContent='space-around'>
                 <Monitor />
                 {/* <News /> */}
             </Panel>

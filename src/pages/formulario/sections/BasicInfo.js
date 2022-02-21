@@ -2,12 +2,14 @@ import React from 'react';
 
 import Input from "../../../components/materialComponents/InputUnderline";
 import { RED_PRIMARY, GREY_SECONDARY } from '../../../misc/colors'
+import { BlockTotal, Block } from '../styles';
 
 export const BasicInfo = (props) => {
   return (
-    <div style={divBorder}>
-      <div style={divStyle2}>
-        <Input
+    <BlockTotal>
+      <Block border={"1px solid #000"} >
+  
+        <Input  style={inputStyle}
           label="Nome completo"
           value={props.Form.Nome_Completo}
           onChange={(e) =>
@@ -17,7 +19,7 @@ export const BasicInfo = (props) => {
             })
           }
         />
-        <Input
+        <Input 
           onChange={(e) =>
             props.FormHandler({
 
@@ -27,20 +29,20 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.DtNascimento}
-          label="Dt. de nascimento"
+          label="Data de nascimento"
         />
+
         <Input
           onChange={(e) =>
             props.FormHandler({
-
               ...props.Form,
               RG: e
-
             })
           }
           value={props.Form.RG}
-          label="RG"
+          label="Número do RG"
         />
+
         <Input
           onChange={(e) =>
             props.FormHandler({
@@ -51,11 +53,49 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.CPF}
-          label="CPF"
+          label="Número do CPF"
           />
-      </div>
-
-      <div style={divStyle}>
+     
+        <Input
+          onChange={(e) =>
+            props.FormHandler({
+              
+              ...props.Form,
+              Email: e
+              
+            })
+          }
+          value={props.Form.Email}
+          label="Email"
+          />
+        <Input
+          onChange={(e) =>
+            props.FormHandler({
+              
+              ...props.Form,
+              Tel_Residencial: e,
+              
+            })
+          }
+          value={props.Form.Tel_Residencial}
+          label="Telefone residencial"
+          />
+        <Input
+          onChange={(e) =>
+            props.FormHandler({
+              
+              ...props.Form,
+              Celular: e
+              
+            })
+          }
+          value={props.Form.Celular}
+          label="Celular"
+        />
+          
+      </Block>
+      <Block border={"1px solid #000"}>
+      
         <Input
           onChange={(e) =>
             props.FormHandler({
@@ -66,7 +106,7 @@ export const BasicInfo = (props) => {
             })
           }
           value={props.Form.Logradouro}
-          label="Logradouro"
+          label="Endereço"
           />
 
         <Input
@@ -93,9 +133,6 @@ export const BasicInfo = (props) => {
           value={props.Form.Complemento}
           label="Complemento"
           />
-      </div>
-
-      <div style={divStyle2}>
         <Input
           onChange={(e) =>
             props.FormHandler({
@@ -143,86 +180,16 @@ export const BasicInfo = (props) => {
           value={props.Form.CEP}
           label="CEP"
           />
-      </div>
 
-      <div style={divStyle}>
-        <Input
-          onChange={(e) =>
-            props.FormHandler({
-              
-              ...props.Form,
-              Email: e
-              
-            })
-          }
-          value={props.Form.Email}
-          label="Email"
-          />
-        <Input
-          onChange={(e) =>
-            props.FormHandler({
-              
-              ...props.Form,
-              Tel_Residencial: e,
-              
-            })
-          }
-          value={props.Form.Tel_Residencial}
-          label="Telefone residencial"
-          />
-        <Input
-          onChange={(e) =>
-            props.FormHandler({
-              
-              ...props.Form,
-              Celular: e
-              
-            })
-          }
-          value={props.Form.Celular}
-          label="Celular"
-        />
-      </div>
-    </div>
+
+      </Block>
+    </BlockTotal>
   )
 }
 
-const divBorder = {
-  display: "flex",
-  padding: "10px 10px 10px 10px",
-  marginBottom: "10px",
-  width: "100%",
-  flexDirection: "column",
-  border: "1px solid #c1c1c1",
-  borderRadius: "1vw",
-};
-
-const divStyle = {
-  display: "Flex",
-  flexWrap: "wrap",
-  width: "100%",
-  flexDirection: "row",
-  justifyContent: "flex-start",
-  alignContent: "center",
-  alignItems: "center",
-  marginBottom: "2%",
-
-  borderRadius: '8px',
-  borderBottom: `4px solid ${RED_PRIMARY}`,
-  borderLeft: `4px solid ${RED_PRIMARY}`,
-};
-
-const divStyle2 = {
-  display: "Flex",
-  flexWrap: "wrap",
-  width: "100%",
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignContent: "center",
-  alignItems: "center",
-  marginBottom: "2%",
-
-  borderRadius: '8px',
-  borderBottom: `4px solid ${GREY_SECONDARY}`,
-  borderLeft: `4px solid ${GREY_SECONDARY}`,
+const inputStyle = {
+  width: '45vw',
+  border: 'none',
+  borderBottom: '1px solid #000',
+  fontSize: '1.2rem',
 };
