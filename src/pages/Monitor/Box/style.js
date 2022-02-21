@@ -2,14 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 64px;
-    margin-left: 73px; //novo sidebar
-    display: flex;
     justify-content: flex-start;
-    align-items: center;
     `
 
 
@@ -21,11 +14,11 @@ export const Card = styled.div`
     border-radius: 1rem;
     margin-left:0;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
 
     &:hover{
         box-shadow:0px 0px 10px rgb(0 0 0 / 50%);
-        transform: scale(1.02);
+        transform: scale(1.015);
     }
   `;
 
@@ -57,6 +50,10 @@ export const Button = styled.button`
 
     justify-content: center;
     align-items: center;
+
+    &:hover{
+        background-color: #92211f;
+    }
     `;
 
 export const Title = styled.h1`
@@ -78,9 +75,13 @@ export const Image = styled.img`
 
 `
 
-export const EquipCod = styled.p`
+export const Text = styled.p`
     font-size: 1rem;
     color: #41211f;
     font-weight: bold;
     margin:0;
+`;
+
+export const notificationTMT = styled.div` 
+    background-color: ${props => props.color || '#fff'};
 `;

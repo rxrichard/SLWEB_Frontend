@@ -2,14 +2,13 @@ import React from "react";
 import { Title, Button,Buttons,Box,Image, EquipCod,Card } from "./style";
 
 
+
+
 function Cards(props) {
-
-
-
+  
   return (
 
     <Card>
-      
       <Box>
         <Image />
         <EquipCod>Cod. Equip: {props.equipCod}</EquipCod>
@@ -22,8 +21,6 @@ function Cards(props) {
        
       </Box>
     </Card>
-
-
 
   )
 }

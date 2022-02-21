@@ -5,13 +5,10 @@ import Loading from "react-loading";
 import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
-<<<<<<< HEAD
 //import de elementos visuais
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-=======
->>>>>>> 1ebc785f8ba6cdbd00090c228c23d673b6ebd465
 import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 
@@ -27,13 +24,6 @@ export const Formulario = () => {
   const [form, setForm] = useState(initialState)
   const [wait, setWait] = useState(false)
 
-<<<<<<< HEAD
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-
-
-=======
->>>>>>> 1ebc785f8ba6cdbd00090c228c23d673b6ebd465
   const handleInsereCodigo = async (codigo, event) => {
     if (!Number.isSafeInteger(Number(codigo))) {
       event.target.value = codigo.slice(0, codigo.length - 1);
