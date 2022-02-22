@@ -35,18 +35,14 @@ export const Formulario = () => {
     }
 
     try {
-      await api.get("/form", {
-        params: {
-          cod: codigo,
-        },
-      });
+      await api.get(`/form/check/${codigo}`);
       setLoading(false)
       setValidado(true)
       setWait(false)
     } catch (err) {
-      event.target.value = "";
       setLoading(false)
       setValidado(false)
+      setWait(false)
       setCodCandidato(null)
     }
   }

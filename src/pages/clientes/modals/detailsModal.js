@@ -46,6 +46,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
 
   useEffect(() => {
     setBackupData(Details)
+    // eslint-disable-next-line
   }, [open])
 
   const handleClose = () => {

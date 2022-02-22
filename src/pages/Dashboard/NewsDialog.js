@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { api } from '../../services/api'
-import { saveAs } from "file-saver";
+import React from 'react';
 
 import { withStyles, useTheme, } from '@material-ui/core/styles';
 import {
   Close as CloseIcon,
-  VpnLock as VpnLockIcon,
-  PermDataSetting as PermDataSettingIcon
 } from '@material-ui/icons';
 import {
   Button,
@@ -18,51 +14,10 @@ import {
   Typography,
   useMediaQuery
 } from '@material-ui/core'
-import { Toast } from '../../components/toasty'
-import { toValidString } from '../../misc/commom_functions'
 
-export const NewsDialog = ({ open, onClose }) => {
+export const NewsDialog = ({ open, onClose, title, content }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [vpnPin, setVpnPin] = useState(null)
-
-  const handleRequestVPNFiles = async (type) => {
-    let toastId = null
-
-    toastId = Toast('Baixando arquivo, aguarde', 'wait')
-    try {
-      const response = await api.get(`/vpn/files/${type}`, {
-        responseType: "arraybuffer",
-      })
-
-      Toast('Download concluído!', 'update', toastId, 'success')
-
-      if (type === 'ovpn') {
-        const blob = new Blob([response.data], { type: 'txt' });
-
-        saveAs(blob, `CONFIGURAÇÃO VPN.ovpn`);
-      } else if (type === 'pritunl') {
-        const blob = new Blob([response.data], { type: 'application/vnd.microsoft.portable-executable' });
-
-        saveAs(blob, `PritUnl.exe`);
-      }
-    } catch (err) {
-      Toast('Falha no download', 'update', toastId, 'error')
-    }
-  }
-
-  useEffect(() => {
-    async function LoadData() {
-      try {
-        const response = await api.get('/vpn/pin')
-
-        setVpnPin(response.data.vpn_pin)
-      } catch (err) {
-
-      }
-    }
-    LoadData()
-  }, [])
 
   return (
     <div>
@@ -74,7 +29,7 @@ export const NewsDialog = ({ open, onClose }) => {
         <DialogTitle
           onClose={onClose}
         >
-          Atualização de VPN
+          {title}
         </DialogTitle>
         <DialogContent
           dividers
@@ -90,76 +45,8 @@ export const NewsDialog = ({ open, onClose }) => {
               justifyContent: 'flex-start'
             }}
           >
-            <Typography
-              gutterBottom
-              style={{
-                width: '100%',
-                textAlign: 'left'
-              }}
-            >
-              A VPN da Pilão será <strong>atualizada</strong> para uma nova versão e para tal será necessário instalar o <strong>novo gerenciador de VPN</strong> junto a um <strong>novo arquivo de configuração</strong>.
-            </Typography>
-            <Typography
-              gutterBottom
-              style={{
-                width: '100%',
-                textAlign: 'left'
-              }}
-            >
-              Faça o download dos arquivos abaixo e siga o passo a passo no video para completar a instalação.
-            </Typography>
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                margin: '0px 0px 8px 0px'
-              }}
-            >
-              <Button
-                variant='contained'
-                onClick={() => handleRequestVPNFiles('ovpn')}
-                color='primary'
-                style={{
-                  marginRight: '8px'
-                }}
-                startIcon={
-                  <VpnLockIcon />
-                }
-              >
-                Configuração VPN
-              </Button>
-              <Button
-                variant='contained'
-                onClick={() => handleRequestVPNFiles('pritunl')}
-                color='primary'
-                startIcon={
-                  <PermDataSettingIcon />
-                }
-              >
-                PritUnl (Gerenciador VPN)
-              </Button>
-            </div>
-            <iframe
-              width="504"
-              height="283,5"
-              src="https://www.youtube.com/embed/dBFv5FX6Ig0"
-              title="Instalação PritUnl"
-              frameborder="0"
-              allow="
-            accelerometer; 
-            autoplay; 
-            clipboard-write; 
-            encrypted-media; 
-            gyroscope; 
-            picture-in-picture
-            "
-              allowfullscreen
-            />
+            {content}
           </div>
-          {vpnPin !== null ? toValidString(vpnPin) : ''}
         </DialogContent>
         <DialogActions>
           <Button
