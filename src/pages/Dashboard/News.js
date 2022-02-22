@@ -1,28 +1,95 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { api } from '../../services/api';
 
 import { Slider, Slide, Caption } from "react-materialize";
-// import { Button } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 
 import news from "../../assets/news.jpg";
 import wall from "../../assets/black-white-wall.jpg";
 import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
-// import red from "../../assets/abstract_coffe_red.png";
-// import yellow from "../../assets/abstract_coffe_yellow.png";
-// import slide1 from "../../assets/slide_1.jpg";
+import { NewsDialog } from './NewsDialog'
 
 
 function News({ onOpen }) {
+  const [news, setNews] = useState([]);
+  const [newsModalOpen, setNewsModalOpen] = useState(false);
+  const [displayedNews, setDisplayedNews] = useState(null);
+
+  useEffect(() => {
+    async function LoadNews() {
+      try {
+        const response = await api.get('/dashboard/news')
+
+        setNews(response.data.News)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    LoadNews();
+  }, [])
+
+  const handleOpenModal = (news) => {
+    setNewsModalOpen(true)
+    setDisplayedNews(news)
+  }
+
+  const handleCloseModal = () => {
+    setNewsModalOpen(false)
+    setDisplayedNews(null)
+  }
+
   return (
-    <Slider
-      fullscreen={false}
-      options={{
-        duration: 500,
-        height: 600,
-        indicators: true,
-        interval: 6000,
-      }}
-    >
-      <Slide
+    <>
+      <NewsDialog
+        open={newsModalOpen}
+        onClose={handleCloseModal}
+        title={displayedNews === null ? '' : displayedNews.ModalHeaderTitle}
+        content={displayedNews === null ? '' : displayedNews.ModalContent}
+      />
+      <Slider
+        fullscreen={false}
+        options={{
+          duration: 500,
+          height: 600,
+          indicators: true,
+          interval: 6000,
+        }}
+      >
+        {news.map(n => (
+          <Slide
+            image={
+              <img
+                alt=""
+                src={`https://source.unsplash.com/1280x720/?coffee/${n.NewsId}`}
+                // src={`https://source.unsplash.com/random/1280x720?sig=${n.NewsId}`}
+              />
+            }
+          >
+            <Caption
+              placement={n.BannerAlign}
+            >
+              <h3>{n.BannerTitle}</h3>
+              <h5>
+                {n.BannerDescription}
+              </h5>
+              {n.ModalContent !== null ?
+                <Button
+                  style={{
+                    margin: '100px 0px 0px 0px'
+                  }}
+                  onClick={() => handleOpenModal(n)}
+                  variant='contained'
+                  color='secondary'
+                >
+                  Saiba mais
+                </Button>
+                :
+                null
+              }
+            </Caption>
+          </Slide>
+        ))}
+        {/* <Slide
         image={
           <img alt="" src={news} />
         }
@@ -84,8 +151,8 @@ function News({ onOpen }) {
             ¤ Otimização de telas para o mobile
           </h5>
         </Caption>
-      </Slide>
-      {/* <Slide image={<img alt="" src={brown} />}>
+      </Slide> */}
+        {/* <Slide image={<img alt="" src={brown} />}>
         <Caption
           placement="right"
         >
@@ -105,7 +172,8 @@ function News({ onOpen }) {
           </Button>
         </Caption>
       </Slide> */}
-    </Slider>
+      </Slider>
+    </>
   );
 }
 

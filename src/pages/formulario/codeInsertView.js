@@ -103,9 +103,9 @@ const CodeView = (props) => {
               onChange={(e) => props.onCodeInsertion(e.target.value, e)}
             />
           </DialogContent>
-          <DialogActions>
+          {/* <DialogActions>
             <Btn onClick={(e) => props.onCodeRequest(e)}>Entrar</Btn>
-          </DialogActions>
+          </DialogActions> */}
         </Dialog>
         <Button
           bgColor="none"
