@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { api } from '../../services/api';
 import moment from "moment";
-import { Title, Button,Buttons,Box,Image, Text,Card } from "./Box/style";
 
+import { Email } from '@material-ui/icons'
+import { Button as MaterialButton } from '@material-ui/core'
 
 import Loading from '../../components/loading_screen'
 import { toValidString } from '../../misc/commom_functions'
 import { Toast } from '../../components/toasty'
-import Modal from "../../components/Layout/Modal/index";
+// import Modal from "../../components/Layout/Modal/index";
+import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } from "./Box/style";
+
+import DetalhesDialog from "./modals/Detalhes";
+import AbrirChamadoDialog from "./modals/AbrirChamado";
 
 
-import { api } from '../../services/api';
-
-
-function Home() {
-
-
+const Monitor = () => {
   const [loaded, setLoaded] = useState(false);
   const [telemetrias, setTelemetrias] = useState([]);
   const [target, setTarget] = useState({});
@@ -22,13 +23,13 @@ function Home() {
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [modalDetailsDesc, setModalDetailsDesc] = useState('');
   const [editableDetails, setEditableDetails] = useState(editableDetailsEmptyExample);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
 
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
     async function LoadData() {
       try {
-        const response = await api.get('/dashboard/telemetrias');
+        const response = await api.get('/monitor/telemetrias');
 
         setLoaded(true)
         setTelemetrias(response.data);
@@ -59,12 +60,6 @@ function Home() {
         CEP: toValidString(TMT.PdvCEP),
       }
     })
-  }
-
-  const handleOpenModal =() => {
-    
-    {setIsModalVisible(true)}
-    
   }
 
   const handleCloseChamadoModal = () => {
@@ -101,7 +96,7 @@ function Home() {
 
     const DTO = {
       Ativo: TMT.EquiCod,
-      UltLeitura: TMT.MáxDeDataLeitura !== null ? moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss") :  'Desconhecido',
+      UltLeitura: TMT.MáxDeDataLeitura !== null ? moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss") : 'Desconhecido',
       Franqueado: TMT.GrupoVenda,
       Email: toValidString(editableDetails.Email),
       Contato: toValidString(editableDetails.Telefone),
@@ -119,37 +114,82 @@ function Home() {
     }
   }
 
-
-
-
   return !loaded ? <Loading /> : (
     <>
-    
+      <DetalhesDialog
+        open={modalDetailsOpen}
+        onClose={handleCloseDetailsModal}
+        title={`${modalDetailsDesc} da máquina ${target.EquiCod}`}
+        TMT={target}
+        tipo={modalDetailsDesc}
+      />
+
+      <AbrirChamadoDialog
+        open={modalChamadoOpen}
+        onClose={handleCloseChamadoModal}
+        title='Abrir chamado MiFix'
+        onChangeDetails={setEditableDetails}
+        Details={editableDetails}
+        UltChamado={target.UltChamado}
+        action={
+          <MaterialButton
+            color="primary"
+            onClick={() => handleAbrirChamado(target)}
+            variant="contained"
+            startIcon={<Email />}
+            disabled={target.UltChamado !== null}
+          >
+            Abrir chamado
+          </MaterialButton>
+        }
+      />
+      
+      <Container>
         {telemetrias.map(telemetria => (
-          
-          <Card>
           <Box>
-            <Text>Sua telemetria está: {}</Text>
+            <Text>Sua telemetria está: { }</Text>
+            <Text
+              color={String(telemetria.LeitOk).trim() !== 'KO' ? 'green' : 'red'}
+            >
+              {String(telemetria.LeitOk).trim() !== 'KO' ? 'ONLINE' : 'OFFLINE'}
+            </Text>
+            <Text>Ativo: {telemetria.EquiCod}</Text>
             <Image />
-            <Text >Cod. Equip: {telemetria.EquiCod}</Text>
             <Title>{telemetria.AnxDesc}</Title>
+            <Text>Última Leitura: {telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).format('DD/MM/YYYY HH:mm') : "Desconhecida"}</Text>
+            <ChamadoButton
+              Online={String(telemetria.LeitOk).trim() !== 'KO'}
+              onClick={() => handleOpenChamadoModal(telemetria)}
+            >
+              <Email />
+              ABRIR CHAMADO
+            </ChamadoButton>
             <Buttons>
-              <Button borderRadius= {'1rem 0 0  1rem'} onClick={handleOpenModal }>Leitura {isModalVisible ?<Modal/>:null}</Button>
-              <Button>Contador</Button>
-              <Button borderRadius={'0 1rem 1rem 0'}>Doses</Button>
+              <Button
+                borderRadius={'0px 0px 0px  1rem'}
+                onClick={() => handleOpenDetailsModal(telemetria, 'Leituras')}>
+                Leitura
+              </Button>
+              <Button
+                onClick={() => handleOpenDetailsModal(telemetria, 'Contador')}
+              >
+                Contador
+              </Button>
+              <Button
+                onClick={() => handleOpenDetailsModal(telemetria, 'Produção de doses')}
+                borderRadius={'0px 0px 1rem  0px'}>
+                Doses
+              </Button>
             </Buttons>
-         
-        </Box>
-      </Card>
-         
+          </Box>
         ))}
-   
+      </Container>
     </>
-    )
+  )
 
 }
 
-export default Home;
+export default Monitor;
 
 const editableDetailsEmptyExample = {
   Email: "",

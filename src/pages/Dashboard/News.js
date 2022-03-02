@@ -8,6 +8,7 @@ import news from "../../assets/news.jpg";
 import wall from "../../assets/black-white-wall.jpg";
 import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
 import { NewsDialog } from './NewsDialog'
+import {BoxTitle} from '../../components/commom_in'
 
 
 function News({ onOpen }) {
@@ -68,10 +69,12 @@ function News({ onOpen }) {
             <Caption
               placement={n.BannerAlign}
             >
+              <BoxTitle>
               <h3>{n.BannerTitle}</h3>
               <h5>
                 {n.BannerDescription}
               </h5>
+              </BoxTitle>
               {n.ModalContent !== null ?
                 <Button
                   style={{
@@ -86,6 +89,7 @@ function News({ onOpen }) {
                 :
                 null
               }
+             
             </Caption>
           </Slide>
         ))}
