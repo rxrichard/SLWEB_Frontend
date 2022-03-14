@@ -371,16 +371,16 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
   }
 
   const handleEditVenda = () => {
-    if(Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0){
+    if (Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0) {
       Toast('Não é possivel editar pedidos emitidos no mês anterior', 'error')
       return
     }
-    
-    if(moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10){
+
+    if (moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10) {
       Toast('Não é possível editar pedidos com mais de 10 dias', 'error')
-      return 
+      return
     }
-    
+
     ResetarDetalhes()
     ClearCarrinho()
 
@@ -479,14 +479,14 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
   };
 
   const handleCancel = async () => {
-    if(Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0){
+    if (Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0) {
       Toast('Não é possivel cancelar pedidos emitidos no mês anterior', 'error')
       return
     }
-    
-    if(moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10){
+
+    if (moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10) {
       Toast('Não é possível cancelar pedidos com mais de 10 dias', 'error')
-      return 
+      return
     }
 
     setWait(true)
@@ -568,14 +568,23 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
         </div>
       </DialogContent >
       <DialogActions style={{ padding: '8px 24px' }}>
-        <Button
-          color="primary"
-          onClick={handleCloseDialog}
-          startIcon={<Close />}
-          disabled={wait}
+        <div
+          className="XAlign"
+          style={{ justifyContent: "space-between", alignItems: "center" }}
         >
-          Fechar
-        </Button>
+          <Typography gutterBottom variant="subtitle1">
+            Total: <strong>R$ {calcTotalVenda(pedidoDet)}</strong>
+          </Typography>
+
+          <Button
+            color="primary"
+            onClick={handleCloseDialog}
+            startIcon={<Close />}
+            disabled={wait}
+          >
+            Fechar
+          </Button>
+        </div>
       </DialogActions>
     </Dialog >
   )
@@ -771,34 +780,12 @@ const selectDocConfigs = (doctype) => {
   }
 }
 
-// Antiga função pra baixar NFe que eu convertia Buffer pra ArrayBuffer depois de receber a resposta e não automaticamente com o Axios
-  // const handleRecoverNFE = async (pedido) => {
-  //   setWait(true)
-  //   try {
-  //     const response = await api.get(`/vendas/pedidos/detalhes/DANFE/${pedido.Serie_Pvc}/${pedido.Pvc_ID}`)
-  //     /*Os arquivos sao retornados em formato Buffer,
-  //     preciso convertelos para ArrayBuffer antes de fazer o blob*/
+const calcTotalVenda = (venda) => {
+  let total = 0;
 
-  //     const danfeArrayBuffer = toArrayBuffer(response.data.DANFE.data)
-  //     const xmlArrayBuffer = toArrayBuffer(response.data.XML[0].data)
+  venda.forEach(v => {
+    total = total + v.PvdVlrTotal;
+  })
 
-  //     const danfeBlob = new Blob([danfeArrayBuffer], { type: "application/pdf" });
-  //     const xmlBlob = new Blob([xmlArrayBuffer], { type: "text/xml" });
-
-  //     saveAs(danfeBlob, `NFe_${pedido.DOC}_DANFE.pdf`);
-  //     saveAs(xmlBlob, `NFe_${pedido.DOC}_XML.xml`);
-
-  //     setWait(false)
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-
-  // };
-  // function toArrayBuffer(buf) {
-  //   var ab = new ArrayBuffer(buf.length);
-  //   var view = new Uint8Array(ab);
-  //   for (var i = 0; i < buf.length; ++i) {
-  //     view[i] = buf[i];
-  //   }
-  //   return ab;
-  // }
+  return Number(total).toFixed(2)
+}

@@ -56,7 +56,7 @@ export const NovaColeta = (props) => {
 
     try {
       setLeituraDoses([]);
-      const response = await api.get(`/coletas/historico/${eqdata.EquiCod}/${eqdata.AnxId}`)
+      const response = await api.get(`/coletas/historico/${String(eqdata.EquiCod).trim()}/${eqdata.AnxId}`)
 
       setLeiturasDisponiveis(response.data.LeiturasDisponiveis)
 

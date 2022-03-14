@@ -158,7 +158,7 @@ export const NewClientModal = ({ open, onClose, title, onUpdateClientesArray }) 
               onChange={(e) => {
                 setNewClient(
                   oldState => ({
-                    ...oldState,
+                    ...newClientInitialState,
                     TPessoa: e.target.value,
                     CNPJ: ''
                   })

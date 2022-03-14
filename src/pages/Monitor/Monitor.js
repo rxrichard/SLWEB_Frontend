@@ -29,7 +29,7 @@ import { Toast } from '../../components/toasty'
 import MiFixModal from './modals/AbrirChamado'
 import DetalhesModal from './modals/Detalhes'
 
-function Home() {
+const Monitor = () => {
   const classes = useStyles();
 
   const [loaded, setLoaded] = useState(false);
@@ -313,7 +313,7 @@ function Home() {
   )
 }
 
-export default Home;
+export default Monitor;
 
 const useStyles = makeStyles((theme) => ({
   root: {

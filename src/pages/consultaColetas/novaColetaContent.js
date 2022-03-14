@@ -298,7 +298,8 @@ export const NovaColetaContent = (props) => {
           width: '100%',
           borderRadius: '0px 0px 4px 4px',
         }}
-        disabled={leituraDoses.length === 0 || referencia === ''}
+        // disabled={leituraDoses.length === 0 || referencia === ''}
+        disabled={margem.de === null || margem.ate === null || referencia === ''}
         onClick={() => handleGravaColeta()}
       >
         GRAVAR COLETA

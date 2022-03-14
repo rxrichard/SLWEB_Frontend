@@ -35,8 +35,9 @@ import {
   PermContactCalendar,
   SyncAlt as SyncAltIcon,
   EmojiFoodBeverage,
-  // AssignmentInd,
-  CompassCalibration
+  AssignmentInd,
+  CompassCalibration,
+  MailOutline
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -264,7 +265,7 @@ export default function MiniDrawer() {
               </Link>
             </List>
             <Divider />
-            {/* <List>
+            <List>
               <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -274,7 +275,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Clientes" />
                 </ListItem>
               </Link>
-              <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+              {/* <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <StoreMallDirectory />
@@ -282,9 +283,9 @@ export default function MiniDrawer() {
 
                   <ListItemText primary="Pontos de Venda" />
                 </ListItem>
-              </Link>
+              </Link> */}
             </List>
-            <Divider /> */}
+            <Divider />
             <List>
               <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
                 <ListItem button onClick={handleDrawerClose}>
@@ -349,6 +350,19 @@ export default function MiniDrawer() {
                       </ListItemIcon>
 
                       <ListItemText primary="Solicitações" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/administracao/emails"
+                    style={{ color: GREY_SECONDARY }}
+                    title="Central de Emails"
+                  >
+                    <ListItem button onClick={handleDrawerClose}>
+                      <ListItemIcon>
+                        <MailOutline />
+                      </ListItemIcon>
+
+                      <ListItemText primary="Emails" />
                     </ListItem>
                   </Link>
                   <Link

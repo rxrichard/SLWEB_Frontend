@@ -115,6 +115,18 @@ function DialogSelect(props) {
       }
     }
 
+    if (Pagamento !== 'Sem Pagamento') {
+      let temValorInválido = false
+
+        if (typeof valor == "undefined" || valor === null || valor === '') {
+          temValorInválido = true
+        }
+
+      if (temValorInválido) {
+        alert('O valor não informado para bebida foi definido automaticamente para R$ 0,00')
+      }
+    }
+
     const linha = {
       id,
       selecao,

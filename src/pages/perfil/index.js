@@ -209,10 +209,6 @@ function Perfil() {
               </p>
             </div>
 
-            {/*BUTTONS */}
-
-            {/* EDITAR SENHA*/}
-
             <div className={classes.infoContactR}>
               <Dialog
                 title="Alterar Senha"
@@ -474,6 +470,7 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "100%",
       paddingBottom: "8px",
       alignItems: "flex-start",
+      paddingLeft: "8px",
 
       "& button": {
         marginTop: ".5rem",
