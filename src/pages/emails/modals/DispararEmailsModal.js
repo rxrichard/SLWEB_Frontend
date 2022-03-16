@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../../../services/api'
 
 import { withStyles, useTheme, makeStyles } from '@material-ui/core/styles';
 import {
   Close as CloseIcon,
-  Add as AddIcon
+  Add as AddIcon,
+  PlaylistAddCheck as PlaylistAddCheckIcon,
+  ClearAll as ClearAllIcon
 } from '@material-ui/icons';
 import {
   Button,
@@ -24,50 +26,124 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  Checkbox
+  Checkbox,
+  FormControlLabel
 } from '@material-ui/core'
 
 import PainelComAbas from '../../../components/materialComponents/PainelAbas'
 import { Toast } from '../../../components/toasty'
 
-export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpdateAvailableRecipients }) => {
+export const DispatchEmailsModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles({
     fullScreen
   });
 
+  const [mailAdressess, setMailAdressess] = useState([])
+  const [mailTemplates, setMailTemplates] = useState([])
+  const [wait, setWait] = useState(false)
   const [mailData, setMailData] = useState(INITIAL_MAIL_DATA)
   const [customEmail, setCustomEmail] = useState({
     Email: '',
     id: 1
   })
 
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await api.get("/emails/dispatch/");
+
+        setMailAdressess(response.data.AvailableRecipients)
+        setMailTemplates(response.data.Templates)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    if (open === true) {
+      loadData();
+    }
+  }, [open])
 
   const handleCloseModal = () => {
     onClose()
+    setMailData(INITIAL_MAIL_DATA)
+    setWait(false)
+    setCustomEmail({ Email: '', id: 1 })
+    setMailTemplates([])
+    setMailAdressess([])
   }
 
   const handleDisparaEmails = async () => {
+
+    //verificar se tem assunto
+    if (mailData.subject.trim() === '') {
+      Toast('Defina um assunto para o email', 'warn')
+      return
+    }
+
+    //verificar se tem corpo
+    if (mailData.body.trim() === '') {
+      Toast('Defina uma mensagem para o email', 'warn')
+      return
+    }
+
+    //verificar se definiu um nome pro modelo novo
+    if (mailData.salvarNovoTemplate === true && mailData.template === null && mailData.nomeNovoTemplate.trim() === '') {
+      Toast('Defina um nome para o novo modelo', 'warn')
+      return
+    }
+
+    //verificar se tem distinatário
+    if (mailData.recipients.length === 0) {
+      Toast('Nenhum destinatário selecionado', 'warn')
+      return
+    }
+
     const confirmou = window.confirm('Deseja realmente disparar os emails?')
 
-    console.log(mailData)
+    if (confirmou) {
+      let toastId = null
 
-    // if (confirmou) {
-    //   try {
-    //     await api.post('/emails/dispatch/', {
-    //       ...mailData
-    //     })
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // }
+      toastId = Toast('Enviando emails...', 'wait')
+      setWait(true)
+
+      try {
+        await api.post('/emails/dispatch/', {
+          ...mailData
+        })
+        Toast('Emails enviados', 'update', toastId, 'success')
+        setWait(false)
+        setMailData(INITIAL_MAIL_DATA)
+      } catch (err) {
+        Toast('Falha enviar emails', 'update', toastId, 'error')
+        setWait(false)
+      }
+    }
   }
 
   const handleSelectTemplate = (value) => {
+    if (value === null) {
+      setMailData({
+        ...mailData,
+        template: null,
+        subject: '',
+        body: '',
+        nomeNovoTemplate: '',
+        salvarNovoTemplate: false
+      })
+      return
+    }
+
+    const templateTarget = mailTemplates.filter(temp => temp.ModeloID === value)[0]
+
     setMailData({
       ...mailData,
-      template: value
+      template: value,
+      subject: templateTarget.ModeloNome,
+      body: templateTarget.rawHTML,
+      nomeNovoTemplate: templateTarget.ModeloArquivoEdgeNome,
+      salvarNovoTemplate: false
     })
   }
 
@@ -105,16 +181,17 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
   const handleAddCustomEmail = () => {
     if (customEmail.Email === '') {
       Toast('Preencha um email', 'warn')
+      return
     }
 
     const newCustomRecipientToDisplay = {
       A1_GRPVEN: String(customEmail.id).padStart(6, 'X'),
-      M0_CODFIL: `Extra ${customEmail.id}`,
+      M0_CODFIL: String(customEmail.id).padStart(4, 'X'),
       Email: customEmail.Email,
     }
 
     //add na lista geral
-    onUpdateAvailableRecipients(oldState => {
+    setMailAdressess(oldState => {
       let aux = [...oldState]
       aux.unshift(newCustomRecipientToDisplay)
 
@@ -130,12 +207,24 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
     }))
   }
 
-  const handleMarkAll = () => {
-
-  }
-
-  const handleUnmarkAll = () => {
-    
+  const handleMarkUnmarkAll = () => {
+    if (mailData.recipients.length === mailAdressess.length) {
+      //se já tiver geral preenchido, despreencher geral
+      setMailData(oldState => {
+        return {
+          ...oldState,
+          recipients: []
+        }
+      })
+    } else {
+      //se não tiver preenchido, preencher geral
+      setMailData(oldState => {
+        return {
+          ...oldState,
+          recipients: mailAdressess
+        }
+      })
+    }
   }
 
   return (
@@ -154,13 +243,18 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
           <PainelComAbas
             titles={['Email', 'Destinatários']}
           >
-            <div className="YAlign">
+            <div
+              className="YAlign"
+              style={{
+                width: fullScreen ? '100%' : '400px',
+              }}
+            >
               <FormControl
                 variant="filled"
                 className={classes.formControl}
               >
                 <InputLabel>
-                  Moldes salvos
+                  Modelos salvos
                 </InputLabel>
                 <Select
                   className={classes.Select}
@@ -170,9 +264,14 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
                   <MenuItem value={null}>
                     Selecione...
                   </MenuItem>
-                  <MenuItem value='MOLDE 1'>MOLDE 1</MenuItem>
-                  <MenuItem value='MOLDE 2'>MOLDE 2</MenuItem>
-                  <MenuItem value='MOLDE 3'>MOLDE 3</MenuItem>
+                  {mailTemplates.map(template => (
+                    <MenuItem
+                      key={template.ModeloID}
+                      value={template.ModeloID}
+                    >
+                      {template.ModeloNome}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <TextField
@@ -190,7 +289,7 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
                 label="Corpo do Email"
                 variant="outlined"
                 multiline
-                rows={4}
+                rows={8}
                 value={mailData.body}
                 onChange={(e) =>
                   setMailData({
@@ -198,6 +297,41 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
                     body: e.target.value
                   })}
               />
+              <div
+                className="XAlign"
+                style={{
+                  justifyContent: 'space-between',
+                  margin: '8px 0px 0px 0px'
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className={classes.checkbox}
+                      checked={mailData.salvarNovoTemplate}
+                      onChange={e => setMailData({
+                        ...mailData,
+                        salvarNovoTemplate: e.target.checked
+                      })}
+                      name="salvarNovoTemplate"
+                    />
+                  }
+                  label={mailData.template === null ? "Salvar Modelo" : "Atualizar modelo"}
+                />
+
+                {mailData.template === null && mailData.salvarNovoTemplate === true ? (
+                  <TextField
+                    className={classes.NewModelInput}
+                    label="Nome do novo modelo"
+                    variant="outlined"
+                    onChange={(e) => setMailData({
+                      ...mailData,
+                      nomeNovoTemplate: e.target.value
+                    })}
+                    value={mailData.nomeNovoTemplate}
+                  />
+                ) : null}
+              </div>
             </div>
             <div className='YAlign'>
               <div
@@ -230,7 +364,7 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
                 dense
                 className={classes.root}
               >
-                {availableRecipients.map(recipient => (
+                {mailAdressess.map(recipient => (
                   <ListItem
                     key={recipient.M0_CODFIL}
                     button
@@ -252,6 +386,19 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
                   </ListItem>
                 ))}
               </List>
+              <Button
+                onClick={handleMarkUnmarkAll}
+                color="primary"
+                disabled={wait}
+                variant='outlined'
+                startIcon={mailData.recipients.length === mailAdressess.length ? <ClearAllIcon /> : <PlaylistAddCheckIcon />}
+                style={{
+                  width: '100%',
+                  margin: '8px 0px 0px 0px'
+                }}
+              >
+                {mailData.recipients.length === mailAdressess.length ? `Desmarcar todos (${mailData.recipients.length})` : `Marcar todos (${mailAdressess.length})`}
+              </Button>
             </div>
           </PainelComAbas>
         </DialogContent>
@@ -259,6 +406,7 @@ export const DispatchEmailsModal = ({ open, onClose, availableRecipients, onUpda
           <Button
             onClick={handleDisparaEmails}
             color="primary"
+            disabled={wait}
           >
             Confirmar e Enviar
           </Button>
@@ -285,6 +433,12 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '8px'
     },
   },
+  NewModelInput: {
+    width: 'calc(100% - 150px)',
+    '&:nth-child(2) > div > input': {
+      marginLeft: '8px'
+    },
+  },
   InputWithButton: {
     width: 'calc(100% - 54.5px)',
     margin: '0px 8px 0px 0px',
@@ -305,12 +459,12 @@ const useStyles = makeStyles((theme) => ({
   },
   root: props => ({
     width: '100%',
-    maxWidth: props.fullscreen ? '100%' : '360px',
+    maxWidth: props.fullScreen ? '100%' : '500px',
     backgroundColor: theme.palette.background.paper,
     overflowX: 'hidden',
     overflowY: 'auto',
-    maxHeight: props.fullscreen ? '100%' : '400px',
-    margin: '8px 0px 0px 0px'
+    maxHeight: '400px',
+    margin: '8px 0px 0px 0px',
   }),
   checkbox: {
     transform: "scale(0.3)",
@@ -321,7 +475,7 @@ const styles = (theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(2),
-    minWidth: '380px'
+    minWidth: '300px'
   },
   closeButton: {
     position: 'absolute',

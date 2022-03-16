@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 
-import { TextField, Button } from '@material-ui/core'
-import { MarkunreadMailbox as MarkunreadMailboxIcon } from '@material-ui/icons'
+import {
+  Button,
+  Paper,
+  InputBase,
+  Tooltip,
+  IconButton,
+  makeStyles
+} from '@material-ui/core'
+import {
+  MarkunreadMailbox as MarkunreadMailboxIcon,
+  Close as CloseIcon
+} from '@material-ui/icons'
 
 //import de elementos visuais
 import { convertData } from "../../misc/commom_functions";
@@ -13,9 +23,10 @@ import Loading from "../../components/loading_screen";
 import { DispatchEmailsModal } from './modals/DispararEmailsModal'
 
 const CentralEmails = () => {
+  const classes = useStyles()
   const [emailHistory, setEmailHistory] = useState([]);
-  const [mailAdressess, setMailAdressess] = useState([])
-  const [filtro, setFiltro] = useState('');
+
+  const [filterWord, setFilterWord] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [dispararEmailsModalOpen, setDispararEmailsModalOpen] = useState(false);
 
@@ -26,7 +37,6 @@ const CentralEmails = () => {
 
         setLoaded(true);
         setEmailHistory(response.data.History)
-        setMailAdressess(response.data.AvailableRecipients)
       } catch (err) {
         console.log(err)
       }
@@ -50,60 +60,98 @@ const CentralEmails = () => {
       <DispatchEmailsModal
         open={dispararEmailsModalOpen}
         onClose={handleCloseDispararEmailsModal}
-        availableRecipients={mailAdressess}
-        onUpdateAvailableRecipients={setMailAdressess}
       />
 
       <Panel>
         <div
-          className="XAlign"
-          style={{ height: "100%", alignItems: "flex-start" }}
+          style={{
+            display: "flex",
+            flexDirection: 'column',
+            height: "100%",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: 'flex-start',
+            flexWrap: "nowrap",
+          }}
         >
-          <Table width="80">
+          <div
+            className="YAlign"
+            style={{
+              flex: "unset",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <Paper component="form" className={classes.root}>
+              <InputBase
+                className={classes.input}
+                placeholder="Buscar cliente"
+                inputProps={{ 'aria-label': 'buscar cliente' }}
+                onChange={e => {
+                  setFilterWord(e.target.value)
+                }}
+                value={filterWord}
+                disabled={false}
+              />
+              <Tooltip
+                title={
+                  <label
+                    style={{
+                      fontSize: "14px",
+                      color: "#FFF",
+                      lineHeight: "20px"
+                    }}
+                  >
+                    Limpar filtro
+                  </label>
+                }
+                placement="right"
+                arrow={true}
+              >
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="directions"
+                  color="secondary"
+                  onClick={() => {
+                    setFilterWord('')
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            </Paper>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleOpenDispararEmailsModal}
+              startIcon={<MarkunreadMailboxIcon />}
+              style={{
+                margin: '8px 0px 8px 0px'
+              }}
+            >
+              Disparar emails
+            </Button>
+          </div>
+          <Table width="100">
             <thead>
               <tr>
                 <th>Data de Envio</th>
                 <th>Filial</th>
-                <th>Email</th>
                 <th>Modelo</th>
                 <th>Origem</th>
               </tr>
             </thead>
             <tbody>
-              {filteredHistory(emailHistory, filtro).map((reg) => (
+              {filteredHistory(emailHistory, filterWord).map((reg) => (
                 <tr key={`${reg.DataOcor}${reg.A1_GRPVEN}`}>
                   <td>{convertData(reg.DataOcor)}</td>
                   <td>{reg.M0_CODFIL}</td>
-                  <td>{reg.Email}</td>
                   <td>{reg.msg}</td>
                   <td>{reg.origem}</td>
                 </tr>
               ))}
             </tbody>
           </Table>
-          <div
-            className="YAlign"
-            style={{
-              height: "100%",
-              justifyContent: "flex-start",
-              marginLeft: "1%",
-              marginRight: "1%",
-            }}
-          >
-            <TextField
-              id="standard-basic"
-              label="Filtrar por filial"
-              onChange={(e) => setFiltro(e.target.value)}
-            />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleOpenDispararEmailsModal}
-              startIcon={<MarkunreadMailboxIcon />}
-            >
-              Disparar emails
-            </Button>
-          </div>
         </div>
       </Panel>
     </>
@@ -112,6 +160,37 @@ const CentralEmails = () => {
 
 export default CentralEmails
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  divider: {
+    height: 28,
+    margin: 4,
+  },
+}))
+
 const filteredHistory = (history, filterString) => {
-  return history
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  if (filterString.trim() === '') {
+    return history
+  } else {
+    return history.filter(hist =>
+      String(hist.Email).trim().toLowerCase().match(re) ||
+      String(hist.M0_CODFIL).trim().toLowerCase().match(re) ||
+      String(hist.msg).trim().toLowerCase().match(re) ||
+      String(hist.origem).trim().toLowerCase().match(re)
+    )
+  }
 }

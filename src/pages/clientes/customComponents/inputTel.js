@@ -10,10 +10,10 @@ export const InputTel = ({ value, onChange, disabled }) => {
 
   return (
     <TextField
-      label='Telefone'
+      label='Celular'
       value={value}
       onChange={(e) => onChange(e)}
-      name="Telefone"
+      name="Celular"
       disabled={disabled}
       InputProps={{
         inputComponent: NumberFormatCustom,
