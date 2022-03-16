@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { api } from '../../../services/api'
 import { useHistory } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
@@ -6,7 +6,12 @@ import { connect } from 'react-redux'
 import moment from 'moment';
 
 import { DataGrid } from "@material-ui/data-grid";
-import { Close as CloseIcon } from '@material-ui/icons';
+import {
+  Close as CloseIcon,
+  ShoppingCart as ShoppingCartIcon,
+  Menu as MenuIcon,
+  Delete as DeleteIcon
+} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Dialog,
@@ -15,10 +20,13 @@ import {
   IconButton,
   Slide,
   Typography,
-  Button
+  // Button,
+  Grow,
+  Fab
 } from '@material-ui/core';
 import { SetColetaCarga } from '../../../global/actions/VendasAction'
 import { Toast } from '../../../components/toasty'
+import { RED_PRIMARY } from '../../../misc/colors'
 
 const DetalhesModalWithRedux = (props) => {
   const classes = useStyles()
@@ -26,6 +34,7 @@ const DetalhesModalWithRedux = (props) => {
   const {
     SetColetaCarga
   } = props;
+  const [expandedOptions, setExpandedOptions] = useState(false)
 
   const DetalhesFormatado = fromProps2Datagrid(props.detalhes.Detalhes);
 
@@ -72,7 +81,7 @@ const DetalhesModalWithRedux = (props) => {
           //considerar já pago para calculo do minimo
           diferenca = {
             ProdId: 12708,
-            VVenda: Number(dadosMinimo.PdvConsValor),
+            VVenda: dadosMinimo.AnxCalcMinPor === 'A' ? Number(dadosMinimo.AnxVlrUnitMin) : Number(dadosMinimo.PdvConsValor),
             QVenda: Number(dadosMinimo.PdvConsDose) - minimoColeta,
             DVenda: 0
           }
@@ -80,26 +89,26 @@ const DetalhesModalWithRedux = (props) => {
           //desconsiderar já pago para calculo do minimo
           diferenca = {
             ProdId: 12708,
-            VVenda: Number(dadosMinimo.PdvConsValor),
+            VVenda: dadosMinimo.AnxCalcMinPor === 'A' ? Number(dadosMinimo.AnxVlrUnitMin) : Number(dadosMinimo.PdvConsValor),
             QVenda: Number(dadosMinimo.PdvConsDose),
             DVenda: 0
           }
         }
-      } else if (String(dadosMinimo.AnxTipMin) === 'R' && (Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor)) > minimoColeta) {
+      } else if (String(dadosMinimo.AnxTipMin) === 'R' && (Number(dadosMinimo.PdvConsDose) * (dadosMinimo.AnxCalcMinPor === 'A' ? Number(dadosMinimo.AnxVlrUnitMin) : Number(dadosMinimo.PdvConsValor))) > minimoColeta) {
         //se o minimo em R$ não for atingido
         if (dadosMinimo.AnxMinMoeda === 'S') {
           //considerar já pago para calculo do minimo
           diferenca = {
             ProdId: 12708,
-            VVenda: (Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor)) - minimoColeta,
+            VVenda: (Number(dadosMinimo.PdvConsDose) * (dadosMinimo.AnxCalcMinPor === 'A' ? Number(dadosMinimo.AnxVlrUnitMin) : Number(dadosMinimo.PdvConsValor))) - minimoColeta,
             QVenda: 1,
             DVenda: 0
           }
-        }else{
+        } else {
           //desconsiderar já pago para calculo do minimo
           diferenca = {
             ProdId: 12708,
-            VVenda: Number(dadosMinimo.PdvConsDose) * Number(dadosMinimo.PdvConsValor),
+            VVenda: Number(dadosMinimo.PdvConsDose) * (dadosMinimo.AnxCalcMinPor === 'A' ? Number(dadosMinimo.AnxVlrUnitMin) : Number(dadosMinimo.PdvConsValor)),
             QVenda: 1,
             DVenda: 0
           }
@@ -137,7 +146,7 @@ const DetalhesModalWithRedux = (props) => {
       }
     })
 
-    if(diferenca !== null){
+    if (diferenca !== null) {
       carga.Items.push(diferenca)
     }
 
@@ -145,128 +154,215 @@ const DetalhesModalWithRedux = (props) => {
     history.push('/vendas')
   }
 
+  const handleDeleteColeta = async (coleta) => {
+    let toastId = null;
+
+    toastId = Toast("Apagando coleta...", "wait");
+
+    try {
+      await api.delete(`/coletas/detalhes/apagar/${coleta.EquiCod}/${coleta.AnxId}/${coleta.PdvId}/${coleta.FfmSeq}`)
+
+      Toast("Coleta de doses excluida com sucesso!", "update", toastId, "success");
+      props.coletasHandler(oldState => {
+        return oldState.filter(c => !(c.EquiCod === coleta.EquiCod && c.AnxId === coleta.AnxId && c.PdvId === coleta.PdvId && c.FfmSeq === coleta.FfmSeq))
+      })
+      handleClose()
+    } catch (err) {
+      Toast('Falha excluir coleta de doses', "update", toastId, "error");
+    }
+  }
+
+  const handleClose = () => {
+    props.onClose()
+    setExpandedOptions(false)
+  }
+
   return (
-    <Dialog
-      fullScreen
-      TransitionComponent={Transition}
-      open={props.open}
-      onClose={props.onClose}
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={props.onClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {props.title}
-          </Typography>
-          <Button
-            color="inherit"
-            onClick={() => handleLoadVendas(props.detalhes)}
-          >
-            Faturar
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <div className={classes.container}>
-        <section className={classes.sectionColumn}>
-          <div
-            className={classes.infoBox}
-            style={{ width: '100%', textAlign: 'center' }}
-          >
-            <Typography
-              style={{
-                fontWeight: 'bold',
-                fontSize: '1.2rem'
-              }}
+    <>
+      <Dialog
+        fullScreen
+        TransitionComponent={Transition}
+        open={props.open}
+        onClose={handleClose}
+      >
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              {props.title}
+            </Typography>
+            {/* <Button
+              color="inherit"
+              onClick={() => handleLoadVendas(props.detalhes)}
             >
-              {props.detalhes.Anexo}
-            </Typography>
-            <Typography>
-              {props.detalhes.Cálculo}
-            </Typography>
-          </div>
-          <div
-            className={classes.infoBox}
-            style={{ width: '100%', textAlign: 'center' }}
-          >
-            <Typography>
-              Referência
-            </Typography>
+              Faturar
+            </Button> */}
+          </Toolbar>
+        </AppBar>
+        <div className={classes.container}>
+          <section className={classes.sectionColumn}>
             <div
-              className='XAlign'
-              style={{
-                justifyContent: 'space-evenly',
-              }}
+              className={classes.infoBox}
+              style={{ width: '100%', textAlign: 'center' }}
             >
               <Typography
                 style={{
                   fontWeight: 'bold',
                   fontSize: '1.2rem'
-                }}>
-                {props.detalhes.ColeteAnterior !== null ? moment(props.detalhes.ColeteAnterior).format('L') : '__/__/____'}
-              </Typography>
-              <Typography
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem'
-                }}>
-                &#x2192;
-              </Typography>
-              <Typography
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem'
-                }}>
-                {moment(props.detalhes.DataColeta).format('L')}
-              </Typography>
-            </div>
-          </div>
-          <section className={classes.sectionRow}>
-            <div className={classes.infoBox}>
-              <Typography>
-                Contador Anterior
-              </Typography>
-              <Typography
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem'
                 }}
               >
-                {props.detalhes.ContAnterior}
+                {props.detalhes.Anexo}
+              </Typography>
+              <Typography>
+                {props.detalhes.Cálculo}
               </Typography>
             </div>
-            <div className={classes.infoBox}>
+            <div
+              className={classes.infoBox}
+              style={{ width: '100%', textAlign: 'center' }}
+            >
               <Typography>
-                Contador Gravado
+                Referência
               </Typography>
-              <Typography
+              <div
+                className='XAlign'
                 style={{
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem'
+                  justifyContent: 'space-evenly',
                 }}
               >
-                {props.detalhes.Contador}
-              </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}>
+                  {props.detalhes.ColeteAnterior !== null ? moment(props.detalhes.ColeteAnterior).format('L') : '__/__/____'}
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}>
+                  &#x2192;
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}>
+                  {moment(props.detalhes.DataColeta).format('L')}
+                </Typography>
+              </div>
             </div>
+            <section className={classes.sectionRow}>
+              <div className={classes.infoBox}>
+                <Typography>
+                  Contador Anterior
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}
+                >
+                  {props.detalhes.ContAnterior}
+                </Typography>
+              </div>
+              <div className={classes.infoBox}>
+                <Typography>
+                  Contador Gravado
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}
+                >
+                  {props.detalhes.Contador}
+                </Typography>
+              </div>
+            </section>
           </section>
-        </section>
-        <DataGrid
+          <DataGrid
+            style={{
+              height: '100%',
+            }}
+            className={classes.datagrid}
+            rows={DetalhesFormatado}
+            columns={columns}
+            autoPageSize={false}
+            disableSelectionOnClick={true}
+            disableColumnMenu={true}
+            checkboxSelection={false}
+            pageSize={DetalhesFormatado.length}
+            hideFooter={true}
+          />
+        </div>
+        <div
+          className="YAlign"
           style={{
-            height: '100%',
+            position: "absolute",
+            right: "16px",
+            bottom: "16px",
+            alignItems: "flex-end",
+            zIndex: "999"
           }}
-          className={classes.datagrid}
-          rows={DetalhesFormatado}
-          columns={columns}
-          autoPageSize={false}
-          disableSelectionOnClick={true}
-          disableColumnMenu={true}
-          checkboxSelection={false}
-          pageSize={DetalhesFormatado.length}
-          hideFooter={true}
-        />
-      </div>
-    </Dialog>
+        >
+          <Grow
+            in={expandedOptions}
+            style={{ transformOrigin: '0 0 0' }}
+            {...(expandedOptions ? { timeout: 1000 } : {})}
+          >
+            <Fab
+              onClick={() => handleDeleteColeta(props.detalhes)}
+              variant="extended"
+              style={{
+                backgroundColor: '#FFF',
+                margin: '0px 0px 8px 0px',
+                color: RED_PRIMARY,
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <DeleteIcon />
+              Apagar Coleta
+            </Fab>
+          </Grow>
+          <Grow
+            in={expandedOptions}
+            style={{ transformOrigin: '0 0 0' }}
+            {...(expandedOptions ? { timeout: 500 } : {})}
+          >
+            <Fab
+              onClick={() => handleLoadVendas(props.detalhes)}
+              variant="extended"
+              style={{
+                backgroundColor: '#FFF',
+                margin: '0px 0px 8px 0px',
+                color: '#30a650',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <ShoppingCartIcon />
+              Faturar
+            </Fab>
+          </Grow>
+          {props.open ? (
+            <Fab
+              color={expandedOptions ? "primary" : "secondary"}
+              onClick={() => setExpandedOptions(!expandedOptions)}
+            >
+              {expandedOptions ? <CloseIcon /> : <MenuIcon />}
+            </Fab>
+          ) : null}
+        </div>
+      </Dialog>
+
+    </>
   );
 }
 

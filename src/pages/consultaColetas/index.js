@@ -6,9 +6,11 @@ import { Panel } from '../../components/commom_in'
 import { DetalhesModal } from './modals/DetalhesModal'
 import { Consultas } from './consultas'
 import { NovaColeta } from './novaColeta'
+import Loading from '../../components/loading_screen'
 
 const ConsultaColetas = () => {
   const [forceUpdate, setForceUpdate] = useState(0)
+  const [loaded, setLoaded] = useState(false)
   const [coletas, setColetas] = useState([])
   const [equipamentos, setEquipamentos] = useState([])
   const [coletaDetalhesModalOpen, setColetaDetalhesModalOpen] = useState(false)
@@ -22,7 +24,9 @@ const ConsultaColetas = () => {
 
         setColetas(response.data.Coletas)
         setEquipamentos(response.data.Equipamentos)
+        setLoaded(true)
       } catch (err) {
+        setLoaded(false)
       }
     }
     LoadData()
@@ -56,7 +60,9 @@ const ConsultaColetas = () => {
     setNovaColetaDetalhesModalOpen(false)
   }
 
-  return (
+  return !loaded ? (
+    <Loading />
+  ) : (
     <Panel
       style={{
         minHeight: '600px',
@@ -67,6 +73,7 @@ const ConsultaColetas = () => {
         onClose={handleCloseColetaDetailsModal}
         title='Detalhes da Coleta'
         detalhes={coletaDetalhes}
+        coletasHandler={setColetas}
       />
       <Consultas
         Coletas={coletas}

@@ -34,7 +34,7 @@ export const NewsDialog = ({ open, onClose, title, content }) => {
         <DialogContent
           dividers
           style={{
-            minWidth: '550px'
+            minWidth: fullScreen ? 'unset' : '550px'
           }}
         >
           <div

@@ -6,6 +6,7 @@ export const Container = styled.div`
     align-items: flex-start;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    box-sizing: border-box;
 
 `
 
@@ -15,11 +16,11 @@ export const Box = styled.div`
     align-items: center;
     justify-content: space-between;
     width:${ props => props.width ||'18rem'};
-    height:23rem;
+    height:${ props => props.height ||'23rem'} ;
     background:#f3f3f3;
     border-radius: 1rem;
     margin: 8px 0px;
-    box-shadow:0px 0px 10px rgb(0 0 0 / 40%);
+    box-shadow:${ props => props.boxShadow ||'0px 0px 10px rgb(0 0 0 / 40%)'};
     border-radius: 1rem;
 
     &:hover{
@@ -68,6 +69,7 @@ export const ChamadoButton = styled.div`
     font-size: 1rem;
     font-weight: bold;
     
+    
     &:hover{
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         background-color: ${props => props.Online ? 'rgba(204, 204, 204, 0.8)' : 'rgba(146, 33, 31, 0.8)'};
@@ -85,6 +87,8 @@ export const Title = styled.h1`
     overflow: hidden;
     width: 100%;
     padding: 0px 8px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
 `;
 
 export const Image = styled.img`
@@ -100,11 +104,34 @@ export const Image = styled.img`
 
 export const Text = styled.p`
     color: ${props => props.color || '#41211f'};
-    font-size: 1rem;
+    font-size: ${props => props.fontSize || '1rem'};
     font-weight: bold;
     margin:0;
+    flex:1;
+    text-align: center;
+    white-space: wrap;
+    overflow: wrap;
+
 `;
 
 export const notificationTMT = styled.div` 
     background-color: ${props => props.color || '#fff'};
 `;
+
+export const Price = styled.div`
+    display: flex;
+    background-color: ${props => props.color || '#fff'};
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width:5rem;
+    height: 5rem;
+    margin: 1rem;
+    color: ${props => props.colorText || '#41211f'};
+`
+
+export const Flex = styled.div`
+    display: flex;
+    align-items: center;
+    margin: 0px 2px;
+`

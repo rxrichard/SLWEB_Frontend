@@ -14,6 +14,11 @@ import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } fr
 import DetalhesDialog from "./modals/Detalhes";
 import AbrirChamadoDialog from "./modals/AbrirChamado";
 
+<<<<<<< HEAD
+=======
+const Monitor = () => {
+  const classes = useStyles();
+>>>>>>> a4c7d827644d31e5ddc11f9c65a50436847b7aec
 
 const Monitor = () => {
   const [loaded, setLoaded] = useState(false);

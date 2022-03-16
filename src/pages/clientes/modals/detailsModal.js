@@ -456,7 +456,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             color="secondary"
             startIcon={<CloseIcon />}
           >
-            Discartar Alterações
+            Descartar Alterações
           </Button>
         }
 

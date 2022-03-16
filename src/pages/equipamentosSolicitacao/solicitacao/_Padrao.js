@@ -136,6 +136,20 @@ function FullScreenDialog({
       return;
     }
 
+    if (Pagamento !== 'Sem Pagamento') {
+      let temValorInválido = false
+
+      PSelecionado.forEach((confg) => {
+        if (typeof confg.Valor == "undefined" || confg.Valor === null || confg.Valor === '') {
+          temValorInválido = true
+        }
+      });
+
+      if (temValorInválido) {
+        alert('Um ou mais valores não informados para bebidas foram definidos automaticamente para R$ 0,00')
+      }
+    }
+
     //inclui todas as linhas
     PSelecionado.forEach((confg) => {
       clickButton({

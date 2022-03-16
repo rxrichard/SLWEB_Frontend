@@ -66,7 +66,6 @@ const Equipamentos = () => {
     try {
       const response = await api.get('/equip/confirm')
 
-
       setEnderecos(response.data.Enderecos)
     } catch (error) {
 
@@ -203,7 +202,9 @@ const Equipamentos = () => {
       toastId = Toast('Aguarde...', 'wait')
 
       await api.post('/equip/confirm', {
-        Addresses: enderecos
+        Addresses: enderecos,
+        RefMes: moment(confirmPeriod[0].de).get('month') + 1,
+        RefAno: moment(confirmPeriod[0].de).get('year'),
       })
 
       setConfirmModalState(false)
