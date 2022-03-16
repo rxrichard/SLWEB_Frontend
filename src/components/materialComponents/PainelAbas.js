@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { GREY_PRIMARY } from '../../misc/colors'
 
@@ -32,12 +31,20 @@ export default function PainelAbas(props) {
           variant="fullWidth"
         >
           {props.titles.map((title, i) => (
-            <Tab label={title} {...a11yProps(i)} />
+            <Tab
+              label={title}
+              {...a11yProps(i)}
+              key={i}
+            />
           ))}
         </Tabs>
       </AppBar>
       {props.children.map((component, i) => (
-        <TabPanel value={value} index={i}>
+        <TabPanel
+          value={value}
+          index={i}
+          key={i}
+        >
           {component}
         </TabPanel>
       ))}
@@ -58,7 +65,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>

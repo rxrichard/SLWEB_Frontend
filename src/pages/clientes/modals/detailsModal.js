@@ -27,6 +27,7 @@ import {
   Edit as EditIcon,
   ThumbDownAlt as ThumbDownAltIcon,
   ThumbUpAlt as ThumbUpAltIcon,
+  DeleteForever as DeleteForeverIcon
 } from '@material-ui/icons';
 import { RED_PRIMARY } from '../../../misc/colors'
 import { toValidString } from '../../../misc/commom_functions'
@@ -141,6 +142,31 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
       Toast(Cliente.ClienteStatus === 'A' ? 'Falha ao inativar cliente' : 'Falha ao ativar cliente', 'update', toastId, 'error')
       setWait(false)
     }
+  }
+
+  const handleDeleteClient = async () => {
+    const confirmou = window.confirm('Deseja realmente excluir este cliente?')
+
+    if (confirmou) {
+      let toastId = null
+
+      toastId = Toast('Excluindo...', 'wait')
+      setWait(true)
+
+      try {
+        await api.delete(`/client/deletar/${String(Details.CNPJ).trim()}/${String(Details.A1_COD).trim()}/${String(Details.A1_LOJA).trim()}`)
+
+        Toast('Cliente excluído', 'update', toastId, 'success')
+        setWait(false)
+
+        updateClientesArray(oldState => oldState.filter(cliente => cliente.CNPJ !== Details.CNPJ))
+        onClose()
+      } catch (err) {
+        Toast('Falha ao excluir cliente', 'update', toastId, 'error')
+        setWait(false)
+      }
+    }
+
   }
 
   return (
@@ -436,38 +462,67 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
       </DialogContent>
 
       <DialogActions>
-        {allowEditing ?
-          <Button
-            disabled={wait}
-            onClick={() => handleInativar(Details)}
-            color="primary"
-            startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
-          >
-            {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
-          </Button>
-          :
-          <Button
-            disabled={wait}
-            onClick={() => {
-              DetailsChangeHandler(backupData)
-              setAllowEditing(true)
-            }
-            }
-            color="secondary"
-            startIcon={<CloseIcon />}
-          >
-            Discartar Alterações
-          </Button>
-        }
-
-        <Button
-          disabled={wait}
-          onClick={() => handleChangeEditingState(Details)}
-          color="primary"
-          startIcon={allowEditing ? <EditIcon /> : <SaveIcon />}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItem: 'center',
+            width: '100%',
+          }}
         >
-          {allowEditing ? 'Editar' : 'Salvar'}
-        </Button>
+          {allowEditing ? (
+            <Button
+              disabled={wait}
+              onClick={handleDeleteClient}
+              color="secondary"
+              startIcon={<DeleteForeverIcon />}
+            >
+              Excluir Cliente
+            </Button>
+          ) : <div />}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItem: 'center',
+            }}
+          >
+            {allowEditing ?
+              <Button
+                disabled={wait}
+                onClick={() => handleInativar(Details)}
+                color="primary"
+                startIcon={Details.ClienteStatus === 'A' ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
+              >
+                {Details.ClienteStatus === 'A' ? 'Inativar' : 'Reativar'}
+              </Button>
+              :
+              <Button
+                disabled={wait}
+                onClick={() => {
+                  DetailsChangeHandler(backupData)
+                  setAllowEditing(true)
+                }
+                }
+                color="secondary"
+                startIcon={<CloseIcon />}
+              >
+                Descartar Alterações
+              </Button>
+            }
+
+            <Button
+              disabled={wait}
+              onClick={() => handleChangeEditingState(Details)}
+              color="primary"
+              startIcon={allowEditing ? <EditIcon /> : <SaveIcon />}
+            >
+              {allowEditing ? 'Editar' : 'Salvar'}
+            </Button>
+          </div>
+        </div>
       </DialogActions>
     </Dialog>
   );

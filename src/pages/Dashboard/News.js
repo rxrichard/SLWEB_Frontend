@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { api } from '../../services/api';
-
+import React from 'react';
 import { Slider, Slide, Caption } from "react-materialize";
+
 import { Button } from '@material-ui/core'
 
 import news from "../../assets/news.jpg";
@@ -16,37 +15,10 @@ function News({ onOpen }) {
   const [newsModalOpen, setNewsModalOpen] = useState(false);
   const [displayedNews, setDisplayedNews] = useState(null);
 
-  useEffect(() => {
-    async function LoadNews() {
-      try {
-        const response = await api.get('/dashboard/news')
+import { Button } from '@material-ui/core'
 
-        setNews(response.data.News)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    LoadNews();
-  }, [])
-
-  const handleOpenModal = (news) => {
-    setNewsModalOpen(true)
-    setDisplayedNews(news)
-  }
-
-  const handleCloseModal = () => {
-    setNewsModalOpen(false)
-    setDisplayedNews(null)
-  }
-
+function News({ onOpenModal, News }) {
   return (
-    <>
-      <NewsDialog
-        open={newsModalOpen}
-        onClose={handleCloseModal}
-        title={displayedNews === null ? '' : displayedNews.ModalHeaderTitle}
-        content={displayedNews === null ? '' : displayedNews.ModalContent}
-      />
       <Slider
         fullscreen={false}
         options={{
@@ -56,13 +28,14 @@ function News({ onOpen }) {
           interval: 6000,
         }}
       >
-        {news.map(n => (
+        {News.map(n => (
           <Slide
+            key={n.NewsId}
             image={
               <img
                 alt=""
                 src={`https://source.unsplash.com/1280x720/?coffee/${n.NewsId}`}
-                // src={`https://source.unsplash.com/random/1280x720?sig=${n.NewsId}`}
+              // src={`https://source.unsplash.com/random/1280x720?sig=${n.NewsId}`}
               />
             }
           >
@@ -80,7 +53,7 @@ function News({ onOpen }) {
                   style={{
                     margin: '100px 0px 0px 0px'
                   }}
-                  onClick={() => handleOpenModal(n)}
+                  onClick={() => onOpenModal(n)}
                   variant='contained'
                   color='secondary'
                 >
@@ -177,7 +150,6 @@ function News({ onOpen }) {
         </Caption>
       </Slide> */}
       </Slider>
-    </>
   );
 }
 

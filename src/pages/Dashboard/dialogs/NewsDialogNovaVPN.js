@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../../services/api'
+import { api } from '../../../services/api'
 import { saveAs } from "file-saver";
 
 import { withStyles, useTheme, } from '@material-ui/core/styles';
@@ -18,8 +18,8 @@ import {
   Typography,
   useMediaQuery
 } from '@material-ui/core'
-import { Toast } from '../../components/toasty'
-import { toValidString } from '../../misc/commom_functions'
+import { Toast } from '../../../components/toasty'
+import { toValidString } from '../../../misc/commom_functions'
 
 export const NewsDialog = ({ open, onClose }) => {
   const theme = useTheme();

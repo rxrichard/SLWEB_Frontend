@@ -1,40 +1,158 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../services/api'
 
 import { Panel } from "../../components/commom_in";
+import { Menu, Close, Add, Delete } from '@material-ui/icons';
+import { Fab, Grow } from '@material-ui/core'
+
+import { RED_PRIMARY } from '../../misc/colors'
+import { roleLevel } from '../../misc/commom_functions'
+import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from '../../misc/role_levels'
+
 import News from './News'
-import { NewsDialog } from './NewsDialog'
+import { NewsDialog } from './dialogs/NewsDialog'
+import { CreateNews } from './dialogs/CreateNewsDialog'
+import { DeleteNewsDialog } from './dialogs/DeleteNewsDialog'
 
 const Dashboard = () => {
   const [newsModalOpen, setNewsModalOpen] = useState(false)
+  const [createNewsModalOpen, setCreateNewsModalOpen] = useState(false);
+  const [deleteNewsModalOpen, setDeleteNewsModalOpen] = useState(false);
+  const [moreOptions, setMoreOptions] = useState(false);
+  const [displayedNews, setDisplayedNews] = useState(null);
+  const [news, setNews] = useState([]);
 
-  const handleOpenNewsModal = () => {
+
+  useEffect(() => {
+    async function LoadNews() {
+      try {
+        const response = await api.get('/dashboard/news')
+
+        setNews(response.data.News)
+      } catch (err) {
+      }
+    }
+    LoadNews();
+  }, [])
+
+  const handleOpenCreateNewsModal = () => {
+    setCreateNewsModalOpen(true)
+  }
+
+  const handleCloseCreateNewsModal = () => {
+    setCreateNewsModalOpen(false)
+  }
+
+  const handleOpenDeleteNewsModal = () => {
+    setDeleteNewsModalOpen(true)
+  }
+
+  const handleCloseDeleteNewsModal = () => {
+    setDeleteNewsModalOpen(false)
+  }
+
+  const handleMoreOptions = () => {
+    setMoreOptions(oldState => !oldState)
+  }
+
+  const handleOpenNewsModal = (news) => {
     setNewsModalOpen(true)
+    setDisplayedNews(news)
   }
 
   const handleCloseNewsModal = () => {
     setNewsModalOpen(false)
+    setDisplayedNews(null)
   }
 
-  return window.innerWidth < 768 ? (
-    <>
-      <NewsDialog
-        open={newsModalOpen}
-        onClose={handleCloseNewsModal}
-      />
-      <News
-        onOpen={handleOpenNewsModal}
-      />
-    </>
-  ) : (
+  return (
     <Panel>
       <NewsDialog
         open={newsModalOpen}
         onClose={handleCloseNewsModal}
+        title={displayedNews === null ? '' : displayedNews.ModalHeaderTitle}
+        content={displayedNews === null ? '' : displayedNews.ModalContent}
+      />
+      <CreateNews
+        open={createNewsModalOpen}
+        onClose={handleCloseCreateNewsModal}
+      />
+      <DeleteNewsDialog
+        open={deleteNewsModalOpen}
+        onClose={handleCloseDeleteNewsModal}
+        News={news}
+        onHandleNews={setNews}
       />
       <News
-        onOpen={handleOpenNewsModal}
+        onOpenModal={handleOpenNewsModal}
+        News={news}
       />
+      {roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ?
+        null
+        :
+        (
+          <div
+            className="YAlign"
+            style={{
+              position: "absolute",
+              right: "16px",
+              bottom: "16px",
+              alignItems: "flex-end",
+              zIndex: "999"
+            }}
+          >
+            <Grow
+              in={moreOptions}
+              style={{ transformOrigin: '0 0 0' }}
+              {...(moreOptions ? { timeout: 1000 } : {})}
+            >
+              <Fab
+                onClick={handleOpenDeleteNewsModal}
+                variant="extended"
+                style={{
+                  backgroundColor: '#FFF',
+                  margin: '0px 0px 8px 0px',
+                  color: RED_PRIMARY,
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                }}
+              >
+                <Delete />
+                Apagar Notícia
+              </Fab>
+            </Grow>
+            <Grow
+              in={moreOptions}
+              style={{ transformOrigin: '0 0 0' }}
+              {...(moreOptions ? { timeout: 500 } : {})}
+            >
+              <Fab
+                onClick={handleOpenCreateNewsModal}
+                variant="extended"
+                style={{
+                  backgroundColor: '#FFF',
+                  margin: '0px 0px 8px 0px',
+                  color: '#0062ff',
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                }}
+              >
+                <Add />
+                Nova Notícia
+              </Fab>
+            </Grow>
+            <Fab
+              color={moreOptions ? "primary" : "secondary"}
+              onClick={handleMoreOptions}
+            >
+              {moreOptions ? <Close /> : <Menu />}
+            </Fab>
+          </div>
+        )}
     </Panel>
   )
 }
+
 export default Dashboard
