@@ -111,7 +111,7 @@ const Monitor = () => {
 
     const DTO = {
       Ativo: TMT.EquiCod,
-      UltLeitura: TMT.MáxDeDataLeitura !== null ? moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss") :  'Desconhecido',
+      UltLeitura: TMT.MáxDeDataLeitura !== null ? moment(TMT.MáxDeDataLeitura).utc().format("DD/MM/YYYY HH:mm:ss") : 'Desconhecido',
       Franqueado: TMT.GrupoVenda,
       Email: toValidString(editableDetails.Email),
       Contato: toValidString(editableDetails.Telefone),
@@ -139,7 +139,25 @@ const Monitor = () => {
 
       setModalChamadoOpen(false)
       Toast('Chamado aberto!', 'update', toastId, 'success')
+
+      setTarget({
+        ...target,
+        UltChamado: moment().subtract(3, 'hours').toDate(),
+      })
+      
+      setTelemetrias(oldState => {
+        let aux = [...oldState]
+
+        aux.forEach(tel => {
+          if (tel.EquiCod === target.EquiCod) {
+            tel.UltChamado = moment().subtract(3, 'hours').toDate()
+          }
+        })
+
+        return aux
+      })
     } catch (err) {
+      console.log(err)
       Toast('Falha ao abrir chamado, tente novamente', 'update', toastId, 'error')
     }
   }
@@ -250,7 +268,7 @@ const Monitor = () => {
                   display: 'flex',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                  
+
                 }}
               >
                 <div
@@ -352,7 +370,7 @@ const useStyles = makeStyles((theme) => ({
   },
   teste: {
     width: '100%',
-    backgroundColor:'#ff2'
+    backgroundColor: '#ff2'
   }
 }));
 
