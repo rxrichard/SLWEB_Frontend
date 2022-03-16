@@ -3,6 +3,20 @@ import { Slider, Slide, Caption } from "react-materialize";
 
 import { Button } from '@material-ui/core'
 
+import news from "../../assets/news.jpg";
+import wall from "../../assets/black-white-wall.jpg";
+import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
+import { NewsDialog } from './NewsDialog'
+import {BoxTitle} from '../../components/commom_in'
+
+
+function News({ onOpen }) {
+  const [news, setNews] = useState([]);
+  const [newsModalOpen, setNewsModalOpen] = useState(false);
+  const [displayedNews, setDisplayedNews] = useState(null);
+
+import { Button } from '@material-ui/core'
+
 function News({ onOpenModal, News }) {
   return (
       <Slider
@@ -28,20 +42,12 @@ function News({ onOpenModal, News }) {
             <Caption
               placement={n.BannerAlign}
             >
-              <h3
-                style={{
-                  textShadow: '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333'
-                }}
-              >
-                {n.BannerTitle}
-              </h3>
-              <h5
-                style={{
-                  textShadow: '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333'
-                }}
-              >
+              <BoxTitle>
+              <h3>{n.BannerTitle}</h3>
+              <h5>
                 {n.BannerDescription}
               </h5>
+              </BoxTitle>
               {n.ModalContent !== null ?
                 <Button
                   style={{
@@ -56,6 +62,7 @@ function News({ onOpenModal, News }) {
                 :
                 null
               }
+             
             </Caption>
           </Slide>
         ))}

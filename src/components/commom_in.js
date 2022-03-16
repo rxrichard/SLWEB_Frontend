@@ -79,16 +79,16 @@ export const Panel = Styled.div`
     margin-top: 64px;
     margin-left: 73px; //novo sidebar
     display: flex;
-    justify-content: flex-start;
+    flex-direction: ${(props) => props.flexDirection || 'column'};
+    justify-content:  ${(props) =>props.jContent || 'flex-start'};
     align-items: center;
     flex-wrap: wrap;
-    flex-direction: column;
     background-color: none;
-    border: 1px solid #ccc;
-    box-shadow: 0px -0px 5px 3px rgba(0, 0, 0, 0.2);
+    border: ${(props) => props.border||'1px solid #ccc' } ;
+    box-shadow: ${(props) => props.boxShadow|| '0px -0px 5px 3px rgba(0, 0, 0, 0.2)'};
     padding: 20px 20px 30px 20px;
     
-    height: calc(100% - 64px);
+    height:  calc(100% - 64px);
     width: calc(100% - 73px);
     
     //novo sidebar
@@ -162,7 +162,7 @@ export const CommomCheckbox = Styled.input`
     background-color: #ccc,
     opacity: 1,
     pointer-events: auto
-    border-radius: 4px
+    border-radius: 4px;
 `;
 
 export const Contagem = Styled.label`
@@ -219,11 +219,11 @@ export const Valor = Styled.input`
         }100%{
             padding: 0 1vw 0 1vw;
         }
-    }
+    };
 `;
 
 export const Data = Styled.input`
-`;
+`
 
 export const buttonFooter = Styled.div`
 height: 300px;
@@ -250,7 +250,7 @@ display: grid;
 grid-template-columns: repeat(4,17%);
 grid-template-rows: 1fr 100px 100px 100px 100px;
 border-bottom: 1px solid #cecece;
-margin-bottom: 10px
+margin-bottom: 10px;
 `;
 
 //Richard
@@ -274,7 +274,7 @@ export const Tit = Styled.div`
         margin-left: 10px;
         font-weight: bold;
         font-size: 16px;
-        color: #555
+        color: #555;
     }
 `;
 
@@ -291,5 +291,21 @@ display: grid;
 grid-template-columns: repeat(20,5%);
 grid-template-rows: 1fr 100px 100px 100px 100px;
 border-bottom: 1px solid #cecece;
-margin-bottom: 10px
+margin-bottom: 10px;
+`;
+
+
+export const BoxTitle = Styled.div`
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 1rem;
+    width: 100%;
+    height: 35vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h3{
+        font-size: 3rem;
+    }
 `;

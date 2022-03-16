@@ -10,6 +10,7 @@ export const Block = styled.div`
   font-size: 1.5rem;
   background: ${(props) => props.bgColor || "#fff"};  
   padding: 3vw;
+  border: ${props => props.border || "none"};
 
   @media (max-width: 768px) {
     width: 100vw;
@@ -17,6 +18,23 @@ export const Block = styled.div`
     margin:0;
     padding:1vw;
     font-size: 1rem;
+    
+  }
+`;
+
+
+export const BlockTotal = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width:100vw;
+  max-width: 100vw;
+  font-size: 1.5rem;
+  background: ${(props) => props.bgColor || "#fff"};  
+  padding:5vw;
+  @media (max-width: 768px) {
+      flex-direction: column;
   }
 `;
 
@@ -24,10 +42,6 @@ export const Title = styled.h1`
   font-size: 3em;
   color: #fff; ;
   text-align: center;  
-  @media (max-width: 768px) {
-    width: 100vw;
-    margin-top:5vw;
-  }
 `;
 
 export const Text = styled.p`
@@ -119,5 +133,13 @@ export const Button = styled.button`
     width:95vw;
     height: 12vh; 
   }
-
 `;
+
+export const InputUnderline  = styled.input`
+  border-radius: 0.5rem;
+  border: none;
+  width: 40vw
+  height: 5vh;
+
+  
+`

@@ -1,45 +1,29 @@
 import React, { useState, useEffect } from "react";
+import { api } from '../../services/api';
 import moment from "moment";
 
-import { api } from '../../services/api';
-
-import { makeStyles } from '@material-ui/core/styles';
-import {
-  ListSubheader,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
-  Button,
-  Typography,
-} from '@material-ui/core/';
-import {
-  ExpandLess,
-  ExpandMore,
-  CheckCircle,
-  Cancel,
-  Email
-} from '@material-ui/icons/';
+import { Email } from '@material-ui/icons'
+import { Button as MaterialButton } from '@material-ui/core'
 
 import Loading from '../../components/loading_screen'
 import { toValidString } from '../../misc/commom_functions'
 import { Toast } from '../../components/toasty'
+// import Modal from "../../components/Layout/Modal/index";
+import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } from "./Box/style";
 
-import MiFixModal from './modals/AbrirChamado'
-import DetalhesModal from './modals/Detalhes'
+import DetalhesDialog from "./modals/Detalhes";
+import AbrirChamadoDialog from "./modals/AbrirChamado";
 
 const Monitor = () => {
-  const classes = useStyles();
-
   const [loaded, setLoaded] = useState(false);
   const [telemetrias, setTelemetrias] = useState([]);
-  const [expand, setExpand] = useState(false);
   const [target, setTarget] = useState({});
   const [modalChamadoOpen, setModalChamadoOpen] = useState(false);
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [modalDetailsDesc, setModalDetailsDesc] = useState('');
   const [editableDetails, setEditableDetails] = useState(editableDetailsEmptyExample);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   useEffect(() => {
     async function LoadData() {
@@ -157,35 +141,21 @@ const Monitor = () => {
         return aux
       })
     } catch (err) {
-      console.log(err)
       Toast('Falha ao abrir chamado, tente novamente', 'update', toastId, 'error')
     }
   }
 
-  const handleRevealDetails = (equicod) => {
-    setExpand((expand) => {
-      if (String(expand) === String(equicod)) {
-        return false
-      } else {
-        return equicod
-      }
-    });
-  };
-
   return !loaded ? <Loading /> : (
-    <div
-      style={{
-        width: "100%",
-        borderRadius: '0px 0px 4px 4px',
-        borderBottom: `5px solid #000`,
-        borderLeft: `1px solid #000`,
-        borderRight: `1px solid #000`,
-        borderTop: `1px solid #CCC`,
-        maxHeight: '100%',
-        overflow: 'auto'
-      }}
-    >
-      <MiFixModal
+    <>
+      <DetalhesDialog
+        open={modalDetailsOpen}
+        onClose={handleCloseDetailsModal}
+        title={`${modalDetailsDesc} da máquina ${target.EquiCod}`}
+        TMT={target}
+        tipo={modalDetailsDesc}
+      />
+
+      <AbrirChamadoDialog
         open={modalChamadoOpen}
         onClose={handleCloseChamadoModal}
         title='Abrir chamado MiFix'
@@ -193,186 +163,63 @@ const Monitor = () => {
         Details={editableDetails}
         UltChamado={target.UltChamado}
         action={
-          <Button
-            onClick={() => handleAbrirChamado(target)}
+          <MaterialButton
             color="primary"
+            onClick={() => handleAbrirChamado(target)}
             variant="contained"
             startIcon={<Email />}
             disabled={target.UltChamado !== null}
           >
             Abrir chamado
-          </Button>
+          </MaterialButton>
         }
       />
-      <DetalhesModal
-        open={modalDetailsOpen}
-        onClose={handleCloseDetailsModal}
-        title={`${modalDetailsDesc} da máquina ${target.EquiCod}`}
-        TMT={target}
-        tipo={modalDetailsDesc}
-      />
-      <List
-        aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-          >
-            Monitoramento
-          </ListSubheader>
-        }
-        className={classes.root}
-      >
+      
+      <Container>
         {telemetrias.map(telemetria => (
-          <>
-            <ListItem
-              button
-              onClick={() => handleRevealDetails(telemetria.EquiCod)}
-              className={classes.lines}
+          <Box>
+            <Text>Sua telemetria está: { }</Text>
+            <Text
+              color={String(telemetria.LeitOk).trim() !== 'KO' ? 'green' : 'red'}
             >
-              <ListItemIcon>
-                {String(telemetria.LeitOk).trim() === 'KO' ?
-                  <Cancel
-                    style={{
-                      color: 'red'
-                    }}
-                  /> :
-                  <CheckCircle
-                    style={{
-                      color: 'green'
-                    }}
-                  />
-                }
-              </ListItemIcon>
-              <ListItemText primary={telemetria.EquiCod} secondary={`Última leitura: ${telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).utc().format('DD/MM/YYYY') : 'Desconhecido'}`} />
-
-              <ListItemText primary={
-                <div style={{
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                }}>
-                  {telemetria.AnxDesc}
-                </div>
-              } />
-
-              {telemetria.EquiCod === expand ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={telemetria.EquiCod === expand}
-              timeout="auto"
-              unmountOnExit
+              {String(telemetria.LeitOk).trim() !== 'KO' ? 'ONLINE' : 'OFFLINE'}
+            </Text>
+            <Text>Ativo: {telemetria.EquiCod}</Text>
+            <Image />
+            <Title>{telemetria.AnxDesc}</Title>
+            <Text>Última Leitura: {telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).format('DD/MM/YYYY HH:mm') : "Desconhecida"}</Text>
+            <ChamadoButton
+              Online={String(telemetria.LeitOk).trim() !== 'KO'}
+              onClick={() => handleOpenChamadoModal(telemetria)}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-
-                }}
+              <Email />
+              ABRIR CHAMADO
+            </ChamadoButton>
+            <Buttons>
+              <Button
+                borderRadius={'0px 0px 0px  1rem'}
+                onClick={() => handleOpenDetailsModal(telemetria, 'Leituras')}>
+                Leitura
+              </Button>
+              <Button
+                onClick={() => handleOpenDetailsModal(telemetria, 'Contador')}
               >
-                <div
-                  className="XAlign"
-                  style={{ justifyContent: 'flex-start' }}
-                >
-                  <div
-                    className={classes.infoContainer}
-                    onClick={() => handleOpenDetailsModal(telemetria, 'Leituras')}
-                  >
-                    <Typography>Leituras (nesta semana)</Typography>
-                    <Typography
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '1.2rem'
-                      }}
-                    >{toValidString(telemetria.Ql0, 0)}</Typography>
-                  </div>
-                  <div
-                    className={classes.infoContainer}
-                    onClick={() => handleOpenDetailsModal(telemetria, 'Contador')}
-                  >
-                    <Typography>Contador (Geral)</Typography>
-                    <Typography
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '1.2rem'
-                      }}
-                    >{toValidString(telemetria.Con0, 0)}</Typography>
-                  </div>
-                  <div
-                    className={classes.infoContainer}
-                    onClick={() => handleOpenDetailsModal(telemetria, 'Produção de doses')}
-                  >
-                    <Typography>Doses (nesta semana)</Typography>
-                    <Typography
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '1.2rem'
-                      }}
-                    >{toValidString(telemetria.Prd, 0)}</Typography>
-                  </div>
-                </div>
-                <Button
-                  style={{ margin: '10px 8px' }}
-                  disabled={String(telemetria.LeitOk).trim() !== 'KO'}
-                  onClick={() => handleOpenChamadoModal(telemetria)}
-                  color="primary"
-                  variant="contained"
-                  startIcon={<Email />}
-                >
-                  Abrir chamado
-                </Button>
-              </div>
-            </Collapse>
-          </>
+                Contador
+              </Button>
+              <Button
+                onClick={() => handleOpenDetailsModal(telemetria, 'Produção de doses')}
+                borderRadius={'0px 0px 1rem  0px'}>
+                Doses
+              </Button>
+            </Buttons>
+          </Box>
         ))}
-      </List>
-    </div>
+      </Container>
+    </>
   )
 }
 
 export default Monitor;
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-  infoContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid #18a0fb',
-    borderRadius: '5px',
-    color: '#18a0fb',
-    backgroundColor: '#fff',
-    padding: '10px 20px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: '10px 8px',
-    minWidth: '200px',
-
-    '&:hover': {
-      transition: "200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-      cursor: 'pointer',
-      backgroundColor: '#18a0fb',
-      color: '#fff',
-    }
-  },
-  lines: {
-    borderBottom: '1px solid #CCC',
-
-    '&:last-child': {
-      borderBottom: 'none'
-    }
-  },
-  teste: {
-    width: '100%',
-    backgroundColor: '#ff2'
-  }
-}));
 
 const editableDetailsEmptyExample = {
   Email: "",
