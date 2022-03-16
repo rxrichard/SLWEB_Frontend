@@ -3,22 +3,14 @@ import { Slider, Slide, Caption } from "react-materialize";
 
 import { Button } from '@material-ui/core'
 
-import news from "../../assets/news.jpg";
-import wall from "../../assets/black-white-wall.jpg";
-import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
-import { NewsDialog } from './NewsDialog'
-import {BoxTitle} from '../../components/commom_in'
-
-
-function News({ onOpen }) {
-  const [news, setNews] = useState([]);
-  const [newsModalOpen, setNewsModalOpen] = useState(false);
-  const [displayedNews, setDisplayedNews] = useState(null);
-
-import { Button } from '@material-ui/core'
+// import news from "../../assets/news.jpg";
+// import wall from "../../assets/black-white-wall.jpg";
+// import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
+// import { NewsDialog } from './dialogs/NewsDialog'
+import { BoxTitle } from '../../components/commom_in'
 
 function News({ onOpenModal, News }) {
-  return (
+    return (
       <Slider
         fullscreen={false}
         options={{
@@ -43,10 +35,10 @@ function News({ onOpenModal, News }) {
               placement={n.BannerAlign}
             >
               <BoxTitle>
-              <h3>{n.BannerTitle}</h3>
-              <h5>
-                {n.BannerDescription}
-              </h5>
+                <h3>{n.BannerTitle}</h3>
+                <h5>
+                  {n.BannerDescription}
+                </h5>
               </BoxTitle>
               {n.ModalContent !== null ?
                 <Button
@@ -55,14 +47,13 @@ function News({ onOpenModal, News }) {
                   }}
                   onClick={() => onOpenModal(n)}
                   variant='contained'
-                  color='secondary'
+                  color='primary'
                 >
                   Saiba mais
                 </Button>
                 :
                 null
               }
-             
             </Caption>
           </Slide>
         ))}
@@ -150,7 +141,7 @@ function News({ onOpenModal, News }) {
         </Caption>
       </Slide> */}
       </Slider>
-  );
-}
+    );
+  }
 
 export default News;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Input from "../../../components/materialComponents/InputUnderline";
-import { RED_PRIMARY, GREY_SECONDARY } from '../../../misc/colors'
+// import { RED_PRIMARY, GREY_SECONDARY } from '../../../misc/colors'
 import { BlockTotal, Block } from '../styles';
 
 export const BasicInfo = (props) => {

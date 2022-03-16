@@ -54,12 +54,12 @@ export const CreateNews = ({ open, onClose }) => {
 
       Toast('Notícia salva', 'update', toastId, 'success')
       setWait(false)
+      handleCloseModal()
     } catch (e) {
       Toast('Falha ao salvar notícia', 'update', toastId, 'error')
       setWait(false)
     }
 
-    handleCloseModal()
   }
 
   const handleCloseModal = () => {

@@ -6,8 +6,8 @@ import { api } from "../../services/api";
 import { saveAs } from "file-saver";
 
 //import de elementos visuais
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+// import { useTheme } from "@material-ui/core/styles";
+// import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
