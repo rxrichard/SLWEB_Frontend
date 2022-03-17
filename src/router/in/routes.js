@@ -14,7 +14,7 @@ import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import AdmFranquia from "../../pages/administracao/index";
 import Home from "../../pages/dashboard/index";
-import Monitor from "../../pages/monitor/Index";
+import Monitor from "../../pages/monitor/index";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
 import Compras from '../../pages/compras/index'

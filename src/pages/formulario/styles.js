@@ -41,7 +41,8 @@ export const BlockTotal = styled.div`
 export const Title = styled.h1`
   font-size: 3em;
   color: #fff; ;
-  text-align: center;  
+  text-align: center;
+  padding: 0px 8px;
 `;
 
 export const Text = styled.p`
@@ -50,6 +51,7 @@ export const Text = styled.p`
   @media (max-width: 768px) {
     font-size: 1.5em;
     width: 95vw;
+    padding: 0px 8px;
   }
 `;
 

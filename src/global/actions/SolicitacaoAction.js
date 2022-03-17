@@ -14,6 +14,7 @@ import {
   CLICK_ADD_BEBIDA,
   CLICK_REMOVE_BEBIDA,
   CLEAR_CONFIG,
+  CHANGE_BEBIDA_DETAILS_INDIVIDUALY,
 
   CHANGE_MAQUINA_CORPORATIVA,
   CHOOSE_INIBIR_COPOS,
@@ -40,7 +41,7 @@ export const clickButton = (value) => ({
 
 export const clickRemove = (value) => ({
   type: CLICK_REMOVE_BEBIDA,
-  index: value,
+  id: value,
 });
 
 export const clearConfig = () => ({
@@ -81,10 +82,12 @@ export const LoadConfigPadrao = (value) => ({
   type: LOAD_CONFIGURACOES_PADRAO,
   ConfigPadrao: value,
 });
+
 export const LoadMinDDL = (value) => ({
   type: LOAD_MIN_DDL_PARA_ENVIO,
   DDL: value,
 });
+
 export const LoadHelper = (value) => ({
   type: LOAD_AJUDAS,
   help: value,
@@ -144,18 +147,27 @@ export const DefineContato = (value) => ({
   type: CHOOSE_CONTATO,
   Contato: value,
 });
+
 export const ChooseTelefone = (value) => ({
   type: CHOOSE_TELEFONE_CONTATO,
   Telefone: value,
 });
+
 export const ChooseEmail = (value) => ({
   type: CHOOSE_EMAIL_ACOMPANHAMENTO,
   Email: value,
 });
+
 export const DefineOBS = (value) => ({
   type: SET_OBSERVACAO,
   Obs: value,
 });
+
 export const ResetRequest = () => ({
   type: RESET,
+});
+
+export const ChangeBebidaDetailsManually = (value) => ({
+  type: CHANGE_BEBIDA_DETAILS_INDIVIDUALY,
+  changed: value
 });

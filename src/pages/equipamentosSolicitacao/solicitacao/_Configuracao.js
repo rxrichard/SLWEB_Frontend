@@ -2,121 +2,311 @@ import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Close from "@material-ui/icons/Close";
+import { DataGrid } from '@material-ui/data-grid'
+import { RED_PRIMARY } from '../../../misc/colors'
 
-import { clickRemove } from "../../../global/actions/SolicitacaoAction";
+import Input from 'react-number-format'
 
-//estilo
-const useStyles = makeStyles({
-  table: {
-    marginTop: "8px",
-    minWidth: 700,
-  },
-});
+import { clickRemove, ChangeBebidaDetailsManually } from "../../../global/actions/SolicitacaoAction";
 
 //component
 function CustomizedTable(props) {
   const classes = useStyles();
 
-  const { Configuracao, TipoValidador } = props.State;
+  const { Configuracao } = props.State;
 
-  const { clickRemove } = props;
+  const { clickRemove, ChangeBebidaDetailsManually } = props;
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Seleção</StyledTableCell>
-            <StyledTableCell>Bebida</StyledTableCell>
-            <StyledTableCell>Medida</StyledTableCell>
-            <StyledTableCell>Valor Real</StyledTableCell>
-            <StyledTableCell>Valor Complementar</StyledTableCell>
-            <StyledTableCell>Tipo</StyledTableCell>
-            <StyledTableCell>Ativa</StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Configuracao.map((row, i) => (
-            <StyledTableRow key={row.selecao}>
-              <StyledTableCell>{row.selecao}</StyledTableCell>
-              <StyledTableCell>{row.bebida}</StyledTableCell>
+    <DataGrid
+      className={classes.datagrid}
+      rows={Configuracao}
+      columns={returnColunsDef(clickRemove)}
+      disableSelectionOnClick={true}
+      disableColumnMenu={true}
+      checkboxSelection={false}
+      pageSize={Configuracao.length}
+      hideFooter={true}
+      onCellEditCommit={(params, event) => {
+        console.log(params);
+        ChangeBebidaDetailsManually(params)
+      }}
+    />
+  )
+  // return (
+  // <TableContainer component={Paper}>
+  //   <Table size="small">
+  //     <TableHead>
+  //       <TableRow>
+  //         <StyledTableCell>Seleção</StyledTableCell>
+  //         <StyledTableCell>Bebida</StyledTableCell>
+  //         <StyledTableCell>Medida</StyledTableCell>
+  //         <StyledTableCell>Valor Real</StyledTableCell>
+  //         <StyledTableCell>Valor Complementar</StyledTableCell>
+  //         <StyledTableCell>Tipo</StyledTableCell>
+  //         <StyledTableCell>Ativa</StyledTableCell>
+  //         <StyledTableCell></StyledTableCell>
+  //       </TableRow>
+  //     </TableHead>
+  //     <TableBody>
+  //       {Configuracao.map((row, i) => (
+  //         <StyledTableRow key={row.selecao}>
+  //           <StyledTableCell>{row.selecao}</StyledTableCell>
+  //           <StyledTableCell>{row.bebida}</StyledTableCell>
 
-              <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
-              <StyledTableCell>
-                {formataPreço(row.valor, TipoValidador)}
-              </StyledTableCell>
-              <StyledTableCell>
-                {formataPreço(row.valor2, TipoValidador)}
-              </StyledTableCell>
-              <StyledTableCell>{row.tipo}</StyledTableCell>
-              <StyledTableCell>{row.configura ? "Sim" : "Não"}</StyledTableCell>
-              <StyledTableCell>
-                <Button
-                  variant="outlined"
-                  color="default"
-                  size="large"
-                  className={classes.button}
-                  startIcon={<Close />}
-                  onClick={() => clickRemove(i)}
-                >
-                  Remover
-                </Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  //           <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
+  //           <StyledTableCell>
+  //             {formataPreço(row.valor, TipoValidador)}
+  //           </StyledTableCell>
+  //           <StyledTableCell>
+  //             {formataPreço(row.valor2, TipoValidador)}
+  //           </StyledTableCell>
+  //           <StyledTableCell>{row.tipo}</StyledTableCell>
+  //           <StyledTableCell>{row.configura ? "Sim" : "Não"}</StyledTableCell>
+  //           <StyledTableCell>
+  //             <Button
+  //               variant="outlined"
+  //               color="default"
+  //               size="large"
+  //               className={classes.button}
+  //               startIcon={<Close />}
+  //               onClick={() => clickRemove(i)}
+  //             >
+  //               Remover
+  //             </Button>
+  //           </StyledTableCell>
+  //         </StyledTableRow>
+  //       ))}
+  //     </TableBody>
+  //   </Table>
+  // </TableContainer>
+  // );
 }
+
+
 
 const mapStateToProps = (store) => ({
   State: store.solicitacaoState,
 });
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ clickRemove }, dispatch);
+  bindActionCreators({
+    clickRemove,
+    ChangeBebidaDetailsManually
+  }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomizedTable);
 
-//estilo celula
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+const useStyles = makeStyles({
+  table: {
+    marginTop: "8px",
+    minWidth: 700,
   },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
-
-//estilo linha
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const formataPreço = (valor, TipoValidador) => {
-  if (TipoValidador === "Ficha") {
-    /*no fim das contas os preços pagos em ficha ainda contam como R$ 
-    então não tem necessidade de exibir uma unidade monetária 'F$'*/
-    return `R$ ${typeof valor == "undefined" ? "0" : valor}`;
-    // return `${typeof valor == 'undefined' ? '0' : valor} Ficha`
-  } else {
-    return `R$ ${typeof valor == "undefined" ? "0" : valor}`;
+  datagrid: {
+    width: '100%',
+    height: '100%',
+    '&>div.MuiDataGrid-main>div>div.MuiDataGrid-windowContainer>div.MuiDataGrid-window': {
+      overflowX: 'hidden',
+    }
   }
-};
+});
+
+const returnColunsDef = (onRemoveDrink) => {
+  const columns = [
+    {
+      field: "selecao",
+      headerName: "Seleção",
+      type: "number",
+      hasFocus: true,
+      width: 80,
+      sortable: false,
+      editable: true,
+      align: 'center',
+      renderCell: (params) => (
+        <div
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+        >
+          {params.value}
+        </div>
+      ),
+      renderEditCell: (params) => (
+        <Input
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+          autoFocus={true}
+          decimalScale={0}
+          fixedDecimalScale={false}
+          isNumericString
+          prefix=""
+          allowNegative={false}
+          onChange={(e) => {
+            params.api.setEditCellValue(
+              {
+                id: params.id,
+                field: params.field,
+                value: Number(e.target.value),
+              },
+              e
+            );
+          }}
+          value={params.value}
+        />
+      ),
+    },
+    {
+      field: "bebida",
+      headerName: "Bebida",
+      flex: 1,
+      sortable: false,
+      editable: false,
+    },
+    {
+      field: "medida",
+      headerName: "Medida",
+      width: 80,
+      type: "number",
+      editable: false,
+      sortable: false,
+      renderCell: (params) => `${params.value}ML`
+    },
+    {
+      field: "valor",
+      headerName: "Vlr. Real",
+      type: "number",
+      hasFocus: true,
+      width: 90,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => (
+        <div
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+        >
+          R$ {String(params.value).replace('.', ',')}
+        </div>
+      ),
+      renderEditCell: (params) => (
+        <Input
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+          autoFocus={true}
+          decimalScale={4}
+          fixedDecimalScale={false}
+          isNumericString
+          decimalSeparator=","
+          thousandSeparator='.'
+          prefix="R$ "
+          allowNegative={false}
+          onChange={(e) => {
+            params.api.setEditCellValue(
+              {
+                id: params.id,
+                field: params.field,
+                value: Number.parseFloat(String(e.target.value).replace('R$ ', '').replace('.', '').replace(',', '.')).toFixed(4),
+              },
+              e
+            );
+          }}
+          value={params.value}
+        />
+      ),
+    },
+    {
+      field: "valor2",
+      headerName: "Vlr. Complementar",
+      type: "number",
+      hasFocus: true,
+      width: 150,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => (
+        <div
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+        >
+          R$ {String(params.value).replace('.', ',')}
+        </div>
+      ),
+      renderEditCell: (params) => (
+        <Input
+          style={{
+            fontWeight: "bold",
+            color: RED_PRIMARY,
+          }}
+          autoFocus={true}
+          decimalScale={4}
+          fixedDecimalScale={false}
+          isNumericString
+          decimalSeparator=","
+          thousandSeparator='.'
+          prefix="R$ "
+          allowNegative={false}
+          onChange={(e) => {
+            params.api.setEditCellValue(
+              {
+                id: params.id,
+                field: params.field,
+                value: Number.parseFloat(String(e.target.value).replace('R$ ', '').replace('.', '').replace(',', '.')).toFixed(4),
+              },
+              e
+            );
+          }}
+          value={params.value}
+        />
+      ),
+    },
+    {
+      field: "tipo",
+      headerName: "Tipo",
+      width: 70,
+      align: 'center',
+      editable: false,
+      sortable: false,
+    },
+    {
+      field: "configura",
+      headerName: "Ativa",
+      width: 70,
+      align: 'center',
+      editable: false,
+      sortable: false,
+      renderCell: (params) => params.value ? 'Sim' : 'Não'
+    },
+    {
+      field: "id",
+      headerName: "Remover",
+      editable: false,
+      width: 170,
+      align: 'center',
+      sortable: false,
+      renderHeader: () => (<div />),
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color="default"
+          size="medium"
+          startIcon={<Close />}
+          onClick={() => onRemoveDrink(params.value)}
+        >
+          Remover
+        </Button>
+      ),
+    }
+  ]
+
+  return columns
+}

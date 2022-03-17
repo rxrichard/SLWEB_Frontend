@@ -50,7 +50,7 @@ const CodeView = (props) => {
 
       <Block>
         <Text color="#41211f">
-         Para ter acesso ao formulário, selecione um dos botões abaixo:
+         Para ter acesso ao formulário, clique em uma das opções abaixo:
         </Text>
 
         <Dialog open={openM1} onClose={handleClose}>
@@ -58,7 +58,7 @@ const CodeView = (props) => {
           <DialogContent>
             <DialogContentText>
               Digite seu melhor email para receber a senha de acesso para
-              preencher o questionário.
+              preenchimento do questionário.
             </DialogContentText>
             <TextField
               autoFocus

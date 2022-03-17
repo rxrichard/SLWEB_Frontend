@@ -300,6 +300,7 @@ export const BoxTitle = Styled.div`
     border-radius: 1rem;
     width: 100%;
     height: 35vh;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;

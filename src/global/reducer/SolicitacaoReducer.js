@@ -26,6 +26,7 @@ import {
   CHOOSE_EMAIL_ACOMPANHAMENTO,
   SET_OBSERVACAO,
   RESET,
+  CHANGE_BEBIDA_DETAILS_INDIVIDUALY
 } from "../actions/SolicitacaoActionTypes";
 
 export const SolicitacaoReducer = (state = initialState, action) => {
@@ -83,8 +84,8 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         novoContenedor = [...state.Contenedor].concat(
           JSON.parse(
             "[" +
-              String(action.Configuracao.contenedor).replace(/0/g, ",") +
-              "]"
+            String(action.Configuracao.contenedor).replace(/0/g, ",") +
+            "]"
           )
         );
 
@@ -94,8 +95,8 @@ export const SolicitacaoReducer = (state = initialState, action) => {
             ...state.Contenedor,
             ...JSON.parse(
               "[" +
-                String(action.Configuracao.contenedor).replace(/0/g, ",") +
-                "]"
+              String(action.Configuracao.contenedor).replace(/0/g, ",") +
+              "]"
             ),
           ]),
         ];
@@ -125,19 +126,19 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         Configuracao: Filtrado,
       };
     case CLICK_REMOVE_BEBIDA:
-      const removedBebida = state.Configuracao[action.index];
+      const removedBebida = state.Configuracao.filter(config => Number(config.id) === Number(action.id))[0];
+
       const removedBebidaCont =
         removedBebida.tipo === "Mistura"
           ? JSON.parse(
-              "[" + String(removedBebida.contenedor).replace(/0/g, ",") + "]"
-            )
+            "[" + String(removedBebida.contenedor).replace(/0/g, ",") + "]"
+          )
           : removedBebida.contenedor;
+
       let contenedoresNecessariosRestantes = [];
       // let state.Contenedor = [...state.Contenedor]
 
-      state.Configuracao.splice(action.index, 1);
-
-      state.Configuracao.map((config) => {
+      state.Configuracao.forEach((config) => {
         if (config.tipo === null) {
           return null;
         } else if (config.tipo === "Mistura") {
@@ -146,6 +147,7 @@ export const SolicitacaoReducer = (state = initialState, action) => {
           ].concat(
             JSON.parse("[" + String(config.contenedor).replace(/0/g, ",") + "]")
           );
+
           contenedoresNecessariosRestantes = [
             ...new Set([
               ...contenedoresNecessariosRestantes,
@@ -154,6 +156,7 @@ export const SolicitacaoReducer = (state = initialState, action) => {
               ),
             ]),
           ];
+
           return null;
         } else if (
           contenedoresNecessariosRestantes.indexOf(config.contenedor) < 0
@@ -187,7 +190,46 @@ export const SolicitacaoReducer = (state = initialState, action) => {
       return {
         ...state,
         Contenedor: [...state.Contenedor],
-        Configuracao: [...state.Configuracao],
+        Configuracao: state.Configuracao.filter(config => Number(config.id) !== Number(action.id)),
+      };
+    case CHANGE_BEBIDA_DETAILS_INDIVIDUALY:
+      if(action.changed.field === 'selecao'){
+        let valid = true
+        let usedSelectionNumbers = []
+        let lowestSelectionNumberAvailable = null
+
+        //validar se a nova seleção que o cara escolheu está disponivel
+        console.log('nova seleção escolhida:' + action.changed.value)
+
+        for (let index in state.Configuracao) {
+          usedSelectionNumbers.push(state.Configuracao[index].selecao)
+          
+          if(Number(state.Configuracao[index].selecao) === Number(action.changed.value)){
+            valid = false
+            break;
+          }
+        }
+
+        //aqui eu posso por um toast falando que o valor é inválido talvez?
+        if(!valid){
+          for (let index = 1; index <= state.Capacidade; index++) {
+            if(usedSelectionNumbers.indexOf(index) < 0){
+              lowestSelectionNumberAvailable = index
+            }
+          }
+
+
+        }
+
+        //se estiver disponivel trocar, se não estiver retornar à seleção anterior
+      }else if(action.changed.field === 'valor'){
+        //validar se o preço que o cara está colocando é compativel com o sistema de pagamento
+        console.log('novo valor escolhido:' + action.changed.value)
+
+        //se não estiver disponivel retornar ao valor anterior ou a 0
+      }
+      return {
+        ...state,
       };
 
     case CHANGE_PAG_TIPO:
@@ -196,12 +238,12 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         Pagamento: action.PagType,
         TipoValidador:
           action.PagType === "Validador" ||
-          action.PagType === "Cartão e Validador"
+            action.PagType === "Cartão e Validador"
             ? "Moeda"
             : null,
         Validador:
           action.PagType === "Validador" ||
-          action.PagType === "Cartão e Validador"
+            action.PagType === "Cartão e Validador"
             ? ["0.05", "0.10", "0.25", "0.50", "1.00"]
             : [],
       };
@@ -324,7 +366,7 @@ export const SolicitacaoReducer = (state = initialState, action) => {
       };
 
     case RESET:
-      return {...state, ...resetedState};
+      return { ...state, ...resetedState };
 
     default:
       return state;

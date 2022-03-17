@@ -21,7 +21,7 @@ export const Formulario = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [validado, setValidado] = useState(false)
-  const [form, setForm] = useState(initialState)
+  const [form, setForm] = useState(INITIAL_STATE)
   const [wait, setWait] = useState(false)
 
   const handleInsereCodigo = async (codigo, event) => {
@@ -44,6 +44,7 @@ export const Formulario = () => {
       setValidado(true)
       setWait(false)
     } catch (err) {
+      Toast('Código inválido', 'info')
       setLoading(false)
       setValidado(false)
       setWait(false)
@@ -201,7 +202,7 @@ export const Formulario = () => {
 
 export default Formulario
 
-const initialState = {
+const INITIAL_STATE = {
   Nome_Completo: null,
   DtNascimento: null,
   RG: null,
