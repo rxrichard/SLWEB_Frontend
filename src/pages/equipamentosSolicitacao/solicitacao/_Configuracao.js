@@ -31,59 +31,10 @@ function CustomizedTable(props) {
       pageSize={Configuracao.length}
       hideFooter={true}
       onCellEditCommit={(params, event) => {
-        console.log(params);
         ChangeBebidaDetailsManually(params)
       }}
     />
   )
-  // return (
-  // <TableContainer component={Paper}>
-  //   <Table size="small">
-  //     <TableHead>
-  //       <TableRow>
-  //         <StyledTableCell>Seleção</StyledTableCell>
-  //         <StyledTableCell>Bebida</StyledTableCell>
-  //         <StyledTableCell>Medida</StyledTableCell>
-  //         <StyledTableCell>Valor Real</StyledTableCell>
-  //         <StyledTableCell>Valor Complementar</StyledTableCell>
-  //         <StyledTableCell>Tipo</StyledTableCell>
-  //         <StyledTableCell>Ativa</StyledTableCell>
-  //         <StyledTableCell></StyledTableCell>
-  //       </TableRow>
-  //     </TableHead>
-  //     <TableBody>
-  //       {Configuracao.map((row, i) => (
-  //         <StyledTableRow key={row.selecao}>
-  //           <StyledTableCell>{row.selecao}</StyledTableCell>
-  //           <StyledTableCell>{row.bebida}</StyledTableCell>
-
-  //           <StyledTableCell>{`${row.medida}ML`}</StyledTableCell>
-  //           <StyledTableCell>
-  //             {formataPreço(row.valor, TipoValidador)}
-  //           </StyledTableCell>
-  //           <StyledTableCell>
-  //             {formataPreço(row.valor2, TipoValidador)}
-  //           </StyledTableCell>
-  //           <StyledTableCell>{row.tipo}</StyledTableCell>
-  //           <StyledTableCell>{row.configura ? "Sim" : "Não"}</StyledTableCell>
-  //           <StyledTableCell>
-  //             <Button
-  //               variant="outlined"
-  //               color="default"
-  //               size="large"
-  //               className={classes.button}
-  //               startIcon={<Close />}
-  //               onClick={() => clickRemove(i)}
-  //             >
-  //               Remover
-  //             </Button>
-  //           </StyledTableCell>
-  //         </StyledTableRow>
-  //       ))}
-  //     </TableBody>
-  //   </Table>
-  // </TableContainer>
-  // );
 }
 
 
@@ -192,7 +143,10 @@ const returnColunsDef = (onRemoveDrink) => {
             color: RED_PRIMARY,
           }}
         >
-          R$ {String(params.value).replace('.', ',')}
+          {new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(params.value)}
         </div>
       ),
       renderEditCell: (params) => (
@@ -238,7 +192,10 @@ const returnColunsDef = (onRemoveDrink) => {
             color: RED_PRIMARY,
           }}
         >
-          R$ {String(params.value).replace('.', ',')}
+          {new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(params.value)}
         </div>
       ),
       renderEditCell: (params) => (

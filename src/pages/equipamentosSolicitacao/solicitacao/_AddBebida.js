@@ -104,23 +104,26 @@ function DialogSelect(props) {
       (TipoValidador === "Ficha")
     ) {
       let ficha = null;
+
       Validador.forEach((pos) => {
         if (pos.charAt(0) === "F") {
           ficha = pos;
         }
       });
-      if(Number(valor.replace(/,/g, ".")) % Number(ficha.replace('F', '')) > 0){
+
+      if (Number(valor.replace(/,/g, ".")) % Number(ficha.replace('F', '')) > 0) {
         Toast('Valor não compativel com o valor de ficha informado', 'warn')
         return
       }
+      
     }
 
     if (Pagamento !== 'Sem Pagamento') {
       let temValorInválido = false
 
-        if (typeof valor == "undefined" || valor === null || valor === '') {
-          temValorInválido = true
-        }
+      if (typeof valor == "undefined" || valor === null || valor.trim() === '') {
+        temValorInválido = true
+      }
 
       if (temValorInválido) {
         alert('O valor não informado para bebida foi definido automaticamente para R$ 0,00')
@@ -194,8 +197,8 @@ function DialogSelect(props) {
             >
               {bebidaSelecionada
                 ? bebidaSelecionada.Qtd.map((Qtd, i) => (
-                    <MenuItem value={Qtd}>{`${Qtd}ML`}</MenuItem>
-                  ))
+                  <MenuItem value={Qtd}>{`${Qtd}ML`}</MenuItem>
+                ))
                 : null}
             </Select>
             <Select
@@ -249,7 +252,7 @@ function DialogSelect(props) {
             />
           </form>
         </DialogContent>
-        <DialogActions style={{ padding: '8px 24px'}}>
+        <DialogActions style={{ padding: '8px 24px' }}>
           <Button onClick={handleClose} color="primary">
             Fechar
           </Button>

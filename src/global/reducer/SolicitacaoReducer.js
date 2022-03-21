@@ -193,44 +193,116 @@ export const SolicitacaoReducer = (state = initialState, action) => {
         Configuracao: state.Configuracao.filter(config => Number(config.id) !== Number(action.id)),
       };
     case CHANGE_BEBIDA_DETAILS_INDIVIDUALY:
-      if(action.changed.field === 'selecao'){
+      //guardo os valores antigos da bebida
+      let bebidaOld = state.Configuracao.filter(conf => Number(conf.id) === Number(action.changed.id))[0]
+      let auxConfiguracao = [...state.Configuracao]
+
+      if (action.changed.field === 'selecao') {
+        //caso o cara troque a seleção
+
+        //testar se o cara nao ta tentando trocar pela MESMA seleção
+        if (Number(bebidaOld.selecao) === Number(action.changed.value)) {
+          return {
+            ...state,
+          };
+        }
+
         let valid = true
-        let usedSelectionNumbers = []
-        let lowestSelectionNumberAvailable = null
+
 
         //validar se a nova seleção que o cara escolheu está disponivel
-        console.log('nova seleção escolhida:' + action.changed.value)
-
         for (let index in state.Configuracao) {
-          usedSelectionNumbers.push(state.Configuracao[index].selecao)
-          
-          if(Number(state.Configuracao[index].selecao) === Number(action.changed.value)){
+          if (Number(state.Configuracao[index].selecao) === Number(action.changed.value)) {
             valid = false
             break;
           }
         }
 
-        //aqui eu posso por um toast falando que o valor é inválido talvez?
-        if(!valid){
-          for (let index = 1; index <= state.Capacidade; index++) {
-            if(usedSelectionNumbers.indexOf(index) < 0){
-              lowestSelectionNumberAvailable = index
+
+
+        if (!valid) {
+          //se o novo numero de seleção não for valido eu volto o anterior
+          for (let index in auxConfiguracao) {
+            if (auxConfiguracao[index].id === bebidaOld.id) {
+              auxConfiguracao[index].selecao = bebidaOld.selecao
+              break;
             }
           }
 
+          return {
+            ...state,
+            Configuracao: auxConfiguracao
+          };
 
+        } else {
+          //se estiver disponivel trocar
+          for (let index in auxConfiguracao) {
+            if (auxConfiguracao[index].id === bebidaOld.id) {
+              auxConfiguracao[index].selecao = action.changed.value
+              break;
+            }
+          }
+
+          return {
+            ...state,
+            Configuracao: auxConfiguracao
+          };
         }
 
-        //se estiver disponivel trocar, se não estiver retornar à seleção anterior
-      }else if(action.changed.field === 'valor'){
-        //validar se o preço que o cara está colocando é compativel com o sistema de pagamento
-        console.log('novo valor escolhido:' + action.changed.value)
+      } else if (action.changed.field === 'valor' || action.changed.field === 'valor2') {
+        if ((state.Pagamento === "Validador" || state.Pagamento === "Cartão e Validador") && (state.TipoValidador === "Ficha")) {
+          let ficha = null;
 
-        //se não estiver disponivel retornar ao valor anterior ou a 0
+          state.Validador.forEach((pos) => {
+            if (pos.charAt(0) === "F") {
+              ficha = pos;
+            }
+          });
+
+          //valor incopativel com ficha
+          if (Number(String(action.changed.value).replace(/,/g, ".")) % Number(ficha.replace('F', '')) > 0) {
+            for (let index in auxConfiguracao) {
+              if (auxConfiguracao[index].id === bebidaOld.id) {
+                auxConfiguracao[index][action.changed.field] = bebidaOld[action.changed.field]
+                break;
+              }
+            }
+  
+            return {
+              ...state,
+              Configuracao: auxConfiguracao
+            };
+          } else {
+            //valor compativel com ficha
+            for (let index in auxConfiguracao) {
+              if (auxConfiguracao[index].id === bebidaOld.id) {
+                auxConfiguracao[index][action.changed.field] = action.changed.value
+                break;
+              }
+            }
+  
+            return {
+              ...state,
+              Configuracao: auxConfiguracao
+            };
+          }
+        } else {
+          //valor não tem regra para substituir
+          for (let index in auxConfiguracao) {
+            if (auxConfiguracao[index].id === bebidaOld.id) {
+              auxConfiguracao[index][action.changed.field] = action.changed.value
+              break;
+            }
+          }
+
+          return {
+            ...state,
+            Configuracao: auxConfiguracao
+          };
+        }
       }
-      return {
-        ...state,
-      };
+      break;
+
 
     case CHANGE_PAG_TIPO:
       return {
