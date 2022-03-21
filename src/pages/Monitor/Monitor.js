@@ -14,7 +14,10 @@ import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } fr
 import DetalhesDialog from "./modals/Detalhes";
 import AbrirChamadoDialog from "./modals/AbrirChamado";
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
 const Monitor = () => {
   const [loaded, setLoaded] = useState(false);
   const [telemetrias, setTelemetrias] = useState([]);
@@ -112,6 +115,38 @@ const Monitor = () => {
         CEP: toValidString(editableDetails.Endereco.CEP),
       },
     }
+
+    let toastId = null
+
+    try {
+      toastId = Toast('Abrindo chamado...', 'wait')
+
+      await api.post('/monitor/telemetrias/chamado', {
+        DTO,
+      })
+
+      setModalChamadoOpen(false)
+      Toast('Chamado aberto!', 'update', toastId, 'success')
+
+      setTarget({
+        ...target,
+        UltChamado: moment().subtract(3, 'hours').toDate(),
+      })
+      
+      setTelemetrias(oldState => {
+        let aux = [...oldState]
+
+        aux.forEach(tel => {
+          if (tel.EquiCod === target.EquiCod) {
+            tel.UltChamado = moment().subtract(3, 'hours').toDate()
+          }
+        })
+
+        return aux
+      })
+    } catch (err) {
+      Toast('Falha ao abrir chamado, tente novamente', 'update', toastId, 'error')
+    }
   }
 
   return !loaded ? <Loading /> : (
@@ -186,7 +221,10 @@ const Monitor = () => {
       </Container>
     </>
   )
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
 }
 
 export default Monitor;

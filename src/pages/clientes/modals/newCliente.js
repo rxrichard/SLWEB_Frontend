@@ -590,7 +590,7 @@ const validFields = (newCliente) => {
   }
 
   if (newCliente.Fone.trim() === '' || newCliente.Fone.length > 12) {
-    Toast('Preencha um número de telefone válido', 'warn')
+    Toast('Preencha um número de celular válido', 'warn')
     return false
   }
 
