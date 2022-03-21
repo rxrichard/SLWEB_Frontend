@@ -5,8 +5,10 @@ import { Provider } from "react-redux";
 import { Store } from "./global/store";
 
 ReactDOM.render(
+  
   <Provider store={Store}>
     <App />
   </Provider>,
   document.getElementById("app")
+  
 );

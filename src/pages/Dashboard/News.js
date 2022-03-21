@@ -1,26 +1,16 @@
 import React from 'react';
 import { Slider, Slide, Caption } from "react-materialize";
-<<<<<<< HEAD
-import { Button } from '@material-ui/core'
-
-import news from "../../assets/news.jpg";
-import wall from "../../assets/black-white-wall.jpg";
-import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
-import { NewsDialog } from './NewsDialog'
-import {BoxTitle} from '../../components/commom_in'
-
-
-function News({ onOpen }) {
-  const [news, setNews] = useState([]);
-  const [newsModalOpen, setNewsModalOpen] = useState(false);
-  const [displayedNews, setDisplayedNews] = useState(null);
-=======
->>>>>>> a4c7d827644d31e5ddc11f9c65a50436847b7aec
 
 import { Button } from '@material-ui/core'
+
+// import news from "../../assets/news.jpg";
+// import wall from "../../assets/black-white-wall.jpg";
+// import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
+// import { NewsDialog } from './dialogs/NewsDialog'
+import { BoxTitle } from '../../components/commom_in'
 
 function News({ onOpenModal, News }) {
-  return (
+    return (
       <Slider
         fullscreen={false}
         options={{
@@ -44,26 +34,11 @@ function News({ onOpenModal, News }) {
             <Caption
               placement={n.BannerAlign}
             >
-<<<<<<< HEAD
               <BoxTitle>
-              <h3>{n.BannerTitle}</h3>
-              <h5>
-=======
-              <h3
-                style={{
-                  textShadow: '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333'
-                }}
-              >
-                {n.BannerTitle}
-              </h3>
-              <h5
-                style={{
-                  textShadow: '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333'
-                }}
-              >
->>>>>>> a4c7d827644d31e5ddc11f9c65a50436847b7aec
-                {n.BannerDescription}
-              </h5>
+                <h3>{n.BannerTitle}</h3>
+                <h5>
+                  {n.BannerDescription}
+                </h5>
               </BoxTitle>
               {n.ModalContent !== null ?
                 <Button
@@ -72,14 +47,13 @@ function News({ onOpenModal, News }) {
                   }}
                   onClick={() => onOpenModal(n)}
                   variant='contained'
-                  color='secondary'
+                  color='primary'
                 >
                   Saiba mais
                 </Button>
                 :
                 null
               }
-             
             </Caption>
           </Slide>
         ))}
@@ -167,7 +141,7 @@ function News({ onOpenModal, News }) {
         </Caption>
       </Slide> */}
       </Slider>
-  );
-}
+    );
+  }
 
 export default News;

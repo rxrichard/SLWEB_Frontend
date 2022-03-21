@@ -15,7 +15,7 @@ export const Box = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    width:${ props => props.width ||'18rem'};
+    width:${ props => props.width ||'20rem'};
     height:${ props => props.height ||'23rem'} ;
     background:#f3f3f3;
     border-radius: 1rem;
@@ -35,20 +35,18 @@ export const Buttons = styled.div`
     width:100%;
     justify-content: center;
 `
-export const Button = styled.div`
+export const Button = styled.button`
     background-color: ${props => props.bgColor || '#41211f'};
-    width: ${props => props.width || '100%'};
+    width: ${props => props.width || '0%'};
     height: 3rem;
     display: flex;
     border-radius: ${props => props.borderRadius || '0'};
     color:#fff;
     font-size: 1.2rem;
-    cursor: pointer;
     padding: 0px 4px;
     margin: ${props => props.margin || '0'};
     justify-content: center;
     align-items: center;
-
     &:hover{
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         background-color: ${props => props.bgColorH || '#92211f'};
@@ -77,12 +75,12 @@ export const ChamadoButton = styled.div`
     `;
 
 export const Title = styled.h1`
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 2rem;
+    font-weight: bolder;
     color: #41211f;
     margin:0;
     text-align: center;
-    text-overflow: ellipsis;
+  
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
@@ -95,7 +93,7 @@ export const Image = styled.img`
     width: 10rem;
     height: 12rem;
     justify-content: center;
-    background: url("https://franquiapilaoprofessional.com.br/wp-content/uploads/2020/10/Maquina_Pilao-Lei-Sa.png" ) no-repeat center/contain;);
+    background: url("https://cafepilao.vteximg.com.br/arquivos/ids/158902/1500144-25-02_252vacuo.png?v=637757072160900000" ) no-repeat center/contain;);
     border: none;
     margin:5px;
     
@@ -105,8 +103,9 @@ export const Image = styled.img`
 export const Text = styled.p`
     color: ${props => props.color || '#41211f'};
     font-size: ${props => props.fontSize || '1rem'};
-    font-weight: bold;
-    margin:0;
+    /* font-weight: bold; */
+    margin: 0 1rem;
+    align-items: center;
     flex:1;
     text-align: center;
     white-space: wrap;
