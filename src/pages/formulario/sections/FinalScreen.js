@@ -1,12 +1,9 @@
 import React from 'react';
 
 import { TextInput, Icon } from "react-materialize";
-import { CloudDownload } from '@material-ui/icons'
-
 
 import {
   Typography,
-  Button,
   MenuItem
 } from '@material-ui/core/';
 import Select from '../../../components/materialComponents/Select'
@@ -91,23 +88,6 @@ export const End = (props) => {
         <MenuItem value='Tatiane'>Tatiane</MenuItem>
         <MenuItem value='Outros'>Outros</MenuItem>
       </Select>
-      <Typography
-        gutterBottom
-        style={{ marginTop: "20px" }}
-      >
-        Caso encontre dificuldades ao enviar o formulário online, tente baixar o arquivo para edição no <strong>Microsoft Word</strong> e nos encaminhar por email.
-      </Typography>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={(e) => {
-          e.persist();
-          props.onRequestWord(e);
-        }}
-        startIcon={<CloudDownload />}
-      >
-        DOWNLOAD
-      </Button>
     </div>
   )
 }

@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Btn from "@mui/material/Button";
+import {
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button as ButtonMaterial,
+} from "@mui/material";
 
-import { Container, Block, Title, Text, Button } from "./styles";
+import {
+  Container,
+  Block,
+  Title,
+  Text,
+  Button
+} from "./styles";
 
 const CodeView = (props) => {
   const [openM1, setOpenM1] = useState(false);
@@ -34,6 +42,7 @@ const CodeView = (props) => {
 
   return (
     <Container>
+
       {/* TEXTO DA ESQUERDA*/}
       <Block bgColor="#C8102E">
         <Title>
@@ -41,16 +50,17 @@ const CodeView = (props) => {
           <br />
           <strong>Pilão Professional</strong>
         </Title>
-          <Text>
-            As informações do questionário serão utilizadas para conhecermos suas
-            expectativas com a franquia, para garantirmos que estamos juntos com o
-            mesmo objetivo de crescer e ter sucesso em nossa franquia.
-          </Text>
+        <Text>
+          As informações do questionário serão utilizadas para conhecermos suas
+          expectativas com a franquia, para garantirmos que estamos juntos com o
+          mesmo objetivo de crescer e ter sucesso em nossa franquia.
+        </Text>
       </Block>
 
+      {/* TEXTO DA DIREITA */}
       <Block>
         <Text color="#41211f">
-         Para ter acesso ao formulário, clique em uma das opções abaixo:
+          Para ter acesso ao formulário, clique em uma das opções abaixo:
         </Text>
 
         <Dialog open={openM1} onClose={handleClose}>
@@ -72,7 +82,7 @@ const CodeView = (props) => {
             />
           </DialogContent>
           <DialogActions>
-            <Btn onClick={(e) => props.onCodeRequest(e)}>Solicitar</Btn>
+            <ButtonMaterial onClick={(e) => props.onCodeRequest(e)}>Solicitar</ButtonMaterial>
           </DialogActions>
         </Dialog>
         <Button
@@ -104,7 +114,7 @@ const CodeView = (props) => {
             />
           </DialogContent>
           {/* <DialogActions>
-            <Btn onClick={(e) => props.onCodeRequest(e)}>Entrar</Btn>
+            <ButtonMaterial onClick={(e) => props.onCodeRequest(e)}>Entrar</ButtonMaterial>
           </DialogActions> */}
         </Dialog>
         <Button
@@ -119,6 +129,7 @@ const CodeView = (props) => {
           Já possuo uma senha de acesso
         </Button>
       </Block>
+
     </Container>
   );
 };

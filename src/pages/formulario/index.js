@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import Loading from "react-loading";
+import Loading from "../../components/loading_screen";
 
 //Meio de comunicação
 import { api } from "../../services/api";
-import { saveAs } from "file-saver";
-
-//import de elementos visuais
-// import { useTheme } from "@material-ui/core/styles";
-// import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
@@ -15,6 +10,16 @@ import { Toast } from "../../components/toasty";
 import Stepper from './stepper'
 import CodeView from './codeInsertView'
 import Intro from './Intro'
+import { HelperModal } from './helperModal'
+
+import {
+  Zoom,
+  Fab
+} from '@material-ui/core'
+
+import {
+  ContactSupport as ContactSupportIcons
+} from '@material-ui/icons'
 
 export const Formulario = () => {
   const [codCandidato, setCodCandidato] = useState(null)
@@ -23,6 +28,7 @@ export const Formulario = () => {
   const [validado, setValidado] = useState(false)
   const [form, setForm] = useState(INITIAL_STATE)
   const [wait, setWait] = useState(false)
+  const [helperModalOpen, setHelperModalOpen] = useState(false);
 
   const handleInsereCodigo = async (codigo, event) => {
     if (!Number.isSafeInteger(Number(codigo))) {
@@ -140,30 +146,22 @@ export const Formulario = () => {
     return shouldFinishForm
   }
 
-  //baixa form word da rede
-  const handleRetriveWORD = async (event) => {
-    event.target.disabled = true;
-    let toastId = null
+  const handleOpenHelperModal = () => {
+    setHelperModalOpen(true)
+  }
 
-    try {
-      toastId = Toast('Buscando formulário...', 'wait')
-      const response = await api.get("/form/original", {
-        responseType: "arraybuffer",
-      });
-
-      Toast('Formulário encontrado!', 'update', toastId, 'success')
-      const blob = new Blob([response.data], { type: "application/msword" });
-
-      saveAs(blob, `Questionário de Perfil.doc`);
-      event.target.disabled = false;
-    } catch (err) {
-      Toast('Falha ao recuperar formulário do servidor', 'update', toastId, 'error')
-      event.target.disabled = false;
-    }
+  const handleCloseHelperModal = () => {
+    setHelperModalOpen(false)
   }
 
   return (
-    <Container>
+    <>
+      <HelperModal
+        open={helperModalOpen}
+        onClose={handleCloseHelperModal}
+        title='Ajuda com o Formulário'
+      />
+      <Container>
 
         {codCandidato === null ? (
           <CodeView
@@ -189,14 +187,41 @@ export const Formulario = () => {
             <Stepper
               Form={form}
               onFormChange={setForm}
-              onRequestWord={(e) => handleRetriveWORD(e)}
               onSubmit={(e) => handleSubmit(e)}
               fetching={wait}
             />
           </>
         ) : null}
- 
-    </Container>
+
+      </Container>
+      <div
+        style={{
+          position: "fixed",
+          right: "16px",
+          bottom: "16px",
+        }}
+      >
+        <Zoom
+          in={!helperModalOpen}
+          timeout={transitionDuration}
+          style={{
+            transitionDelay: `${!helperModalOpen ? transitionDuration.exit : 0
+              }ms`,
+          }}
+          unmountOnExit
+        >
+          <Fab
+            onClick={handleOpenHelperModal}
+            color="primary"
+            style={{
+              boxShadow: '2px 2px 3px #999',
+            }}
+          >
+            <ContactSupportIcons fontSize="large" />
+          </Fab>
+        </Zoom>
+      </div>
+    </>
   );
 }
 
@@ -263,3 +288,9 @@ const INITIAL_STATE = {
   Caracteristica_Peso: null,
   Consultor: ''
 }
+
+const transitionDuration = {
+  appear: 300,
+  enter: 300,
+  exit: 300,
+};

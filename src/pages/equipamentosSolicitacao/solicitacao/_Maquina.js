@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../../services/api";
@@ -30,7 +30,11 @@ import {
   clearConfig,
 } from "../../../global/actions/SolicitacaoAction";
 
-function Requisicao(props) {
+import { InstrucoesCartaoModal } from './_ModalInstrucoesCartao'
+
+const Requisicao = (props) => {
+  const [modalInstrucaoCartao, setModalInstrucaoCartao] = useState(false)
+  
   const {
     Pagamento,
     Maquina,
@@ -70,8 +74,21 @@ function Requisicao(props) {
     }
   };
 
+  const handleChangeSistemaDePagamento = (value) => {
+    if (value === 'Cartão' || value === 'Cartão e Validador') {
+      setModalInstrucaoCartao(true)
+    }
+
+    ChangePagamento(value)
+  }
+
   return (
     <div className="YAlign">
+      <InstrucoesCartaoModal 
+        open={modalInstrucaoCartao}
+        onClose={() => setModalInstrucaoCartao(false)}
+        title='Sistema de Pagamento C/ Cartão'
+      />
       <div
         style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
         className="XAlign"
@@ -99,7 +116,7 @@ function Requisicao(props) {
           label="Pagamento"
           value={Pagamento}
           disabled={Configuracao.length > 0 ? true : false}
-          onChange={(e) => ChangePagamento(e.target.value)}
+          onChange={(e) => handleChangeSistemaDePagamento(e.target.value)}
         >
           <MenuItem value="Sem Pagamento">Sem Pagamento</MenuItem>
           <MenuItem value="Cartão">Cartão</MenuItem>
