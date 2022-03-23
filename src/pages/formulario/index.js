@@ -7,15 +7,21 @@ import { api } from "../../services/api";
 import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 
-import Stepper from './stepper'
+// import Stepper from './stepper'
 import CodeView from './codeInsertView'
-import Intro from './Intro'
-import { HelperModal } from './helperModal'
+import Intro from './modals/Intro'
+import { HelperModal } from './modals/helperModal'
+
+import { Form } from './Form'
 
 import {
   Zoom,
-  Fab
+  Fab,
+  TextField,
+  makeStyles
 } from '@material-ui/core'
+
+import { FormContainer } from "./styles";
 
 import {
   ContactSupport as ContactSupportIcons
@@ -154,6 +160,37 @@ export const Formulario = () => {
     setHelperModalOpen(false)
   }
 
+  const whichContentDisplay = () => {
+    // if (codCandidato === null) {
+    //   return (
+    //     <CodeView
+    //       onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
+    //       onCodeRequest={(e) => handleSolicitaCodigo(e)}
+    //       onEmailChange={(e) => handleChangeEmail(e)}
+    //       fetching={wait}
+    //     />
+    //   )
+    // } else if (loading) {
+    //   return (
+    //     <Loading
+    //       type="spinningBubbles"
+    //       color="#000000"
+    //       height="3%"
+    //       width="3%"
+    //     />
+    //   )
+    // } else if (validado) {
+    return (
+      <FormContainer>
+        <Intro />
+        <Form />
+      </FormContainer>
+    )
+    // } else {
+    //   return null
+    // }
+  }
+
   return (
     <>
       <HelperModal
@@ -161,39 +198,11 @@ export const Formulario = () => {
         onClose={handleCloseHelperModal}
         title='Ajuda com o Formulário'
       />
+
       <Container>
-
-        {codCandidato === null ? (
-          <CodeView
-            onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
-            onCodeRequest={(e) => handleSolicitaCodigo(e)}
-            onEmailChange={(e) => handleChangeEmail(e)}
-            fetching={wait}
-          />
-        ) : null}
-
-        {loading ? (
-          <Loading
-            type="spinningBubbles"
-            color="#000000"
-            height="3%"
-            width="3%"
-          />
-        ) : null}
-
-        {validado ? (
-          <>
-            <Intro />
-            <Stepper
-              Form={form}
-              onFormChange={setForm}
-              onSubmit={(e) => handleSubmit(e)}
-              fetching={wait}
-            />
-          </>
-        ) : null}
-
+        {whichContentDisplay()}
       </Container>
+
       <div
         style={{
           position: "fixed",
@@ -215,6 +224,7 @@ export const Formulario = () => {
             color="primary"
             style={{
               boxShadow: '2px 2px 3px #999',
+              backgroundColor: '#0056C7'
             }}
           >
             <ContactSupportIcons fontSize="large" />

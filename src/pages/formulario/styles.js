@@ -128,20 +128,48 @@ export const Button = styled.button`
     cursor: pointer;
     box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
     background-color: ${(props) => props.hover};
-    color: ${(props) => props.colorH || "#fff"};};	
-  }
+    color: ${(props) => props.colorH || "#fff"};	
+  };
 
   @media (max-width: 768px) {
     width:95vw;
     height: 12vh; 
-  }
+  };
 `;
 
-export const InputUnderline  = styled.input`
+export const InputUnderline = styled.input`
   border-radius: 0.5rem;
   border: none;
-  width: 40vw
-  height: 5vh;
+  width: 40vw;
+  height: 5vh;  
+`;
 
+export const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+
+  background-image: linear-gradient(to bottom right, #C8102E, #D33F57);
+`
+
+export const FormBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%; 
+  max-width: 500px;
+  height: 100%; 
+  max-height: 500px;
+  padding: 16px;
+
+  background-color: #FFF;
+  box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 `
