@@ -108,6 +108,7 @@ function Compras(props) {
               border: '1px solid #ccc',
               zIndex: '999',
               backgroundColor: '#fff',
+              boxShadow: '0px 0px 5px 3px rgba(0, 0, 0, 0.2)'
             }}
           >
             <div className='XAlign' style={{ justifyContent: 'center' }}>

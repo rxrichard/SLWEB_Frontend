@@ -6,8 +6,14 @@ import { ArrowForwardIos as ArrowForwardIosIcon } from '@material-ui/icons'
 import { Toast } from '../../../components/toasty'
 import { FormBox } from '../styles'
 
-export const QuestionBox = ({ question, answer, validation, validationErrorAction, onChangeAnswer, onAdvance }) => {
-
+export const QuestionBox = ({
+  question,
+  answer,
+  validation,
+  validationErrorAction,
+  onChangeAnswer,
+  onAdvance
+}) => {
   const onRequestAdvance = () => {
     if (validation()) {
       onAdvance()
@@ -33,7 +39,7 @@ export const QuestionBox = ({ question, answer, validation, validationErrorActio
             alignItems: 'center',
           }}
         >
-          <Typography variant="body1">
+          <Typography variant="body1" align='center'>
             {question}
           </Typography>
         </div>
@@ -42,11 +48,22 @@ export const QuestionBox = ({ question, answer, validation, validationErrorActio
           style={{
             justifyContent: 'space-between',
             flexWrap: 'nowrap',
+            alignItems: 'flex-end'
           }}
         >
-          {React.cloneElement(answer, {
-            onChange: onChangeAnswer
-          })}
+          <form
+            style={{
+              width: '100%',
+              marginRight: '8px',
+            }}
+            onSubmit={(e) => {
+              e.preventDefault()
+              onRequestAdvance()
+            }}>
+            {answer !== null ? React.cloneElement(answer, {
+              onChange: onChangeAnswer
+            }) : answer}
+          </form>
           <IconButton
             color="primary"
             onClick={onRequestAdvance}

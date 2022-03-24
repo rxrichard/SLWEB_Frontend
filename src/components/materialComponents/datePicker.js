@@ -19,7 +19,11 @@ export default function MaterialUIPickers(props) {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    props.onChange(date !== null && date._d >= hoje ? date : "");
+    if(props.min){
+      props.onChange(date !== null && date._d >= hoje ? date : "");
+    }else{
+      props.onChange(date !== null ? date : "");
+    }
   };
 
   return (
@@ -27,11 +31,11 @@ export default function MaterialUIPickers(props) {
       <KeyboardDatePicker
         style={{ width: "170px" }}
         disableToolbar
-        disablePast
+        disablePast={props.min ? true :  false}
         autoOk
         invalidDateMessage="Data inválida"
-        minDateMessage="Data anteior ao dia de hoje"
-        minDate={hoje}
+        minDateMessage={props.min ? "Data anteior ao dia de hoje" : 'Data não suportada'}
+        minDate={props.min ? hoje : new Date('1900-01-01')}
         variant="inline"
         format="DD/MM/YYYY"
         margin="normal"

@@ -183,7 +183,10 @@ export const Formulario = () => {
     return (
       <FormContainer>
         <Intro />
-        <Form />
+        <Form 
+          Form={form}
+          onChangeForm={setForm}
+        />
       </FormContainer>
     )
     // } else {
@@ -238,20 +241,20 @@ export const Formulario = () => {
 export default Formulario
 
 const INITIAL_STATE = {
-  Nome_Completo: null,
+  Nome_Completo: '',
   DtNascimento: null,
-  RG: null,
-  CPF: null,
-  Logradouro: null,
-  Número: null,
-  Complemento: null,
-  Bairro: null,
-  Municipio: null,
-  Estado: null,
-  CEP: null,
-  Email: null,
-  Tel_Residencial: null,
-  Celular: null,
+  RG: '',
+  CPF: '',
+  Logradouro: '',
+  Número: '',
+  Complemento: '',
+  Bairro: '',
+  Municipio: '',
+  Estado: '',
+  CEP: '',
+  Email: '',
+  Tel_Residencial: '',
+  Celular: '',
   Est_Civil: null,
   Conj_Nome: null,
   Conj_DtNascimento: null,
