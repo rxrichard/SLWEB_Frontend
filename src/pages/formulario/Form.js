@@ -211,7 +211,7 @@ export const Form = ({ Form, onChangeForm }) => {
       },
       onRequestAdvanceStep: handleRequestAdvance
     },
-    Form.Est_Civil < 4 && Form.Est_Civil !== null ? ([
+    Form.Est_Civil < 4 && Form.Est_Civil !== null ? (
       {
         question: 'Nome do(a) cônjuge',
         answerComponent: <TextField className={classes.TextInput} variant='outlined' label='nome do(a) cônjuge aqui' value={Form.Conj_Nome} />,
@@ -301,7 +301,7 @@ export const Form = ({ Form, onChangeForm }) => {
           })
         },
         onRequestAdvanceStep: handleRequestAdvance
-      }]
+      }
     ) : null,
     Form.Tem_filhos === "Sim" ? (
       {
