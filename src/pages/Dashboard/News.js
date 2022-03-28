@@ -1,22 +1,5 @@
 import React from 'react';
 import { Slider, Slide, Caption } from "react-materialize";
-<<<<<<< HEAD
-=======
-
-import { Button } from '@material-ui/core'
-
-import news from "../../assets/news.jpg";
-import wall from "../../assets/black-white-wall.jpg";
-import { RED_PRIMARY, GREY_SECONDARY } from '../../misc/colors'
-import { NewsDialog } from './NewsDialog'
-import {BoxTitle} from '../../components/commom_in'
-
-
-function News({ onOpen }) {
-  const [news, setNews] = useState([]);
-  const [newsModalOpen, setNewsModalOpen] = useState(false);
-  const [displayedNews, setDisplayedNews] = useState(null);
->>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
 
 import { Button } from '@material-ui/core'
 
@@ -52,17 +35,10 @@ function News({ onOpenModal, News }) {
               placement={n.BannerAlign}
             >
               <BoxTitle>
-<<<<<<< HEAD
                 <h3>{n.BannerTitle}</h3>
                 <h5>
                   {n.BannerDescription}
                 </h5>
-=======
-              <h3>{n.BannerTitle}</h3>
-              <h5>
-                {n.BannerDescription}
-              </h5>
->>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
               </BoxTitle>
               {n.ModalContent !== null ?
                 <Button

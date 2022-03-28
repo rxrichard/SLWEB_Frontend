@@ -14,10 +14,6 @@ import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } fr
 import DetalhesDialog from "./modals/Detalhes";
 import AbrirChamadoDialog from "./modals/AbrirChamado";
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
 const Monitor = () => {
   const [loaded, setLoaded] = useState(false);
   const [telemetrias, setTelemetrias] = useState([]);
@@ -221,10 +217,7 @@ const Monitor = () => {
       </Container>
     </>
   )
-<<<<<<< HEAD
 
-=======
->>>>>>> 21a52fad083ace668ec4836c97f3f027c5a62f1b
 }
 
 export default Monitor;

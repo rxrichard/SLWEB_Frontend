@@ -1,59 +1,135 @@
-import React, { useState } from 'react'
-import Input from "react-number-format";
-import Draggable from "react-draggable";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { api } from "../../../services/api";
+import * as React from "react";
+import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import Fab from "@material-ui/core/Fab";
+import Zoom from "@material-ui/core/Zoom";
+import Badge from "@material-ui/core/Badge";
+import { ShoppingCart, Add } from "@material-ui/icons";
 
-import { DataGrid } from "@material-ui/data-grid";
+import Typography from "@mui/material/Typography";
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-  Button,
+  Title,
+  Button as ButtonComprar,
+  Buttons,
   Box,
-  Tooltip,
-  Paper,
-  makeStyles
-} from "@material-ui/core/";
-import { ShoppingCart } from "@material-ui/icons";
+  Flex,
+  Image,
+  Input,
+  Text,
+  ChamadoButton,
+  Container,
+  Price,
+} from "./StyleProdutoModal";
 
-import InputMultline from "../../../components/materialComponents/InputMultline";
-import { Toast } from "../../../components/toasty";
-import { RED_PRIMARY } from "../../../misc/colors";
-import {
-  SetCheckedProd,
-  SetBuyQtt,
-  UpdateProdutos,
-  ClearCarrinho
-} from "../../../global/actions/ComprasAction";
+let i = 0;
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
 
+const BootstrapDialogTitle = (props) => {
+  const { children, onClose, ...other } = props;
 
-const ProdutoModal = ({ open, onClose, qtd,...props }) => {
-  const classes = useStyles()
-  const [qtdProd, setQtdProd] = useState(1)
-  const [checked, setChecked] = useState(false)
-  const [loading, setLoading] = useState(false)
-
- 
-
-return (
-  <Dialog   open={open}
-    onClose={() => onClose(false)}
-    PaperComponent={PaperComponent}
-    aria-labelledby="draggable-dialog-title"
-  >
-    <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-      <div className="XAlign" style={{ justifyContent: "flex-start" }}>
-        <ShoppingCart className={classes.extendedIcon} />
-        Carrinho
-      </div>
+  return (
+    <DialogTitle {...other}>
+      {children}
+      {onClose ? (
+        <IconButton aria-label="close" onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
     </DialogTitle>
-    </Dialog>
-)
+  );
+};
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
+export default function CustomizedDialogs() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  const addShoppingCartAction = () => {
+    i++;
+    setOpen(false);
+    console.log(i)
+  };
+
+  return (
+    <div>
+      <ButtonComprar
+        width="13vw"
+        margin="1rem"
+        borderRadius="1rem"
+        onClick={handleClickOpen}
+      >
+        COMPRAR
+      </ButtonComprar>
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        >
+          ACHOCOLATADO PILAO PROFESSIONAL 1,05K
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+          <Flex>
+            <Image />
+            <Flex width="40%" direction="column">
+              <Text>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+              </Text>
+
+              <Flex>
+                <Flex align="left">
+                  <label>Qtd:</label>
+                  <Input type="number" />
+                  <Title>R$ 99,99</Title>
+                </Flex>
+              </Flex>
+              <Flex align="space-around">
+                <Button variant="outlined" color="error" size="medium" onClick={handleClose}>
+                  <DeleteIcon />
+                  CANCELAR
+                </Button>
+
+                <Button variant="outlined" color="success" size="medium" onClick={addShoppingCartAction}>
+                  <AddShoppingCartIcon />
+                  ADICIONAR AO CARRINHO
+                </Button>
+              </Flex>
+            </Flex>
+          </Flex>
+        </DialogContent>
+      </BootstrapDialog>
+      
+      
+    </div>
+  );
 }
-export default CarrinhoModal

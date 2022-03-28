@@ -21,15 +21,26 @@ import {
   Flex,
 } from "./styles";
 import { Input } from "@material-ui/core";
-import CarrinhoModal from "./modals/CarrinhoModal";
+import ProdutoModal from "./modals/ProdutoModal";
+
+
 
 function TransferList(props) {
   const classes = useStyles();
 
   const [loaded, setLoaded] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { Produtos, Checked } = props.State;
   const { ChangeTab, SetCheckedProd } = props;
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  }
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (Produtos.length > 0) {
@@ -44,14 +55,17 @@ function TransferList(props) {
         {items.map((prod, i) => {
           return (
             <Box >
-              <Image src={prod.Imagem} />
+              < Image src={prod.Imagem} /> 
               <Text>{prod.Produto}</Text> 
               <Title>R$ {String(
                         Number.parseFloat(prod.Vlr).toFixed(2)
                       ).replace(".", ",")}
               </Title>
 
-              <Button width='60%' margin='1rem' borderRadius='1rem' onClick={CarrinhoModal}>COMPRAR</Button>                 
+              <ProdutoModal
+                open={open}
+                onClose={handleCloseDialog}
+              />                 
             </Box>
           );
         })}

@@ -7,6 +7,7 @@ export const Container = styled.div`
     justify-content: space-evenly;
     flex-wrap: wrap;
     box-sizing: border-box;
+    width: 100%;
 
 `
 
@@ -91,7 +92,7 @@ export const Title = styled.h1`
     flex-wrap: wrap;
 `;
 
-export const Image = styled.img`
+export const Image = styled.div`
     width: 10rem;
     height: 12rem;
     justify-content: center;

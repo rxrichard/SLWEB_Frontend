@@ -166,7 +166,6 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
         setWait(false)
       }
     }
-
   }
 
   return (

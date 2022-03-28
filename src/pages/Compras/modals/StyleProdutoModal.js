@@ -1,4 +1,50 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+
+export const Flex = styled.div`
+    display:flex;
+    flex-direction: ${(props) => props.direction || "row"};
+    align-items:  ${(props) => props.align || "center"};
+    margin: 0px 2px;s
+    height:${(props) => props.heightSize || "98%"};
+    width:${(props) => props.widthSize || "98%"};
+`;
+export const Image = styled.div`
+    width:30vw;
+    height:17vw;
+    justify-content: center;
+    background: url("https://cafepilao.vteximg.com.br/arquivos/ids/158902/1500144-25-02_252vacuo.png?v=637757072160900000" ) no-repeat center/contain;);
+
+    margin:5px;
+
+    @media (max-width: 600px) {
+        width: 70px;
+        height: 70px;
+    }
+
+`;
+export const ButtonModal = styled.button`
+  background-color: ${(props) => props.bgColor || "#fff"};
+  width: ${(props) => props.width || "0%"};
+  height: 3rem;
+  display: flex;
+  border-radius: ${(props) => props.borderRadius || "0"};
+  color: #fff;
+
+  font-size: 1.2rem;
+  padding: 0px 4px;
+  margin: ${(props) => props.margin || "0"};
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: ${(props) => props.bgColorH || "#92211f"};
+  }
+  @media (max-width: 600px) {
+    width: 100%;
+    margin: 1rem 0;
+    padding: 2rem;
+  }
+`;
 
 export const Container = styled.div`
     display: flex;
@@ -37,11 +83,6 @@ export const Box = styled.div`
     }
 `;
 
-export const Buttons = styled.div`
-    display: flex;
-    width:100%;
-    justify-content: center;
-`
 export const Button = styled.button`
     background-color: ${props => props.bgColor || '#41211f'};
     width: ${props => props.width || '0%'};
@@ -65,26 +106,7 @@ export const Button = styled.button`
     }
     `;
 
-export const ChamadoButton = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background-color: ${props => props.Online ? '#CCC' : '#92211f'};
-    color: ${props => props.Online ? '#333' : '#FFF'};
-    cursor: ${props => props.Online ? 'default' : 'pointer'};
-    padding: 8px 0px;
-    margin: 8px 0px 0px 0px;
-    font-size: 1rem;
-    font-weight: bold;
-    
-    
-    &:hover{
-        transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        background-color: ${props => props.Online ? 'rgba(204, 204, 204, 0.8)' : 'rgba(146, 33, 31, 0.8)'};
-    }
-    `;
+
 
 export const Title = styled.h1`
     font-size: 2rem;
@@ -92,7 +114,7 @@ export const Title = styled.h1`
     color: #41211f;
     margin:0;
     text-align: center;
-  
+    display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
@@ -101,31 +123,13 @@ export const Title = styled.h1`
     flex-wrap: wrap;
 `;
 
-export const Image = styled.div`
-    width: 10rem;
-    height: 12rem;
-    justify-content: center;
-    background: url("https://cafepilao.vteximg.com.br/arquivos/ids/158902/1500144-25-02_252vacuo.png?v=637757072160900000" ) no-repeat center/contain;);
-    border: none;
-    margin:5px;
-
-    @media (max-width: 600px) {
-        width: 70px;
-        height: 70px;
-    }
-
-
-`
-
 export const Text = styled.p`
     color: ${props => props.color || '#41211f'};
     font-size: ${props => props.fontSize || '1rem'};
     /* font-weight: bold; */
-    margin: 0 1rem;
-    align-items: center;
-    flex:1;
-    text-align: center;
-    white-space: wrap;
+    margin: 0;
+    align-items: top;
+    text-align: justify;
     overflow: wrap;
 
     @media (max-width: 600px) {
@@ -135,9 +139,7 @@ export const Text = styled.p`
 
 `;
 
-export const notificationTMT = styled.div` 
-    background-color: ${props => props.color || '#fff'};
-`;
+
 
 export const Price = styled.div`
     display: flex;
@@ -151,9 +153,22 @@ export const Price = styled.div`
     color: ${props => props.colorText || '#41211f'};
 `
 
-export const Flex = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 0px 2px;
-    height:auto;
-`
+export const Input = styled.input`
+  font-size: 16px;
+  border: solid 1px #dbdbdb;
+  border-radius: 3px;
+  color: #262626;
+  padding: 7px 33px;
+  border-radius: 3px;
+  color: #999;
+  cursor: text;
+  font-size: 14px;
+  font-weight: 300;
+  text-align: center;
+  background: #fafafa;
+  &:active,
+  &:focus {
+    text-align: left;
+  }
+
+`;
