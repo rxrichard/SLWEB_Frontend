@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import { IconButton, Typography, Slide } from '@material-ui/core'
 import { ArrowForwardIos as ArrowForwardIosIcon } from '@material-ui/icons'
 
-import { Toast } from '../../../components/toasty'
+// import { Toast } from '../../../components/toasty'
 import { FormBox } from '../styles'
 
 export const QuestionBox = ({
@@ -12,7 +12,9 @@ export const QuestionBox = ({
   validation,
   validationErrorAction,
   onChangeAnswer,
-  onAdvance
+  onAdvance,
+  alignArrow,
+  answerOnly
 }) => {
   const onRequestAdvance = () => {
     if (validation()) {
@@ -30,37 +32,42 @@ export const QuestionBox = ({
       unmountOnExit
     >
       <FormBox>
-        <div
-          style={{
-            display: 'flex',
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="body1" align='center'>
-            {question}
-          </Typography>
-        </div>
+        {!answerOnly ? (
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="body1" align='center'>
+              {question}
+            </Typography>
+          </div>
+        ) : null}
         <div
           className='XAlign'
           style={{
             justifyContent: 'space-between',
             flexWrap: 'nowrap',
-            alignItems: 'flex-end'
+            alignItems: alignArrow ? alignArrow : 'center',
+            height: answerOnly ? '100%' : 'unset',
           }}
         >
           <form
             style={{
               width: '100%',
               marginRight: '8px',
+              height: answerOnly ? '100%' : 'unset',
+              overflowY: answerOnly ? 'auto' : 'unset',
             }}
             onSubmit={(e) => {
               e.preventDefault()
               onRequestAdvance()
             }}>
-            {answer !== null ? React.cloneElement(answer, {
+            {answer !== null && onChangeAnswer !== null ? React.cloneElement(answer, {
               onChange: onChangeAnswer
             }) : answer}
           </form>

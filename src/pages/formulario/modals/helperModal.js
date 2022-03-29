@@ -62,7 +62,7 @@ export const HelperModal = ({ open, onClose, title }) => {
   }
 
   const handleSendWhatsappMessage = async () => {
-    if(mensagemWhatsapp.trim() === INITIAL_STRING){
+    if (mensagemWhatsapp.trim() === INITIAL_STRING) {
       Toast('Altera a mensagem com seus dados antes de enviar aos consultores', 'warn')
       return
     }
@@ -72,7 +72,7 @@ export const HelperModal = ({ open, onClose, title }) => {
     let target = ''
     let message = mensagemWhatsapp.replace(/ +/, '%20')
 
-    window.open(`https://api.whatsapp.com/send?phone=${target}&text=${message}`,'_blank').focus();
+    window.open(`https://api.whatsapp.com/send?phone=${target}&text=${message}`, '_blank').focus();
   }
 
   return (
@@ -118,6 +118,9 @@ export const HelperModal = ({ open, onClose, title }) => {
           >
             ENVIAR MENSAGEM
           </ButtonMaterial>
+          <Typography variant='body1' gutterBottom align='center'>
+            Ou baixe o formulário em texto
+          </Typography>
           <ButtonMaterial
             className={classes.formDownloadButton}
             variant="outlined"
