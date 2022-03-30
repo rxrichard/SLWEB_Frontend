@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api'
 
 import {
@@ -9,7 +9,8 @@ import {
   Step,
   StepLabel,
   MenuItem,
-  LinearProgress
+  LinearProgress,
+  Button
 } from '@material-ui/core'
 
 import DatePicker from '../../components/materialComponents/datePicker';
@@ -24,6 +25,8 @@ import NewFileInput from '../../components/FileInput'
 
 import {
   Edit as EditIcon,
+  Replay as ReplayIcon,
+  SyncDisabled as SyncDisabledIcon
 } from '@material-ui/icons'
 import { Icon } from "react-materialize";
 
@@ -31,12 +34,13 @@ import { QuestionBox } from './components/questionBox'
 import { CircularStatic } from './components/progressCircle'
 import { Toast } from "../../components/toasty";
 
-export const Form = ({ Form, onChangeForm, COD }) => {
+export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   const classes = useStyles();
 
-  const [section, setSection] = useState(9)
+  const [section, setSection] = useState(0)
   const [question, setQuestion] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [submitError, setSubmitError] = useState(false)
   const [fileNames, setFileNames] = useState([])
   const stepsName = [
     'Dados Pessoais',
@@ -51,18 +55,38 @@ export const Form = ({ Form, onChangeForm, COD }) => {
     'Finalização'
   ]
 
-  const handleRequestAdvance = () => {
+  useEffect(() => {
+    setSection(lastFormSection)
+  }, [lastFormSection])
+
+  const handleSubmit = async () => {
+    let toastId = null
+    toastId = Toast('Salvando...', 'wait')
+
+    try {
+      //envia o formulario
+      await api.post(`/form/${COD}`,
+        {
+          form: Form,
+          secao: section + 1
+        },
+      );
+
+      Toast('Etapa salva', 'update', toastId, 'success')
+    } catch (err) {
+      Toast('Falha ao salvar dados, tente novamente', 'update', toastId, 'error')
+      throw new Error()
+    }
+  }
+
+  const handleRequestAdvance = async () => {
     if (question === matriz[section].length) {
       Toast('Aguarde...', 'info')
     } else if ((question + 1) === matriz[section].length) {
       setLoading(true);
 
-      let toastId = null
-      toastId = Toast('Salvando...', 'wait')
-
-      setTimeout(() => {
-        //salva parte do formulario(não esquecer do toast)
-        Toast('Etapa salva', 'update', toastId, 'success')
+      try {
+        await handleSubmit()
 
         //avança a section
         setSection(oldState => oldState + 1)
@@ -71,9 +95,25 @@ export const Form = ({ Form, onChangeForm, COD }) => {
         setQuestion(0)
 
         setLoading(false);
-      }, 3000)
+        setSubmitError(false)
+      } catch (err) {
+        setSubmitError(true)
+      }
     } else {
       setQuestion(oldState => oldState + 1)
+    }
+  }
+
+  const handleRequestRetreat = async () => {
+    if (question === 0 && section === 0) {
+      Toast('Você já está na primeira pergunta', 'info')
+    } else if (question > 0) {
+      setQuestion(question - 1)
+    } else if (question === 0 && section > 0) {
+      setQuestion(matriz[section - 1].length - 1)
+      setSection(section - 1)
+    } else {
+      console.log('v')
     }
   }
 
@@ -187,6 +227,13 @@ export const Form = ({ Form, onChangeForm, COD }) => {
     setFileNames(aux)
   }
 
+  /* 
+  MUITA LOUCURA FAZER O QUE EU FIZ ABAIXO,
+  MAS TENTEI ISOLAR EM UMA FUNÇÃO(DENTRO DO COMPONENTE) E NÃO DEU CERTO, 
+  TAMBEM TENTEI ISOLAR FORA DO COMPONENTE E NÃO FUNCIONOU... 
+  POSSO(E DEVO) VOLTAR AQUI COM UM POUCO MAIS DE EXPERIENCIA PARA FAZER AS COISAS DO JEITO CERTO 
+  */
+
   //dados pessoais
   let dadosPessoais = [
     {
@@ -194,7 +241,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Seu nome completo aqui' value={Form.Nome_Completo} />,
       validationTest: () => Form.Nome_Completo !== null && String(Form.Nome_Completo).trim() !== '' && typeof Form.Nome_Completo != 'undefined',
       validationErrorFunction: () => {
-        Toast('O campo do nome é obrigatório!', 'warn')
+        Toast('O campo do nome é obrigatório', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -202,14 +249,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Nome_Completo: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Sua data de nascimento',
-      answerComponent: <DatePicker min={false} label="Data de nascimento" />,
+      answerComponent: <DatePicker min={false} label="Data de nascimento" defaultValue={Form.DtNascimento} />,
       validationTest: () => Form.DtNascimento !== null && String(Form.DtNascimento).trim() !== '' && typeof Form.DtNascimento != 'undefined',
       validationErrorFunction: () => {
-        Toast('O campo da data de nascimento é obrigatório!', 'warn')
+        Toast('O campo da data de nascimento é obrigatório', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -217,14 +265,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           DtNascimento: e._d
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Seu número de RG',
       answerComponent: <InputRG value={Form.RG} />,
       validationTest: () => Form.RG !== null && String(Form.RG).trim() !== '' && typeof Form.RG != 'undefined',
       validationErrorFunction: () => {
-        Toast('O campo do RG é obrigatório!', 'warn')
+        Toast('O campo do RG é obrigatório', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -232,14 +281,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           RG: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Seu número de CPF',
       answerComponent: <InputCPF value={Form.CPF} />,
       validationTest: () => Form.CPF !== null && String(Form.CPF).trim() !== '' && typeof Form.CPF != 'undefined',
       validationErrorFunction: () => {
-        Toast('O campo do CPF é obrigatório!', 'warn')
+        Toast('O campo do CPF é obrigatório', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -247,14 +297,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           CPF: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Informe seu email principal',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Email' value={Form.Email} />,
       validationTest: () => Form.Email !== null && String(Form.Email).trim() !== '' && typeof Form.Email != 'undefined',
       validationErrorFunction: () => {
-        Toast('O campo do Email é obrigatório!', 'warn')
+        Toast('O campo do Email é obrigatório', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -262,7 +313,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Email: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Telefone Celular(opcional caso use telefone fixo)',
@@ -275,7 +327,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Celular: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Telefone Fixo(Obrigatório caso não tenha informado um número de celular)',
@@ -290,14 +343,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Tel_Residencial: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Logradouro',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Logradouro' value={Form.Logradouro} />,
       validationTest: () => Form.Logradouro !== null && String(Form.Logradouro).trim() !== '' && typeof Form.Logradouro != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o logradouro do seu endereço!', 'warn')
+        Toast('Informe o logradouro do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -305,14 +359,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Logradouro: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Número',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Número' value={Form.Número} />,
       validationTest: () => Form.Número !== null && String(Form.Número).trim() !== '' && typeof Form.Número != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o número do seu endereço!', 'warn')
+        Toast('Informe o número do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -320,7 +375,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Número: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Complemento(opcional)',
@@ -333,14 +389,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Complemento: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Bairro',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Bairro' value={Form.Bairro} />,
       validationTest: () => Form.Bairro !== null && String(Form.Bairro).trim() !== '' && typeof Form.Bairro != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o bairro do seu endereço!', 'warn')
+        Toast('Informe o bairro do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -348,14 +405,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Bairro: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Município',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Município' value={Form.Municipio} />,
       validationTest: () => Form.Municipio !== null && String(Form.Municipio).trim() !== '' && typeof Form.Municipio != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o município do seu endereço!', 'warn')
+        Toast('Informe o município do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -363,14 +421,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Municipio: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: Estado',
       answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Estado' value={Form.Estado} />,
       validationTest: () => Form.Estado !== null && String(Form.Estado).trim() !== '' && typeof Form.Estado != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o estado do seu endereço!', 'warn')
+        Toast('Informe o estado do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -378,14 +437,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Estado: e.currentTarget.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Endereço: CEP',
       answerComponent: <InputCEP value={Form.CEP} />,
       validationTest: () => Form.CEP !== null && String(Form.CEP).trim() !== '' && typeof Form.CEP != 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe o CEP do seu endereço!', 'warn')
+        Toast('Informe o CEP do seu endereço', 'warn')
       },
       changeAnswerFunction: (e) => {
         onChangeForm({
@@ -393,7 +453,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           CEP: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -492,6 +553,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       },
       changeAnswerFunction: (e) => { },
       onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end'
     }
   ]
@@ -513,11 +575,12 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Conj_Nome: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Data de nascimento do(a) cônjuge',
-        answerComponent: <DatePicker min={false} label="Data de nascimento cônjuge" />,
+        answerComponent: <DatePicker min={false} label="Data de nascimento cônjuge" defaultValue={Form.Conj_DtNascimento} />,
         validationTest: () => Form.Conj_DtNascimento !== null && String(Form.Conj_DtNascimento).trim() !== '' && typeof Form.Conj_DtNascimento != 'undefined',
         validationErrorFunction: () => {
           Toast('Informe a data de nascimento do(a) cônjuge', 'warn')
@@ -528,7 +591,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Conj_DtNascimento: e._d
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'RG do(a) cônjuge',
@@ -543,7 +607,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Conj_RG: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'CPF do(a) cônjuge',
@@ -558,7 +623,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Conj_CPF: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Tempo de união',
@@ -573,7 +639,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             TUnião: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Redimento mensal do(a) cônjuge',
@@ -588,7 +655,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Conj_RendMensal: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -615,7 +683,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Tem_filhos: e.target.value
         })
       },
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     }
   ]
 
@@ -636,7 +705,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Qtd_filhos: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Idade dos filhos',
@@ -651,7 +721,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Idd_filhos: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -673,14 +744,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       </Select>,
       validationTest: () => Form.T_Residencia !== '' && Form.T_Residencia !== null && typeof Form.T_Residencia !== 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe se o tipo da sua residência!', 'warn')
+        Toast('Informe se o tipo da sua residência', 'warn')
       },
       changeAnswerFunction: (e) =>
         onChangeForm({
           ...Form,
           T_Residencia: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     }
   ]
 
@@ -693,7 +765,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
         answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Custo mensal da sua redidencia' value={Form.Residencia_Mensal} />,
         validationTest: () => Form.Residencia_Mensal !== null && String(Form.Residencia_Mensal).trim() !== '' && typeof Form.Residencia_Mensal != 'undefined',
         validationErrorFunction: () => {
-          Toast('Informe o custo mensal aproximado com sua residencia!', 'warn')
+          Toast('Informe o custo mensal aproximado com sua residencia', 'warn')
         },
         changeAnswerFunction: (e) => {
           onChangeForm({
@@ -701,7 +773,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Residencia_Mensal: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -728,7 +801,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           P_Veiculo: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Possui imóvel?',
@@ -749,7 +823,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           P_Imovel: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
 
   ]
@@ -768,14 +843,15 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       </Select>,
       validationTest: () => Form.CLT !== '' && Form.CLT !== null && typeof Form.CLT !== 'undefined',
       validationErrorFunction: () => {
-        Toast('Informe se trabalha com carteira assinada!', 'warn')
+        Toast('Informe se trabalha com carteira assinada', 'warn')
       },
       changeAnswerFunction: (e) =>
         onChangeForm({
           ...Form,
           CLT: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -796,7 +872,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Rend_Mensal: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -823,7 +900,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Recolhimento: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     }
   ]
 
@@ -844,7 +922,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             Recolhimento_QTD: e.target.value
           })
         },
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -864,7 +943,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Renda_Familiar: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Como é composta sua renda familiar?',
@@ -878,7 +958,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Renda_Composta: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Qual sua expectativa de retorno para esse investimento?',
@@ -900,7 +981,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Expect: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Qual a origem do capital disponível para a abertura do negócio com a Pilão Professional?',
@@ -914,7 +996,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Origem_Capital: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Qual a disponibilidade para investimento na franquia, em dinheiro, sem considerar empréstimos ou linhas de crédito?',
@@ -928,7 +1011,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Disp_Invest: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -953,7 +1037,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           T_Empresa: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -963,7 +1048,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       ...Exp,
       {
         question: 'Especifique detalhadamente qual a atividade, se existiam sócios, quais os rendimentos mensais, qual a quantidade de horas de trabalho por dia em média e qual o capital social: No caso do negócio não mais existir, especificar detalhadamente quais os motivos que ocasionaram o encerramento, se na ocasião houve prejuízo ou lucro e se houve a ocorrência de dívidas pendentes',
-        answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Sua experiência' value={Form.Detalhes_Atividade} />,
+        answerComponent: <TextField multiline rowsMax={4} className={classes.TextInput} variant='outlined' label='Sua experiência' value={Form.Detalhes_Atividade} />,
         validationTest: () => Form.Detalhes_Atividade !== '' && Form.Detalhes_Atividade !== null && typeof Form.Detalhes_Atividade !== 'undefined',
         validationErrorFunction: () => {
           Toast('Nos conte um pouco da sua experiência mencionada anteriormente', 'warn')
@@ -973,7 +1058,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Detalhes_Atividade: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -993,11 +1079,12 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Form_Escolar: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'De forma simplificada, nos conte sobre suas últimas experiências profissionais.',
-      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Últimas experiencias profissionais' value={Form.Ult_exp} />,
+      answerComponent: <TextField multiline rowsMax={4} className={classes.TextInput} variant='outlined' label='Últimas experiencias profissionais' value={Form.Ult_exp} />,
       validationTest: () => Form.Ult_exp !== '' && Form.Ult_exp !== null && typeof Form.Ult_exp !== 'undefined',
       validationErrorFunction: () => {
         Toast('Nos conte sobre suas últimas experiências profissionais', 'warn')
@@ -1007,7 +1094,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Ult_exp: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -1032,7 +1120,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Sociedade: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     }
   ]
 
@@ -1052,7 +1141,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Nome_Socio: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Qual é o seu tipo de vinculo com o sócio',
@@ -1066,10 +1156,11 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Socio_Vinculo: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
-        question: 'Há quanto tempo se conhecem você e seu sócio se conhecem?',
+        question: 'Há quanto tempo você e seu sócio se conhecem?',
         answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Quanto tempo se conhecem' value={Form.Tempo_ConheceSocio} />,
         validationTest: () => Form.Tempo_ConheceSocio !== '' && Form.Tempo_ConheceSocio !== null && typeof Form.Tempo_ConheceSocio !== 'undefined',
         validationErrorFunction: () => {
@@ -1080,11 +1171,12 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Tempo_ConheceSocio: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'O que já realizaram juntos?',
-        answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Realizações em conjunto' value={Form.Realizou_Socio} />,
+        answerComponent: <TextField multiline rowsMax={4} className={classes.TextInput} variant='outlined' label='Realizações em conjunto' value={Form.Realizou_Socio} />,
         validationTest: () => Form.Realizou_Socio !== '' && Form.Realizou_Socio !== null && typeof Form.Realizou_Socio !== 'undefined',
         validationErrorFunction: () => {
           Toast('Cite feitos realizados em conjunto com seu sócio', 'warn')
@@ -1094,7 +1186,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Realizou_Socio: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Essa pessoa vai ser sócia no contrato de concessão da franquia ou apenas vai participar no contrato da empresa (pessoa jurídica) que vai operar a franquia? Especificar em que condições e em qual proporção',
@@ -1108,7 +1201,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Cond_Socio: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
       {
         question: 'Essa pessoa participará do investimento?',
@@ -1129,7 +1223,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Part_invest: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       },
     ]
 
@@ -1148,7 +1243,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
               ...Form,
               Prop_Invest: e.target.value
             }),
-          onRequestAdvanceStep: handleRequestAdvance
+          onRequestAdvanceStep: handleRequestAdvance,
+          onRequestRetreatStep: handleRequestRetreat
         }
       ]
     }
@@ -1176,7 +1272,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           T_Empreendimento: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     }
   ]
 
@@ -1196,7 +1293,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             ...Form,
             Exp_Sociedade: e.target.value
           }),
-        onRequestAdvanceStep: handleRequestAdvance
+        onRequestAdvanceStep: handleRequestAdvance,
+        onRequestRetreatStep: handleRequestRetreat
       }
     ]
   }
@@ -1222,11 +1320,12 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Cob_Desp: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Como você conheceu a Pilão Professional?',
-      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Como conheceu a Pilão Professional' value={Form.Conhece_Pilao} />,
+      answerComponent: <TextField multiline rowsMax={4} className={classes.TextInput} variant='outlined' label='Como conheceu a Pilão Professional' value={Form.Conhece_Pilao} />,
       validationTest: () => Form.Conhece_Pilao !== '' && Form.Conhece_Pilao !== null && typeof Form.Conhece_Pilao !== 'undefined',
       validationErrorFunction: () => {
         Toast('Nos conte como conheceu a Pilão Professional', 'warn')
@@ -1236,11 +1335,12 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Conhece_Pilao: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Qual foi a característica do negócio que mais pesou na escolha da Pilão Professional?',
-      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Caracteristica' value={Form.Caracteristica_Peso} />,
+      answerComponent: <TextField multiline rowsMax={4} className={classes.TextInput} variant='outlined' label='Caracteristica' value={Form.Caracteristica_Peso} />,
       validationTest: () => Form.Caracteristica_Peso !== '' && Form.Caracteristica_Peso !== null && typeof Form.Caracteristica_Peso !== 'undefined',
       validationErrorFunction: () => {
         Toast('Nos conte qual característica mais lhe atraiu na Pilão Professional', 'warn')
@@ -1250,7 +1350,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Caracteristica_Peso: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Numa franquia, a padronização é algo muito importante. Acrescenta-se ainda que a franqueadora tem sob sua responsabilidade a organização da rede em geral, bem como o cuidado com a manutenção da competitividade do negócio. Por esse motivo, trata-se de uma relação pautada por muitas regras, estabelecidas no dia a dia pela franqueadora, com base nos objetivos descritos. Você está ciente disso e disposto(a) a cumprir as regras estabelecidas pela franqueadora.',
@@ -1271,7 +1372,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Com_Regra: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'No que se refere ao lucro líquido que uma franquia pode oferecer, por mês em média (ao final de um ano, o lucro médio por mês), no total (no caso de existirem sócios, o lucro total, não a parte de cada sócio), existem alguns casos em que nos primeiros meses a média mensal fica sendo inferior a R$500,00. Caso na sua franquia exista esse nível de lucro, assim mesmo é possível para você iniciar o negócio?',
@@ -1292,7 +1394,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Com_Med: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: 'Devido à natureza da relação, rotineiramente a franquia deve fornecer as mais diversas informações para a franqueadora. Por exemplo, no que se refere aos resultados financeiros, existe o acompanhamento do desempenho de todas as máquinas, isso com o objetivo de planejar as políticas estratégicas da rede como um todo, e também para detectar eventuais problemas de gestão e potencial na unidade. São diversas informações, sobre diversos campos do negócio. Você se compromete a informar a franqueadora sobre o que for solicitado, desde que pertinente ao negócio?',
@@ -1313,7 +1416,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           ...Form,
           Com_Inf: e.target.value
         }),
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
   ]
 
@@ -1325,12 +1429,20 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       validationTest: () => true,
       validationErrorFunction: () => { },
       changeAnswerFunction: null,
-      onRequestAdvanceStep: handleRequestAdvance
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
     },
     {
       question: null,
       answerComponent: afirmacoes.map((afirmacao, index) => (
-        <div style={divStyle} key={index}>
+        <div style={{
+          display: "Flex",
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          marginBottom: "2%",
+        }} key={index}>
           <input
             onChange={(e) => {
               e.persist();
@@ -1366,6 +1478,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
       },
       changeAnswerFunction: null,
       onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end',
       answerOnly: true
     },
@@ -1426,6 +1539,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           handleRequestAdvance()
         }
       },
+      onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end'
     },
     {
@@ -1480,6 +1594,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           handleRequestAdvance()
         }
       },
+      onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end'
     },
   ]
@@ -1540,6 +1655,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             handleRequestAdvance()
           }
         },
+        onRequestRetreatStep: handleRequestRetreat,
         alignArrow: 'flex-end'
       }
     ]
@@ -1600,6 +1716,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           handleRequestAdvance()
         }
       },
+      onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end'
     },
     {
@@ -1624,6 +1741,7 @@ export const Form = ({ Form, onChangeForm, COD }) => {
           Consultor: e.target.value
         }),
       onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat,
     }
   ]
 
@@ -1636,7 +1754,6 @@ export const Form = ({ Form, onChangeForm, COD }) => {
         height: '100%'
       }}
     >
-
       <div
         className='YAlign'
         style={{
@@ -1658,7 +1775,8 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             loading,
             matriz,
             question,
-            section
+            section,
+            submitError
           })}
         </div>
       </div>
@@ -1667,7 +1785,9 @@ export const Form = ({ Form, onChangeForm, COD }) => {
         loading,
         matriz,
         question,
-        section
+        section,
+        submitError,
+        handleRequestAdvance
       })}
 
       <div
@@ -1692,6 +1812,14 @@ export const Form = ({ Form, onChangeForm, COD }) => {
             {stepsName.map((label, index) => (
               <Step
                 key={label}
+                // style={{
+                //   cursor: lastFormSection >= index ? 'pointer' : 'default'
+                // }}
+                // onClick={() => {
+                //   if (lastFormSection >= index) {
+                //     setSection(index)
+                //   }
+                // }}
               >
                 <StepLabel
                   className={classes.StepLabelNumber}
@@ -1718,19 +1846,30 @@ export const Form = ({ Form, onChangeForm, COD }) => {
   )
 }
 
-const whichContentDisplay = ({ loading, matriz, question, section }) => {
+const whichContentDisplay = ({ loading, matriz, question, section, submitError, handleRequestAdvance }) => {
   if (loading) {
     return (
       <QuestionBox
-        question='Salvando etapa...'
-        answer={null}
+        question={submitError ? 'Falha ao salvar etapa, tente novamente.' : 'Salvando etapa...'}
+        answer={
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<ReplayIcon />}
+            disabled={!submitError}
+            onClick={handleRequestAdvance}
+          >
+            Tentar novamente
+          </Button>
+        }
         validation={() => true}
         validationErrorAction={() => Toast('Salvando etapa, aguarde...', 'info')}
         onChangeAnswer={() => { }}
         onAdvance={() => { }}
+        onRetreat={() => { }}
       />
     )
-  } else if (!loading && typeof matriz[section] != 'undefined' && matriz[section][question] != 'undefined') {
+  } else if (!loading && typeof matriz[section] !== 'undefined' && matriz[section][question] !== 'undefined') {
     return (
       <QuestionBox
         question={matriz[section][question].question}
@@ -1739,6 +1878,7 @@ const whichContentDisplay = ({ loading, matriz, question, section }) => {
         validationErrorAction={matriz[section][question].validationErrorFunction}
         onChangeAnswer={matriz[section][question].changeAnswerFunction}
         onAdvance={matriz[section][question].onRequestAdvanceStep}
+        onRetreat={matriz[section][question].onRequestRetreatStep}
         alignArrow={matriz[section][question].alignArrow}
         answerOnly={matriz[section][question].answerOnly}
       />
@@ -1750,22 +1890,36 @@ const whichContentDisplay = ({ loading, matriz, question, section }) => {
         answer={null}
         validation={() => false}
         validationErrorAction={() => Toast('Voce já respondeu a todas as questões do formulário', 'success')}
-        onChangeAnswer={() => {}}
-        onAdvance={() => {}}
+        onChangeAnswer={() => { }}
+        onAdvance={() => { }}
+        onRetreat={() => { }}
       />
     )
   }
 }
 
-const whichHelperShow = ({ loading, matriz, question, section }) => {
-  if (loading) {
+const whichHelperShow = ({ loading, matriz, question, section, submitError }) => {
+  if (loading && !submitError) {
     return (
       <>
         <Typography variant='h6'>Salvando...</Typography>
         <LinearProgress />
       </>
     )
-  } else if (!loading && typeof matriz[section] != 'undefined' && matriz[section][question] != 'undefined') {
+  } else if (loading && submitError) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Typography variant='h6'>Falha</Typography>
+        <SyncDisabledIcon fontSize='large' />
+      </div >
+
+    )
+  } else if (!loading && typeof matriz[section] !== 'undefined' && matriz[section][question] !== 'undefined') {
     return (
       <>
         <Typography variant='h6'>Progresso</Typography>
@@ -1814,7 +1968,7 @@ const divStyle = {
   width: "100%",
   flexDirection: "row",
   justifyContent: "flex-start",
-  alignItems: "flex-start",
+  alignItems: "center",
   marginBottom: "2%",
 };
 

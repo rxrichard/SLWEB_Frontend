@@ -11,6 +11,7 @@ import { Toast } from "../../components/toasty";
 import CodeView from './codeInsertView'
 import Intro from './modals/Intro'
 import { HelperModal } from './modals/helperModal'
+import { toValidString } from '../../misc/commom_functions'
 
 import { Form } from './Form'
 
@@ -30,6 +31,7 @@ export const Formulario = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [validado, setValidado] = useState(false)
+  const [formSection, setFormSection] = useState(0)
   const [form, setForm] = useState(INITIAL_STATE)
   const [wait, setWait] = useState(false)
   const [helperModalOpen, setHelperModalOpen] = useState(false);
@@ -49,10 +51,54 @@ export const Formulario = () => {
     }
 
     try {
-      await api.get(`/form/check/${codigo}`);
+      const response = await api.get(`/form/check/${codigo}`);
       setLoading(false)
       setValidado(true)
       setWait(false)
+      setFormSection(response.data.SECAO)
+
+      delete response.data.FORM.SECAO
+      delete response.data.FORM.PREENCHIDO
+      response.data.FORM.Nome_Completo = toValidString(response.data.FORM.Nome_Completo, '')
+      response.data.FORM.Email = toValidString(response.data.FORM.Email, '')
+      response.data.FORM.Logradouro = toValidString(response.data.FORM.Logradouro, '')
+      response.data.FORM.Número = toValidString(response.data.FORM.Número, '')
+      response.data.FORM.Complemento = toValidString(response.data.FORM.Complemento, '')
+      response.data.FORM.Bairro = toValidString(response.data.FORM.Bairro, '')
+      response.data.FORM.Municipio = toValidString(response.data.FORM.Municipio, '')
+      response.data.FORM.Estado = toValidString(response.data.FORM.Estado, '')
+      response.data.FORM.Conj_Nome = toValidString(response.data.FORM.Conj_Nome, '')
+      response.data.FORM.TUnião = toValidString(response.data.FORM.TUnião, '')
+      response.data.FORM.Conj_RendMensal = toValidString(response.data.FORM.Conj_RendMensal, '')
+      response.data.FORM.Qtd_filhos = toValidString(response.data.FORM.Qtd_filhos, '')
+      response.data.FORM.Idd_filhos = toValidString(response.data.FORM.Idd_filhos, '')
+      response.data.FORM.Residencia_Mensal = toValidString(response.data.FORM.Residencia_Mensal, '')
+      response.data.FORM.Rend_Mensal = toValidString(response.data.FORM.Rend_Mensal, '')
+      response.data.FORM.Recolhimento_QTD = toValidString(response.data.FORM.Recolhimento_QTD, '')
+      response.data.FORM.Renda_Familiar = toValidString(response.data.FORM.Renda_Familiar, '')
+      response.data.FORM.Renda_Composta = toValidString(response.data.FORM.Renda_Composta, '')
+      response.data.FORM.Origem_Capital = toValidString(response.data.FORM.Origem_Capital, '')
+      response.data.FORM.Disp_Invest = toValidString(response.data.FORM.Disp_Invest, '')
+      response.data.FORM.Detalhes_Atividade = toValidString(response.data.FORM.Detalhes_Atividade, '')
+      response.data.FORM.Form_Escolar = toValidString(response.data.FORM.Form_Escolar, '')
+      response.data.FORM.Ult_exp = toValidString(response.data.FORM.Ult_exp, '')
+      response.data.FORM.Nome_Socio = toValidString(response.data.FORM.Nome_Socio, '')
+      response.data.FORM.Socio_Vinculo = toValidString(response.data.FORM.Socio_Vinculo, '')
+      response.data.FORM.Tempo_ConheceSocio = toValidString(response.data.FORM.Tempo_ConheceSocio, '')
+      response.data.FORM.Realizou_Socio = toValidString(response.data.FORM.Realizou_Socio, '')
+      response.data.FORM.Cond_Socio = toValidString(response.data.FORM.Cond_Socio, '')
+      response.data.FORM.Prop_Invest = toValidString(response.data.FORM.Prop_Invest, '')
+      response.data.FORM.Exp_Sociedade = toValidString(response.data.FORM.Exp_Sociedade, '')
+      response.data.FORM.Conhece_Pilao = toValidString(response.data.FORM.Conhece_Pilao, '')
+      response.data.FORM.Caracteristica_Peso = toValidString(response.data.FORM.Caracteristica_Peso, '')
+      
+      response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
+      response.data.FORM.DtNascConj = toValidString(response.data.FORM.DtNascConj, '')
+      response.data.FORM.CPFConj = toValidString(response.data.FORM.CPFConj, '')
+      response.data.FORM.RGConj = toValidString(response.data.FORM.RGConj, '')
+      response.data.FORM.PFilhos = toValidString(response.data.FORM.PFilhos, '')
+
+      setForm(response.data.FORM)
     } catch (err) {
       Toast('Código inválido', 'info')
       setLoading(false)
@@ -89,67 +135,6 @@ export const Formulario = () => {
     }
   }
 
-  // const handleSubmit = async (event) => {
-  //   let shouldFinishForm = true
-  //   setWait(true)
-
-  //   //Pega todos inputs do tipo arquivos
-  //   const arquivos = document.getElementsByClassName("files");
-
-  //   //cria um objeto do tipo formulario
-  //   const formData = new FormData();
-
-  //   //poe o conteudo de todos os inputs do tipo arquivo dentro do mesmo formulario
-  //   for (let j = 0; j < arquivos.length; j++) {
-  //     for (let i = 0; i < arquivos[j].files.length; i++) {
-  //       formData.append(`formData`, arquivos[j].files[i]);
-  //     }
-  //   }
-
-  //   // if (formData.getAll('formData').length < 3) {
-  //   //   Toast('Anexe todos os arquivos solicitados', 'warn')
-  //   //   setWait(false)
-  //   //   return false
-  //   // }
-
-  //   let toastId = null
-
-  //   //faz upload de tudo
-  //   try {
-  //     toastId = Toast('Enviando dados...', 'wait')
-
-  //     //envia o formulario
-  //     await api.post(`/form/${codCandidato}`,
-  //       {
-  //         form: form,
-  //       },
-  //     );
-
-  //     //envia os arquivos
-  //     await api.post(`/form/upload/${codCandidato}/${formData.getAll('formData').length}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       })
-
-  //     Toast('Dados salvos!', 'update', toastId, 'success')
-  //   } catch (err) {
-  //     Toast('Falha ao salvar os dados, se o erro persistir baixe o arquivo Word e nos envie com as respostas pelo email informado no arquivo.', 'update', toastId, 'error')
-  //     event.target.disabled = false
-  //     shouldFinishForm = false;
-  //   }
-
-  //   if (!shouldFinishForm) {
-  //     setWait(false)
-  //   } else {
-  //     setTimeout(() => window.location.reload(), 3000);
-  //   }
-
-  //   return shouldFinishForm
-  // }
-
   const handleOpenHelperModal = () => {
     setHelperModalOpen(true)
   }
@@ -178,16 +163,17 @@ export const Formulario = () => {
         />
       )
     } else if (validado) {
-    return (
-      <FormContainer>
-        <Intro />
-        <Form 
-          Form={form}
-          onChangeForm={setForm}
-          COD={codCandidato}
-        />
-      </FormContainer>
-    )
+      return (
+        <FormContainer>
+          <Intro />
+          <Form
+            Form={form}
+            onChangeForm={setForm}
+            COD={codCandidato}
+            lastFormSection={formSection}
+          />
+        </FormContainer>
+      )
     } else {
       return null
     }

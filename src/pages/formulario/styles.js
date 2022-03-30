@@ -154,7 +154,7 @@ export const FormContainer = styled.div`
   height: 100%;
   padding: 8px;
 
-  background-image: linear-gradient(to bottom right, #C8102E, #D33F57);
+  background-image: linear-gradient(to bottom right, #333333 70%, #C8102E);
 `
 
 export const FormBox = styled.div`
@@ -170,6 +170,6 @@ export const FormBox = styled.div`
   padding: 16px;
 
   background-color: #FFF;
-  box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
 `

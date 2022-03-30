@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from "react";
 import "moment";
-import React from "react";
 import MomentUtils from "@date-io/moment";
 import {
   MuiPickersUtilsProvider,
@@ -7,7 +7,7 @@ import {
 } from "@material-ui/pickers";
 
 export default function MaterialUIPickers(props) {
-  const [selectedDate, setSelectedDate] = React.useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const hoje = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
@@ -19,19 +19,26 @@ export default function MaterialUIPickers(props) {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    if(props.min){
+    if (props.min) {
       props.onChange(date !== null && date._d >= hoje ? date : "");
-    }else{
+    } else {
       props.onChange(date !== null ? date : "");
     }
   };
+
+  useEffect(() => {
+    if (props.defaultValue !== null) {
+      setSelectedDate(props.defaultValue)
+    }
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <KeyboardDatePicker
         style={{ width: "170px" }}
         disableToolbar
-        disablePast={props.min ? true :  false}
+        disablePast={props.min ? true : false}
         autoOk
         invalidDateMessage="Data inválida"
         minDateMessage={props.min ? "Data anteior ao dia de hoje" : 'Data não suportada'}
