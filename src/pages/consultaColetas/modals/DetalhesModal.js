@@ -150,6 +150,8 @@ const DetalhesModalWithRedux = (props) => {
       carga.Items.push(diferenca)
     }
 
+    carga.Items = carga.Items.filter(item => item.QVenda > 0)
+
     SetColetaCarga(carga)
     history.push('/vendas')
   }

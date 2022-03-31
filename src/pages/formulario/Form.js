@@ -10,7 +10,9 @@ import {
   StepLabel,
   MenuItem,
   LinearProgress,
-  Button
+  Button,
+  useMediaQuery,
+  useTheme
 } from '@material-ui/core'
 
 import DatePicker from '../../components/materialComponents/datePicker';
@@ -19,14 +21,15 @@ import { InputTelFixo } from './components/inputTelFixo';
 import { InputRG } from './components/inputRG';
 import { InputCPF } from './components/inputCPF';
 import { InputCEP } from './components/inputCEP';
-import Select from "../../components/materialComponents/Select";
+import Select from "./components/select";
 import NewFileInput from '../../components/FileInput'
 
 
 import {
   Edit as EditIcon,
   Replay as ReplayIcon,
-  SyncDisabled as SyncDisabledIcon
+  SyncDisabled as SyncDisabledIcon,
+  CheckCircle as CheckCircleIcon
 } from '@material-ui/icons'
 import { Icon } from "react-materialize";
 
@@ -36,6 +39,8 @@ import { Toast } from "../../components/toasty";
 
 export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [section, setSection] = useState(0)
   const [question, setQuestion] = useState(0)
@@ -150,6 +155,9 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   }
 
   const marcaCheckbox = (valueMarcado, value) => {
+    console.log(valueMarcado)
+    console.log(value)
+    
     if (valueMarcado > 3 && value === true) {
       onChangeForm({
         ...Form,
@@ -470,7 +478,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="1"
-            checked={String(Form.Est_Civil) === '1'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '1'}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de comunhão universal de bens
@@ -483,7 +491,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="2"
-            checked={String(Form.Est_Civil) === '2'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '2'}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de comunhão parcial de bens
@@ -496,7 +504,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="3"
-            checked={String(Form.Est_Civil) === '3'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '3'}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de separação de bens
@@ -509,7 +517,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="4"
-            checked={String(Form.Est_Civil) === '4'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '4'}
           />
           <Typography variant='subtitle1'>Solteiro (a)</Typography>
         </div>
@@ -520,7 +528,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="5"
-            checked={String(Form.Est_Civil) === '5'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '5'}
           />
           <Typography variant='subtitle1'>Divorciado(a)</Typography>
         </div>
@@ -531,7 +539,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="6"
-            checked={String(Form.Est_Civil) === '6'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '6'}
           />
           <Typography variant='subtitle1'>Separado(a) judicialmente</Typography>
         </div>
@@ -542,7 +550,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               marcaCheckbox(e.target.value, e.target.checked)
             }
             value="7"
-            checked={String(Form.Est_Civil) === '7'}
+            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '7'}
           />
           <Typography variant='subtitle1'>Viúvo (a)</Typography>
         </div>
@@ -666,7 +674,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Possui filhos?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Tem_filhos}
       >
@@ -732,7 +740,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Residencia',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.T_Residencia}
       >
@@ -785,7 +793,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Possui veículo?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.P_Veiculo}
       >
@@ -807,7 +815,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Possui imóvel?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.P_Imovel}
       >
@@ -834,7 +842,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Exerce atividades com carteira assinada?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.CLT}
       >
@@ -884,7 +892,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Teve recolhimento de imposto de renda no ultimo ano?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Recolhimento}
       >
@@ -964,7 +972,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Qual sua expectativa de retorno para esse investimento?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Expect}
       >
@@ -1021,7 +1029,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Tem/Teve empresa própria e/ou tem experiencia como profissional autônomo?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.T_Empresa}
       >
@@ -1104,7 +1112,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Haverá sociedade neste negócio?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Sociedade}
       >
@@ -1207,7 +1215,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       {
         question: 'Essa pessoa participará do investimento?',
         answerComponent: <Select
-          width="413px"
+
           label="Selecione..."
           value={Form.Part_invest}
         >
@@ -1256,7 +1264,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Você já teve algum empreendimento em sociedade com alguém?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.T_Empreendimento}
       >
@@ -1304,7 +1312,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Na fase inicial, eventualmente, faz-se necessária uma cobertura dos custos fixos da franquia, por motivo do negócio ainda não atingir uma maturidade suficiente. Nesse caso, existe disponibilidade de capital para um eventual investimento parcial mensal que complemente as despesas da franquia?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Cob_Desp}
       >
@@ -1356,7 +1364,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Numa franquia, a padronização é algo muito importante. Acrescenta-se ainda que a franqueadora tem sob sua responsabilidade a organização da rede em geral, bem como o cuidado com a manutenção da competitividade do negócio. Por esse motivo, trata-se de uma relação pautada por muitas regras, estabelecidas no dia a dia pela franqueadora, com base nos objetivos descritos. Você está ciente disso e disposto(a) a cumprir as regras estabelecidas pela franqueadora.',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Com_Regra}
       >
@@ -1378,7 +1386,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'No que se refere ao lucro líquido que uma franquia pode oferecer, por mês em média (ao final de um ano, o lucro médio por mês), no total (no caso de existirem sócios, o lucro total, não a parte de cada sócio), existem alguns casos em que nos primeiros meses a média mensal fica sendo inferior a R$500,00. Caso na sua franquia exista esse nível de lucro, assim mesmo é possível para você iniciar o negócio?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Com_Med}
       >
@@ -1400,7 +1408,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Devido à natureza da relação, rotineiramente a franquia deve fornecer as mais diversas informações para a franqueadora. Por exemplo, no que se refere aos resultados financeiros, existe o acompanhamento do desempenho de todas as máquinas, isso com o objetivo de planejar as políticas estratégicas da rede como um todo, e também para detectar eventuais problemas de gestão e potencial na unidade. São diversas informações, sobre diversos campos do negócio. Você se compromete a informar a franqueadora sobre o que for solicitado, desde que pertinente ao negócio?',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Com_Inf}
       >
@@ -1722,7 +1730,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Indique se você recebeu assistência de um de nossos consultores para entender melhor a proposta da franquia(opcional)',
       answerComponent: <Select
-        width="413px"
+
         label="Selecione..."
         value={Form.Consultor}
       >
@@ -1751,32 +1759,38 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     <div
       className="XAlign"
       style={{
-        height: '100%'
+        minHeight: '100%'
       }}
     >
       <div
         className='YAlign'
         style={{
-          alignItems: 'flex-end',
-          justifyContent: 'flex-start',
-          height: '100%',
-          maxHeight: '500px',
-          padding: '16px 32px 0px 0px',
+          alignItems: fullScreen ? 'center' : 'flex-end',
+          justifyContent: fullScreen ? 'center' : 'flex-start',
+          height: fullScreen ? 'unset' : '100%',
+          maxHeight: fullScreen ? 'unset' : '500px',
+          padding: fullScreen ? '16px 0px 16px 0px' : '16px 32px 0px 0px',
         }}
       >
         <div
           style={{
+            display: 'flex',
+            flexDirection: fullScreen ? 'row' : 'column',
+            alignItems: fullScreen ? 'center' : 'flex-start',
+            justifyContent: fullScreen ? 'space-between' : 'flex-start',
             padding: '8px 40px',
             borderRadius: '4px',
-            background: 'rgba(255, 255, 255, 0.2)'
+            background: 'rgba(255, 255, 255, 0.2)',
+            width: fullScreen ? '100%' : 'unset',
           }}
         >
-          {whichHelperShow({
+          {whichHelperDisplay({
             loading,
             matriz,
             question,
             section,
-            submitError
+            submitError,
+            fullScreen
           })}
         </div>
       </div>
@@ -1787,7 +1801,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
         question,
         section,
         submitError,
-        handleRequestAdvance
+        handleRequestAdvance,
       })}
 
       <div
@@ -1800,7 +1814,12 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
         }}
       >
         <div
-          className={classes.root}
+          style={{
+            borderRadius: '4px',
+            marginTop: '16px',
+            background: 'rgba(255, 255, 255, 0.2)',
+            width: fullScreen ? '100%' : 'unset'
+          }}
         >
           <Stepper
             activeStep={section}
@@ -1809,39 +1828,10 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
               background: 'transparent'
             }}
           >
-            {stepsName.map((label, index) => (
-              <Step
-                key={label}
-                // style={{
-                //   cursor: lastFormSection >= index ? 'pointer' : 'default'
-                // }}
-                // onClick={() => {
-                //   if (lastFormSection >= index) {
-                //     setSection(index)
-                //   }
-                // }}
-              >
-                <StepLabel
-                  className={classes.StepLabelNumber}
-                >
-                  {label}
-                  {section === index ?
-                    <EditIcon
-                      fontSize='small'
-                      style={{
-                        marginLeft: '8px'
-                      }}
-                    />
-                    :
-                    null
-                  }
-                </StepLabel>
-              </Step>
-            ))}
+            {whichStepDisplay({ fullScreen, stepsName, section, classes: classes })}
           </Stepper>
         </div>
       </div>
-
     </div>
   )
 }
@@ -1898,25 +1888,25 @@ const whichContentDisplay = ({ loading, matriz, question, section, submitError, 
   }
 }
 
-const whichHelperShow = ({ loading, matriz, question, section, submitError }) => {
+const whichHelperDisplay = ({ loading, matriz, question, section, submitError, fullScreen }) => {
   if (loading && !submitError) {
     return (
       <>
         <Typography variant='h6'>Salvando...</Typography>
-        <LinearProgress />
+        <LinearProgress
+          style={{
+            width: '100%',
+            marginLeft: fullScreen ? '32px' : '0px'
+          }}
+        />
       </>
     )
   } else if (loading && submitError) {
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
+      <>
         <Typography variant='h6'>Falha</Typography>
-        <SyncDisabledIcon fontSize='large' />
-      </div >
+        <SyncDisabledIcon fontSize='large' color='primary' />
+      </>
 
     )
   } else if (!loading && typeof matriz[section] !== 'undefined' && matriz[section][question] !== 'undefined') {
@@ -1928,8 +1918,100 @@ const whichHelperShow = ({ loading, matriz, question, section, submitError }) =>
     )
   } else {
     return (
-      <Typography variant='h6'>CONCLUÍDO!</Typography>
+      <>
+        <Typography variant='h6'>CONCLUÍDO!</Typography>
+        <CheckCircleIcon fontSize='large' color='primary' />
+      </>
     )
+  }
+}
+
+const whichStepDisplay = ({ fullScreen, stepsName, section, classes }) => {
+  if (fullScreen) {
+    let a = stepsName.map((label, index) => {
+      if (section === index || section === (index + 1) || section === (index - 1)) {
+        return (
+          <Step
+            key={label}
+          >
+            <StepLabel
+              icon={index + 1}
+              className={classes.StepLabelNumber}
+            >
+              {label}
+              {section === index ?
+                <EditIcon
+                  fontSize='small'
+                  style={{
+                    marginLeft: '8px'
+                  }}
+                />
+                :
+                null
+              }
+            </StepLabel>
+          </Step>
+        )
+      } else {
+        return null
+      }
+    })
+
+    a = a.filter(pos => pos !== null)
+
+    if (section - 1 > 0) {
+      a.unshift(
+        <Step
+          key={stepsName[section - 2]}
+        >
+          <StepLabel
+            icon={`?`}
+            className={classes.StepLabelNumber}
+          >
+            ...
+          </StepLabel>
+        </Step>
+      )
+    }
+
+    if (section + 1 <= stepsName.length) {
+      a.push(
+        <Step
+          key={stepsName[section + 2]}
+        >
+          <StepLabel
+            icon={`?`}
+            className={classes.StepLabelNumber}
+          >
+            ...
+          </StepLabel>
+        </Step>
+      )
+    }
+
+    return a
+  } else {
+    return stepsName.map((label, index) => (
+      <Step
+        key={label}
+      >
+        <StepLabel
+          className={classes.StepLabelNumber}
+        >
+          {label}
+          {section === index ?
+            <EditIcon
+              fontSize='small'
+              style={{
+                marginLeft: '8px'
+              }}
+            />
+            :
+            null
+          }
+        </StepLabel>
+      </Step>
+    ))
   }
 }
 
@@ -1945,11 +2027,6 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-  },
-  root: {
-    borderRadius: '4px',
-    marginTop: '16px',
-    background: 'rgba(255, 255, 255, 0.2)'
   },
   StepLabelNumber: {
     '& > span.MuiStepLabel-iconContainer > svg > circle': {
@@ -1995,3 +2072,24 @@ const afirmacoes = [
   'Indicação de um amigo ou conhecido.',
   'Referências positivas de franqueado(s) da rede Pilão Professional.',
 ]
+
+const fromEstadoCivilNameToID = (estado) => {
+  switch (estado) {
+    case 'Casado(Comunhão Universal)':
+      return '1'
+    case 'Casado(Comunhão Parcial)':
+      return '2'
+    case 'Casado(Separação Total)':
+      return '3'
+    case 'Solteiro(a)':
+      return '4'
+    case 'Divorciado(a)':
+      return '5'
+    case 'Separado Judicialmente':
+      return '6'
+    case 'Viúvo(a)':
+      return '7'
+    default:
+      return null
+  }
+}

@@ -146,9 +146,10 @@ export const InputUnderline = styled.input`
 
 export const FormContainer = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: ${(props) => props.fullscreen ? 'flex-start' : 'center'};
   
   width: 100%;
   height: 100%;
@@ -163,10 +164,8 @@ export const FormBox = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  width: 100%; 
-  max-width: 500px;
-  height: 100%; 
-  max-height: 500px;
+  width: 500px;
+  height: 500px;
   padding: 16px;
 
   background-color: #FFF;

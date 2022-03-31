@@ -8,9 +8,7 @@ export const Container = Styled.div`
     justify-content: space-between;
     background-color: none;
     align-items: center;
-    overflow: ${(props) => props.overflow};
-
-   
+    overflow: ${(props) => props.overflow};   
 `;
 
 export const Subcontainer = Styled.div`

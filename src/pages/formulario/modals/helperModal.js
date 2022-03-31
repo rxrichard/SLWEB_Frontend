@@ -118,7 +118,14 @@ export const HelperModal = ({ open, onClose, title }) => {
           >
             ENVIAR MENSAGEM
           </ButtonMaterial>
-          <Typography variant='body1' gutterBottom align='center'>
+          <Typography
+            variant='body1'
+            gutterBottom
+            align='center'
+            style={{
+              width: '100%'
+            }}
+          >
             Ou baixe o formulário em texto
           </Typography>
           <ButtonMaterial

@@ -4,8 +4,8 @@ import Loading from "../../components/loading_screen";
 //Meio de comunicação
 import { api } from "../../services/api";
 
-import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
+import { Container } from "../../components/commom_out";
 
 // import Stepper from './stepper'
 import CodeView from './codeInsertView'
@@ -13,11 +13,14 @@ import Intro from './modals/Intro'
 import { HelperModal } from './modals/helperModal'
 import { toValidString } from '../../misc/commom_functions'
 
+
 import { Form } from './Form'
 
 import {
   Zoom,
   Fab,
+  useMediaQuery,
+  useTheme
 } from '@material-ui/core'
 
 import { FormContainer } from "./styles";
@@ -27,6 +30,9 @@ import {
 } from '@material-ui/icons'
 
 export const Formulario = () => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [codCandidato, setCodCandidato] = useState(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -91,7 +97,7 @@ export const Formulario = () => {
       response.data.FORM.Exp_Sociedade = toValidString(response.data.FORM.Exp_Sociedade, '')
       response.data.FORM.Conhece_Pilao = toValidString(response.data.FORM.Conhece_Pilao, '')
       response.data.FORM.Caracteristica_Peso = toValidString(response.data.FORM.Caracteristica_Peso, '')
-      
+
       response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
       response.data.FORM.DtNascConj = toValidString(response.data.FORM.DtNascConj, '')
       response.data.FORM.CPFConj = toValidString(response.data.FORM.CPFConj, '')
@@ -146,12 +152,14 @@ export const Formulario = () => {
   const whichContentDisplay = () => {
     if (codCandidato === null) {
       return (
-        <CodeView
-          onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
-          onCodeRequest={(e) => handleSolicitaCodigo(e)}
-          onEmailChange={(e) => handleChangeEmail(e)}
-          fetching={wait}
-        />
+        <Container>
+          <CodeView
+            onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
+            onCodeRequest={(e) => handleSolicitaCodigo(e)}
+            onEmailChange={(e) => handleChangeEmail(e)}
+            fetching={wait}
+          />
+        </Container>
       )
     } else if (loading) {
       return (
@@ -164,15 +172,19 @@ export const Formulario = () => {
       )
     } else if (validado) {
       return (
-        <FormContainer>
-          <Intro />
-          <Form
-            Form={form}
-            onChangeForm={setForm}
-            COD={codCandidato}
-            lastFormSection={formSection}
-          />
-        </FormContainer>
+        <Container>
+          <FormContainer
+            fullscreen={fullScreen}
+          >
+            <Intro />
+            <Form
+              Form={form}
+              onChangeForm={setForm}
+              COD={codCandidato}
+              lastFormSection={formSection}
+            />
+          </FormContainer>
+        </Container>
       )
     } else {
       return null
@@ -186,11 +198,7 @@ export const Formulario = () => {
         onClose={handleCloseHelperModal}
         title='Ajuda com o Formulário'
       />
-
-      <Container>
-        {whichContentDisplay()}
-      </Container>
-
+      {whichContentDisplay()}
       <div
         style={{
           position: "fixed",
