@@ -89,6 +89,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       Toast('Aguarde...', 'info')
     } else if ((question + 1) === matriz[section].length) {
       setLoading(true);
+      setSubmitError(false)
 
       try {
         await handleSubmit()
@@ -118,7 +119,6 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       setQuestion(matriz[section - 1].length - 1)
       setSection(section - 1)
     } else {
-      console.log('v')
     }
   }
 
@@ -155,10 +155,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   }
 
   const marcaCheckbox = (valueMarcado, value) => {
-    console.log(valueMarcado)
-    console.log(value)
-    
-    if (valueMarcado > 3 && value === true) {
+    if ((valueMarcado !== 'Casado(Comunhão Universal)' || valueMarcado !== 'Casado(Comunhão Parcial)' || valueMarcado !== 'Casado(Separação Total)') && value === true) {
       onChangeForm({
         ...Form,
         Est_Civil: valueMarcado,
@@ -477,8 +474,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="1"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '1'}
+            value='Casado(Comunhão Universal)'
+            checked={"Casado(Comunhão Universal)" === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de comunhão universal de bens
@@ -490,8 +487,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="2"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '2'}
+            value='Casado(Comunhão Parcial)'
+            checked={'Casado(Comunhão Parcial)' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de comunhão parcial de bens
@@ -503,8 +500,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="3"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '3'}
+            value='Casado(Separação Total)'
+            checked={'Casado(Separação Total)' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>
             Casado(a) em regime de separação de bens
@@ -516,8 +513,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="4"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '4'}
+            value='Solteiro(a)'
+            checked={'Solteiro(a)' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>Solteiro (a)</Typography>
         </div>
@@ -527,8 +524,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="5"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '5'}
+            value='Divorciado(a)'
+            checked={'Divorciado(a)' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>Divorciado(a)</Typography>
         </div>
@@ -538,8 +535,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="6"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '6'}
+            value='Separado Judicialmente'
+            checked={'Separado Judicialmente' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>Separado(a) judicialmente</Typography>
         </div>
@@ -549,8 +546,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
             onClick={(e) =>
               marcaCheckbox(e.target.value, e.target.checked)
             }
-            value="7"
-            checked={fromEstadoCivilNameToID(Form.Est_Civil) === '7'}
+            value='Viúvo(a)'
+            checked={'Viúvo(a)' === Form.Est_Civil}
           />
           <Typography variant='subtitle1'>Viúvo (a)</Typography>
         </div>
@@ -839,6 +836,21 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
 
   //Rendimento
   let Rend = [
+    {
+      question: 'Nos conte qual sua profissão',
+      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Sua ocupação' value={Form.Profissao} />,
+      validationTest: () => Form.Profissao !== '' && Form.Profissao !== null && typeof Form.Profissao !== 'undefined',
+      validationErrorFunction: () => {
+        Toast('Informe qual sua profissão principal', 'warn')
+      },
+      changeAnswerFunction: (e) =>
+        onChangeForm({
+          ...Form,
+          Profissao: e.target.value
+        }),
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat
+    },
     {
       question: 'Exerce atividades com carteira assinada?',
       answerComponent: <Select
@@ -1492,7 +1504,6 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     },
   ]
 
-
   //Encerramento
   let Encerramento = [
     {
@@ -1608,7 +1619,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   ]
 
   //adiciono opção de enviar documentos do conjuge
-  if (Form.Est_Civil < 4 && Form.Est_Civil !== null) {
+  if ((Form.Est_Civil === 'Casado(Comunhão Universal)' || Form.Est_Civil === 'Casado(Comunhão Parcial)' || Form.Est_Civil === 'Casado(Separação Total)') && Form.Est_Civil !== null) {
     Encerramento = [
       ...Encerramento,
       {
@@ -1822,7 +1833,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
           }}
         >
           <Stepper
-            activeStep={section}
+            activeStep={whichStepIsActive(fullScreen, section, stepsName)}
             orientation="vertical"
             style={{
               background: 'transparent'
@@ -1974,7 +1985,7 @@ const whichStepDisplay = ({ fullScreen, stepsName, section, classes }) => {
       )
     }
 
-    if (section + 1 <= stepsName.length) {
+    if (section + 2 < stepsName.length) {
       a.push(
         <Step
           key={stepsName[section + 2]}
@@ -2012,6 +2023,20 @@ const whichStepDisplay = ({ fullScreen, stepsName, section, classes }) => {
         </StepLabel>
       </Step>
     ))
+  }
+}
+
+const whichStepIsActive = (fullScreen, section, stepsName) => {
+  if (fullScreen) {
+    if (section < 2) {
+      return section
+    } else if (section + 2 > stepsName.length) {
+      return section - stepsName.length + 3
+    } else {
+      return 2
+    }
+  } else {
+    return section
   }
 }
 
@@ -2072,24 +2097,3 @@ const afirmacoes = [
   'Indicação de um amigo ou conhecido.',
   'Referências positivas de franqueado(s) da rede Pilão Professional.',
 ]
-
-const fromEstadoCivilNameToID = (estado) => {
-  switch (estado) {
-    case 'Casado(Comunhão Universal)':
-      return '1'
-    case 'Casado(Comunhão Parcial)':
-      return '2'
-    case 'Casado(Separação Total)':
-      return '3'
-    case 'Solteiro(a)':
-      return '4'
-    case 'Divorciado(a)':
-      return '5'
-    case 'Separado Judicialmente':
-      return '6'
-    case 'Viúvo(a)':
-      return '7'
-    default:
-      return null
-  }
-}

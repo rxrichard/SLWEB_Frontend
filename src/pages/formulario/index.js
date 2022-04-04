@@ -79,6 +79,7 @@ export const Formulario = () => {
       response.data.FORM.Qtd_filhos = toValidString(response.data.FORM.Qtd_filhos, '')
       response.data.FORM.Idd_filhos = toValidString(response.data.FORM.Idd_filhos, '')
       response.data.FORM.Residencia_Mensal = toValidString(response.data.FORM.Residencia_Mensal, '')
+      response.data.FORM.Profissao = toValidString(response.data.FORM.Profissao, '')
       response.data.FORM.Rend_Mensal = toValidString(response.data.FORM.Rend_Mensal, '')
       response.data.FORM.Recolhimento_QTD = toValidString(response.data.FORM.Recolhimento_QTD, '')
       response.data.FORM.Renda_Familiar = toValidString(response.data.FORM.Renda_Familiar, '')
@@ -255,6 +256,7 @@ const INITIAL_STATE = {
   Conj_RG: null,
   TUnião: '',
   Conj_RendMensal: '',
+  Profissao: '',
   CLT: null,
   Tem_filhos: null,
   Qtd_filhos: '',
