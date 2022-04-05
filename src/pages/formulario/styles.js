@@ -5,20 +5,18 @@ export const Block = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 50vw;
-  max-width: 50vw;
+  width: 50%;
+  height: 100%;
   font-size: 1.5rem;
   background: ${(props) => props.bgColor || "#fff"};  
   padding: 3vw;
   border: ${props => props.border || "none"};
 
   @media (max-width: 768px) {
-    width: 100vw;
-    max-width: 100vw;
-    margin:0;
+    width: 100%;
+    margin:0px;
     padding:1vw;
     font-size: 1rem;
-    
   }
 `;
 
@@ -97,22 +95,24 @@ export const ContainerFFq = styled.div`
 
 export const Container = styled.div`
   display: flex;
-  margin: 0;
-  padding: 0;
-
-  height: 100vw;
+  margin: 0px;
+  padding: 0px;
+  
+  height: 100vh;
+  width: 100%;
   
   @media (max-width: 768px) {
     flex-direction: column;
-    max-width: 100vw;
-    width: 100vw;
-    margin: 0;
-    height: 100vh;
-    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+    
+    padding: 0px;
+    margin: 0px;
    
     font-size: 1rem;
   }
 `;
+
 export const Button = styled.button`
   width: 25rem;
   height: 5rem;
@@ -147,12 +147,13 @@ export const InputUnderline = styled.input`
 export const FormContainer = styled.div`
   display: flex;
   flex: 1;
-  flex-direction: column;
+  flex-direction: ${(props) => props.fullscreen ? 'column' : 'row'};
   align-items: center;
   justify-content: ${(props) => props.fullscreen ? 'flex-start' : 'center'};
   
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   padding: 8px;
 
   background-image: linear-gradient(to bottom right, #333333 70%, #C8102E);
@@ -165,6 +166,7 @@ export const FormBox = styled.div`
   justify-content: space-between;
 
   width: 500px;
+  max-width: calc(100vw - 16px);
   height: 500px;
   padding: 16px;
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { api } from '../../services/api'
 
 import {
@@ -122,7 +123,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     }
   }
 
-  const handleUploadFile = async () => {
+  const handleUploadFile = async (documento) => {
     const arquivos = getFiles()
     const formData = makeFormData(arquivos)
 
@@ -136,6 +137,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
 
     formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
     formData.append('cod', COD)
+    formData.append('doc', documento)
 
     try {
       toastId = Toast('Salvando arquivo...', 'wait')
@@ -147,6 +149,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       })
 
       Toast('Arquivo(s) salvo(s)', 'update', toastId, 'success')
+      setFileNames([])
       return true
     } catch (err) {
       Toast('Falha ao salvar arquivo(s)', 'update', toastId, 'error')
@@ -232,6 +235,25 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     setFileNames(aux)
   }
 
+  const rawDateToMomentValidObject = (rawDate) => {
+    if (rawDate === null || typeof rawDate === 'undefined' || String(rawDate).trim === '') {
+      return null
+    }
+
+    if (moment(rawDate).isValid()) {
+      return moment(rawDate)
+    } else {
+      const MomentValidObj = moment()
+      const destructecRawDate = String(rawDate).split('/')
+
+      MomentValidObj.date(destructecRawDate[0])
+      MomentValidObj.month(destructecRawDate[1] - 1)
+      MomentValidObj.year(destructecRawDate[2])
+
+      return MomentValidObj
+    }
+  }
+
   /* 
   MUITA LOUCURA FAZER O QUE EU FIZ ABAIXO,
   MAS TENTEI ISOLAR EM UMA FUNÇÃO(DENTRO DO COMPONENTE) E NÃO DEU CERTO, 
@@ -259,8 +281,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     },
     {
       question: 'Sua data de nascimento',
-      answerComponent: <DatePicker min={false} label="Data de nascimento" defaultValue={Form.DtNascimento} />,
-      validationTest: () => Form.DtNascimento !== null && String(Form.DtNascimento).trim() !== '' && typeof Form.DtNascimento != 'undefined',
+      answerComponent: <DatePicker min={false} label="Data de nascimento" defaultValue={rawDateToMomentValidObject(Form.DtNascimento)} />,
+      validationTest: () => Form.DtNascimento !== null && String(Form.DtNascimento).trim() !== '' && typeof Form.DtNascimento != 'undefined' && moment(Form.DtNascimento).isValid(),
       validationErrorFunction: () => {
         Toast('O campo da data de nascimento é obrigatório', 'warn')
       },
@@ -564,7 +586,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   ]
 
   //adiciona questoes conjuge
-  if (Form.Est_Civil < 4 && Form.Est_Civil !== null) {
+  if ((Form.Est_Civil === 'Casado(Comunhão Universal)' || Form.Est_Civil === 'Casado(Comunhão Parcial)' || Form.Est_Civil === 'Casado(Separação Total)') && Form.Est_Civil !== null) {
     estadoCivil = [
       ...estadoCivil,
       {
@@ -585,8 +607,8 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       },
       {
         question: 'Data de nascimento do(a) cônjuge',
-        answerComponent: <DatePicker min={false} label="Data de nascimento cônjuge" defaultValue={Form.Conj_DtNascimento} />,
-        validationTest: () => Form.Conj_DtNascimento !== null && String(Form.Conj_DtNascimento).trim() !== '' && typeof Form.Conj_DtNascimento != 'undefined',
+        answerComponent: <DatePicker min={false} label="Data de nascimento cônjuge" defaultValue={rawDateToMomentValidObject(Form.Conj_DtNascimento)} />,
+        validationTest: () => Form.Conj_DtNascimento !== null && String(Form.Conj_DtNascimento).trim() !== '' && typeof Form.Conj_DtNascimento != 'undefined' && moment(Form.Conj_DtNascimento).isValid(),
         validationErrorFunction: () => {
           Toast('Informe a data de nascimento do(a) cônjuge', 'warn')
         },
@@ -1439,6 +1461,30 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       onRequestAdvanceStep: handleRequestAdvance,
       onRequestRetreatStep: handleRequestRetreat
     },
+    {
+      question: 'Indique se você recebeu assistência de um de nossos consultores para entender melhor a proposta da franquia(opcional)',
+      answerComponent: <Select
+
+        label="Selecione..."
+        value={Form.Consultor}
+      >
+        <MenuItem value='Alessandro'>Alessandro</MenuItem>
+        <MenuItem value='Kauê'>Kauê</MenuItem>
+        <MenuItem value='Priscila'>Priscila</MenuItem>
+        <MenuItem value='Richard'>Richard</MenuItem>
+        <MenuItem value='Tatiane'>Tatiane</MenuItem>
+        <MenuItem value='Outros'>Outros</MenuItem>
+      </Select>,
+      validationTest: () => true,
+      validationErrorFunction: () => { },
+      changeAnswerFunction: (e) =>
+        onChangeForm({
+          ...Form,
+          Consultor: e.target.value
+        }),
+      onRequestAdvanceStep: handleRequestAdvance,
+      onRequestRetreatStep: handleRequestRetreat,
+    }
   ]
 
   //Prioridades
@@ -1487,7 +1533,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       validationTest: () => {
         let test = true
         for (let i = 0; i < Form.Prioridade.length; i++) {
-          if (typeof Form.Prioridade[i] == "undefined" || String(Form.Prioridade[i]).trim() === '' || String(Form.Prioridade[i]).trim() === '0') {
+          if (typeof Form.Prioridade[i] == "undefined" || String(Form.Prioridade[i]).trim() === '' || String(Form.Prioridade[i]).trim() === '0' || Form.Prioridade[i] === null) {
             test = false;
           }
         }
@@ -1553,7 +1599,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       validationErrorFunction: () => { },
       changeAnswerFunction: null,
       onRequestAdvanceStep: async () => {
-        const enviou = await handleUploadFile()
+        const enviou = await handleUploadFile('CAPITAL')
         if (enviou) {
           handleRequestAdvance()
         }
@@ -1608,7 +1654,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       validationErrorFunction: () => { },
       changeAnswerFunction: null,
       onRequestAdvanceStep: async () => {
-        const enviou = await handleUploadFile()
+        const enviou = await handleUploadFile('CPF_RG')
         if (enviou) {
           handleRequestAdvance()
         }
@@ -1669,7 +1715,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
         validationErrorFunction: () => { },
         changeAnswerFunction: null,
         onRequestAdvanceStep: async () => {
-          const enviou = await handleUploadFile()
+          const enviou = await handleUploadFile('CPF_RG_CONJ')
           if (enviou) {
             handleRequestAdvance()
           }
@@ -1730,55 +1776,75 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
       validationErrorFunction: () => { },
       changeAnswerFunction: null,
       onRequestAdvanceStep: async () => {
-        const enviou = await handleUploadFile()
+        const enviou = await handleUploadFile('IR')
         if (enviou) {
           handleRequestAdvance()
         }
       },
       onRequestRetreatStep: handleRequestRetreat,
       alignArrow: 'flex-end'
-    },
-    {
-      question: 'Indique se você recebeu assistência de um de nossos consultores para entender melhor a proposta da franquia(opcional)',
-      answerComponent: <Select
-
-        label="Selecione..."
-        value={Form.Consultor}
-      >
-        <MenuItem value='Alessandro'>Alessandro</MenuItem>
-        <MenuItem value='Kauê'>Kauê</MenuItem>
-        <MenuItem value='Priscila'>Priscila</MenuItem>
-        <MenuItem value='Richard'>Richard</MenuItem>
-        <MenuItem value='Tatiane'>Tatiane</MenuItem>
-        <MenuItem value='Outros'>Outros</MenuItem>
-      </Select>,
-      validationTest: () => true,
-      validationErrorFunction: () => { },
-      changeAnswerFunction: (e) =>
-        onChangeForm({
-          ...Form,
-          Consultor: e.target.value
-        }),
-      onRequestAdvanceStep: handleRequestAdvance,
-      onRequestRetreatStep: handleRequestRetreat,
     }
   ]
 
   const matriz = [dadosPessoais, estadoCivil, dependentes, Bens, Rend, Exp, Socios, Franquia, Prioridades, Encerramento]
 
   return (
-    <div
-      className="XAlign"
-      style={{
-        minHeight: '100%'
-      }}
-    >
+    <>
+      {/* <div style={{
+        display: 'flex',
+        height: 'unset',
+        flexDirection: fullScreen ? 'row' : 'column',
+        width: fullScreen ? '100%' : 'unset',
+        alignItems: fullScreen ? 'center' : 'flex-start',
+        justifyContent: fullScreen ? 'space-between' : 'flex-start',
+        padding: '8px 40px',
+        borderRadius: '4px',
+        background: 'rgba(255, 255, 255, 0.2)',
+      }}>
+        {whichHelperDisplay({
+          loading,
+          matriz,
+          question,
+          section,
+          submitError,
+          fullScreen
+        })}
+      </div>
+      <div style={{
+        display: 'flex',
+        flex: 1,
+        height: '100%',
+      }}>
+        {whichContentDisplay({
+          loading,
+          matriz,
+          question,
+          section,
+          submitError,
+          handleRequestAdvance,
+        })}
+      </div>
+      <div style={{
+        display: 'flex',
+        flex: 1,
+        height: '100%',
+
+      }}>
+        {whichStepDisplay({
+          fullScreen,
+          stepsName,
+          section,
+          classes: classes
+        })}
+      </div> */}
+
       <div
         className='YAlign'
         style={{
           alignItems: fullScreen ? 'center' : 'flex-end',
           justifyContent: fullScreen ? 'center' : 'flex-start',
           height: fullScreen ? 'unset' : '100%',
+          width: fullScreen ? '100%' : 'unset',
           maxHeight: fullScreen ? 'unset' : '500px',
           padding: fullScreen ? '16px 0px 16px 0px' : '16px 32px 0px 0px',
         }}
@@ -1806,14 +1872,21 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
         </div>
       </div>
 
-      {whichContentDisplay({
-        loading,
-        matriz,
-        question,
-        section,
-        submitError,
-        handleRequestAdvance,
-      })}
+      <div
+        style={{
+          padding: '0px 8px 0px 8px'
+        }}
+      >
+        {whichContentDisplay({
+          loading,
+          matriz,
+          question,
+          section,
+          submitError,
+          handleRequestAdvance,
+        })}
+      </div>
+
 
       <div
         className='YAlign'
@@ -1822,6 +1895,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
           justifyContent: 'flex-start',
           height: '100%',
           maxHeight: '500px',
+          width: fullScreen ? '100%' : 'unset',
         }}
       >
         <div
@@ -1843,7 +1917,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
           </Stepper>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

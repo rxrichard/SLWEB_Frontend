@@ -8,12 +8,18 @@ import {
   COMPRA_MOVE_CARRINHO_2_PRODUTOS,
   COMPRA_MOVE_PRODUTOS_2_CARRINHO,
   COMPRA_SET_MIN_COMPRA,
-  COMPRA_SET_RETIRA
+  COMPRA_SET_RETIRA,
+  COMPRA_LOAD_MULTIPLICADOR_DESCONTO
 } from "./ComprasActionTypes";
 
 export const LoadInsumos = (value) => ({
   type: COMPRA_LOAD_PRODUTOS_DISPONIVEIS,
   Produtos: value,
+});
+
+export const LoadMultiplicador = (value) => ({
+  type: COMPRA_LOAD_MULTIPLICADOR_DESCONTO,
+  Multiplicador: value,
 });
 
 export const SetMin = (value) => ({

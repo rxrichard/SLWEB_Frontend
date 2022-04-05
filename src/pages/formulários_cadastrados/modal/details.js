@@ -163,6 +163,9 @@ const Modalzinho = (props) => {
               <div style={divMetade}>
                 <h5>Rendimento e Experiencia</h5>
                 <div style={divLinha}>
+                  <Typography gutterBottom>Profissão: <strong style={{ color: 'red' }}>{form.Profissao}</strong></Typography>
+                </div>
+                <div style={divLinha}>
                   <Typography gutterBottom>Vinculo CLT: <strong style={{ color: 'red' }}>{form.CLT}</strong></Typography>
                 </div>
                 {form.CLT === 'Sim' ? (
@@ -440,7 +443,7 @@ const Modalzinho = (props) => {
                   </Typography>
                 </div>
               </div>
-              
+
               <div style={{
                 display: "flex",
                 width: "100%",
@@ -483,7 +486,7 @@ const Modalzinho = (props) => {
                 </Button>
                 <Typography>Local: X:\Franquia\SLWEB\DOCS\{form.CodCandidato}</Typography>
               </div>
-              
+
             </div>
           </div>
         </div>

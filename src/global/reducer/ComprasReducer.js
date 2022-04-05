@@ -8,7 +8,8 @@ import {
   COMPRA_MOVE_CARRINHO_2_PRODUTOS,
   COMPRA_MOVE_PRODUTOS_2_CARRINHO,
   COMPRA_SET_MIN_COMPRA,
-  COMPRA_SET_RETIRA
+  COMPRA_SET_RETIRA,
+  COMPRA_LOAD_MULTIPLICADOR_DESCONTO
 } from "../actions/ComprasActionTypes";
 
 const initialState = {
@@ -16,8 +17,8 @@ const initialState = {
   Produtos: [],
   Carrinho: [],
   MinCompra: 0,
+  Multiplicador_Desconto: 1,
   PodeRetirar: false,
-
 
   Checked: [],
   TabIndex: 1,
@@ -35,6 +36,12 @@ export const ComprasReducer = (state = initialState, action) => {
         ...state,
         Produtos: _newProdutos,
         InitProdutos: _newProdutos,
+      };
+
+    case COMPRA_LOAD_MULTIPLICADOR_DESCONTO:
+      return {
+        ...state,
+        Multiplicador_Desconto: action.Multiplicador,
       };
 
     case COMPRA_SET_MIN_COMPRA:
@@ -87,7 +94,7 @@ export const ComprasReducer = (state = initialState, action) => {
       //Adiciono aos produtos itens removidos do carrinho apos zerar a Qtd. Compra
       state.Carrinho.forEach((Prod) => {
         if (state.Checked.indexOf(Prod.Cód) !== -1) {
-          newProdutos_.push({...Prod, QCompra: 0 });
+          newProdutos_.push({ ...Prod, QCompra: 0 });
           FoundID_.push(Prod.Cód);
         }
       });
@@ -126,19 +133,19 @@ export const ComprasReducer = (state = initialState, action) => {
       quando selecionado, já o carrinho(administrado pelo datagrid) manda logo o Array 
       todo de ID's selecionados, mas no caso de um ID ser deselecionado, ele não vai 
       ser informado e não tem como remover ele do array de forma segura*/
-      if(typeof action.value == 'object') {
+      if (typeof action.value == 'object') {
         return {
           ...state,
           Checked: action.value,
         }
-      }else{
+      } else {
         let _newChecked = [...state.Checked];
         let indexOfProd = _newChecked.indexOf(action.value);
-  
+
         indexOfProd < 0
           ? _newChecked.push(action.value)
           : _newChecked.splice(indexOfProd, 1);
-  
+
         return {
           ...state,
           Checked: _newChecked,

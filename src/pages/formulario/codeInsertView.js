@@ -78,11 +78,14 @@ const CodeView = (props) => {
               type="email"
               fullWidth
               variant="standard"
+              value={props.email}
               onChange={(e) => props.onEmailChange(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
-            <ButtonMaterial onClick={(e) => props.onCodeRequest(e)}>Solicitar</ButtonMaterial>
+            <ButtonMaterial 
+            disabled={props.fetching}
+            onClick={(e) => props.onCodeRequest(e)}>Solicitar</ButtonMaterial>
           </DialogActions>
         </Dialog>
         <Button
@@ -113,9 +116,6 @@ const CodeView = (props) => {
               onChange={(e) => props.onCodeInsertion(e.target.value, e)}
             />
           </DialogContent>
-          {/* <DialogActions>
-            <ButtonMaterial onClick={(e) => props.onCodeRequest(e)}>Entrar</ButtonMaterial>
-          </DialogActions> */}
         </Dialog>
         <Button
           bgColor="none"

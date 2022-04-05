@@ -31,7 +31,7 @@ export default function MaterialUIPickers(props) {
       setSelectedDate(props.defaultValue)
     }
     // eslint-disable-next-line
-  }, [])
+  }, [props.defaultValue])
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>

@@ -5,7 +5,6 @@ import Loading from "../../components/loading_screen";
 import { api } from "../../services/api";
 
 import { Toast } from "../../components/toasty";
-import { Container } from "../../components/commom_out";
 
 // import Stepper from './stepper'
 import CodeView from './codeInsertView'
@@ -100,7 +99,6 @@ export const Formulario = () => {
       response.data.FORM.Caracteristica_Peso = toValidString(response.data.FORM.Caracteristica_Peso, '')
 
       response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
-      response.data.FORM.DtNascConj = toValidString(response.data.FORM.DtNascConj, '')
       response.data.FORM.CPFConj = toValidString(response.data.FORM.CPFConj, '')
       response.data.FORM.RGConj = toValidString(response.data.FORM.RGConj, '')
       response.data.FORM.PFilhos = toValidString(response.data.FORM.PFilhos, '')
@@ -127,14 +125,17 @@ export const Formulario = () => {
 
     let toastId = null
 
+    toastId = Toast('Aguarde...', 'wait')
+
+    setWait(true)
     try {
-      toastId = Toast('Aguarde...', 'wait')
-      setWait(true)
 
       await api.post("/form/solicitacao", {
         email: email,
       });
 
+      setEmail('')
+      setWait(false)
       Toast('Um código foi enviado para o seu email!', 'update', toastId, 'success')
     } catch (err) {
       Toast('Falha ao enviar email com código', 'update', toastId, 'error')
@@ -153,14 +154,13 @@ export const Formulario = () => {
   const whichContentDisplay = () => {
     if (codCandidato === null) {
       return (
-        <Container>
-          <CodeView
-            onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
-            onCodeRequest={(e) => handleSolicitaCodigo(e)}
-            onEmailChange={(e) => handleChangeEmail(e)}
-            fetching={wait}
-          />
-        </Container>
+        <CodeView
+          onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
+          onCodeRequest={(e) => handleSolicitaCodigo(e)}
+          onEmailChange={(e) => handleChangeEmail(e)}
+          email={email}
+          fetching={wait}
+        />
       )
     } else if (loading) {
       return (
@@ -173,19 +173,17 @@ export const Formulario = () => {
       )
     } else if (validado) {
       return (
-        <Container>
-          <FormContainer
-            fullscreen={fullScreen}
-          >
-            <Intro />
-            <Form
-              Form={form}
-              onChangeForm={setForm}
-              COD={codCandidato}
-              lastFormSection={formSection}
-            />
-          </FormContainer>
-        </Container>
+        <FormContainer
+          fullscreen={fullScreen}
+        >
+          <Intro />
+          <Form
+            Form={form}
+            onChangeForm={setForm}
+            COD={codCandidato}
+            lastFormSection={formSection}
+          />
+        </FormContainer>
       )
     } else {
       return null
@@ -199,7 +197,9 @@ export const Formulario = () => {
         onClose={handleCloseHelperModal}
         title='Ajuda com o Formulário'
       />
+
       {whichContentDisplay()}
+
       <div
         style={{
           position: "fixed",
