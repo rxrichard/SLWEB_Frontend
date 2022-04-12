@@ -8,7 +8,7 @@ import { Consultas } from './consultas'
 import { NovaColeta } from './novaColeta'
 import Loading from '../../components/loading_screen'
 
-const ConsultaColetas = () => {
+const ConsultaColetas = ({ match }) => {
   const [forceUpdate, setForceUpdate] = useState(0)
   const [loaded, setLoaded] = useState(false)
   const [coletas, setColetas] = useState([])
@@ -85,6 +85,7 @@ const ConsultaColetas = () => {
         handleOpenModal={handleOpenNovaColetaModal}
         handleCloseModal={handleCloseNovaColetaModal}
         onUpdate={handleForceUpdate}
+        selectedEquip={match.params.ativo}
       />
     </Panel>
   )

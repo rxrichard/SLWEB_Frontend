@@ -8,10 +8,10 @@ import { Button as MaterialButton } from '@material-ui/core'
 import Loading from '../../components/loading_screen'
 import { toValidString } from '../../misc/commom_functions'
 import { Toast } from '../../components/toasty'
-// import Modal from "../../components/Layout/Modal/index";
-import { Title, Button, Buttons, Box, Image, Text, ChamadoButton, Container } from "./Box/style";
+import { Container } from "./Box/style";
+import { MachineCard } from './Box/index'
 
-import DetalhesDialog from "./modals/Detalhes";
+import { DetailsModal } from "./modals/Detalhes";
 import AbrirChamadoDialog from "./modals/AbrirChamado";
 
 const Monitor = () => {
@@ -20,7 +20,6 @@ const Monitor = () => {
   const [target, setTarget] = useState({});
   const [modalChamadoOpen, setModalChamadoOpen] = useState(false);
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
-  const [modalDetailsDesc, setModalDetailsDesc] = useState('');
   const [editableDetails, setEditableDetails] = useState(editableDetailsEmptyExample);
   // const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -67,15 +66,13 @@ const Monitor = () => {
     setEditableDetails(editableDetailsEmptyExample)
   }
 
-  const handleOpenDetailsModal = (TMT, desc) => {
+  const handleOpenDetailsModal = (TMT) => {
     setTarget(TMT)
-    setModalDetailsDesc(desc)
     setModalDetailsOpen(true)
   }
 
   const handleCloseDetailsModal = () => {
     setTarget({})
-    setModalDetailsDesc('')
     setModalDetailsOpen(false)
   }
 
@@ -128,7 +125,7 @@ const Monitor = () => {
         ...target,
         UltChamado: moment().subtract(3, 'hours').toDate(),
       })
-      
+
       setTelemetrias(oldState => {
         let aux = [...oldState]
 
@@ -147,12 +144,11 @@ const Monitor = () => {
 
   return !loaded ? <Loading /> : (
     <>
-      <DetalhesDialog
+      <DetailsModal
         open={modalDetailsOpen}
         onClose={handleCloseDetailsModal}
-        title={`${modalDetailsDesc} da máquina ${target.EquiCod}`}
+        title={`Ativo ${target.EquiCod ? target.EquiCod : ''}`}
         TMT={target}
-        tipo={modalDetailsDesc}
       />
 
       <AbrirChamadoDialog
@@ -174,45 +170,14 @@ const Monitor = () => {
           </MaterialButton>
         }
       />
-      
+
       <Container>
         {telemetrias.map(telemetria => (
-          <Box>
-            <Text>Sua telemetria está: { }</Text>
-            <Text
-              color={String(telemetria.LeitOk).trim() !== 'KO' ? 'green' : 'red'}
-            >
-              {String(telemetria.LeitOk).trim() !== 'KO' ? 'ONLINE' : 'OFFLINE'}
-            </Text>
-            <Text>Ativo: {telemetria.EquiCod}</Text>
-            <Image />
-            <Title>{telemetria.AnxDesc}</Title>
-            <Text>Última Leitura: {telemetria.MáxDeDataLeitura !== null ? moment(telemetria.MáxDeDataLeitura).format('DD/MM/YYYY HH:mm') : "Desconhecida"}</Text>
-            <ChamadoButton
-              Online={String(telemetria.LeitOk).trim() !== 'KO'}
-              onClick={() => handleOpenChamadoModal(telemetria)}
-            >
-              <Email />
-              ABRIR CHAMADO
-            </ChamadoButton>
-            <Buttons>
-              <Button
-                borderRadius={'0px 0px 0px  1rem'}
-                onClick={() => handleOpenDetailsModal(telemetria, 'Leituras')}>
-                Leitura
-              </Button>
-              <Button
-                onClick={() => handleOpenDetailsModal(telemetria, 'Contador')}
-              >
-                Contador
-              </Button>
-              <Button
-                onClick={() => handleOpenDetailsModal(telemetria, 'Produção de doses')}
-                borderRadius={'0px 0px 1rem  0px'}>
-                Doses
-              </Button>
-            </Buttons>
-          </Box>
+          <MachineCard
+            Telemetria={telemetria}
+            onOpenChamadoComponent={handleOpenChamadoModal}
+            onOpenDetailsComponent={handleOpenDetailsModal}
+          />
         ))}
       </Container>
     </>

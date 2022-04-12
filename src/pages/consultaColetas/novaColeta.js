@@ -192,6 +192,7 @@ export const NovaColeta = (props) => {
           handleChangeZerou={handleChangeZerou}
           referencia={referencia}
           handleChangeReferencia={handleChangeReferencia}
+          defaultSelected={props.selectedEquip}
         />
       </div>
     </Paper>
@@ -234,6 +235,7 @@ export const NovaColeta = (props) => {
           handleChangeZerou={handleChangeZerou}
           referencia={referencia}
           handleChangeReferencia={handleChangeReferencia}
+          defaultSelected={props.selectedEquip}
         />
       </NovaColetaModal>
     </>

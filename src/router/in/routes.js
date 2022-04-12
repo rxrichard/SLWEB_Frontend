@@ -51,6 +51,7 @@ function Dashboard(props) {
             <Route exact path="/administracao/franquia" component={AdmFranquia} />
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
             <Route exact path="/administracao/emails" component={CentralEmails} />
+            <Route exact path="/leituras/:ativo" component={Coletas} />
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />
             <Route exact path="/clientes" component={Clientes} />

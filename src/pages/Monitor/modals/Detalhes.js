@@ -1,184 +1,182 @@
-import React from "react";
-import Draggable from "react-draggable";
+import React, { useState } from 'react';
 
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Paper,
-  Typography,
-  Grid,
+  withStyles,
   makeStyles
+} from '@material-ui/core/styles';
+
+import {
+  Dialog,
+  IconButton,
+  Typography,
+  Button,
+  Paper,
+  MobileStepper,
+  DialogTitle as MuiDialogTitle,
+  DialogContent as MuiDialogContent
 } from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
 
-import { toValidString } from '../../../misc/commom_functions'
-import { RED_PRIMARY } from '../../../misc/colors'
+import {
+  Close as CloseIcon,
+  KeyboardArrowLeft,
+  KeyboardArrowRight
+} from '@material-ui/icons';
 
-function ModalPersonalizado(props) {
-  const classes = useStyles()
+import { TableCell, TableRow, TableHeader } from '../Box/style'
+
+
+export const DetailsModal = ({ open, onClose, title, TMT }) => {
+  const classes = useStyles();
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep === 2 ? 0 : prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep === 0 ? 2 : prevActiveStep - 1);
+  };
+
+  const handleClose = () => {
+    onClose();
+    setActiveStep(0)
+  };
 
   return (
-    <div>
-      <Dialog
-        open={props.open}
-        onClose={props.onClose}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <div style={{ display: "flex", justifyContent: "space-around", flexDirection: "row" }}>
-          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-
-            {props.title}
-          </DialogTitle>
-          <Button
-            onClick={props.onClose}
-            color="primary"
-          >
-            Fechar <CloseIcon />
-          </Button>
-        </div>
-
-        <DialogContent>
-          {whichContentShow(props.TMT, props.tipo, classes)}
-        </DialogContent>
-        <DialogActions style={{ padding: '8px 24px' }}>
-          {props.action}
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-}
-
-export default ModalPersonalizado;
-
-function PaperComponent(props) {
-  return (
-    <Draggable
-      {...props}
-      handle="#draggable-dialog-title"
-      cancel={'[class*="MuiDialogContent-root"]'}
+    <Dialog
+      onClose={handleClose}
+      open={open}
     >
-      <Paper {...props} />
-    </Draggable>
+      <DialogTitle
+        style={{
+          minWidth: '300px'
+        }}
+        onClose={handleClose}
+      >
+        {title}
+      </DialogTitle>
+      <DialogContent dividers>
+        <div className={classes.root}>
+          <Paper square elevation={0} className={classes.header} >
+            <Typography>{infoTitle[activeStep]}</Typography>
+          </Paper>
+          <table>
+            <TableRow>
+              <TableHeader>Periodo</TableHeader>
+              <TableHeader>{tableHeader[activeStep]}</TableHeader>
+            </TableRow>
+            <TableRow>
+              <TableCell>Esta Semana</TableCell>
+              <TableCell
+                style={{
+                  color: TMT[tableField[activeStep][0]] === null ? 'rgb(217, 83, 79)' : '#000'
+                }}
+              >{TMT[tableField[activeStep][0]] !== null ? TMT[tableField[activeStep][0]] : 'Desconhecido'}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Há uma Semana</TableCell>
+              <TableCell
+                style={{
+                  color: TMT[tableField[activeStep][1]] === null ? 'rgb(217, 83, 79)' : '#000'
+                }}
+              >{TMT[tableField[activeStep][1]] !== null ? TMT[tableField[activeStep][1]] : 'Desconhecido'}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Há duas Semana</TableCell>
+              <TableCell
+                style={{
+                  color: TMT[tableField[activeStep][2]] === null ? 'rgb(217, 83, 79)' : '#000'
+                }}
+              >{TMT[tableField[activeStep][2]] !== null ? TMT[tableField[activeStep][2]] : 'Desconhecido'}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Há três Semana</TableCell>
+              <TableCell
+                style={{
+                  color: TMT[tableField[activeStep][3]] === null ? 'rgb(217, 83, 79)' : '#000'
+                }}
+              >{TMT[tableField[activeStep][3]] !== null ? TMT[tableField[activeStep][3]] : 'Desconhecido'}</TableCell>
+            </TableRow>
+          </table>
+          <MobileStepper
+            steps={3}
+            position="static"
+            variant="text"
+            activeStep={activeStep}
+            nextButton={
+              <Button size="small" onClick={handleNext} disabled={false}>
+                <KeyboardArrowRight />
+              </Button>
+            }
+            backButton={
+              <Button size="small" onClick={handleBack} disabled={false}>
+                <KeyboardArrowLeft />
+              </Button>
+            }
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
+
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: '0px 8px',
+  },
+}))(MuiDialogContent);
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    padding: '10px 0px',
+  root: {
+    maxWidth: 400,
+    flexGrow: 1,
   },
-  grid: {
-    textAlign: 'center',
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 50,
+    backgroundColor: theme.palette.background.default,
   },
-  gridPai: {
+  img: {
+    height: 255,
+    maxWidth: 400,
+    overflow: 'hidden',
+    display: 'block',
     width: '100%',
-    margin: '0px',
-    justifyContent: 'space-around'
-  }
+  },
 }));
 
-const whichContentShow = (TMT, type, classes) => {
-  switch (type) {
-    case 'Leituras':
-      return (
-        <Grid className={classes.gridPai} container spacing={3}>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Ql0, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há uma semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-1'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Ql-2'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há três semanas</Typography>
-            <Paper className={classes.paper}>
-              <Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>
-                {toValidString(TMT['Ql-3'], 0)}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há quatro semanas</Typography>
-            <Paper className={classes.paper}>
-              <Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>
-                {toValidString(TMT['Ql-4'], 0)}
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      )
-    case 'Contador':
-      return (
-        <Grid className={classes.gridPai} container spacing={3}>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Con0, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há uma semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-1'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-2'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há três semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-3'], 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há quatro semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT['Con-4'], 0)}</Typography></Paper>
-          </Grid>
-        </Grid>
-      )
-    case 'Produção de doses':
-      return (
-        <Grid className={classes.gridPai} container spacing={3}>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Esta semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há uma semana</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd1, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há duas semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd2, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Há três semanas</Typography>
-            <Paper className={classes.paper}><Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>{toValidString(TMT.Prd3, 0)}</Typography></Paper>
-          </Grid>
-          <Grid item className={classes.grid} xs={15} sm={2}>
-            <Typography variant="subtitle2">Total Mensal</Typography>
-            <Paper className={classes.paper}>
-
-              <Typography style={{ color: RED_PRIMARY, fontWeight: 'bold' }} variant='body1'>
-                {
-                  Number(toValidString(TMT.Prd, 0)) +
-                  Number(toValidString(TMT.Prd1, 0)) +
-                  Number(toValidString(TMT.Prd2, 0)) +
-                  Number(toValidString(TMT.Prd3, 0))
-                }
-              </Typography>
-
-            </Paper>
-          </Grid>
-        </Grid>
-      )
-    default:
-      return
-  }
-}
+const infoTitle = ['CONTADOR GERAL', 'LEITURAS NA SEMANA', 'DOSES CONSUMIDAS']
+const tableHeader = ['Contador', 'Qtd. Leituras', 'Doses']
+const tableField = [
+  ['Con0', 'Con-1', 'Con-2', 'Con-3', 'Con-4'],
+  ['Ql0', 'Ql-1', 'Ql-2', 'Ql-3', 'Ql-4'],
+  ['Prd', 'Prd1', 'Prd2', 'Prd3'],
+]

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import moment from 'moment'
 
 import { FilterList } from '@material-ui/icons'
@@ -14,7 +14,6 @@ import { capitalizeMonthFirstLetter } from '../../misc/commom_functions'
 import { RED_PRIMARY } from '../../misc/colors'
 
 export const NovaColetaContent = (props) => {
-
   const {
     equipamentos,
     detalhes,
@@ -29,8 +28,18 @@ export const NovaColetaContent = (props) => {
     zerou,
     handleChangeZerou,
     referencia,
-    handleChangeReferencia
+    handleChangeReferencia,
+    defaultSelected
   } = props
+
+  console.log(defaultSelected)
+
+  useEffect(() => {
+    if (typeof defaultSelected !== 'undefined') {
+      handleLookForPastData(equipamentos.filter(eq => eq.EquiCod === defaultSelected)[0])
+    }
+    // eslint-disable-next-line
+  }, [defaultSelected])
 
   return (
     <>
