@@ -89,7 +89,7 @@ function Compras(props) {
         onClose={setCarrinhoModalOpen}
         desconto={Multiplicador_Desconto}
       />
-      {Multiplicador_Desconto && showDescontoCard ?
+      {Multiplicador_Desconto < 1 && showDescontoCard ?
         (
           <div
             className="YAlign"

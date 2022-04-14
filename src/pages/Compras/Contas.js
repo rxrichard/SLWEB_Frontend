@@ -46,6 +46,7 @@ const Contas = (props) => {
   const [TotalAno, setTotalAno] = useState([]);
   const [pedidoDet, setPedidoDet] = useState({});
   const [tipoDuplicata, setTipoDuplicata] = useState(null);
+  const [confiavel, setConfiavel] = useState(false);
 
   const { ChangeTab, SetMin, SetPodeRetirar } = props;
 
@@ -56,14 +57,17 @@ const Contas = (props) => {
         ChangeTab(TabIndex);
 
         const response = await api.get("/compras/contas");
+
         setResumo(response.data.Geral);
         setDuplicatas(response.data.Duplicatas);
         setTotalDuplicatas(DefineTotalDuplicatas(response.data.Duplicatas));
         setTotalAno(response.data.ComprasAno[0]);
         setAFaturar(response.data.AFaturar[0].Total);
-        setLoaded(true);
+        setConfiavel(response.data.Confiavel)
         SetMin(response.data.Geral.VlrMinCompra);
         SetPodeRetirar(response.data.Geral.Retira);
+
+        setLoaded(true);
       } catch (err) {
 
       }
@@ -337,7 +341,7 @@ const Contas = (props) => {
               </TableBody>
             </Table>
           </TableContainer>
-          {Duplicatas.length > 0 ? (
+          {Duplicatas.length > 0 && confiavel ? (
             <Button
               variant="outlined"
               color="primary"

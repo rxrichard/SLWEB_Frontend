@@ -55,20 +55,20 @@ export default function LoginADM() {
     }
   };
 
-
-
   return (
     <Container style={{ backgroundColor: GREY_PRIMARY }}>
 
       <Box onSubmit={(e) => handleLogin(e)}>
 
         <Logo src={Image} alt="Pilão professional" />
+
         <Input
           onChange={(e) => {
             setAdmCode(e);
           }}
           label="Código ADM"
         />
+
         <Input
           type="password"
           onChange={(e) => {
@@ -94,7 +94,6 @@ export default function LoginADM() {
         >
           Acessar
         </Button>
-
       </Box>
       <Link to="/">
         <Button icon={<TagFaces />}>Franqueados</Button>
