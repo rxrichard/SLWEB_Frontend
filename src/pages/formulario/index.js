@@ -98,7 +98,7 @@ export const Formulario = () => {
       response.data.FORM.Conhece_Pilao = toValidString(response.data.FORM.Conhece_Pilao, '')
       response.data.FORM.Caracteristica_Peso = toValidString(response.data.FORM.Caracteristica_Peso, '')
 
-      response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
+      // response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
       response.data.FORM.CPFConj = toValidString(response.data.FORM.CPFConj, '')
       response.data.FORM.RGConj = toValidString(response.data.FORM.RGConj, '')
       response.data.FORM.PFilhos = toValidString(response.data.FORM.PFilhos, '')
@@ -192,15 +192,15 @@ export const Formulario = () => {
 
   return (
     <>
-      <HelperModal
+      {/* <HelperModal
         open={helperModalOpen}
         onClose={handleCloseHelperModal}
         title='Ajuda com o Formulário'
-      />
+      /> */}
 
       {whichContentDisplay()}
 
-      <div
+      {/* <div
         style={{
           position: "fixed",
           right: "16px",
@@ -227,7 +227,7 @@ export const Formulario = () => {
             <ContactSupportIcons fontSize="large" />
           </Fab>
         </Zoom>
-      </div>
+      </div> */}
     </>
   );
 }
