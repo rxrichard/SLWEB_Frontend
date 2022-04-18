@@ -48,18 +48,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(false)
   const [fileNames, setFileNames] = useState([])
-  const stepsName = [
-    'Dados Pessoais',
-    'Estado civil',
-    'Dependentes',
-    'Bens',
-    'Renda',
-    'Experiência',
-    'Sócio',
-    'Franquia',
-    'Prioridades',
-    'Finalização'
-  ]
+  const stepsName = [ 'Dados Pessoais', 'Estado civil', 'Dependentes', 'Bens', 'Renda', 'Experiência', 'Sócio', 'Franquia', 'Prioridades', 'Finalização' ]
 
   useEffect(() => {
     setSection(lastFormSection)
@@ -282,7 +271,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     {
       question: 'Sua data de nascimento',
       answerComponent: <DatePicker min={false} label="Data de nascimento" defaultValue={rawDateToMomentValidObject(Form.DtNascimento)} />,
-      validationTest: () => Form.DtNascimento !== null && String(Form.DtNascimento).trim() !== '' && typeof Form.DtNascimento != 'undefined' && moment(Form.DtNascimento).isValid(),
+      validationTest: () => Form.DtNascimento !== null && String(Form.DtNascimento).trim() !== '' && typeof Form.DtNascimento != 'undefined',
       validationErrorFunction: () => {
         Toast('O campo da data de nascimento é obrigatório', 'warn')
       },
@@ -1790,54 +1779,6 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
 
   return (
     <>
-      {/* <div style={{
-        display: 'flex',
-        height: 'unset',
-        flexDirection: fullScreen ? 'row' : 'column',
-        width: fullScreen ? '100%' : 'unset',
-        alignItems: fullScreen ? 'center' : 'flex-start',
-        justifyContent: fullScreen ? 'space-between' : 'flex-start',
-        padding: '8px 40px',
-        borderRadius: '4px',
-        background: 'rgba(255, 255, 255, 0.2)',
-      }}>
-        {whichHelperDisplay({
-          loading,
-          matriz,
-          question,
-          section,
-          submitError,
-          fullScreen
-        })}
-      </div>
-      <div style={{
-        display: 'flex',
-        flex: 1,
-        height: '100%',
-      }}>
-        {whichContentDisplay({
-          loading,
-          matriz,
-          question,
-          section,
-          submitError,
-          handleRequestAdvance,
-        })}
-      </div>
-      <div style={{
-        display: 'flex',
-        flex: 1,
-        height: '100%',
-
-      }}>
-        {whichStepDisplay({
-          fullScreen,
-          stepsName,
-          section,
-          classes: classes
-        })}
-      </div> */}
-
       <div
         className='YAlign'
         style={{
