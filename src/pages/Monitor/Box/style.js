@@ -93,8 +93,6 @@ export const Image = styled.img`
     background: url("https://franquiapilaoprofessional.com.br/wp-content/uploads/2020/10/Maquina_Pilao-Lei-Sa.png") no-repeat center/contain;
     border: none;
     margin:5px;
-    
-
 `
 
 export const Text = styled.p`
@@ -147,6 +145,7 @@ export const SecondHalf = styled.section`
     flex-direction: row;
     width: 100%;
     padding: 0px 8px;
+    justify-content: space-between;
 `
 
 export const TelemetryInfo = styled.div`

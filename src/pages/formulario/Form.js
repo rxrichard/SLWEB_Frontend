@@ -1100,7 +1100,7 @@ export const Form = ({ Form, onChangeForm, COD, lastFormSection }) => {
     ...Exp,
     {
       question: 'Qual a sua formação escolar/acadêmica?(especificar grau e área se houver)',
-      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Formação escolar/acadêmica' value={Form.Form_Escolar} />,
+      answerComponent: <TextField className={classes.TextInput} variant='outlined' label='Formação escolar/acadêmica' value={Form.Form_Escolar} multiline/>,
       validationTest: () => Form.Form_Escolar !== '' && Form.Form_Escolar !== null && typeof Form.Form_Escolar !== 'undefined',
       validationErrorFunction: () => {
         Toast('Nos conte sobre sua formação escolar/acadêmica', 'warn')

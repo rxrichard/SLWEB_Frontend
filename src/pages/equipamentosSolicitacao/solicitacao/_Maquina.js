@@ -84,11 +84,11 @@ const Requisicao = (props) => {
 
   return (
     <div className="YAlign">
-      <InstrucoesCartaoModal 
+      {/* <InstrucoesCartaoModal 
         open={modalInstrucaoCartao}
         onClose={() => setModalInstrucaoCartao(false)}
         title='Sistema de Pagamento C/ Cartão'
-      />
+      /> */}
       <div
         style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
         className="XAlign"

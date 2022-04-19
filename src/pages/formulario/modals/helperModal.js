@@ -97,7 +97,7 @@ export const HelperModal = ({ open, onClose, title }) => {
             padding: '8px'
           }}
         >
-          <Typography>
+          {/* <Typography>
             Envie uma mensagem para os consultores e eles entrarão em contato para te auxiliar!
           </Typography>
           <TextField
@@ -117,7 +117,7 @@ export const HelperModal = ({ open, onClose, title }) => {
             startIcon={<i class="fa fa-whatsapp" style={{ fontSize: '30px', }}></i>}
           >
             ENVIAR MENSAGEM
-          </ButtonMaterial>
+          </ButtonMaterial> */}
           <Typography
             variant='body1'
             gutterBottom
@@ -126,7 +126,7 @@ export const HelperModal = ({ open, onClose, title }) => {
               width: '100%'
             }}
           >
-            Ou baixe o formulário em texto
+            Caso tenha problemas em preencher o formulário online, baixe a versão Word e nos encaminhe por email.
           </Typography>
           <ButtonMaterial
             className={classes.formDownloadButton}

@@ -192,15 +192,15 @@ export const Formulario = () => {
 
   return (
     <>
-      {/* <HelperModal
+      <HelperModal
         open={helperModalOpen}
         onClose={handleCloseHelperModal}
         title='Ajuda com o Formulário'
-      /> */}
+      />
 
       {whichContentDisplay()}
 
-      {/* <div
+      <div
         style={{
           position: "fixed",
           right: "16px",
@@ -227,7 +227,7 @@ export const Formulario = () => {
             <ContactSupportIcons fontSize="large" />
           </Fab>
         </Zoom>
-      </div> */}
+      </div>
     </>
   );
 }

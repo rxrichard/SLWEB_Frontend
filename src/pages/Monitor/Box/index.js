@@ -99,10 +99,11 @@ export const MachineCard = ({ Telemetria, onOpenChamadoComponent, onOpenDetailsC
           disabled={String(Telemetria.LeitOk).trim() !== 'KO'}
           size='small'
           style={{
-            margin: '8px 0px 0px 8px'
+            margin: '8px 0px 0px 8px',
+            width: '100px'
           }}
         >
-          ABRIR CHAMADO
+          ABRIR CHAMADO TELEMETRIA
         </Button>
       </SecondHalf>
       <Footer>
