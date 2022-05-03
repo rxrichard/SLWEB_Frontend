@@ -4,7 +4,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-wrap: wrap;
     box-sizing: border-box;
 
@@ -14,12 +14,12 @@ export const Box = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width:${ props => props.width ||'20rem'};
-    height:${ props => props.height ||'23rem'} ;
+    height:${ props => props.height ||'25rem'} ;
     background:#f3f3f3;
     border-radius: 1rem;
-    margin: 8px 0px;
+    margin: 8px 12px;
     box-shadow:${ props => props.boxShadow ||'0px 0px 10px rgb(0 0 0 / 40%)'};
     border-radius: 1rem;
 
@@ -33,6 +33,9 @@ export const Box = styled.div`
         width:40vw;
         height:420px;
 
+        p{
+            height:1rem;
+        }
 
     }
 `;
@@ -65,27 +68,6 @@ export const Button = styled.button`
     }
     `;
 
-export const ChamadoButton = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background-color: ${props => props.Online ? '#CCC' : '#92211f'};
-    color: ${props => props.Online ? '#333' : '#FFF'};
-    cursor: ${props => props.Online ? 'default' : 'pointer'};
-    padding: 8px 0px;
-    margin: 8px 0px 0px 0px;
-    font-size: 1rem;
-    font-weight: bold;
-    
-    
-    &:hover{
-        transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        background-color: ${props => props.Online ? 'rgba(204, 204, 204, 0.8)' : 'rgba(146, 33, 31, 0.8)'};
-    }
-    `;
-
 export const Title = styled.h1`
     font-size: 2rem;
     font-weight: bolder;
@@ -102,16 +84,35 @@ export const Title = styled.h1`
 `;
 
 export const Image = styled.div`
-    width: 10rem;
-    height: 12rem;
+    width: 150px;
+    height: 175px;
     justify-content: center;
-    background: url("https://cafepilao.vteximg.com.br/arquivos/ids/158902/1500144-25-02_252vacuo.png?v=637757072160900000" ) no-repeat center/contain;);
-    border: none;
-    margin:5px;
 
+    border: none;
+    margin:15px 5px 5px 5px;
+
+    img{
+        width: 100%;
+        height: 100%;
+        border: none;
+        box-sizing: border-box;
+    }
+
+  
     @media (max-width: 600px) {
         width: 70px;
-        height: 70px;
+        height: 140px;
+        display: flex;
+        
+    img{
+        
+        align-items: center;
+        justify-content: center;
+        margin-top:10px;
+        width: 30vw;
+        height: 30vw;
+        box-sizing: border-box;
+    }
     }
 
 
@@ -156,4 +157,16 @@ export const Flex = styled.div`
     align-items: center;
     margin: 0px 2px;
     height:auto;
+`
+
+export const Sidebar = styled.div`
+    background-color: #e3e3e3;
+    width: 250px;
+    height: 100%;
+    top:65px;
+    right:0;
+    z-index: 9999;
+    position: fixed;
+    box-shadow: 0px 0px 10px rgb(0 0 0 / 40%);
+    transition: 500ms cubic-bezier(0.4, 0, 0.5, 1) 5ms;
 `

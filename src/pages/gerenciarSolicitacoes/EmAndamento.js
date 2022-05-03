@@ -34,6 +34,7 @@ const emAndamento = (props) => {
           <th>PDF</th>
         </tr>
       </thead>
+      
       <tbody>
         {props.OS.map(
           (OS) => (

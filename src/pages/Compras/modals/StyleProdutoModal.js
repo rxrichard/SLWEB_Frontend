@@ -7,6 +7,14 @@ export const Flex = styled.div`
     margin: 0px 2px;s
     height:${(props) => props.heightSize || "98%"};
     width:${(props) => props.widthSize || "98%"};
+
+    @media (max-width: 767px) {
+        flex-direction: ${(props) => props.direction || "column"};;
+        align-items: center;
+        height: ${(props) => props.heightSize || "98%"};
+        width: ${(props) => props.widthSize || "98%"};
+
+    }
 `;
 export const Image = styled.div`
     width:30vw;
@@ -155,17 +163,20 @@ export const Price = styled.div`
 
 export const Input = styled.input`
   font-size: 16px;
-  border: solid 1px #dbdbdb;
-  border-radius: 3px;
+  border: solid 1px #999 !important;
+  border-radius: 4px !important;
   color: #262626;
   padding: 7px 33px;
   border-radius: 3px;
   color: #999;
+  margin: 15px 0px !important;
   cursor: text;
   font-size: 14px;
   font-weight: 300;
   text-align: center;
   background: #fafafa;
+  width: 100%;
+    height: 3rem;
   &:active,
   &:focus {
     text-align: left;
