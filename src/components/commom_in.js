@@ -8,9 +8,7 @@ export const Container = Styled.div`
     justify-content: space-between;
     background-color: none;
     align-items: center;
-    overflow: ${(props) => props.overflow};
-
-   
+    overflow: ${(props) => props.overflow};   
 `;
 
 export const Subcontainer = Styled.div`
@@ -300,6 +298,7 @@ export const BoxTitle = Styled.div`
     border-radius: 1rem;
     width: 100%;
     height: 35vh;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -40,6 +40,7 @@ function ModalPersonalizado(props) {
               onChange={e => props.onFilter(e.target.value, e)}
               type="text"
               label='Procurar'
+              autoFocus
             />
             <List
               style={{

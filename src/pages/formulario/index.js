@@ -1,28 +1,45 @@
 import React, { useState } from "react";
-import Loading from "react-loading";
+import Loading from "../../components/loading_screen";
 
 //Meio de comunicação
 import { api } from "../../services/api";
-import { saveAs } from "file-saver";
 
-//import de elementos visuais
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-
-import { Container } from "../../components/commom_in";
 import { Toast } from "../../components/toasty";
 
-import Stepper from './stepper'
+// import Stepper from './stepper'
 import CodeView from './codeInsertView'
-import Intro from './Intro'
+import Intro from './modals/Intro'
+import { HelperModal } from './modals/helperModal'
+import { toValidString } from '../../misc/commom_functions'
+
+
+import { Form } from './Form'
+
+import {
+  Zoom,
+  Fab,
+  useMediaQuery,
+  useTheme
+} from '@material-ui/core'
+
+import { FormContainer } from "./styles";
+
+import {
+  ContactSupport as ContactSupportIcons
+} from '@material-ui/icons'
 
 export const Formulario = () => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [codCandidato, setCodCandidato] = useState(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [validado, setValidado] = useState(false)
-  const [form, setForm] = useState(initialState)
+  const [formSection, setFormSection] = useState(0)
+  const [form, setForm] = useState(INITIAL_STATE)
   const [wait, setWait] = useState(false)
+  const [helperModalOpen, setHelperModalOpen] = useState(false);
 
   const handleInsereCodigo = async (codigo, event) => {
     if (!Number.isSafeInteger(Number(codigo))) {
@@ -39,11 +56,56 @@ export const Formulario = () => {
     }
 
     try {
-      await api.get(`/form/check/${codigo}`);
+      const response = await api.get(`/form/check/${codigo}`);
       setLoading(false)
       setValidado(true)
       setWait(false)
+      setFormSection(response.data.SECAO)
+
+      delete response.data.FORM.SECAO
+      delete response.data.FORM.PREENCHIDO
+      response.data.FORM.Nome_Completo = toValidString(response.data.FORM.Nome_Completo, '')
+      response.data.FORM.Email = toValidString(response.data.FORM.Email, '')
+      response.data.FORM.Logradouro = toValidString(response.data.FORM.Logradouro, '')
+      response.data.FORM.Número = toValidString(response.data.FORM.Número, '')
+      response.data.FORM.Complemento = toValidString(response.data.FORM.Complemento, '')
+      response.data.FORM.Bairro = toValidString(response.data.FORM.Bairro, '')
+      response.data.FORM.Municipio = toValidString(response.data.FORM.Municipio, '')
+      response.data.FORM.Estado = toValidString(response.data.FORM.Estado, '')
+      response.data.FORM.Conj_Nome = toValidString(response.data.FORM.Conj_Nome, '')
+      response.data.FORM.TUnião = toValidString(response.data.FORM.TUnião, '')
+      response.data.FORM.Conj_RendMensal = toValidString(response.data.FORM.Conj_RendMensal, '')
+      response.data.FORM.Qtd_filhos = toValidString(response.data.FORM.Qtd_filhos, '')
+      response.data.FORM.Idd_filhos = toValidString(response.data.FORM.Idd_filhos, '')
+      response.data.FORM.Residencia_Mensal = toValidString(response.data.FORM.Residencia_Mensal, '')
+      response.data.FORM.Profissao = toValidString(response.data.FORM.Profissao, '')
+      response.data.FORM.Rend_Mensal = toValidString(response.data.FORM.Rend_Mensal, '')
+      response.data.FORM.Recolhimento_QTD = toValidString(response.data.FORM.Recolhimento_QTD, '')
+      response.data.FORM.Renda_Familiar = toValidString(response.data.FORM.Renda_Familiar, '')
+      response.data.FORM.Renda_Composta = toValidString(response.data.FORM.Renda_Composta, '')
+      response.data.FORM.Origem_Capital = toValidString(response.data.FORM.Origem_Capital, '')
+      response.data.FORM.Disp_Invest = toValidString(response.data.FORM.Disp_Invest, '')
+      response.data.FORM.Detalhes_Atividade = toValidString(response.data.FORM.Detalhes_Atividade, '')
+      response.data.FORM.Form_Escolar = toValidString(response.data.FORM.Form_Escolar, '')
+      response.data.FORM.Ult_exp = toValidString(response.data.FORM.Ult_exp, '')
+      response.data.FORM.Nome_Socio = toValidString(response.data.FORM.Nome_Socio, '')
+      response.data.FORM.Socio_Vinculo = toValidString(response.data.FORM.Socio_Vinculo, '')
+      response.data.FORM.Tempo_ConheceSocio = toValidString(response.data.FORM.Tempo_ConheceSocio, '')
+      response.data.FORM.Realizou_Socio = toValidString(response.data.FORM.Realizou_Socio, '')
+      response.data.FORM.Cond_Socio = toValidString(response.data.FORM.Cond_Socio, '')
+      response.data.FORM.Prop_Invest = toValidString(response.data.FORM.Prop_Invest, '')
+      response.data.FORM.Exp_Sociedade = toValidString(response.data.FORM.Exp_Sociedade, '')
+      response.data.FORM.Conhece_Pilao = toValidString(response.data.FORM.Conhece_Pilao, '')
+      response.data.FORM.Caracteristica_Peso = toValidString(response.data.FORM.Caracteristica_Peso, '')
+
+      // response.data.FORM.TelResidencial = toValidString(response.data.FORM.TelResidencial, '')
+      response.data.FORM.CPFConj = toValidString(response.data.FORM.CPFConj, '')
+      response.data.FORM.RGConj = toValidString(response.data.FORM.RGConj, '')
+      response.data.FORM.PFilhos = toValidString(response.data.FORM.PFilhos, '')
+
+      setForm(response.data.FORM)
     } catch (err) {
+      Toast('Código inválido', 'info')
       setLoading(false)
       setValidado(false)
       setWait(false)
@@ -63,14 +125,17 @@ export const Formulario = () => {
 
     let toastId = null
 
+    toastId = Toast('Aguarde...', 'wait')
+
+    setWait(true)
     try {
-      toastId = Toast('Aguarde...', 'wait')
-      setWait(true)
 
       await api.post("/form/solicitacao", {
         email: email,
       });
 
+      setEmail('')
+      setWait(false)
       Toast('Um código foi enviado para o seu email!', 'update', toastId, 'success')
     } catch (err) {
       Toast('Falha ao enviar email com código', 'update', toastId, 'error')
@@ -78,155 +143,124 @@ export const Formulario = () => {
     }
   }
 
-  const handleSubmit = async (event) => {
-    let shouldFinishForm = true
-    setWait(true)
-
-    //Pega todos inputs do tipo arquivos
-    const arquivos = document.getElementsByClassName("files");
-
-    //cria um objeto do tipo formulario
-    const formData = new FormData();
-
-    //poe o conteudo de todos os inputs do tipo arquivo dentro do mesmo formulario
-    for (let j = 0; j < arquivos.length; j++) {
-      for (let i = 0; i < arquivos[j].files.length; i++) {
-        formData.append(`formData`, arquivos[j].files[i]);
-      }
-    }
-
-    // if (formData.getAll('formData').length < 3) {
-    //   Toast('Anexe todos os arquivos solicitados', 'warn')
-    //   setWait(false)
-    //   return false
-    // }
-
-    let toastId = null
-
-    //faz upload de tudo
-    try {
-      toastId = Toast('Enviando dados...', 'wait')
-
-      //envia o formulario
-      await api.post(`/form/${codCandidato}`,
-        {
-          form: form,
-        },
-      );
-
-      //envia os arquivos
-      await api.post(`/form/upload/${codCandidato}/${formData.getAll('formData').length}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-
-      Toast('Dados salvos!', 'update', toastId, 'success')
-    } catch (err) {
-      Toast('Falha ao salvar os dados, se o erro persistir baixe o arquivo Word e nos envie com as respostas pelo email informado no arquivo.', 'update', toastId, 'error')
-      event.target.disabled = false
-      shouldFinishForm = false;
-    }
-
-    if (!shouldFinishForm) {
-      setWait(false)
-    } else {
-      setTimeout(() => window.location.reload(), 3000);
-    }
-
-    return shouldFinishForm
+  const handleOpenHelperModal = () => {
+    setHelperModalOpen(true)
   }
 
-  //baixa form word da rede
-  const handleRetriveWORD = async (event) => {
-    event.target.disabled = true;
-    let toastId = null
+  const handleCloseHelperModal = () => {
+    setHelperModalOpen(false)
+  }
 
-    try {
-      toastId = Toast('Buscando formulário...', 'wait')
-      const response = await api.get("/form/original", {
-        responseType: "arraybuffer",
-      });
-
-      Toast('Formulário encontrado!', 'update', toastId, 'success')
-      const blob = new Blob([response.data], { type: "application/msword" });
-
-      saveAs(blob, `Questionário de Perfil.doc`);
-      event.target.disabled = false;
-    } catch (err) {
-      Toast('Falha ao recuperar formulário do servidor', 'update', toastId, 'error')
-      event.target.disabled = false;
+  const whichContentDisplay = () => {
+    if (codCandidato === null) {
+      return (
+        <CodeView
+          onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
+          onCodeRequest={(e) => handleSolicitaCodigo(e)}
+          onEmailChange={(e) => handleChangeEmail(e)}
+          email={email}
+          fetching={wait}
+        />
+      )
+    } else if (loading) {
+      return (
+        <Loading
+          type="spinningBubbles"
+          color="#000000"
+          height="3%"
+          width="3%"
+        />
+      )
+    } else if (validado) {
+      return (
+        <FormContainer
+          fullscreen={fullScreen}
+        >
+          <Intro />
+          <Form
+            Form={form}
+            onChangeForm={setForm}
+            COD={codCandidato}
+            lastFormSection={formSection}
+          />
+        </FormContainer>
+      )
+    } else {
+      return null
     }
   }
 
   return (
-    <Container>
+    <>
+      <HelperModal
+        open={helperModalOpen}
+        onClose={handleCloseHelperModal}
+        title='Ajuda com o Formulário'
+      />
 
-        {codCandidato === null ? (
-          <CodeView
-            onCodeInsertion={(value, e) => handleInsereCodigo(value, e)}
-            onCodeRequest={(e) => handleSolicitaCodigo(e)}
-            onEmailChange={(e) => handleChangeEmail(e)}
-            fetching={wait}
-          />
-        ) : null}
+      {whichContentDisplay()}
 
-        {loading ? (
-          <Loading
-            type="spinningBubbles"
-            color="#000000"
-            height="3%"
-            width="3%"
-          />
-        ) : null}
-
-        {validado ? (
-          <>
-            <Intro />
-            <Stepper
-              Form={form}
-              onFormChange={setForm}
-              onRequestWord={(e) => handleRetriveWORD(e)}
-              onSubmit={(e) => handleSubmit(e)}
-              fetching={wait}
-            />
-          </>
-        ) : null}
- 
-    </Container>
+      <div
+        style={{
+          position: "fixed",
+          right: "16px",
+          bottom: "16px",
+        }}
+      >
+        <Zoom
+          in={!helperModalOpen}
+          timeout={transitionDuration}
+          style={{
+            transitionDelay: `${!helperModalOpen ? transitionDuration.exit : 0
+              }ms`,
+          }}
+          unmountOnExit
+        >
+          <Fab
+            onClick={handleOpenHelperModal}
+            color="primary"
+            style={{
+              boxShadow: '2px 2px 3px #999',
+              backgroundColor: '#0056C7'
+            }}
+          >
+            <ContactSupportIcons fontSize="large" />
+          </Fab>
+        </Zoom>
+      </div>
+    </>
   );
 }
 
 export default Formulario
 
-const initialState = {
-  Nome_Completo: null,
+const INITIAL_STATE = {
+  Nome_Completo: '',
   DtNascimento: null,
-  RG: null,
-  CPF: null,
-  Logradouro: null,
-  Número: null,
-  Complemento: null,
-  Bairro: null,
-  Municipio: null,
-  Estado: null,
-  CEP: null,
-  Email: null,
-  Tel_Residencial: null,
-  Celular: null,
+  RG: '',
+  CPF: '',
+  Logradouro: '',
+  Número: '',
+  Complemento: '',
+  Bairro: '',
+  Municipio: '',
+  Estado: '',
+  CEP: '',
+  Email: '',
+  Tel_Residencial: '',
+  Celular: '',
   Est_Civil: null,
-  Conj_Nome: null,
+  Conj_Nome: '',
   Conj_DtNascimento: null,
   Conj_CPF: null,
   Conj_RG: null,
-  TUnião: null,
-  Conj_RendMensal: null,
+  TUnião: '',
+  Conj_RendMensal: '',
+  Profissao: '',
   CLT: null,
   Tem_filhos: null,
-  Qtd_filhos: null,
-  Idd_filhos: null,
+  Qtd_filhos: '',
+  Idd_filhos: '',
   T_Residencia: null,
   P_Veiculo: null,
   P_Imovel: null,
@@ -244,21 +278,27 @@ const initialState = {
   Rend_Mensal: null,
   Residencia_Mensal: null,
   Recolhimento_QTD: null,
-  Origem_Capital: null,
-  Renda_Familiar: null,
-  Renda_Composta: null,
-  Disp_Invest: null,
-  Detalhes_Atividade: null,
-  Form_Escolar: null,
-  Ult_exp: null,
+  Origem_Capital: '',
+  Renda_Familiar: '',
+  Renda_Composta: '',
+  Disp_Invest: '',
+  Detalhes_Atividade: '',
+  Form_Escolar: '',
+  Ult_exp: '',
   Nome_Socio: null,
-  Socio_Vinculo: null,
-  Tempo_ConheceSocio: null,
-  Realizou_Socio: null,
-  Cond_Socio: null,
+  Socio_Vinculo: '',
+  Tempo_ConheceSocio: '',
+  Realizou_Socio: '',
+  Cond_Socio: '',
   Prop_Invest: null,
   Exp_Sociedade: null,
-  Conhece_Pilao: null,
-  Caracteristica_Peso: null,
+  Conhece_Pilao: '',
+  Caracteristica_Peso: '',
   Consultor: ''
 }
+
+const transitionDuration = {
+  appear: 300,
+  enter: 300,
+  exit: 300,
+};

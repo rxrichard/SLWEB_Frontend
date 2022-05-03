@@ -320,7 +320,9 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
           {Ajudas.filter(
             (help) => help.section > 100 && help.section < 200
           ).map((hlp) => (
-            <li style={{ marginBottom: "10px" }}>
+            <li
+              key={hlp.ParamId}
+              style={{ marginBottom: "10px" }}>
               <div>
                 <strong>{hlp.name}: </strong>
                 <div
@@ -339,7 +341,10 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
           {Ajudas.filter(
             (help) => help.section > 200 && help.section < 300
           ).map((hlp) => (
-            <li style={{ marginBottom: "10px" }}>
+            <li
+              key={hlp.ParamId}
+              style={{ marginBottom: "10px" }}
+            >
               <div>
                 <strong>{hlp.name}: </strong>
                 <div
@@ -358,7 +363,10 @@ const wichHelpShow = (step, Maquina, Ajudas) => {
           {Ajudas.filter(
             (help) => help.section > 300 && help.section < 400
           ).map((hlp) => (
-            <li style={{ marginBottom: "10px" }}>
+            <li
+              key={hlp.ParamId}
+              style={{ marginBottom: "10px" }}
+            >
               <div>
                 <strong>{hlp.name}: </strong>
                 <div

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../services/api";
 
-
 import { ShoppingCart, Add, Close } from "@material-ui/icons";
 import {
   Zoom,
@@ -15,11 +14,11 @@ import {
   withStyles
 } from "@material-ui/core/";
 
-
 import {
   LoadInsumos,
   DestroyStore,
   UpdateCarrinho,
+  LoadMultiplicador
 } from "../../global/actions/ComprasAction";
 import MenuAbas from "../../components/materialComponents/PainelAbas";
 import { Panel } from "../../components/commom_in";
@@ -32,8 +31,6 @@ import CarrinhoModal from './modals/CarrinhoModal'
 
 function Compras(props) {
   const classes = useStyles();
-  const desconto = 0.90;
-  // const desconto = null;
 
   const [carrinhoModalOpen, setCarrinhoModalOpen] = useState(false);
   const [showDescontoCard, setShowDescontoCard] = useState(true);
@@ -42,6 +39,7 @@ function Compras(props) {
     LoadInsumos,
     DestroyStore,
     UpdateCarrinho,
+    LoadMultiplicador
   } = props;
 
   const {
@@ -49,6 +47,7 @@ function Compras(props) {
     Carrinho,
     Checked,
     Produtos,
+    Multiplicador_Desconto
   } =
     props.State;
 
@@ -57,13 +56,14 @@ function Compras(props) {
     async function loadProdutos() {
       try {
         const response = await api.get("/compras/produtos");
-        LoadInsumos(response.data);
+        LoadInsumos(response.data.Produtos);
+        LoadMultiplicador(1 - response.data.Desconto);
       } catch (err) {
 
       }
     }
     loadProdutos();
-  }, [LoadInsumos]);
+  }, [LoadInsumos, LoadMultiplicador]);
 
   //component will unmount
   useEffect(() => {
@@ -87,9 +87,9 @@ function Compras(props) {
       <CarrinhoModal
         open={carrinhoModalOpen}
         onClose={setCarrinhoModalOpen}
-        desconto={desconto}
+        desconto={Multiplicador_Desconto}
       />
-      {desconto && showDescontoCard ?
+      {Multiplicador_Desconto < 1 && showDescontoCard ?
         (
           <div
             className="YAlign"
@@ -108,6 +108,7 @@ function Compras(props) {
               border: '1px solid #ccc',
               zIndex: '999',
               backgroundColor: '#fff',
+              boxShadow: '0px 0px 5px 3px rgba(0, 0, 0, 0.2)'
             }}
           >
             <div className='XAlign' style={{ justifyContent: 'center' }}>
@@ -129,12 +130,11 @@ function Compras(props) {
                 onClick={() => setShowDescontoCard(false)}
               />
             </div>
-            <Typography style={{ color: '#000' }} variant='subtitle2'>Existe um desconto de <strong>{100 - (desconto * 100)}%</strong> ativo para as suas compras de insumos, aproveite!</Typography>
+            <Typography style={{ color: '#000' }} variant='subtitle2'>Existe um desconto de <strong>{100 - (Multiplicador_Desconto * 100)}%</strong> ativo para as suas compras de insumos, aproveite!</Typography>
           </div>)
         :
         null
       }
-
 
       <div
         className="YAlign"
@@ -207,6 +207,7 @@ const mapDispatchToProps = (dispatch) =>
       LoadInsumos,
       DestroyStore,
       UpdateCarrinho,
+      LoadMultiplicador
     },
     dispatch
   );

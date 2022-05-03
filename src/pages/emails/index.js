@@ -38,7 +38,6 @@ const CentralEmails = () => {
         setLoaded(true);
         setEmailHistory(response.data.History)
       } catch (err) {
-        console.log(err)
       }
 
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../../services/api";
@@ -30,7 +30,11 @@ import {
   clearConfig,
 } from "../../../global/actions/SolicitacaoAction";
 
-function Requisicao(props) {
+import { InstrucoesCartaoModal } from './_ModalInstrucoesCartao'
+
+const Requisicao = (props) => {
+  const [modalInstrucaoCartao, setModalInstrucaoCartao] = useState(false)
+  
   const {
     Pagamento,
     Maquina,
@@ -70,143 +74,166 @@ function Requisicao(props) {
     }
   };
 
+  const handleChangeSistemaDePagamento = (value) => {
+    if (value === 'Cartão' || value === 'Cartão e Validador') {
+      setModalInstrucaoCartao(true)
+    }
+
+    ChangePagamento(value)
+  }
+
   return (
-    <div
-      style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
-      className="XAlign"
-    >
-      <Selecao
-        width="200px"
-        MLeft="8px"
-        MBottom="8px"
-        // condicao="*Limpe a configuração para alterar"
-        label="Máquina"
-        value={Maquina}
-        disabled={Configuracao.length > 0 ? true : false}
-        onChange={(e) => chooseMaquina(e.target.value)}
-      >
-        {Ativos.map((maquina) => (
-          <MenuItem value={maquina.MaqModelo}>{maquina.MaqModelo}</MenuItem>
-        ))}
-      </Selecao>
-
-      <Selecao
-        width="200px"
-        MLeft="8px"
-        MBottom="8px"
-        // condicao="*Limpe a configuração para alterar"
-        label="Pagamento"
-        value={Pagamento}
-        disabled={Configuracao.length > 0 ? true : false}
-        onChange={(e) => ChangePagamento(e.target.value)}
-      >
-        <MenuItem value="Sem Pagamento">Sem Pagamento</MenuItem>
-        <MenuItem value="Cartão">Cartão</MenuItem>
-        <MenuItem value="Validador">Validador</MenuItem>
-        <MenuItem value="Cartão e Validador">Cartão e Validador</MenuItem>
-      </Selecao>
-
-      <div>
-        <Modal
-          header="Detalhes do Validador"
-          trigger={
-            <Button
-              style={{ marginLeft: "8px", marginBottom: "8px", height: "54px" }}
-              icon={<Settings />}
-              disabled={!shouldShowValidador(Pagamento, Configuracao)}
-            >
-              Validador
-            </Button>
-          }
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-            }}
-          >
-            <FormControl component="fieldset">
-              <RadioGroup
-                value={TipoValidador}
-                onChange={(e) => {
-                  ChangeValidador(e.target.value);
-                }}
-              >
-                <FormControlLabel
-                  value="Moeda"
-                  control={<Radio />}
-                  label="Moeda"
-                />
-                <FormControlLabel
-                  value="Ficha"
-                  control={<Radio />}
-                  label="Ficha"
-                />
-                <FormControlLabel
-                  value="Moeda e Ficha"
-                  control={<Radio />}
-                  label="Moeda e Ficha"
-                />
-              </RadioGroup>
-            </FormControl>
-
-            <div className="YAlign">
-              {returnValidadorOption(
-                TipoValidador,
-                Validador,
-                ChangeValidadorFichas
-              )}
-            </div>
-          </div>
-        </Modal>
-      </div>
-
-      <PadraoMod
-        disabled={!shouldShowInfo(Pagamento, Maquina)}
-        Padrao={Padrao}
-      />
-      <OpenSelect
-        disabled={
-          !shouldShowAddBebida(Pagamento, Maquina, Configuracao, Capacidade)
-        }
-      />
-      <Button
-        style={{ margin: "0px 0px 8px 8px", height: "54px" }}
-        onClick={() => clearConfig()}
-        icon={<ThreeSixty />}
-        disabled={Configuracao.length > 0 ? false : true}
-      >
-        Limpar config.
-      </Button>
+    <div className="YAlign">
+      {/* <InstrucoesCartaoModal 
+        open={modalInstrucaoCartao}
+        onClose={() => setModalInstrucaoCartao(false)}
+        title='Sistema de Pagamento C/ Cartão'
+      /> */}
       <div
-        className="YAlign"
-        style={{
-          margin: "0px 0px 8px 8px",
-          height: "54px",
-          justifyContent: "center",
-          flex: "unset",
-        }}
+        style={{ justifyContent: "flex-start", alignItems: "flex-start" }}
+        className="XAlign"
       >
-        <p style={{ margin: "0px" }}>
-          {Configuracao.length}/<strong>{Capacidade}</strong> Bebidas
-          adicionadas
-        </p>
-        <p style={{ margin: "0px" }}>
-          {Contenedor.length}/<strong>{MaxContenedores}</strong> Contenedores em
-          uso
-        </p>
-      </div>
-
-      <div style={{ margin: "0px 0px 8px 8px" }}>
-        <Dialog botao="Contenedores" title="Contenedores em uso">
-          {Contenedor.map((cont) => (
-            <p>{defineContenedor(cont)}</p>
+        <Selecao
+          width="200px"
+          MLeft="8px"
+          MBottom="8px"
+          // condicao="*Limpe a configuração para alterar"
+          label="Máquina"
+          value={Maquina}
+          disabled={Configuracao.length > 0 ? true : false}
+          onChange={(e) => chooseMaquina(e.target.value)}
+        >
+          {Ativos.map((maquina) => (
+            <MenuItem value={maquina.MaqModelo}>{maquina.MaqModelo}</MenuItem>
           ))}
-        </Dialog>
+        </Selecao>
+
+        <Selecao
+          width="200px"
+          MLeft="8px"
+          MBottom="8px"
+          // condicao="*Limpe a configuração para alterar"
+          label="Pagamento"
+          value={Pagamento}
+          disabled={Configuracao.length > 0 ? true : false}
+          onChange={(e) => handleChangeSistemaDePagamento(e.target.value)}
+        >
+          <MenuItem value="Sem Pagamento">Sem Pagamento</MenuItem>
+          <MenuItem value="Cartão">Cartão</MenuItem>
+          <MenuItem value="Validador">Validador</MenuItem>
+          <MenuItem value="Cartão e Validador">Cartão e Validador</MenuItem>
+        </Selecao>
+
+        <div>
+          <Modal
+            header="Detalhes do Validador"
+            trigger={
+              <Button
+                style={{ marginLeft: "8px", marginBottom: "8px", height: "54px" }}
+                icon={<Settings />}
+                disabled={!shouldShowValidador(Pagamento, Configuracao)}
+              >
+                Validador
+              </Button>
+            }
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+              }}
+            >
+              <FormControl component="fieldset">
+                <RadioGroup
+                  value={TipoValidador}
+                  onChange={(e) => {
+                    ChangeValidador(e.target.value);
+                  }}
+                >
+                  <FormControlLabel
+                    value="Moeda"
+                    control={<Radio />}
+                    label="Moeda"
+                  />
+                  <FormControlLabel
+                    value="Ficha"
+                    control={<Radio />}
+                    label="Ficha"
+                  />
+                  <FormControlLabel
+                    value="Moeda e Ficha"
+                    control={<Radio />}
+                    label="Moeda e Ficha"
+                  />
+                </RadioGroup>
+              </FormControl>
+
+              <div className="YAlign">
+                {returnValidadorOption(
+                  TipoValidador,
+                  Validador,
+                  ChangeValidadorFichas
+                )}
+              </div>
+            </div>
+          </Modal>
+        </div>
+
+        <PadraoMod
+          disabled={!shouldShowInfo(Pagamento, Maquina)}
+          Padrao={Padrao}
+        />
+        <OpenSelect
+          disabled={
+            !shouldShowAddBebida(Pagamento, Maquina, Configuracao, Capacidade)
+          }
+        />
+        <Button
+          style={{ margin: "0px 0px 8px 8px", height: "54px" }}
+          onClick={() => clearConfig()}
+          icon={<ThreeSixty />}
+          disabled={Configuracao.length > 0 ? false : true}
+        >
+          Limpar config.
+        </Button>
+        <div
+          className="YAlign"
+          style={{
+            margin: "0px 0px 8px 8px",
+            height: "54px",
+            justifyContent: "center",
+            flex: "unset",
+          }}
+        >
+          <p style={{ margin: "0px" }}>
+            {Configuracao.length}/<strong>{Capacidade}</strong> Bebidas
+            adicionadas
+          </p>
+          <p style={{ margin: "0px" }}>
+            {Contenedor.length}/<strong>{MaxContenedores}</strong> Contenedores em
+            uso
+          </p>
+        </div>
+
+        <div style={{ margin: "0px 0px 8px 8px" }}>
+          <Dialog botao="Contenedores" title="Contenedores em uso">
+            {Contenedor.map((cont) => (
+              <p>{defineContenedor(cont)}</p>
+            ))}
+          </Dialog>
+        </div>
       </div>
-      {Configuracao.length > 0 ? <Bebidas /> : null}
+      {Configuracao.length > 0 ? (
+        <div style={{
+          height: 400,
+          width: "100%",
+          overflowX: "hidden"
+        }}>
+          <Bebidas />
+        </div>
+      ) : null}
     </div>
   );
 }

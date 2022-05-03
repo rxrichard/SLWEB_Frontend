@@ -140,7 +140,7 @@ function FullScreenDialog({
       let temValorInválido = false
 
       PSelecionado.forEach((confg) => {
-        if (typeof confg.Valor == "undefined" || confg.Valor === null || confg.Valor === '') {
+        if (typeof confg.Valor == "undefined" || confg.Valor === null || String(confg.Valor).trim() === '') {
           temValorInválido = true
         }
       });

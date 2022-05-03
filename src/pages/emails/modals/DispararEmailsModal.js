@@ -57,7 +57,6 @@ export const DispatchEmailsModal = ({ open, onClose }) => {
         setMailAdressess(response.data.AvailableRecipients)
         setMailTemplates(response.data.Templates)
       } catch (err) {
-        console.log(err)
       }
     }
     if (open === true) {

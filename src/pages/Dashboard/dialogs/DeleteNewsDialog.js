@@ -36,7 +36,6 @@ export const DeleteNewsDialog = ({ open, onClose, News, onHandleNews }) => {
       Toast('Notícia inativada', 'update', toastId, 'success')
       onHandleNews(oldState => {
         let aux = [...oldState].filter(n => n.NewsId !== newId)
-        console.log(aux)
         return aux
       })
       setWait(false)
