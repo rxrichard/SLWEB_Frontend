@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Input from "react-number-format";
 import Draggable from "react-draggable";
 import { connect } from "react-redux";
@@ -18,48 +18,47 @@ import {
   Box,
   Tooltip,
   Paper,
-  makeStyles
+  makeStyles,
+  IconButton
 } from "@material-ui/core/";
-import { ShoppingCart } from "@material-ui/icons";
+import { ShoppingCart, LocalShipping } from "@material-ui/icons";
 
 import InputMultline from "../../../components/materialComponents/InputMultline";
 import { Toast } from "../../../components/toasty";
 import { RED_PRIMARY } from "../../../misc/colors";
-import {
-  SetCheckedProd,
-  SetBuyQtt,
-  UpdateProdutos,
-  ClearCarrinho
-} from "../../../global/actions/ComprasAction";
+import { SetCheckedProd, SetBuyQtt, UpdateProdutos, ClearCarrinho } from "../../../global/actions/ComprasAction";
 
 
-const CarrinhoModal = ({ open, onClose, desconto,...props }) => {
+const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
   const classes = useStyles()
-  
 
   const [wait, setWait] = useState(false);
   const [aVista, setAVista] = useState(false);
   const [obs, setObs] = useState("");
   const [retira, setRetira] = useState(false);
+  const [targetCEP, setTargetCEP] = useState('WYSI');
+  const [faturamento, setFaturamento] = useState(null);
 
-  const {
-    SetBuyQtt,
-    UpdateProdutos,
-    SetCheckedProd,
-    ClearCarrinho,
-  } = props;
+  const { SetBuyQtt, UpdateProdutos, SetCheckedProd, ClearCarrinho, } = props;
 
-  const {
-    Carrinho,
-    Checked,
-    MinCompra,
-    PodeRetirar
-  } =
-    props.State;
+  const { Carrinho, Checked, MinCompra, PodeRetirar } = props.State;
 
   const columns = returnColunsDef(aVista, desconto);
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await api.get(`/compras/faturamento/rotas/${targetCEP}`)
+
+        setFaturamento(response.data.Faturamento)
+      } catch (err) {
+
+      }
+    }
+    loadData()
+  }, [])
 
   const updateChecked = (SelectedIDs) => {
     let naoMarcados = [];
@@ -158,13 +157,44 @@ const CarrinhoModal = ({ open, onClose, desconto,...props }) => {
             />
           </div>
 
-          <div className="YAlign" style={{ flex: "unset" }}>
-            <Typography gutterBottom variant="subtitle1">
-              <strong>Valor mínimo:</strong> R$ {MinFrete(MinCompra, retira)}
+          <div className="XAlign" style={{ width: "unset" }}>
+            <Tooltip
+              title={faturamento === null ? (
+                <div style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  <Typography color="inherit">Previsões para CEP padrão</Typography>
+                  <Typography color="inherit">Carregando...</Typography>
+                </div>
+              ) : (
+                <div style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  <Typography color="inherit">Previsões para CEP: <strong>{faturamento.CEP}</strong></Typography>
+                  <Typography color="inherit">Região: <strong>{faturamento.Regiao}</strong></Typography>
+                  <em>Faturamento previsto: </em> <u>{faturamento.PrevFaturamento}({faturamento.Faturamento})</u>.
+                  <br />
+                  <em>Rota prevista: </em> <u>{faturamento.PrevRota}({faturamento.Rota})</u>.
+                </div>
+              )
+
+              }
+              placement="top"
+              arrow={true}
+            >
+              <IconButton
+                color="primary"
+                style={{
+                  margin: '0px 8px 0px 0px'
+                }}
+              >
+                <LocalShipping />
+              </IconButton>
+            </Tooltip>
+            <div className="YAlign" style={{ flex: "unset" }}>
+              <Typography gutterBottom variant="subtitle1">
+                <strong>Valor mínimo:</strong> R$ {MinFrete(MinCompra, retira)}
+              </Typography>
               <Typography gutterBottom variant="subtitle1">
                 <strong>Total do Pedido:</strong> R${totalPedido(Carrinho, aVista, desconto)}
               </Typography>
-            </Typography>
+            </div>
           </div>
         </div>
         <div style={{ height: 400, width: "100%" }}>
@@ -483,7 +513,7 @@ const totalPedido = (carrinho, aVista, Desconto) => {
 
   carrinho.forEach((item) => {
     aux +=
-      Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra) * ((aVista ? 0.95 : 1) + (Desconto && item.ProdRoy === 1? Desconto : 1) - 1)
+      Number.parseFloat(item.VlrUn).toFixed(4) * (item.QtMin * item.QCompra) * ((aVista ? 0.95 : 1) + (Desconto && item.ProdRoy === 1 ? Desconto : 1) - 1)
   });
 
   return String(Number.parseFloat(aux).toFixed(2)).replace('.', ',');
