@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, {
+  // useState
+} from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../../services/api";
@@ -30,11 +32,11 @@ import {
   clearConfig,
 } from "../../../global/actions/SolicitacaoAction";
 
-import { InstrucoesCartaoModal } from './_ModalInstrucoesCartao'
+// import { InstrucoesCartaoModal } from './_ModalInstrucoesCartao'
 
 const Requisicao = (props) => {
-  const [modalInstrucaoCartao, setModalInstrucaoCartao] = useState(false)
-  
+  // const [modalInstrucaoCartao, setModalInstrucaoCartao] = useState(false)
+
   const {
     Pagamento,
     Maquina,
@@ -75,9 +77,9 @@ const Requisicao = (props) => {
   };
 
   const handleChangeSistemaDePagamento = (value) => {
-    if (value === 'Cartão' || value === 'Cartão e Validador') {
-      setModalInstrucaoCartao(true)
-    }
+    // if (value === 'Cartão' || value === 'Cartão e Validador') {
+    //   setModalInstrucaoCartao(true)
+    // }
 
     ChangePagamento(value)
   }

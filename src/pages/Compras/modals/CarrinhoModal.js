@@ -167,7 +167,7 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
               ) : (
                 <div style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
                   <Typography color="inherit">Previsões para CEP: <strong>{faturamento.CEP}</strong></Typography>
-                  <Typography color="inherit">Região: <strong>{faturamento.Regiao}</strong></Typography>
+                  {/* <Typography color="inherit">Região: <strong>{faturamento.Regiao}</strong></Typography> */}
                   <em>Faturamento previsto: </em> <u>{faturamento.PrevFaturamento}({faturamento.Faturamento})</u>.
                   <br />
                   <em>Rota prevista: </em> <u>{faturamento.PrevRota}({faturamento.Rota})</u>.
