@@ -20,7 +20,7 @@ function Exemplo() {
   const [PDVs, setPDVs] = useState([]);
   const [targetPDV, setTargetPDV] = useState({});
   const [filtro, setFiltro] = useState('');
-  const [shouldShowInactivePDVs, setShouldShowInactivePDVs] = useState(false);
+  const [mostrarInativos, setMostrarInativos] = useState(false);
 
   //componentDidMount
   useEffect(() => {
@@ -57,21 +57,15 @@ function Exemplo() {
         onClose={handleCloseDetailsModal}
         title='Detalhes do PDV'
         Details={targetPDV}
+        DetailsChangeHandler={setTargetPDV}
       />
       <PdvListOptions
-        onRequestInactivePdvs={setShouldShowInactivePDVs}
-        showInactivePdvs={shouldShowInactivePDVs}
-        filtro={filtro}
         onChangeFiltro={setFiltro}
+        mostrarInativos={mostrarInativos}
+        switchInativos={setMostrarInativos}
       />
       <PdvList
-        PDVs={PDVs.filter(pdv => {
-          if ((pdv.PdvStatus === 'A' && !shouldShowInactivePDVs) || (pdv.PdvStatus === 'I' && shouldShowInactivePDVs)) {
-            return true;
-          } else {
-            return false;
-          }
-        })}
+        PDVs={returnPDVsFilter(PDVs, mostrarInativos, filtro)}
         onOpenModal={handleOpenDetailsModal}
       />
     </Panel>
@@ -79,3 +73,27 @@ function Exemplo() {
 }
 
 export default Exemplo;
+
+const returnPDVsFilter = (pdvs, shouldShowInactive, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return pdvs.filter(pdv => {
+    if (shouldShowInactive) {
+      return true
+    } else if (!shouldShowInactive && pdv.PdvStatus === 'A') {
+      return true
+    } else {
+      return false
+    }
+  }).filter(pdv => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      pdv.AnxDesc.trim().toLowerCase().match(re) || pdv.EquiCod.trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}
