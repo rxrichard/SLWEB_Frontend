@@ -10,13 +10,20 @@ import Loading from "../../components/loading_screen";
 
 import {
   Title,
+  Button,
+  Buttons,
   Box,
   Image,
   Text,
+  ChamadoButton,
   Container,
+  Price,
+  Flex,
 } from "./styles";
-
+import { Input } from "@material-ui/core";
 import ProdutoModal from "./modals/ProdutoModal";
+
+
 
 function TransferList(props) {
   const classes = useStyles();
@@ -25,12 +32,12 @@ function TransferList(props) {
   const [open, setOpen] = useState(false);
 
   const { Produtos, Checked } = props.State;
+  const { ChangeTab, SetCheckedProd } = props;
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
-  const handleOpenDialog = (props) => {
+  const handleOpenDialog = () => {
     setOpen(true);
-    detailsModalOpen(props)
-      };
+  }
   const handleCloseDialog = () => {
     setOpen(false);
   };
@@ -42,40 +49,27 @@ function TransferList(props) {
     // eslint-disable-next-line
   });
 
-  const customList = (items) => (
-    <Card>
-     
+  const customList = (title, items) => (
+    <Card >
       <Container>
         {items.map((prod, i) => {
-          let aux;
-          try {
-            aux = require(`../../assets/image_products/${prod.Cód}.png`);
-          } catch (error) {
-            aux = require(`../../assets/image_products/00000.png`);
-          }
           return (
-            
-            <Box>
-   
-              <Image>
-                <img src={aux} alt="produto" />
-              </Image>
-              <Text>{prod.Produto}</Text>
-              <Title>
-                R${" "}
-                {String(Number.parseFloat(prod.Vlr).toFixed(2)).replace(
-                  ".",
-                  ","
-                )}
+            <Box >
+              < Image src={prod.Imagem} /> 
+              <Text>{prod.Produto}</Text> 
+              <Title>R$ {String(
+                        Number.parseFloat(prod.Vlr).toFixed(2)
+                      ).replace(".", ",")}
               </Title>
 
-              <ProdutoModal open={handleOpenDialog} onClose={handleCloseDialog} />
+              <ProdutoModal
+                open={open}
+                onClose={handleCloseDialog}
+              />                 
             </Box>
           );
-         
         })}
       </Container>
-        
     </Card>
   );
 
@@ -110,3 +104,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0.5, 0),
   },
 }));
+
+const ProdutosMarcados = (ProdList, Marcados) => {
+  let count = 0;
+  ProdList.forEach((prod) =>
+    Marcados.indexOf(prod.Cód) !== -1 ? count++ : null
+  );
+
+  return count;
+};
