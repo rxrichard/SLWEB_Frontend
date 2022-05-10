@@ -29,7 +29,7 @@ function Exemplo() {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("/pontosdevenda");
 
-        setPDVs(response.data);
+        setPDVs(response.data.PDVs);
         setLoaded(true);
       } catch (err) {
       }
@@ -39,7 +39,7 @@ function Exemplo() {
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetPDV(PDVs[index])
+    setTargetPDV(returnPDVsFilter(PDVs, mostrarInativos, filtro)[index])
     setDetailsModalOpen(true)
   }
 

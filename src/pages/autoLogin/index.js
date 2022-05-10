@@ -20,6 +20,7 @@ export default class autoLogin extends Component {
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem('role', response.data.role);
+        sessionStorage.setItem("filial_logada", response.data.nome !== '');
 
         this.redirectWindow(targetWindow);
       } else {

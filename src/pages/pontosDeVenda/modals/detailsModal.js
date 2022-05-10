@@ -127,6 +127,23 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
       </DialogTitle>
 
       <DialogContent dividers>
+
+        <Divider variant="inset" />
+        <li
+          style={{
+            listStyleType: 'none'
+          }}
+        >
+          <Typography
+            className={classes.dividerInset}
+            color="primary"
+            display="block"
+            variant="caption"
+          >
+            Dados Básicos
+          </Typography>
+        </li>
+
         <section className={classes.line}>
           <TextField
             variant='standard'
@@ -333,6 +350,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             style={{ width: '100%' }}
           />
         </section>
+
         <Divider variant="inset" />
         <li
           style={{
@@ -348,6 +366,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             Alterações
           </Typography>
         </li>
+
         <section className={classes.line}>
           <div
             style={{
@@ -416,6 +435,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             style={{ width: '100%' }}
           />
         </section>
+
         <Divider variant="inset" />
         <li
           style={{
@@ -431,6 +451,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             Faturamento
           </Typography>
         </li>
+
         <section className={classes.line}>
           <FormControl
             className={classes.formControl}
@@ -440,12 +461,12 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           >
             <InputLabel>Anexo tem mín.</InputLabel>
             <Select
-              value='N'
+              value={Details.AnxFatMinimo}
               onChange={(e) => {
-                // DetailsChangeHandler(oldState => ({
-                //   ...oldState,
-                //   DepId: e.target.value
-                // }))
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  AnxFatMinimo: e.target.value
+                }))
               }}
               disabled={allowEditing}
             >
@@ -461,12 +482,12 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           >
             <InputLabel>Mínimo por</InputLabel>
             <Select
-              value='P'
+              value={Details.AnxCalcMinPor}
               onChange={(e) => {
-                // DetailsChangeHandler(oldState => ({
-                //   ...oldState,
-                //   CfgId: e.target.value
-                // }))
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  AnxCalcMinPor: e.target.value
+                }))
               }}
               disabled={allowEditing}
             >
@@ -482,12 +503,12 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
           >
             <InputLabel>Tipo de mín.</InputLabel>
             <Select
-              value='D'
+              value={Details.AnxTipMin}
               onChange={(e) => {
-                // DetailsChangeHandler(oldState => ({
-                //   ...oldState,
-                //   CfgId: e.target.value
-                // }))
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  AnxTipMin: e.target.value
+                }))
               }}
               disabled={allowEditing}
             >
@@ -507,10 +528,10 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             <Select
               value={Details.PdvConsMin}
               onChange={(e) => {
-                // DetailsChangeHandler(oldState => ({
-                //   ...oldState,
-                //   DepId: e.target.value
-                // }))
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  PdvConsMin: e.target.value
+                }))
               }}
               disabled={allowEditing}
             >
@@ -525,10 +546,10 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
-              // DetailsChangeHandler(oldState => ({
-              //   ...oldState,
-              //   PdvObs: e.target.value
-              // }))
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                PdvConsValor: e.target.value
+              }))
             }}
             style={{ width: '100%' }}
           />
@@ -539,10 +560,10 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
-              // DetailsChangeHandler(oldState => ({
-              //   ...oldState,
-              //   PdvObs: e.target.value
-              // }))
+              DetailsChangeHandler(oldState => ({
+                ...oldState,
+                PdvConsDose: e.target.value
+              }))
             }}
             style={{ width: '100%' }}
           />
@@ -558,10 +579,10 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             <Select
               value={Details.PdvSomaCompartilhado}
               onChange={(e) => {
-                // DetailsChangeHandler(oldState => ({
-                //   ...oldState,
-                //   DepId: e.target.value
-                // }))
+                DetailsChangeHandler(oldState => ({
+                  ...oldState,
+                  PdvSomaCompartilhado: e.target.value
+                }))
               }}
               disabled={allowEditing}
             >
@@ -570,6 +591,7 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
             </Select>
           </FormControl>
         </section>
+        
       </DialogContent>
 
       <DialogActions>

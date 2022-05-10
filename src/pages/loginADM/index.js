@@ -47,6 +47,7 @@ export default function LoginADM() {
 
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("filial_logada", response.data.nome !== '');
 
       window.location.assign("/");
     } catch (err) {
