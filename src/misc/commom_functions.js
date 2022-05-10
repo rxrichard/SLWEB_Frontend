@@ -144,7 +144,7 @@ export const roleLevel = () => {
 };
 
 export const toValidString = (string, sub = '') => {
-  return string === null || string === 'null' || typeof string == 'undefined'? sub : String(string).trim();
+  return string === null || string === 'null' || typeof string == 'undefined'? sub : string;
 }
 
 export const capitalizeMonthFirstLetter = (month) => {

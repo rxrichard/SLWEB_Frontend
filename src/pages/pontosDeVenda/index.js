@@ -18,6 +18,9 @@ function Exemplo() {
   const [loaded, setLoaded] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
+  const [depositos, setDepositos] = useState([]);
+  const [configuracoes, setConfiguracoes] = useState([]);
+  const [eqps, setEqps] = useState([]);
   const [targetPDV, setTargetPDV] = useState({});
   const [filtro, setFiltro] = useState('');
   const [mostrarInativos, setMostrarInativos] = useState(false);
@@ -30,9 +33,12 @@ function Exemplo() {
         const response = await api.get("/pontosdevenda");
 
         setPDVs(response.data.PDVs);
+        setDepositos(response.data.Depositos);
+        setConfiguracoes(response.data.Configuracoes);
+        setEqps(response.data.EqsDisp);
+
         setLoaded(true);
-      } catch (err) {
-      }
+      } catch (err) { }
     }
 
     LoadData();
@@ -55,9 +61,13 @@ function Exemplo() {
       <DetailsModal
         open={detailsModalOpen}
         onClose={handleCloseDetailsModal}
-        title='Detalhes do PDV'
         Details={targetPDV}
+        Depositos={depositos}
+        Configuracoes={configuracoes}
+        Equipamentos={eqps}
         DetailsChangeHandler={setTargetPDV}
+        updatePDVsArray={setPDVs}
+        updateEqsArray={setEqps}
       />
       <PdvListOptions
         onChangeFiltro={setFiltro}

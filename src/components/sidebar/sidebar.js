@@ -114,6 +114,7 @@ export default function MiniDrawer() {
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
+      sessionStorage.setItem("usuário", response.data.nome);
 
       window.location.reload();
     } catch (err) {
@@ -179,6 +180,7 @@ export default function MiniDrawer() {
             <Menu fontSize="large" />
           </IconButton>
           <div />
+
           <Link
             to="/"
             style={{
@@ -188,6 +190,12 @@ export default function MiniDrawer() {
                   : "#FFF",
             }}
           >
+            <Typography
+              color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
+              variant="subtitle2"
+            >
+              {sessionStorage.getItem('usuário')}
+            </Typography>
             <Typography variant="h6">SLAPLIC</Typography>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
           </Link>
