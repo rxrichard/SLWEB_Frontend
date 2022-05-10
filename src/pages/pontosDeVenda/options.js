@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import {
   makeStyles,
-  Button,
   FormControlLabel,
   Checkbox,
   Paper,
@@ -12,7 +11,6 @@ import {
   Tooltip
 } from '@material-ui/core';
 import {
-  Add as AddIcon,
   Search as SearchIcon,
   Close as CloseIcon
 } from '@material-ui/icons'
