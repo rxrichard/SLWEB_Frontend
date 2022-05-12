@@ -11,12 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import Fab from "@material-ui/core/Fab";
-import Zoom from "@material-ui/core/Zoom";
-import Badge from "@material-ui/core/Badge";
-import { ShoppingCart, Add } from "@material-ui/icons";
 
-import Typography from "@mui/material/Typography";
 import {
   Title,
   Button as ButtonComprar,
@@ -69,10 +64,10 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function CustomizedDialogs() {
+export default function CustomizedDialogs( props) {
   const [open, setOpen] = React.useState(false);
   const [changeInput, setChangeInput] = React.useState(0);
-  const preco = 99.90;
+  
 
 
   const handleClickOpen = (props) => {
@@ -88,6 +83,8 @@ export default function CustomizedDialogs() {
     setOpen(false);
     console.log(i)
   };
+
+
 
   return (
     <div>
@@ -110,23 +107,27 @@ export default function CustomizedDialogs() {
           onClose={handleClose}
           
         >
-          TITULO NOME DO PRODUTO
+         {props.produto.Produto}
         </BootstrapDialogTitle>
+       
         <DialogContent dividers>
           <Flex>
-            <Image />
+            <Image>{
+              <img src={props.imagemModal.imagem} alt='' />
+               
+               }</Image>
             <Flex width="40%" direction="column">
               <Text>
-              
+              lorem descricao do produto aqui
               </Text>
 
               <Flex>
                 <Flex direction='row'>
-                  
+           
                   <Input id="qtd"type="number" placeholder="Digite a quantidade:" onChange={()=>{
                     
                   }} />
-                  <Title id="preco">R${preco}</Title>
+                  <Title id="preco">R${props.produto.Vlr.toFixed(2)}</Title>
                 </Flex>
               </Flex>
               <Flex align="space-around">

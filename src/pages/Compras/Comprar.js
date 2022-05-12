@@ -2,42 +2,21 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 
 import { ChangeTab, SetCheckedProd } from "../../global/actions/ComprasAction";
 import Loading from "../../components/loading_screen";
 
-import {
-  Title,
-  Button,
-  Buttons,
-  Box,
-  Image,
-  Text,
-  ChamadoButton,
-  Container,
-  Price,
-  Flex,
-} from "./styles";
-import { Input } from "@material-ui/core";
+import { Title, Box, Image, Text, Container, Codigo } from "./styles";
+
 import ProdutoModal from "./modals/ProdutoModal";
 
-
-
 function TransferList(props) {
-  const classes = useStyles();
-
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
 
   const { Produtos, Checked } = props.State;
-  const { ChangeTab, SetCheckedProd } = props;
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
-  const handleOpenDialog = () => {
-    setOpen(true);
-  }
   const handleCloseDialog = () => {
     setOpen(false);
   };
@@ -47,25 +26,44 @@ function TransferList(props) {
       setLoaded(true);
     }
     // eslint-disable-next-line
-  });
+  }, []);
 
   const customList = (title, items) => (
-    <Card >
+    <Card>
       <Container>
         {items.map((prod, i) => {
+          const imagem = () => {
+            try {
+              return require(`../../assets/image_products/${prod.Cód}.png`);
+            } catch (err) {
+              return require(`../../assets/image_products/00000.png`);
+            }
+          }
           return (
-            <Box >
-              < Image src={prod.Imagem} /> 
-              <Text>{prod.Produto}</Text> 
-              <Title>R$ {String(
-                        Number.parseFloat(prod.Vlr).toFixed(2)
-                      ).replace(".", ",")}
+            <Box key={i} >
+              <Codigo>Código: {prod.Cód}</Codigo>
+              <Image >
+                {/* // eslint-disable-next-line jsx-a11y/alt-text */}
+                <img
+                  src={imagem()}
+                  alt="1"
+                />
+               
+              </Image>
+              <Text>{prod.Produto}</Text>
+              <Title>
+                R${" "}
+                {String(Number.parseFloat(prod.Vlr).toFixed(2)).replace(
+                  ".",
+                  ","
+                )}
               </Title>
-
               <ProdutoModal
                 open={open}
                 onClose={handleCloseDialog}
-              />                 
+                produto={prod}
+                imagemModal={imagem}
+              />
             </Box>
           );
         })}
@@ -84,32 +82,3 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ ChangeTab, SetCheckedProd }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransferList);
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: "auto",
-    width: "100%",
-    height: "100%",
-  },
-  cardHeader: {
-    padding: theme.spacing(1, 2),
-  },
-  list: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: theme.palette.background.paper,
-    overflow: "auto",
-  },
-  button: {
-    margin: theme.spacing(0.5, 0),
-  },
-}));
-
-const ProdutosMarcados = (ProdList, Marcados) => {
-  let count = 0;
-  ProdList.forEach((prod) =>
-    Marcados.indexOf(prod.Cód) !== -1 ? count++ : null
-  );
-
-  return count;
-};

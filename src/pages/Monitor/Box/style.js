@@ -6,12 +6,6 @@ export const Container = styled.div`
     align-items: flex-start;
     justify-content: space-evenly;
     flex-wrap: wrap;
-<<<<<<< HEAD
-    box-sizing: border-box;
-    width: 100%;
-
-=======
->>>>>>> 7a7593a82af4f443849c4c025593258d3d1b0e4e
 `
 
 export const Box = styled.div`
@@ -19,19 +13,13 @@ export const Box = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-<<<<<<< HEAD
-    width:${ props => props.width ||'18rem'};
-    height:${ props => props.height ||'23rem'} ;
-=======
     width:${props => props.width || '18rem'};
     height:23rem;
->>>>>>> 7a7593a82af4f443849c4c025593258d3d1b0e4e
     background:#f3f3f3;
     border-radius: 1rem;
     margin: 8px 0px;
-    box-shadow:${ props => props.boxShadow ||'0px 0px 10px rgb(0 0 0 / 40%)'};
+    box-shadow:0px 0px 10px rgb(0 0 0 / 40%);
     border-radius: 1rem;
-
     &:hover{
         box-shadow:0px 0px 10px rgb(0 0 0 / 50%);
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -57,7 +45,6 @@ export const Button = styled.div`
     margin: ${props => props.margin || '0'};
     justify-content: center;
     align-items: center;
-
     &:hover{
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         background-color: ${props => props.bgColorH || '#92211f'};
@@ -78,7 +65,6 @@ export const ChamadoButton = styled.div`
     font-size: 1rem;
     font-weight: bold;
     
-    
     &:hover{
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         background-color: ${props => props.Online ? 'rgba(204, 204, 204, 0.8)' : 'rgba(146, 33, 31, 0.8)'};
@@ -96,11 +82,9 @@ export const Title = styled.h1`
     overflow: hidden;
     width: 100%;
     padding: 0px 8px;
-    box-sizing: border-box;
-    flex-wrap: wrap;
 `;
 
-export const Image = styled.div`
+export const Image = styled.img`
     width: 10rem;
     height: 12rem;
     justify-content: center;
@@ -111,40 +95,15 @@ export const Image = styled.div`
 
 export const Text = styled.p`
     color: ${props => props.color || '#41211f'};
-    font-size: ${props => props.fontSize || '1rem'};
+    font-size: 1rem;
     font-weight: bold;
     margin:0;
-    flex:1;
-    text-align: center;
-    white-space: wrap;
-    overflow: wrap;
-
 `;
 
 export const notificationTMT = styled.div` 
     background-color: ${props => props.color || '#fff'};
 `;
 
-<<<<<<< HEAD
-export const Price = styled.div`
-    display: flex;
-    background-color: ${props => props.color || '#fff'};
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    width: ${props => props.widthSize || '5rem'};
-    height: ${props => props.heightSize || '5rem'}
-    margin: 1rem;
-    color: ${props => props.colorText || '#41211f'};
-`
-
-export const Flex = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 0px 2px;
-    height:auto;
-`
-=======
 
 
 
@@ -227,4 +186,3 @@ export const TableCell = styled.td`
 export const TableRow = styled.tr`
     padding: 0px;
 `
->>>>>>> 7a7593a82af4f443849c4c025593258d3d1b0e4e

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+
 export const Container = styled.div`
     display: flex;
     flex-direction: row;
@@ -30,8 +31,8 @@ export const Box = styled.div`
     }
 
     @media (max-width: 600px) {
-        width:40vw;
-        height:420px;
+        width:85vw;
+        height:400px;
 
         p{
             height:1rem;
@@ -44,6 +45,7 @@ export const Buttons = styled.div`
     display: flex;
     width:100%;
     justify-content: center;
+    
 `
 export const Button = styled.button`
     background-color: ${props => props.bgColor || '#41211f'};
@@ -62,7 +64,7 @@ export const Button = styled.button`
         background-color: ${props => props.bgColorH || '#92211f'};
     }
     @media (max-width: 600px){
-        width: 100%;
+        width: 75vw;
         margin:1rem 0;
         padding: 2rem;
     }
@@ -83,19 +85,21 @@ export const Title = styled.h1`
     flex-wrap: wrap;
 `;
 
+
 export const Image = styled.div`
     width: 150px;
     height: 175px;
     justify-content: center;
-
     border: none;
     margin:15px 5px 5px 5px;
+  
 
     img{
         width: 100%;
         height: 100%;
         border: none;
         box-sizing: border-box;
+        
     }
 
   
@@ -104,15 +108,15 @@ export const Image = styled.div`
         height: 140px;
         display: flex;
         
-    img{
-        
-        align-items: center;
-        justify-content: center;
-        margin-top:10px;
-        width: 30vw;
-        height: 30vw;
-        box-sizing: border-box;
-    }
+        img{
+            
+            align-items: center;
+            justify-content: center;
+            margin-top:0;
+            width: 30vw;
+            height: 30vw;
+            box-sizing: border-box;
+        }
     }
 
 
@@ -135,7 +139,16 @@ export const Text = styled.p`
     }
 
 `;
-
+export const Codigo = styled.p `
+    font-size:10px;
+    font-weight: bold;
+    margin:5px 0 0 0;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:1;
+`;
 export const notificationTMT = styled.div` 
     background-color: ${props => props.color || '#fff'};
 `;
@@ -150,6 +163,10 @@ export const Price = styled.div`
     height: ${props => props.heightSize || '5rem'}
     margin: 1rem;
     color: ${props => props.colorText || '#41211f'};
+
+    @media (max-width: 600px) {
+        margin:1rem 0;
+    }
 `
 
 export const Flex = styled.div`

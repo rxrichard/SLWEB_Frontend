@@ -1,27 +1,28 @@
 import styled from "styled-components";
 
 export const Flex = styled.div`
+
     display:flex;
     flex-direction: ${(props) => props.direction || "row"};
     align-items:  ${(props) => props.align || "center"};
     margin: 0px 2px;s
     height:${(props) => props.heightSize || "98%"};
     width:${(props) => props.widthSize || "98%"};
-
+    
     @media (max-width: 767px) {
         flex-direction: ${(props) => props.direction || "column"};;
         align-items: center;
         height: ${(props) => props.heightSize || "98%"};
         width: ${(props) => props.widthSize || "98%"};
-
+        
     }
-`;
+    `
+;
+
 export const Image = styled.div`
     width:30vw;
     height:17vw;
     justify-content: center;
-    background: url("https://cafepilao.vteximg.com.br/arquivos/ids/158902/1500144-25-02_252vacuo.png?v=637757072160900000" ) no-repeat center/contain;);
-
     margin:5px;
 
     @media (max-width: 600px) {
@@ -85,7 +86,7 @@ export const Box = styled.div`
 
     @media (max-width: 600px) {
         width:40vw;
-        height:420px;
+        height:80vh;
 
 
     }
