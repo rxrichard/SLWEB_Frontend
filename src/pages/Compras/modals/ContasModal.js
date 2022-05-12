@@ -137,6 +137,26 @@ const ContasModal = (props) => {
     }else if (props.type === '2BTech') {
       return (
         <>
+          <div className="XAlign" style={{ justifyContent: "flex-end" }}>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Baixar Boleto
+                </label>
+              }
+              placement="top"
+              arrow
+
+            >
+              <IconButton
+                disabled={props.Cooldown}
+                onClick={() => props.onRequestBoleto(props.Detalhes)}
+                color="primary"
+              >
+                <InsertDriveFile />
+              </IconButton>
+            </Tooltip>
+          </div>
           <div className="YAlign" style={{ height: 200, width: "100%", alignItems: 'center' }}>
             <Typography variant="h4">
               Chamado 2BTech
