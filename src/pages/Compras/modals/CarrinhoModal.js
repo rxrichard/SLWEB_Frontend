@@ -36,6 +36,7 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
   const [aVista, setAVista] = useState(false);
   const [obs, setObs] = useState("");
   const [retira, setRetira] = useState(false);
+  // eslint-disable-next-line
   const [targetCEP, setTargetCEP] = useState('WYSI');
   const [faturamento, setFaturamento] = useState(null);
 

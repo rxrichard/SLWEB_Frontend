@@ -14,9 +14,9 @@ export const PdvItem = ({ PDV, i, onOpenModal }) => {
   })
 
   return (
-    <div 
-    className={classes.box}
-    onClick={() => onOpenModal(i)}
+    <div
+      className={classes.box}
+      onClick={() => onOpenModal(i)}
     >
       <HomeWork fontSize='large' />
       <Typography
