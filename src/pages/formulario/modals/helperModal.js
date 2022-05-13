@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { 
+  // useState 
+} from 'react';
 import { api } from '../../../services/api'
 import { saveAs } from 'file-saver'
 
@@ -10,7 +12,7 @@ import {
   IconButton,
   Typography,
   Button as ButtonMaterial,
-  TextField,
+  // TextField,
   makeStyles
 } from '@material-ui/core/';
 
@@ -35,7 +37,7 @@ export const HelperModal = ({ open, onClose, title }) => {
   const classes = useStyles({
     fullScreen
   })
-  const [mensagemWhatsapp, setMensagemWhatsapp] = useState(INITIAL_STRING)
+  // const [mensagemWhatsapp, setMensagemWhatsapp] = useState(INITIAL_STRING)
 
   const handleClose = () => {
     onClose();
@@ -61,19 +63,19 @@ export const HelperModal = ({ open, onClose, title }) => {
     }
   }
 
-  const handleSendWhatsappMessage = async () => {
-    if (mensagemWhatsapp.trim() === INITIAL_STRING) {
-      Toast('Altera a mensagem com seus dados antes de enviar aos consultores', 'warn')
-      return
-    }
+  // const handleSendWhatsappMessage = async () => {
+  //   if (mensagemWhatsapp.trim() === INITIAL_STRING) {
+  //     Toast('Altera a mensagem com seus dados antes de enviar aos consultores', 'warn')
+  //     return
+  //   }
 
-    //Número da Tati ou do Alessandro
+  //   //Número da Tati ou do Alessandro
 
-    let target = ''
-    let message = mensagemWhatsapp.replace(/ +/, '%20')
+  //   let target = ''
+  //   let message = mensagemWhatsapp.replace(/ +/, '%20')
 
-    window.open(`https://api.whatsapp.com/send?phone=${target}&text=${message}`, '_blank').focus();
-  }
+  //   window.open(`https://api.whatsapp.com/send?phone=${target}&text=${message}`, '_blank').focus();
+  // }
 
   return (
     <Dialog
@@ -202,4 +204,4 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-const INITIAL_STRING = 'Bom dia, meu nome é FULANO e estou precisando de uma ajuda com o formulário de franquia. Pode entrar em contato comigo por (XX) X XXXX-XXXX? Obrigado!'
+// const INITIAL_STRING = 'Bom dia, meu nome é FULANO e estou precisando de uma ajuda com o formulário de franquia. Pode entrar em contato comigo por (XX) X XXXX-XXXX? Obrigado!'

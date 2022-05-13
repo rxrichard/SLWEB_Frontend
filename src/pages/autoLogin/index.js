@@ -20,6 +20,8 @@ export default class autoLogin extends Component {
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem('role', response.data.role);
+        sessionStorage.setItem("filial_logada", response.data.nome !== '');
+        sessionStorage.setItem("usuário", response.data.nome);
 
         this.redirectWindow(targetWindow);
       } else {
@@ -47,6 +49,14 @@ export default class autoLogin extends Component {
 
       case 'equipamentos':
         window.location.assign("/equipamentos");
+        break;
+
+      case 'perfil':
+        window.location.assign("/perfil");
+        break;
+
+      case 'clientes':
+        window.location.assign("/clientes");
         break;
         
       default:

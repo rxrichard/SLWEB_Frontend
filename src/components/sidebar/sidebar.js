@@ -37,7 +37,9 @@ import {
   EmojiFoodBeverage,
   AssignmentInd,
   CompassCalibration,
-  MailOutline
+  MailOutline,
+  StoreMallDirectory,
+  SupervisedUserCircle
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -109,8 +111,11 @@ export default function MiniDrawer() {
       });
 
       Toast('Conectado!', 'update', toastId, 'success')
+
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("filial_logada", response.data.nome !== '');
+      sessionStorage.setItem("usuário", response.data.nome);
 
       window.location.reload();
     } catch (err) {
@@ -176,6 +181,7 @@ export default function MiniDrawer() {
             <Menu fontSize="large" />
           </IconButton>
           <div />
+
           <Link
             to="/"
             style={{
@@ -185,6 +191,12 @@ export default function MiniDrawer() {
                   : "#FFF",
             }}
           >
+            <Typography
+              color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
+              variant="subtitle2"
+            >
+              {sessionStorage.getItem('usuário')}
+            </Typography>
             <Typography variant="h6">SLAPLIC</Typography>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
           </Link>
@@ -244,7 +256,7 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            <List>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link to="/perfil" style={{ color: GREY_SECONDARY }} title="Perfil">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -263,9 +275,9 @@ export default function MiniDrawer() {
                   <ListItemText primary="Leads" />
                 </ListItem>
               </Link>
-            </List>
+            </List> : null}
             <Divider />
-            <List>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -284,9 +296,9 @@ export default function MiniDrawer() {
                   <ListItemText primary="Pontos de Venda" />
                 </ListItem>
               </Link> */}
-            </List>
+            </List> : null}
             <Divider />
-            <List>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -305,9 +317,9 @@ export default function MiniDrawer() {
                   <ListItemText primary="Vendas" />
                 </ListItem>
               </Link>
-            </List>
+            </List> : null}
             <Divider />
-            <List>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link
                 to="/equipamentos"
                 style={{ color: GREY_SECONDARY }}
@@ -334,7 +346,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Solicitação" />
                 </ListItem>
               </Link>
-            </List>
+            </List> : null}
             <Divider />
             {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
               <>
@@ -350,6 +362,19 @@ export default function MiniDrawer() {
                       </ListItemIcon>
 
                       <ListItemText primary="Solicitações" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/administracao/leads"
+                    style={{ color: GREY_SECONDARY }}
+                    title="Gestão de Leads"
+                  >
+                    <ListItem button onClick={handleDrawerClose}>
+                      <ListItemIcon>
+                        <SupervisedUserCircle />
+                      </ListItemIcon>
+
+                      <ListItemText primary="Gestão de Leads" />
                     </ListItem>
                   </Link>
                   <Link
@@ -382,7 +407,7 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            <List>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -392,8 +417,6 @@ export default function MiniDrawer() {
                   <ListItemText primary="Telemetria" />
                 </ListItem>
               </Link>
-            </List>
-            <List>
               <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
@@ -403,7 +426,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Coletas" />
                 </ListItem>
               </Link>
-            </List>
+            </List> : null}
             <Divider />
             <List>
               <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">

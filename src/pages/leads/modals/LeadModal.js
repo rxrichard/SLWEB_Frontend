@@ -201,11 +201,6 @@ const LeadModal = (props) => {
                 {props.lead.Mensagem}
               </Typography>
 
-              <Typography variant="subtitle1" gutterBottom>
-                <strong>Atividade/Ramo: </strong>
-                {props.lead.AtividadeDesc}
-              </Typography>
-
               <br />
 
               {/* <Typography variant="subtitle1" gutterBottom>

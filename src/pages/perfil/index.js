@@ -29,10 +29,7 @@ function Perfil() {
   const [vencCert, setVencCert] = useState(null);
   const [password, setPassword] = useState({});
   const [newEmail, setNewEmail] = useState(null);
-  const [newTaxa, setNewTaxa] = useState({
-    tipo: "",
-    valor: 0,
-  });
+  const [newTaxa, setNewTaxa] = useState({ tipo: "", valor: 0, });
   const [loaded, setLoaded] = useState(false);
   const [wait, setWait] = useState(false);
 
@@ -45,21 +42,13 @@ function Perfil() {
           },
         });
 
-        if (
-          response.data.Franqueado === {} ||
-          response.data.Franqueado === null ||
-          typeof response.data.Franqueado == "undefined" ||
-          !response.data.Franqueado
-        )
-          throw Error;
-
         setInfo(response.data.Franqueado);
         setVencCert(response.data.VencCert)
-        setLoaded(true);
         setNewTaxa({
           tipo: response.data.Franqueado.ParamTxt,
           valor: response.data.Franqueado.ParamVlr * 100,
         });
+        setLoaded(true);
       } catch (err) { }
     }
     loadData();
@@ -476,7 +465,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: ".5rem",
         width: "95vw",
         maxWidth: "100%",
-        
+
       },
     },
   },
