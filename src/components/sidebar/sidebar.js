@@ -38,7 +38,8 @@ import {
   AssignmentInd,
   CompassCalibration,
   MailOutline,
-  StoreMallDirectory
+  StoreMallDirectory,
+  SupervisedUserCircle
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -361,6 +362,19 @@ export default function MiniDrawer() {
                       </ListItemIcon>
 
                       <ListItemText primary="Solicitações" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/administracao/leads"
+                    style={{ color: GREY_SECONDARY }}
+                    title="Gestão de Leads"
+                  >
+                    <ListItem button onClick={handleDrawerClose}>
+                      <ListItemIcon>
+                        <SupervisedUserCircle />
+                      </ListItemIcon>
+
+                      <ListItemText primary="Gestão de Leads" />
                     </ListItem>
                   </Link>
                   <Link
