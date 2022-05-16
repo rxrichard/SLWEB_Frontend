@@ -38,7 +38,6 @@ import {
   AssignmentInd,
   CompassCalibration,
   MailOutline,
-  StoreMallDirectory,
   SupervisedUserCircle
 } from "@material-ui/icons/";
 

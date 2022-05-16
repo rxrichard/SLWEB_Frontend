@@ -59,6 +59,7 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
       }
     }
     loadData()
+    // eslint-disable-next-line
   }, [])
 
   const updateChecked = (SelectedIDs) => {

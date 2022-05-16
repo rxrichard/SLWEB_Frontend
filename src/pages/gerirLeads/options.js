@@ -9,21 +9,29 @@ import {
   InputBase,
   IconButton,
   Divider,
-  Tooltip
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
+
 import {
   Add as AddIcon,
   Search as SearchIcon,
   Close as CloseIcon
 } from '@material-ui/icons'
 
-export const LeadsListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos, onOpenNewLeadsModal }) => {
+import { RED_PRIMARY } from '../../misc/colors'
+
+export const LeadsListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos, onOpenNewLeadsModal, totalLeads }) => {
   const classes = useStyles()
   const [filterWord, setFilterWord] = useState('')
 
   return (
     <div className={classes.container}>
-      <div style={{ width: '171.55px' }} />
+      <div className={classes.leadCounterContainer}>
+        <Typography variant="h6">
+          ({totalLeads}) Leads disponíveis
+        </Typography>
+      </div>
       <div>
         <Paper component="form" className={classes.root}>
           <InputBase
@@ -105,19 +113,21 @@ export const LeadsListOptions = ({ onChangeFiltro, mostrarInativos, switchInativ
               style={{ marginLeft: '8px' }}
             />
           }
-          label="Mostrar leads inativos"
+          label="Leads inativos"
         />
       </div>
-      <Button
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        size="large"
-        onClick={onOpenNewLeadsModal}
-        startIcon={<AddIcon />}
-      >
-        Novo Lead
-      </Button>
+      <div className={classes.buttonContainer}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={onOpenNewLeadsModal}
+          startIcon={<AddIcon />}
+        >
+          Novo Lead
+        </Button>
+      </div>
     </div>
   )
 }
@@ -155,6 +165,8 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      flexWrap: 'nowrap',
+      marginBottom: '8px',
     }
   },
   checkbox: {
@@ -165,6 +177,30 @@ const useStyles = makeStyles((theme) => ({
 
     '@media (max-width: 800px)': {
       width: '400px',
+    }
+  },
+  buttonContainer: {
+    width: '205px',
+    height: '50px',
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    whiteSpace: 'nowrap',
+    '@media (max-width: 800px)': {
+      width: '100%',
+    }
+  },
+  leadCounterContainer: {
+    width: '205px',
+    height: '50px',
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    whiteSpace: 'nowrap',
+    borderBottom: `2px dashed ${RED_PRIMARY}`,
+
+    '@media (max-width: 800px)': {
+      borderBottom: 'none'
     }
   }
 }))
