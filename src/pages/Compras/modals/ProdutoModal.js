@@ -10,8 +10,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart"
+import "./styleClass.css"
 import {
   Title,
   Button as ButtonComprar,
@@ -66,7 +66,6 @@ BootstrapDialogTitle.propTypes = {
 
 export default function CustomizedDialogs( props) {
   const [open, setOpen] = React.useState(false);
-  const [changeInput, setChangeInput] = React.useState(0);
   
 
 
@@ -84,6 +83,13 @@ export default function CustomizedDialogs( props) {
     console.log(i)
   };
 
+  const imagem = () => {
+    try {
+      return require(`../../../assets/image_products/${props.produto.Cód}.png`);
+    } catch (err) {
+      return require(`../../../assets/image_products/00000.png`);
+    }
+  };
 
 
   return (
@@ -111,34 +117,36 @@ export default function CustomizedDialogs( props) {
         </BootstrapDialogTitle>
        
         <DialogContent dividers>
+  
           <Flex>
-            <Image>{
-              <img src={props.imagemModal.imagem} alt='' />
-               
-               }</Image>
+            
+            <Image>
+              <img src={imagem()} alt="teste" />
+            </Image>
+
+            {console.log(props.produto)}
             <Flex width="40%" direction="column">
               <Text>
-              lorem descricao do produto aqui
+                Contem:{props.produto.Produto}
               </Text>
 
               <Flex>
                 <Flex direction='row'>
            
-                  <Input id="qtd"type="number" placeholder="Digite a quantidade:" onChange={()=>{
+                  <Input id="qtd"type="number" placeholder="Quantidade:" onChange={()=>{
                     
                   }} />
                   <Title id="preco">R${props.produto.Vlr.toFixed(2)}</Title>
                 </Flex>
               </Flex>
               <Flex align="space-around">
-                <Button variant="outlined" color="error" size="medium" onClick={handleClose}>
-                  <DeleteIcon />
-                  CANCELAR
-                </Button>
-
-                <Button variant="outlined" color="success" size="medium" onClick={addShoppingCartAction}>
+                <Button variant="outlined" color="success" className="button" onClick={addShoppingCartAction}>
                   <AddShoppingCartIcon />
                   ADICIONAR AO CARRINHO
+                </Button>
+                <Button variant="outlined" color="error" className="button" onClick={handleClose}>
+                  <DeleteIcon />
+                  CANCELAR
                 </Button>
               </Flex>
             </Flex>

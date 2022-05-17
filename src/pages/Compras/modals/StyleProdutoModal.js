@@ -25,9 +25,29 @@ export const Image = styled.div`
     justify-content: center;
     margin:5px;
 
+    img{
+        width: 100%;
+        height: 100%;
+        border: none;
+        box-sizing: border-box;
+        
+    }
+
+
     @media (max-width: 600px) {
-        width: 70px;
-        height: 70px;
+        width: 50%;
+        height: 100%;
+
+        img{
+            
+            align-items: center;
+            justify-content: center;
+            margin-top:0;
+            width: 30vw;
+            height: 30vw;
+            box-sizing: border-box;
+            
+        }
     }
 
 `;
@@ -109,7 +129,7 @@ export const Button = styled.button`
         background-color: ${props => props.bgColorH || '#92211f'};
     }
     @media (max-width: 600px){
-        width: 100%;
+        width: 70vw;
         margin:1rem 0;
         padding: 2rem;
     }
@@ -182,5 +202,8 @@ export const Input = styled.input`
   &:focus {
     text-align: left;
   }
+    @media (max-width: 600px) {
+        width: 30vw;
+    }
 
 `;

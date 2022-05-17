@@ -35,7 +35,7 @@ export const Box = styled.div`
         height:400px;
 
         p{
-            height:1rem;
+            height:4rem;
         }
 
     }
@@ -48,11 +48,13 @@ export const Buttons = styled.div`
     
 `
 export const Button = styled.button`
+
     background-color: ${props => props.bgColor || '#41211f'};
     width: ${props => props.width || '0%'};
     height: 3rem;
     display: flex;
     border-radius: ${props => props.borderRadius || '0'};
+    border:none;
     color:#fff;
     font-size: 1.2rem;
     padding: 0px 4px;

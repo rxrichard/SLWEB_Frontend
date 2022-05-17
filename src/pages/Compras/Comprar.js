@@ -38,17 +38,12 @@ function TransferList(props) {
             } catch (err) {
               return require(`../../assets/image_products/00000.png`);
             }
-          }
+          };
           return (
-            <Box key={i} >
+            <Box key={i}>
               <Codigo>Código: {prod.Cód}</Codigo>
-              <Image >
-                {/* // eslint-disable-next-line jsx-a11y/alt-text */}
-                <img
-                  src={imagem()}
-                  alt="1"
-                />
-               
+              <Image>
+                <img src={imagem()} alt="teste" />
               </Image>
               <Text>{prod.Produto}</Text>
               <Title>
@@ -62,7 +57,7 @@ function TransferList(props) {
                 open={open}
                 onClose={handleCloseDialog}
                 produto={prod}
-                imagemModal={imagem}
+                
               />
             </Box>
           );
