@@ -71,7 +71,7 @@ const Dashboard = () => {
 
   const handleCloseNewsModal = async () => {
     //da um check que a noticia foi vizualizada
-    if (displayedNews.ReadConfirm === true) {
+    if (displayedNews.ReadConfirm === true && displayedNews.DtConfirmacao === null) {
       try {
         await api.post('/dashboard/news/check', {
           newsId: displayedNews.NewsId

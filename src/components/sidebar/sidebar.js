@@ -265,7 +265,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Perfil" />
                 </ListItem>
               </Link>
-              <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
+              {/* <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <PersonPinCircle />
@@ -273,7 +273,7 @@ export default function MiniDrawer() {
 
                   <ListItemText primary="Leads" />
                 </ListItem>
-              </Link>
+              </Link> */}
             </List> : null}
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
