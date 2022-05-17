@@ -32,8 +32,6 @@ export const NovaColetaContent = (props) => {
     defaultSelected
   } = props
 
-  console.log(defaultSelected)
-
   useEffect(() => {
     if (typeof defaultSelected !== 'undefined') {
       handleLookForPastData(equipamentos.filter(eq => eq.EquiCod === defaultSelected)[0])
