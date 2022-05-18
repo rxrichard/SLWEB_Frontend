@@ -18,10 +18,7 @@ function Exemplo() {
   const [loaded, setLoaded] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
-  const [depositos, setDepositos] = useState([]);
-  const [configuracoes, setConfiguracoes] = useState([]);
-  const [eqps, setEqps] = useState([]);
-  const [targetPDV, setTargetPDV] = useState({});
+  const [targetPDV, setTargetPDV] = useState(null);
   const [filtro, setFiltro] = useState('');
   const [mostrarInativos, setMostrarInativos] = useState(false);
 
@@ -33,9 +30,6 @@ function Exemplo() {
         const response = await api.get("/pontosdevenda");
 
         setPDVs(response.data.PDVs);
-        setDepositos(response.data.Depositos);
-        setConfiguracoes(response.data.Configuracoes);
-        setEqps(response.data.EqsDisp);
 
         setLoaded(true);
       } catch (err) { }
@@ -45,13 +39,13 @@ function Exemplo() {
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetPDV(returnPDVsFilter(PDVs, mostrarInativos, filtro)[index])
+    setTargetPDV(returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].PdvId)
     setDetailsModalOpen(true)
   }
 
   const handleCloseDetailsModal = () => {
     setDetailsModalOpen(false)
-    setTargetPDV({})
+    setTargetPDV(null)
   }
 
   return !loaded ? (
@@ -61,13 +55,9 @@ function Exemplo() {
       <DetailsModal
         open={detailsModalOpen}
         onClose={handleCloseDetailsModal}
-        Details={targetPDV}
-        Depositos={depositos}
-        Configuracoes={configuracoes}
-        Equipamentos={eqps}
-        DetailsChangeHandler={setTargetPDV}
+        PdvId={targetPDV}
         updatePDVsArray={setPDVs}
-        updateEqsArray={setEqps}
+        PdvStatus={PDVs.filter(pdv => pdv.PdvId === targetPDV)[0].PdvStatus}
       />
       <PdvListOptions
         onChangeFiltro={setFiltro}

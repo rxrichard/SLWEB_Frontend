@@ -69,9 +69,20 @@ function ModalPersonalizado(props) {
           </div>
         </DialogContent>
         <DialogActions style={{ padding: '8px 24px' }}>
+          <div className="XAlign" style={{ justifyContent: 'space-between' }}>
+          {sessionStorage.getItem("filial_logada") === 'true' ?
+            (
+              <Button onClick={props.onLogout} color="primary">
+                Logout Filial
+              </Button>
+            )
+            :
+            <div />
+          }
           <Button onClick={props.onClose} color="primary">
             Fechar
           </Button>
+          </div>
         </DialogActions>
       </Dialog>
     </div>

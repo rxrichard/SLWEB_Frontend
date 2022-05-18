@@ -38,7 +38,8 @@ import {
   AssignmentInd,
   CompassCalibration,
   MailOutline,
-  SupervisedUserCircle
+  SupervisedUserCircle,
+  StoreMallDirectory
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -101,9 +102,9 @@ export default function MiniDrawer() {
 
   const handleSwitchFilial = async (filial) => {
     let toastId = null
+    toastId = Toast('Aguarde...', 'wait')
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
 
       const response = await api.post("/admAuth/full", {
         user_code: filial,
@@ -118,6 +119,26 @@ export default function MiniDrawer() {
 
       window.location.reload();
     } catch (err) {
+      Toast('Falha ao logar na filial', 'update', toastId, 'error')
+    }
+  }
+
+  const handleLogoutFilial = async () => {
+    let toastId = null
+    toastId = Toast('Aguarde...', 'wait')
+
+    try{
+      const response = await api.get("/admAuth/logout");
+
+      Toast('Conectado!', 'update', toastId, 'success')
+
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("filial_logada", response.data.nome !== '');
+      sessionStorage.setItem("usuário", response.data.nome);
+
+      window.location.reload();
+    }catch(err){
       Toast('Falha ao logar na filial', 'update', toastId, 'error')
     }
   }
@@ -159,6 +180,7 @@ export default function MiniDrawer() {
         Filiais={usersListFiltered}
         onSelect={filial => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
+        onLogout={handleLogoutFilial}
       />
       <CssBaseline />
       <AppBar
@@ -194,7 +216,7 @@ export default function MiniDrawer() {
               color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
               variant="subtitle2"
             >
-              {sessionStorage.getItem('usuário')}
+              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
             </Typography>
             <Typography variant="h6">SLAPLIC</Typography>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
@@ -265,7 +287,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Perfil" />
                 </ListItem>
               </Link>
-              {/* <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
+              <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <PersonPinCircle />
@@ -273,7 +295,7 @@ export default function MiniDrawer() {
 
                   <ListItemText primary="Leads" />
                 </ListItem>
-              </Link> */}
+              </Link>
             </List> : null}
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
@@ -286,7 +308,7 @@ export default function MiniDrawer() {
                   <ListItemText primary="Clientes" />
                 </ListItem>
               </Link>
-              {/* <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+              <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <StoreMallDirectory />
@@ -294,7 +316,7 @@ export default function MiniDrawer() {
 
                   <ListItemText primary="Pontos de Venda" />
                 </ListItem>
-              </Link> */}
+              </Link>
             </List> : null}
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
