@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import { api } from '../../../services/api'
 
 import { Button, Dialog, MobileStepper, DialogActions, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography } from '@material-ui/core/';
@@ -7,64 +7,31 @@ import { Close as CloseIcon, Save as SaveIcon, ThumbDownAlt as ThumbDownAltIcon,
 
 // import { Toast } from '../../../components/toasty'
 
-import { Configuracao } from './_configuracao'
-import { Dados } from './_dados'
-import { Equipamento } from './_equipamentos'
+import { Configuracao } from '../components/_configuracao'
+import { Dados } from '../components/_dados'
+import { Equipamento } from '../components/_equipamentos'
 
-export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray }) => {
+export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDVsArray }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const childRef = useRef();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [allowEditing, setAllowEditing] = useState(false);
+  const [allowEditing, setAllowEditing] = useState(true);
   const [wait, setWait] = useState(false);
 
+  useEffect(() => {
+    if (open) {
+      setActiveStep(0)
+    }
+  }, [open])
+
   const handleChangeEditingState = async (PDV) => {
-    alert('revisar função de inativar')
-    return
-    // setAllowEditing(oldState => !oldState)
+    setAllowEditing(oldState => !oldState)
 
-    // if (!allowEditing) {
-    //   let toastId = null
-
-    //   toastId = Toast('Atualizando...', 'wait')
-    //   setWait(true)
-
-    //   try {
-    //     if (activeStep === 0) {
-    //       await api.put('/pontosdevenda/atualizar', {
-    //         PDV: PDV
-    //       })
-
-    //       Toast('Ponto de venda atualizado', 'update', toastId, 'success')
-    //       setWait(false)
-
-    //       updatePDVsArray(oldState => {
-    //         let pdvIndex = null
-    //         let aux = [...oldState]
-
-    //         oldState.forEach((item, index) => {
-    //           if (item.PdvId === PDV.PdvId && item.AnxId === PDV.AnxId) {
-    //             pdvIndex = index
-    //           }
-    //         })
-
-    //         aux[pdvIndex] = PDV
-
-    //         return aux
-    //       })
-
-    //       setBackupData(PDV)
-    //     } else {
-    //       Toast('Qualquer coisa atualizada', 'update', toastId, 'success')
-    //       setWait(false)
-    //     }
-    //   } catch (err) {
-    //     Toast('Falha ao atualizar ponto de venda', 'update', toastId, 'error')
-    //     setAllowEditing(false)
-    //     setWait(false)
-    //   }
-    // }
+    if (!allowEditing) {
+      childRef.current.handleSubmit()
+    }
   }
 
   const handleInativar = async (PDV) => {
@@ -142,14 +109,20 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
     // }
   }
 
-  const handleDiscardChanges = () => {}
+  const handleDiscardChanges = () => {
+    childRef.current.undoChanges()
+    setAllowEditing(true)
+  }
 
   const whichContentShow = (stage) => {
     switch (stage) {
       case 0:
         return (
           <Dados
+            ref={childRef}
+
             PdvId={PdvId}
+            AnxId={AnxId}
             allowEditing={allowEditing}
             onAllowEditingChange={setAllowEditing}
           />
@@ -157,7 +130,10 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
       case 1:
         return (
           <Configuracao
+            ref={childRef}
+
             PdvId={PdvId}
+            AnxId={AnxId}
             allowEditing={allowEditing}
             onAllowEditingChange={setAllowEditing}
           />
@@ -166,8 +142,7 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
         return (
           <Equipamento
             PdvId={PdvId}
-            allowEditing={allowEditing}
-            onAllowEditingChange={setAllowEditing}
+            AnxId={AnxId}
           />
         )
       default:
@@ -187,15 +162,13 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
     <Dialog
       fullScreen={fullScreen}
       open={open}
+      maxWidth={false}
       onClose={onClose}
       aria-labelledby="responsive-dialog-title"
     >
 
-      <DialogTitle
-        id="customized-dialog-title"
-        onClose={onClose}
-      >
-        Ponto de Venda
+      <DialogTitle onClose={onClose} >
+        {returnModalTitle(activeStep)}
       </DialogTitle>
 
       <DialogContent dividers>
@@ -259,7 +232,7 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
             }
 
             <Button
-              disabled={wait}
+              disabled={wait || activeStep === 2}
               onClick={handleChangeEditingState}
               color="primary"
               startIcon={allowEditing ? <EditIcon /> : <SaveIcon />}
@@ -273,8 +246,6 @@ export const DetailsModal = ({ open, onClose, PdvId, PdvStatus, updatePDVsArray 
     </Dialog >
   );
 }
-
-
 
 const styles = (theme) => ({
   root: {
@@ -305,3 +276,16 @@ const DialogTitle = withStyles(styles)((props) => {
     </MuiDialogTitle>
   );
 });
+
+const returnModalTitle = (step) => {
+  switch (step) {
+    case 0:
+      return 'Ponto de Venda - DADOS'
+    case 1:
+      return 'Ponto de Venda - CONFIGURAÇÃO'
+    case 2:
+      return 'Ponto de Venda - EQUIPAMENTO'
+    default:
+      return 'Ponto de Venda'
+  }
+}

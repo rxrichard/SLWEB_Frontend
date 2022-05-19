@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
+import { api } from '../../../services/api'
 
 import {
   Typography,
@@ -14,12 +15,40 @@ import {
 import DatePicker from '../../../components/materialComponents/datePicker'
 import { toValidString } from '../../../misc/commom_functions'
 
-export const Dados = ({ PdvId, allowEditing, onAllowEditingChange }) => {
+export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingChange }, ref) => {
   const classes = useStyles()
 
   const [details, setDetails] = useState(INITIAL_STATE)
+  const [backupDetails, setBackupDetails] = useState(INITIAL_STATE)
   const [depositos, setDepositos] = useState([])
   const [configuracoes, setConfiguracoes] = useState([])
+
+  useEffect(() => {
+    async function LoadData() {
+      const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/basic`)
+
+      setDetails(response.data.Dados.cadastro)
+      setBackupDetails(response.data.Dados.cadastro)
+      setDepositos(response.data.Dados.depositos)
+      setConfiguracoes(response.data.Dados.configuracoes)
+    }
+    LoadData()
+  }, [])
+
+  useImperativeHandle(ref, () => ({
+
+    handleSubmit() {
+      console.log(details);
+
+      //depois que o put der certo
+      //setBackupDetails(details)
+    },
+
+    undoChanges() {
+      setDetails(backupDetails)
+    }
+
+  }));
 
   return (
     <>
@@ -479,7 +508,7 @@ export const Dados = ({ PdvId, allowEditing, onAllowEditingChange }) => {
       </section>
     </>
   )
-}
+})
 
 const useStyles = makeStyles(theme => ({
   line: {

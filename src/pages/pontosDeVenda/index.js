@@ -14,11 +14,11 @@ import { PdvList } from './pdvList'
 import { PdvListOptions } from './options'
 import { DetailsModal } from './modals/detailsModal'
 
-function Exemplo() {
+function PontosDeVenda() {
   const [loaded, setLoaded] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
-  const [targetPDV, setTargetPDV] = useState(null);
+  const [targetPDV, setTargetPDV] = useState({ pdv: null, anx: null});
   const [filtro, setFiltro] = useState('');
   const [mostrarInativos, setMostrarInativos] = useState(false);
 
@@ -39,13 +39,16 @@ function Exemplo() {
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetPDV(returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].PdvId)
+    setTargetPDV({ 
+      pdv: returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].PdvId, 
+      anx: returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].AnxId
+    })
     setDetailsModalOpen(true)
   }
 
   const handleCloseDetailsModal = () => {
     setDetailsModalOpen(false)
-    setTargetPDV(null)
+    setTargetPDV({ pdv: null, anx: null})
   }
 
   return !loaded ? (
@@ -55,9 +58,10 @@ function Exemplo() {
       <DetailsModal
         open={detailsModalOpen}
         onClose={handleCloseDetailsModal}
-        PdvId={targetPDV}
+        PdvId={targetPDV.pdv}
+        AnxId={targetPDV.anx}
         updatePDVsArray={setPDVs}
-        PdvStatus={PDVs.filter(pdv => pdv.PdvId === targetPDV)[0].PdvStatus}
+        PdvStatus={PDVs.filter(pdv => pdv.PdvId === targetPDV.pdv).length > 0 ? PDVs.filter(pdv => pdv.PdvId === targetPDV.pdv)[0].PdvStatus : 'I'}
       />
       <PdvListOptions
         onChangeFiltro={setFiltro}
@@ -72,7 +76,7 @@ function Exemplo() {
   );
 }
 
-export default Exemplo;
+export default PontosDeVenda;
 
 const returnPDVsFilter = (pdvs, shouldShowInactive, filterString) => {
   var re = new RegExp(filterString.trim().toLowerCase())
