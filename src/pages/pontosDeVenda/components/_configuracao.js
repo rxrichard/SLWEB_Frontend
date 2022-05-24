@@ -16,8 +16,8 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     async function LoadData() {
       const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/config`)
 
-      setConfigPDV(response.data.Dados.CfgPdv)
-      setBackupConfigPDV(response.data.Dados.CfgPdv)
+      setConfigPDV([...response.data.Dados.CfgPdv])
+      setBackupConfigPDV([...response.data.Dados.CfgPdv])
       setConfigPadrao(response.data.Dados.CfgPadrao)
 
       setProdutos(response.data.Dados.Produtos)
@@ -26,6 +26,10 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     }
     LoadData()
   }, [])
+
+  useEffect(() => {
+    console.log('alterou')
+  }, [backupConfigPDV])
 
   useImperativeHandle(ref, () => ({
 
@@ -42,6 +46,9 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     },
 
     undoChanges() {
+      console.log(backupConfigPDV)
+      console.log(configPDV)
+      
       setConfigPDV(backupConfigPDV)
     }
 
@@ -100,7 +107,7 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
   }
 
   const validConfig = (config) => {
-    let isValid = false
+    let isValid = true
 
     // for (let i = 0; i < configPDV.length; i++) {
     //   if (configPDV[i].) { }
@@ -142,10 +149,11 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
       </div>
       <Button
         onClick={handleAddConfig}
+        disabled={allowEditing}
+        variant='contained'
+        color='primary'
         style={{
           width: '100%',
-          background: 'green',
-          color: '#FFF',
           borderRadius: '20px'
         }}>
         ADICIONAR BEBIDA

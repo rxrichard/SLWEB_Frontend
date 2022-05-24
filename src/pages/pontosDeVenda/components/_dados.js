@@ -37,11 +37,15 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingCha
 
   useImperativeHandle(ref, () => ({
 
-    handleSubmit() {
-      console.log(details);
+    async handleSubmit() {
+      try {
+        await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/basic`, {
+          UpdatedData: details
+        })
 
-      //depois que o put der certo
-      //setBackupDetails(details)
+        setBackupDetails(details)
+      } catch (err) {
+      }
     },
 
     undoChanges() {
