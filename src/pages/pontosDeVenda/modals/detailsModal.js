@@ -100,7 +100,6 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
             PdvId={PdvId}
             AnxId={AnxId}
             allowEditing={allowEditing}
-            onAllowEditingChange={setAllowEditing}
           />
         )
       case 1:
@@ -111,7 +110,6 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
             PdvId={PdvId}
             AnxId={AnxId}
             allowEditing={allowEditing}
-            onAllowEditingChange={setAllowEditing}
           />
         )
       case 2:
@@ -134,16 +132,23 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
     setActiveStep((prevActiveStep) => prevActiveStep === 0 ? 2 : prevActiveStep - 1);
   };
 
+  const handleClose = () => {
+    if(!wait){
+      onClose()
+      setAllowEditing(true)
+    }
+  }
+
   return (
     <Dialog
       fullScreen={fullScreen}
       open={open}
       maxWidth={false}
-      onClose={onClose}
+      onClose={handleClose}
       aria-labelledby="responsive-dialog-title"
     >
 
-      <DialogTitle onClose={onClose} >
+      <DialogTitle onClose={handleClose} >
         {returnModalTitle(activeStep)}
       </DialogTitle>
 

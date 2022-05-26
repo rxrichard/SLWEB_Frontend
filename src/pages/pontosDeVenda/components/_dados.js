@@ -14,8 +14,9 @@ import {
 
 import DatePicker from '../../../components/materialComponents/datePicker'
 import { toValidString } from '../../../misc/commom_functions'
+import { Toast } from '../../../components/toasty'
 
-export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingChange }, ref) => {
+export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
   const classes = useStyles()
 
   const [details, setDetails] = useState(INITIAL_STATE)
@@ -38,13 +39,16 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingCha
   useImperativeHandle(ref, () => ({
 
     async handleSubmit() {
-      try {
-        await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/basic`, {
-          UpdatedData: details
-        })
+      if (validate(details)) {
+        try {
+          await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/basic`, {
+            UpdatedData: {
+              PDV: details
+            }
+          })
 
-        setBackupDetails(details)
-      } catch (err) {
+          setBackupDetails(details)
+        } catch (err) { }
       }
     },
 
@@ -443,7 +447,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingCha
             marginRight: '8px'
           }}
         >
-          <InputLabel>Consumo mín.</InputLabel>
+          <InputLabel>PDV tem mín.</InputLabel>
           <Select
             value={details.PdvConsMin}
             onChange={(e) => {
@@ -513,6 +517,87 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingCha
     </>
   )
 })
+
+const validate = (data) => {
+  if (data.DepId === null || data.DepId === '' || typeof data.DepId === 'undefined') {
+    Toast('Depósito inválido', 'warn')
+    return false
+  }
+
+  if (data.CfgId === null || data.CfgId === '' || typeof data.CfgId === 'undefined') {
+    Toast('Configuração inválida', 'warn')
+    return false
+  }
+
+  if (data.PdvLogradouroPV === null || data.PdvLogradouroPV === '' || typeof data.PdvLogradouroPV === 'undefined') {
+    Toast('Logradouro inválido', 'warn')
+    return false
+  }
+
+  if (data.PdvNumeroPV === null || data.PdvNumeroPV === '' || typeof data.PdvNumeroPV === 'undefined') {
+    Toast('Número inválido', 'warn')
+    return false
+  }
+
+  if (data.PdvBairroPV === null || data.PdvBairroPV === '' || typeof data.PdvBairroPV === 'undefined') {
+    Toast('Bairro inválido', 'warn')
+    return false
+  }
+
+  if (data.PdvCidadePV === null || data.PdvCidadePV === '' || typeof data.PdvCidadePV === 'undefined') {
+    Toast('Cidade inválida', 'warn')
+    return false
+  }
+
+  if (data.PdvUfPV === null || data.PdvUfPV === '' || typeof data.PdvUfPV === 'undefined') {
+    Toast('UF inválida', 'warn')
+    return false
+  }
+
+  if (data.PdvCEP === null || data.PdvCEP === '' || typeof data.PdvCEP === 'undefined') {
+    Toast('CEP inválido', 'warn')
+    return false
+  }
+
+  if (data.PdvConsMin === null || data.PdvConsMin === '' || typeof data.PdvConsMin === 'undefined') {
+    Toast('Informe se o Ponto de Venda tem consumo mínimo', 'warn')
+    return false
+  }
+
+  if (data.PdvConsMin === 'S' && (data.PdvConsValor === null || data.PdvConsValor === '' || typeof data.PdvConsValor === 'undefined')) {
+    Toast('Informe o valor do consumo mínimo', 'warn')
+    return false
+  }
+
+  if (data.PdvConsMin === 'S' && (data.PdvConsDose === null || data.PdvConsDose === '' || typeof data.PdvConsDose === 'undefined')) {
+    Toast('Informe a quantidade de doses do consumo mínimo', 'warn')
+    return false
+  }
+
+  if (data.PdvConsMin === 'S' && (data.PdvSomaCompartilhado === null || data.PdvSomaCompartilhado === '' || typeof data.PdvSomaCompartilhado === 'undefined')) {
+    Toast('Informe se a o consumo deve ser condiderado para o calculo de mínimo', 'warn')
+    return false
+  }
+
+  if (data.AnxFatMinimo === null || data.AnxFatMinimo === '' || typeof data.AnxFatMinimo === 'undefined') {
+    Toast('Informe se o Anexo tem consumo mínimo', 'warn')
+    return false
+  }
+
+  if (data.AnxCalcMinPor === null || data.AnxCalcMinPor === '' || typeof data.AnxCalcMinPor === 'undefined') {
+    Toast('Informe se o mínimo deve ser calculado por Anexo ou Ponto de Venda', 'warn')
+    return false
+  }
+
+  if (data.AnxTipMin === null || data.AnxTipMin === '' || typeof data.AnxTipMin === 'undefined') {
+    Toast('Informe se o mínimo deve ser calculado por doses ou reais', 'warn')
+    return false
+  }
+
+  return true
+
+
+}
 
 const useStyles = makeStyles(theme => ({
   line: {

@@ -3,6 +3,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
 import { RED_PRIMARY } from '../../../misc/colors'
+import NumberFormat from "react-number-format";
 
 import { Toast } from '../../../components/toasty'
 
@@ -11,7 +12,18 @@ export const ConfigListItem = ({ Sel, Produtos, ProdCod, TiposDeVenda, TVendaId,
 
   return (
     <div className={classes.line}>
-      <input disabled={Editing} type='text' value={Sel} onChange={(e) => onUpdateConfig('Sel', e.target.value, Linha)} placeholder='Sel.' className={classes.Sel} />
+      <NumberFormat
+        className={classes.Sel}
+        value={Sel}
+        placeholder='Sel.'
+        type='text'
+        allowNegative={false}
+        allowLeadingZeros={false}
+        allowedDecimalSeparators={false}
+        decimalScale={0}
+        onValueChange={(e) => onUpdateConfig('Sel', e.value, Linha)}
+        disabled={Editing}
+      />
       <select
         disabled={Editing}
         value={ProdCod}
@@ -58,8 +70,36 @@ export const ConfigListItem = ({ Sel, Produtos, ProdCod, TiposDeVenda, TVendaId,
           </option>
         ))}
       </select>
-      <input disabled={Editing} type='text' value={V1} onChange={(e) => onUpdateConfig('Valor_1', e.target.value, Linha)} placeholder='Valor 1' className={classes.Val} />
-      <input disabled={Editing} type='text' value={V2} onChange={(e) => onUpdateConfig('Valor_2', e.target.value, Linha)} placeholder='Valor 2' className={classes.Val} />
+      <NumberFormat
+        className={classes.Val}
+        value={V1}
+        placeholder='Valor 1'
+        type='text'
+        allowNegative={false}
+        allowLeadingZeros={false}
+        allowEmptyFormatting
+        decimalSeparator=','
+        decimalScale={2}
+        fixedDecimalScale
+        // onValueChange={(e) => onUpdateConfig('Valor_1', e.value, Linha)}
+        onValueChange={(e) => console.log(e)}
+        disabled={Editing}
+      />
+      <NumberFormat
+        className={classes.Val}
+        value={V2}
+        placeholder='Valor 2'
+        type='text'
+        allowNegative={false}
+        allowLeadingZeros={false}
+        allowEmptyFormatting
+        decimalSeparator=','
+        decimalScale={2}
+        fixedDecimalScale
+        // onValueChange={(e) => onUpdateConfig('Valor_2', e.value, Linha)}
+        onValueChange={(e) => console.log(e)}
+        disabled={Editing}
+      />
       <select
         disabled={Editing}
         value={RecId}

@@ -15,6 +15,10 @@ export const Equipamento = ({ PdvId, AnxId }) => {
     LoadData()
   }, [])
 
+  const handleSwitchEqOnPdv = async (eqcod) => {
+    alert('Novo EQ do PDV: ' + eqcod)
+  }
+
   return (
     <>
       <Typography variant='h6'>Equipamento Disponíveis</Typography>

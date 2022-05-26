@@ -4,7 +4,7 @@ import { api } from '../../../services/api'
 import { Button } from '@material-ui/core'
 import { ConfigListItem } from './configListItem'
 
-export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEditingChange }, ref) => {
+export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
   const [configPDV, setConfigPDV] = useState([])
   const [backupConfigPDV, setBackupConfigPDV] = useState([])
   const [configPadrao, setConfigPadrao] = useState([])
@@ -27,42 +27,32 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     LoadData()
   }, [])
 
-  useEffect(() => {
-    console.log('alterou')
-  }, [backupConfigPDV])
-
   useImperativeHandle(ref, () => ({
 
-    handleSubmit() {
-      if (!validConfig(configPDV)) {
-        alert('configuração inválida')
-        return
+    async handleSubmit() {
+      if (validate(configPDV)) {
+        try {
+          await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/config`, {
+            UpdatedData: {
+              CFG: configPDV
+            }
+          })
+
+          setBackupConfigPDV(configPDV)
+        } catch (err) { }
       }
-
-      console.log(configPDV);
-
-      //depois que o put der certo
-      //setBackupConfigPDV(configPDV)
     },
 
     undoChanges() {
       console.log(backupConfigPDV)
       console.log(configPDV)
-      
+
       setConfigPDV(backupConfigPDV)
     }
 
   }));
 
   const updateConfigPDV = (field, value, index) => {
-    if (field === 'Sel' && ((!isNumeric(value) || configPDV.filter(cfg => String(cfg.Sel).trim() === value).length !== 0) && value !== '')) {
-      return
-    }
-
-    if ((field === 'Valor_1' || field === 'Valor_2') && !isNumeric(value) && value !== '') {
-      return
-    }
-
     setConfigPDV(oldState => {
       let aux = [...oldState]
 
@@ -70,12 +60,6 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
 
       return aux
     })
-  }
-
-  const isNumeric = (str) => {
-    if (typeof str != "string") return false // we only process strings!  
-    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-      !isNaN(parseFloat(str)) && parseFloat(str) >= 0// ...and ensure strings of whitespace fail
   }
 
   const handleAddConfig = () => {
@@ -106,15 +90,7 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     })
   }
 
-  const validConfig = (config) => {
-    let isValid = true
 
-    // for (let i = 0; i < configPDV.length; i++) {
-    //   if (configPDV[i].) { }
-    // }
-
-    return isValid
-  }
 
   return (
     <>
@@ -127,7 +103,6 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
       >
         {configPDV.sort((a, b) => a.Sel - b.Sel).map((cfg, index) => (
           <ConfigListItem
-            key={`${cfg.Sel}${cfg.ProdId}${index}`}
             Editing={allowEditing}
 
             Sel={cfg.Sel}
@@ -161,3 +136,15 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing, onAllowEdi
     </>
   )
 })
+
+const validate = (config) => {
+
+  console.log(config)
+  // for (let i = 0; i < configPDV.length; i++) {
+  //   if () {
+  //     return false
+  //   }
+  // }
+
+  return false
+}
