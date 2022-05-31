@@ -23,6 +23,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
   const [backupDetails, setBackupDetails] = useState(INITIAL_STATE)
   const [depositos, setDepositos] = useState([])
   const [configuracoes, setConfiguracoes] = useState([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     async function LoadData() {
@@ -32,6 +33,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
       setBackupDetails(response.data.Dados.cadastro)
       setDepositos(response.data.Dados.depositos)
       setConfiguracoes(response.data.Dados.configuracoes)
+      setLoaded(true)
     }
     LoadData()
   }, [])
@@ -48,7 +50,10 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
           })
 
           setBackupDetails(details)
+          return true
         } catch (err) { }
+      } else {
+        return false
       }
     },
 
@@ -58,464 +63,471 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
 
   }));
 
-  return (
-    <>
-      <Divider variant="inset" />
-      <li
-        style={{
-          listStyleType: 'none'
-        }}
-      >
-        <Typography
-          className={classes.dividerInset}
-          color="primary"
-          display="block"
-          variant="caption"
-        >
-          Dados Básicos
-        </Typography>
-      </li>
-
-      <section className={classes.line}>
-        <TextField
-          variant='standard'
-          label="Cliente"
-          value={toValidString(details.AnxDesc)}
-          disabled={true}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              AnxDesc: e.target.value
-            }))
+  return !loaded ?
+    (
+      <Typography variant='subtitle1'>
+        Carregando...
+      </Typography>
+    )
+    :
+    (
+      <>
+        <Divider variant="inset" />
+        <li
+          style={{
+            listStyleType: 'none'
           }}
-          style={{ width: '100%' }}
-        />
-      </section>
-      <section className={classes.line}>
-        <FormControl className={classes.formControl}>
-          <InputLabel>Depósito</InputLabel>
-          <Select
-            value={details.DepId}
+        >
+          <Typography
+            className={classes.dividerInset}
+            color="primary"
+            display="block"
+            variant="caption"
+          >
+            Dados Básicos
+          </Typography>
+        </li>
+
+        <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="Cliente"
+            value={toValidString(details.AnxDesc)}
+            disabled={true}
             onChange={(e) => {
+              e.persist()
               setDetails(oldState => ({
                 ...oldState,
-                DepId: e.target.value
+                AnxDesc: e.target.value
               }))
             }}
-            disabled={allowEditing}
-          >
-            {depositos.map(dep => (
-              <MenuItem value={dep.DepId} key={dep.DepId}>{dep.DepNome}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl className={classes.formControl}>
-          <InputLabel>Configuracao</InputLabel>
-          <Select
-            value={details.CfgId}
-            onChange={(e) => {
-              setDetails(oldState => ({
-                ...oldState,
-                CfgId: e.target.value
-              }))
-            }}
-            disabled={allowEditing}
-          >
-            {configuracoes.map(cfg => (
-              <MenuItem value={cfg.CfgId} key={cfg.CfgId}>{cfg.CfgDesc}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </section>
-      <section className={classes.lineStart}>
-        <TextField
-          variant='standard'
-          label="Modelo"
-          value={details.EQUIPMOD_Desc}
-          disabled={true}
-          style={{ width: '50px', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="Ativo"
-          value={details.EquiCod}
-          disabled={true}
-          style={{ width: '100px', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="IMEI"
-          value={details.IMEI}
-          disabled={true}
-        />
-      </section>
-      <section className={classes.line}>
-        <TextField
-          variant='standard'
-          label="Logradouro"
-          value={toValidString(details.PdvLogradouroPV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvLogradouroPV: e.target.value
-            }))
-          }}
-          style={{ width: '250px', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="Número"
-          value={toValidString(details.PdvNumeroPV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvNumeroPV: e.target.value
-            }))
-          }}
-          style={{ width: '70px', marginRight: '8px' }}
-        />
-      </section>
-      <section className={classes.line}>
-        <TextField
-          variant='standard'
-          label="Complemento"
-          value={toValidString(details.PdvComplementoPV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvComplementoPV: e.target.value
-            }))
-          }}
-          style={{ width: '100%' }}
-        />
-      </section>
-      <section className={classes.line}>
-        <TextField
-          variant='standard'
-          label="Bairro"
-          value={toValidString(details.PdvBairroPV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvBairroPV: e.target.value
-            }))
-          }}
-          style={{ width: '100%', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="Município"
-          value={toValidString(details.PdvCidadePV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvCidadePV: e.target.value
-            }))
-          }}
-          style={{ width: '200px' }}
-        />
-      </section>
-      <section className={classes.lineStart}>
-        <TextField
-          variant='standard'
-          label="UF"
-          value={toValidString(details.PdvUfPV)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvUfPV: e.target.value
-            }))
-          }}
-          style={{ width: '50px', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="CEP"
-          value={toValidString(details.PdvCEP)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvCEP: e.target.value
-            }))
-          }}
-          style={{ width: '100px' }}
-        />
-      </section>
-      <section className={classes.lineStart}>
-        <TextField
-          variant='standard'
-          label="Departamento"
-          value={toValidString(details.PdvDepartamento)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvDepartamento: e.target.value
-            }))
-          }}
-          style={{ width: '100%', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="Anotações"
-          value={toValidString(details.PdvObs)}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvObs: e.target.value
-            }))
-          }}
-          style={{ width: '100%' }}
-        />
-      </section>
-
-      <Divider variant="inset" />
-      <li
-        style={{
-          listStyleType: 'none'
-        }}
-      >
-        <Typography
-          className={classes.dividerInset}
-          color="primary"
-          display="block"
-          variant="caption"
-        >
-          Alterações
-        </Typography>
-      </li>
-
-      <section className={classes.line}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <DatePicker
-            label='Data Ativação'
-            disabled={true}
-            defaultValue={details.PdvDataAtivacao}
-            onChange={() => { }}
+            style={{ width: '100%' }}
           />
-          <DatePicker
-            label='Data Encerramento'
+        </section>
+        <section className={classes.line}>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Depósito</InputLabel>
+            <Select
+              value={details.DepId}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  DepId: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              {depositos.map(dep => (
+                <MenuItem value={dep.DepId} key={dep.DepId}>{dep.DepNome}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Configuracao</InputLabel>
+            <Select
+              value={details.CfgId}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  CfgId: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              {configuracoes.map(cfg => (
+                <MenuItem value={cfg.CfgId} key={cfg.CfgId}>{cfg.CfgDesc}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </section>
+        <section className={classes.lineStart}>
+          <TextField
+            variant='standard'
+            label="Modelo"
+            value={details.EQUIPMOD_Desc}
             disabled={true}
-            defaultValue={details.PdvDataEncerramento}
-            onChange={() => { }}
-          />
-
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <DatePicker
-            label='Data Alteração'
-            disabled={true}
-            defaultValue={details.PdvDataAlteracao}
-            onChange={() => { }}
+            style={{ width: '50px', marginRight: '8px' }}
           />
           <TextField
             variant='standard'
-            label="Motivo do encerramento"
-            value={details.PdvMotivoEncerramento}
+            label="Ativo"
+            value={details.EquiCod}
+            disabled={true}
+            style={{ width: '100px', marginRight: '8px' }}
+          />
+          <TextField
+            variant='standard'
+            label="IMEI"
+            value={details.IMEI}
+            disabled={true}
+          />
+        </section>
+        <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="Logradouro"
+            value={toValidString(details.PdvLogradouroPV)}
             disabled={allowEditing}
             onChange={(e) => {
               e.persist()
               setDetails(oldState => ({
                 ...oldState,
-                PdvMotivoEncerramento: e.target.value
+                PdvLogradouroPV: e.target.value
               }))
             }}
-            style={{ width: '170px', margin: '16px 0px 8px 0px' }}
+            style={{ width: '250px', marginRight: '8px' }}
           />
-        </div>
-      </section>
+          <TextField
+            variant='standard'
+            label="Número"
+            value={toValidString(details.PdvNumeroPV)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvNumeroPV: e.target.value
+              }))
+            }}
+            style={{ width: '70px', marginRight: '8px' }}
+          />
+        </section>
+        <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="Complemento"
+            value={toValidString(details.PdvComplementoPV)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvComplementoPV: e.target.value
+              }))
+            }}
+            style={{ width: '100%' }}
+          />
+        </section>
+        <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="Bairro"
+            value={toValidString(details.PdvBairroPV)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvBairroPV: e.target.value
+              }))
+            }}
+            style={{ width: '100%', marginRight: '8px' }}
+          />
+          <TextField
+            variant='standard'
+            label="Município"
+            value={toValidString(details.PdvCidadePV)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvCidadePV: e.target.value
+              }))
+            }}
+            style={{ width: '200px' }}
+          />
+        </section>
+        <section className={classes.lineStart}>
+          <TextField
+            variant='standard'
+            label="UF"
+            value={toValidString(details.PdvUfPV)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvUfPV: e.target.value
+              }))
+            }}
+            style={{ width: '50px', marginRight: '8px' }}
+          />
+          <TextField
+            variant='standard'
+            label="CEP"
+            value={toValidString(details.PdvCEP)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvCEP: e.target.value
+              }))
+            }}
+            style={{ width: '100px' }}
+          />
+        </section>
+        <section className={classes.lineStart}>
+          <TextField
+            variant='standard'
+            label="Departamento"
+            value={toValidString(details.PdvDepartamento)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvDepartamento: e.target.value
+              }))
+            }}
+            style={{ width: '100%', marginRight: '8px' }}
+          />
+          <TextField
+            variant='standard'
+            label="Anotações"
+            value={toValidString(details.PdvObs)}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvObs: e.target.value
+              }))
+            }}
+            style={{ width: '100%' }}
+          />
+        </section>
 
-      <Divider variant="inset" />
-      <li
-        style={{
-          listStyleType: 'none'
-        }}
-      >
-        <Typography
-          className={classes.dividerInset}
-          color="primary"
-          display="block"
-          variant="caption"
+        <Divider variant="inset" />
+        <li
+          style={{
+            listStyleType: 'none'
+          }}
         >
-          Faturamento
-        </Typography>
-      </li>
+          <Typography
+            className={classes.dividerInset}
+            color="primary"
+            display="block"
+            variant="caption"
+          >
+            Alterações
+          </Typography>
+        </li>
 
-      <section className={classes.line}>
-        <FormControl
-          className={classes.formControl}
+        <section className={classes.line}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <DatePicker
+              label='Data Ativação'
+              disabled={true}
+              defaultValue={details.PdvDataAtivacao}
+              onChange={() => { }}
+            />
+            <DatePicker
+              label='Data Encerramento'
+              disabled={true}
+              defaultValue={details.PdvDataEncerramento}
+              onChange={() => { }}
+            />
+
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <DatePicker
+              label='Data Alteração'
+              disabled={true}
+              defaultValue={details.PdvDataAlteracao}
+              onChange={() => { }}
+            />
+            <TextField
+              variant='standard'
+              label="Motivo do encerramento"
+              value={details.PdvMotivoEncerramento}
+              disabled={allowEditing}
+              onChange={(e) => {
+                e.persist()
+                setDetails(oldState => ({
+                  ...oldState,
+                  PdvMotivoEncerramento: e.target.value
+                }))
+              }}
+              style={{ width: '170px', margin: '16px 0px 8px 0px' }}
+            />
+          </div>
+        </section>
+
+        <Divider variant="inset" />
+        <li
           style={{
-            minWidth: '120px'
+            listStyleType: 'none'
           }}
         >
-          <InputLabel>Anexo tem mín.</InputLabel>
-          <Select
-            value={details.AnxFatMinimo}
-            onChange={(e) => {
-              setDetails(oldState => ({
-                ...oldState,
-                AnxFatMinimo: e.target.value
-              }))
-            }}
-            disabled={allowEditing}
+          <Typography
+            className={classes.dividerInset}
+            color="primary"
+            display="block"
+            variant="caption"
           >
-            <MenuItem value='S'>Sim</MenuItem>
-            <MenuItem value='N'>Não</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl
-          className={classes.formControl}
+            Faturamento
+          </Typography>
+        </li>
+
+        <section className={classes.line}>
+          <FormControl
+            className={classes.formControl}
+            style={{
+              minWidth: '120px'
+            }}
+          >
+            <InputLabel>Anexo tem mín.</InputLabel>
+            <Select
+              value={details.AnxFatMinimo}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  AnxFatMinimo: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              <MenuItem value='S'>Sim</MenuItem>
+              <MenuItem value='N'>Não</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl
+            className={classes.formControl}
+            style={{
+              minWidth: '120px'
+            }}
+          >
+            <InputLabel>Mínimo por</InputLabel>
+            <Select
+              value={details.AnxCalcMinPor}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  AnxCalcMinPor: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              <MenuItem value='A'>Anexo</MenuItem>
+              <MenuItem value='P'>Ponto de Venda</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl
+            className={classes.formControl}
+            style={{
+              minWidth: '120px'
+            }}
+          >
+            <InputLabel>Tipo de mín.</InputLabel>
+            <Select
+              value={details.AnxTipMin}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  AnxTipMin: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              <MenuItem value='R'>Reais</MenuItem>
+              <MenuItem value='D'>Doses</MenuItem>
+            </Select>
+          </FormControl>
+        </section>
+        <section
+          className={classes.line}
           style={{
-            minWidth: '120px'
+            alignItems: 'flex-end',
           }}
         >
-          <InputLabel>Mínimo por</InputLabel>
-          <Select
-            value={details.AnxCalcMinPor}
+          <FormControl
+            className={classes.formControl}
+            style={{
+              minWidth: '120px',
+              marginRight: '8px'
+            }}
+          >
+            <InputLabel>PDV tem mín.</InputLabel>
+            <Select
+              value={details.PdvConsMin}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  PdvConsMin: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              <MenuItem value='S'>Sim</MenuItem>
+              <MenuItem value='N'>Não</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            variant='standard'
+            label="Consumo mín. em R$"
+            value={details.PdvConsValor}
+            disabled={allowEditing}
             onChange={(e) => {
+              e.persist()
               setDetails(oldState => ({
                 ...oldState,
-                AnxCalcMinPor: e.target.value
+                PdvConsValor: e.target.value
               }))
             }}
+            style={{ width: '120px', marginRight: '8px' }}
+          />
+          <TextField
+            variant='standard'
+            label="Consumo mín. em doses"
+            value={details.PdvConsDose}
             disabled={allowEditing}
-          >
-            <MenuItem value='A'>Anexo</MenuItem>
-            <MenuItem value='P'>Ponto de Venda</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl
-          className={classes.formControl}
-          style={{
-            minWidth: '120px'
-          }}
-        >
-          <InputLabel>Tipo de mín.</InputLabel>
-          <Select
-            value={details.AnxTipMin}
             onChange={(e) => {
+              e.persist()
               setDetails(oldState => ({
                 ...oldState,
-                AnxTipMin: e.target.value
+                PdvConsDose: e.target.value
               }))
             }}
-            disabled={allowEditing}
-          >
-            <MenuItem value='R'>Reais</MenuItem>
-            <MenuItem value='D'>Doses</MenuItem>
-          </Select>
-        </FormControl>
-      </section>
-      <section
-        className={classes.line}
-        style={{
-          alignItems: 'flex-end',
-        }}
-      >
-        <FormControl
-          className={classes.formControl}
-          style={{
-            minWidth: '120px',
-            marginRight: '8px'
-          }}
-        >
-          <InputLabel>PDV tem mín.</InputLabel>
-          <Select
-            value={details.PdvConsMin}
-            onChange={(e) => {
-              setDetails(oldState => ({
-                ...oldState,
-                PdvConsMin: e.target.value
-              }))
+            style={{ width: '120px' }}
+          />
+        </section>
+        <section className={classes.line}>
+          <FormControl
+            className={classes.formControl}
+            style={{
+              width: '100%',
             }}
-            disabled={allowEditing}
           >
-            <MenuItem value='S'>Sim</MenuItem>
-            <MenuItem value='N'>Não</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          variant='standard'
-          label="Consumo mín. em R$"
-          value={details.PdvConsValor}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvConsValor: e.target.value
-            }))
-          }}
-          style={{ width: '120px', marginRight: '8px' }}
-        />
-        <TextField
-          variant='standard'
-          label="Consumo mín. em doses"
-          value={details.PdvConsDose}
-          disabled={allowEditing}
-          onChange={(e) => {
-            e.persist()
-            setDetails(oldState => ({
-              ...oldState,
-              PdvConsDose: e.target.value
-            }))
-          }}
-          style={{ width: '120px' }}
-        />
-      </section>
-      <section className={classes.line}>
-        <FormControl
-          className={classes.formControl}
-          style={{
-            width: '100%',
-          }}
-        >
-          <InputLabel>Considerar valor pago no cálculo de mínimo?</InputLabel>
-          <Select
-            value={details.PdvSomaCompartilhado}
-            onChange={(e) => {
-              setDetails(oldState => ({
-                ...oldState,
-                PdvSomaCompartilhado: e.target.value
-              }))
-            }}
-            disabled={allowEditing}
-          >
-            <MenuItem value='S'>Sim</MenuItem>
-            <MenuItem value='N'>Não</MenuItem>
-          </Select>
-        </FormControl>
-      </section>
-    </>
-  )
+            <InputLabel>Considerar valor pago no cálculo de mínimo?</InputLabel>
+            <Select
+              value={details.PdvSomaCompartilhado}
+              onChange={(e) => {
+                setDetails(oldState => ({
+                  ...oldState,
+                  PdvSomaCompartilhado: e.target.value
+                }))
+              }}
+              disabled={allowEditing}
+            >
+              <MenuItem value='S'>Sim</MenuItem>
+              <MenuItem value='N'>Não</MenuItem>
+            </Select>
+          </FormControl>
+        </section>
+      </>
+    )
 })
 
 const validate = (data) => {
@@ -545,7 +557,7 @@ const validate = (data) => {
   }
 
   if (data.PdvCidadePV === null || data.PdvCidadePV === '' || typeof data.PdvCidadePV === 'undefined') {
-    Toast('Cidade inválida', 'warn')
+    Toast('Município inválido', 'warn')
     return false
   }
 
@@ -595,8 +607,6 @@ const validate = (data) => {
   }
 
   return true
-
-
 }
 
 const useStyles = makeStyles(theme => ({

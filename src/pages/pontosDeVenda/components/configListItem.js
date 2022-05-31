@@ -81,8 +81,7 @@ export const ConfigListItem = ({ Sel, Produtos, ProdCod, TiposDeVenda, TVendaId,
         decimalSeparator=','
         decimalScale={2}
         fixedDecimalScale
-        // onValueChange={(e) => onUpdateConfig('Valor_1', e.value, Linha)}
-        onValueChange={(e) => console.log(e)}
+        onValueChange={(e) => onUpdateConfig('Valor_1', e.floatValue, Linha)}
         disabled={Editing}
       />
       <NumberFormat
@@ -96,8 +95,7 @@ export const ConfigListItem = ({ Sel, Produtos, ProdCod, TiposDeVenda, TVendaId,
         decimalSeparator=','
         decimalScale={2}
         fixedDecimalScale
-        // onValueChange={(e) => onUpdateConfig('Valor_2', e.value, Linha)}
-        onValueChange={(e) => console.log(e)}
+        onValueChange={(e) => onUpdateConfig('Valor_2', e.floatValue, Linha)}
         disabled={Editing}
       />
       <select

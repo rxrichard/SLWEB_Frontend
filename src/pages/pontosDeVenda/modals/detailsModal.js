@@ -35,7 +35,9 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
       setWait(true)
 
       try {
-        await childRef.current.handleSubmit()
+        if(!await childRef.current.handleSubmit()){
+          throw new Error()
+        }
 
         Toast('Alterações salvas com sucesso', 'update', toastId, 'success')
         setWait(false)
