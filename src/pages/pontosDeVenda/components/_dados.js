@@ -9,14 +9,17 @@ import {
   makeStyles,
   MenuItem,
   Select,
-  InputLabel
+  InputLabel,
+  IconButton,
+  Button
 } from '@material-ui/core'
+import { Shuffle as ShuffleIcon } from '@material-ui/icons'
 
 import DatePicker from '../../../components/materialComponents/datePicker'
 import { toValidString } from '../../../misc/commom_functions'
 import { Toast } from '../../../components/toasty'
 
-export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
+export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSection }, ref) => {
   const classes = useStyles()
 
   const [details, setDetails] = useState(INITIAL_STATE)
@@ -150,7 +153,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
           />
           <TextField
             variant='standard'
-            label="Ativo"
+            label="Código"
             value={details.EquiCod}
             disabled={true}
             style={{ width: '100px', marginRight: '8px' }}
@@ -161,6 +164,11 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
             value={details.IMEI}
             disabled={true}
           />
+          {/* <IconButton
+            onClick={onRequestEquipSection}
+          >
+            <ShuffleIcon />
+          </IconButton> */}
         </section>
         <section className={classes.line}>
           <TextField

@@ -146,8 +146,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '500px',
     height: '40px',
     borderRadius: '20px',
-    backgroundColor: '#333',
-    margin: '0px 0px 4px 0px'
+    margin: '0px 0px 4px 0px',
+    border: '1px solid #CCC',
+
+    '@media (max-width: 850px)': {
+      border: 'none',
+    }
   },
   Sel: {
     width: '100% !important',
@@ -156,32 +160,26 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     height: '100% !important',
     borderRadius: '18px 0px 0px 18px !important',
-    backgroundColor: '#CCC !important'
+    borderBottom: 'none !important'
   },
   Prod: {
     display: 'block',
-    // width: '100%',
     cursor: 'pointer',
-    backgroundColor: '#CCC',
-    // maxWidth: '300px',
     width: '300px',
     height: '100%',
     borderRadius: '0px',
-    border: 'none'
+    border: 'none',
   },
   Opt: {
     cursor: 'pointer'
   },
   TV: {
     display: 'block',
-    // width: '100%',
     cursor: 'pointer',
-    backgroundColor: '#CCC',
-    // maxWidth: '200px',
     width: '200px',
     height: '100%',
     borderRadius: '0px',
-    border: 'none'
+    border: 'none',
   },
   Val: {
     width: '100% !important',
@@ -189,18 +187,15 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '70px !important',
     height: '100% !important',
     borderRadius: '0px !important',
-    backgroundColor: '#CCC !important',
-    padding: '0px 0px 0px 8px !important'
+    padding: '0px 0px 0px 8px !important',
+    borderBottom: 'none !important'
   },
   Rec: {
     display: 'block',
-    // width: '100%',
     cursor: 'pointer',
-    backgroundColor: '#CCC',
-    // maxWidth: '200px',
     width: '200px',
     height: '100%',
-    border: 'none'
+    border: 'none',
   },
   ButtonContainer: {
     width: '40px',

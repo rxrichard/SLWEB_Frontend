@@ -102,6 +102,7 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
             PdvId={PdvId}
             AnxId={AnxId}
             allowEditing={allowEditing}
+            onRequestEquipSection={handleMoveDirectToEquip}
           />
         )
       case 1:
@@ -139,6 +140,12 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
       onClose()
       setAllowEditing(true)
     }
+  }
+
+  const handleMoveDirectToEquip = () => {
+    setActiveStep(2)
+    setAllowEditing(true)
+    setWait(false)
   }
 
   return (
