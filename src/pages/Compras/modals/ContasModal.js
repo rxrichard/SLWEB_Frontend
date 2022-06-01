@@ -20,6 +20,7 @@ import {
 import nfeLogo from '../../../assets/svg/NFe.svg';
 
 const ContasModal = (props) => {
+
   const whichContentShow = () => {
     if (props.type === 'Compra') {
       return (
@@ -129,6 +130,39 @@ const ContasModal = (props) => {
             </Typography>
             <Typography variant="subtitle1">
               (15% sobre vendas anteriores ao mês referente)
+            </Typography>
+          </div>
+        </>
+      )
+    }else if (props.type === '2BTech') {
+      return (
+        <>
+          <div className="XAlign" style={{ justifyContent: "flex-end" }}>
+            <Tooltip
+              title={
+                <label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} >
+                  Baixar Boleto
+                </label>
+              }
+              placement="top"
+              arrow
+
+            >
+              <IconButton
+                disabled={props.Cooldown}
+                onClick={() => props.onRequestBoleto(props.Detalhes)}
+                color="primary"
+              >
+                <InsertDriveFile />
+              </IconButton>
+            </Tooltip>
+          </div>
+          <div className="YAlign" style={{ height: 200, width: "100%", alignItems: 'center' }}>
+            <Typography variant="h4">
+              Chamado 2BTech
+            </Typography>
+            <Typography variant="subtitle1">
+              (Cobrança de chamado técnico prestado pela empresa 2BTech não coberto pela franqueadora)
             </Typography>
           </div>
         </>

@@ -37,6 +37,7 @@ export default function MaterialUIPickers(props) {
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <KeyboardDatePicker
         style={{ width: "170px" }}
+        disabled={props.disabled}
         disableToolbar
         disablePast={props.min ? true : false}
         autoOk

@@ -18,9 +18,12 @@ function Exemplo() {
   const [loaded, setLoaded] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
+  const [depositos, setDepositos] = useState([]);
+  const [configuracoes, setConfiguracoes] = useState([]);
+  const [eqps, setEqps] = useState([]);
   const [targetPDV, setTargetPDV] = useState({});
   const [filtro, setFiltro] = useState('');
-  const [shouldShowInactivePDVs, setShouldShowInactivePDVs] = useState(false);
+  const [mostrarInativos, setMostrarInativos] = useState(false);
 
   //componentDidMount
   useEffect(() => {
@@ -29,17 +32,20 @@ function Exemplo() {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("/pontosdevenda");
 
-        setPDVs(response.data);
+        setPDVs(response.data.PDVs);
+        setDepositos(response.data.Depositos);
+        setConfiguracoes(response.data.Configuracoes);
+        setEqps(response.data.EqsDisp);
+
         setLoaded(true);
-      } catch (err) {
-      }
+      } catch (err) { }
     }
 
     LoadData();
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetPDV(PDVs[index])
+    setTargetPDV(returnPDVsFilter(PDVs, mostrarInativos, filtro)[index])
     setDetailsModalOpen(true)
   }
 
@@ -55,23 +61,21 @@ function Exemplo() {
       <DetailsModal
         open={detailsModalOpen}
         onClose={handleCloseDetailsModal}
-        title='Detalhes do PDV'
         Details={targetPDV}
+        Depositos={depositos}
+        Configuracoes={configuracoes}
+        Equipamentos={eqps}
+        DetailsChangeHandler={setTargetPDV}
+        updatePDVsArray={setPDVs}
+        updateEqsArray={setEqps}
       />
       <PdvListOptions
-        onRequestInactivePdvs={setShouldShowInactivePDVs}
-        showInactivePdvs={shouldShowInactivePDVs}
-        filtro={filtro}
         onChangeFiltro={setFiltro}
+        mostrarInativos={mostrarInativos}
+        switchInativos={setMostrarInativos}
       />
       <PdvList
-        PDVs={PDVs.filter(pdv => {
-          if ((pdv.PdvStatus === 'A' && !shouldShowInactivePDVs) || (pdv.PdvStatus === 'I' && shouldShowInactivePDVs)) {
-            return true;
-          } else {
-            return false;
-          }
-        })}
+        PDVs={returnPDVsFilter(PDVs, mostrarInativos, filtro)}
         onOpenModal={handleOpenDetailsModal}
       />
     </Panel>
@@ -79,3 +83,27 @@ function Exemplo() {
 }
 
 export default Exemplo;
+
+const returnPDVsFilter = (pdvs, shouldShowInactive, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return pdvs.filter(pdv => {
+    if (shouldShowInactive) {
+      return true
+    } else if (!shouldShowInactive && pdv.PdvStatus === 'A') {
+      return true
+    } else {
+      return false
+    }
+  }).filter(pdv => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      pdv.AnxDesc.trim().toLowerCase().match(re) || pdv.EquiCod.trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}

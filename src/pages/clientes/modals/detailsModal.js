@@ -39,8 +39,8 @@ import { InputTel } from '../customComponents/inputTel'
 export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandler, updateClientesArray }) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [backupData, setBackupData] = useState({})
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [backupData, setBackupData] = useState({})
   const [allowEditing, setAllowEditing] = useState(true)
   const [wait, setWait] = useState(false)
 
@@ -89,6 +89,8 @@ export const DetailsModal = ({ open, onClose, title, Details, DetailsChangeHandl
 
           return aux
         })
+
+        setBackupData(Cliente)
       } catch (err) {
         Toast('Falha ao atualizar cliente', 'update', toastId, 'error')
         setAllowEditing(false)
@@ -570,4 +572,3 @@ const DialogTitle = withStyles(styles)((props) => {
     </MuiDialogTitle>
   );
 });
-

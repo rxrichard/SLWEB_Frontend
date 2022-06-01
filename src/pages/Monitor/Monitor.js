@@ -174,6 +174,7 @@ const Monitor = () => {
       <Container>
         {telemetrias.map(telemetria => (
           <MachineCard
+            key={telemetria.EquiCod}
             Telemetria={telemetria}
             onOpenChamadoComponent={handleOpenChamadoModal}
             onOpenDetailsComponent={handleOpenDetailsModal}

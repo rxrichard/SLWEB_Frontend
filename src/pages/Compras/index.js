@@ -56,6 +56,7 @@ function Compras(props) {
     async function loadProdutos() {
       try {
         const response = await api.get("/compras/produtos");
+        
         LoadInsumos(response.data.Produtos);
         LoadMultiplicador(1 - response.data.Desconto);
       } catch (err) {

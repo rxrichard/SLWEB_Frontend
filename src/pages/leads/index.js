@@ -101,7 +101,7 @@ function LeadsList(props) {
       flexWrap: 'noWrap',
       overflow: 'auto'
     }}>
-      <AdicionarLead />
+      {/* <AdicionarLead /> */}
       <Assumidos
         Leads={LeadsFranqueado}
         ContAssumidos={Limites[0].Tentativas}
