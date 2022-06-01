@@ -120,6 +120,8 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
           <Equipamento
             PdvId={PdvId}
             AnxId={AnxId}
+            onClose={handleClose} 
+            updatePDVsArray={updatePDVsArray}
           />
         )
       default:

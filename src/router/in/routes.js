@@ -23,6 +23,7 @@ import Coletas from '../../pages/consultaColetas/index'
 import PDV from '../../pages/pontosDeVenda/index'
 import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
+import PedidosCompra from '../../pages/pedidosDeCompra/index'
 
 function Dashboard(props) {
   return (
@@ -53,9 +54,11 @@ function Dashboard(props) {
             <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
             <Route exact path="/administracao/leads" component={GerirLeads} />
             <Route exact path="/administracao/emails" component={CentralEmails} />
+            <Route exact path="/administracao/pedidos/compra" component={PedidosCompra} />
             <Route exact path="/leituras/:ativo" component={Coletas} />
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />
+            <Route exact path="/pontodevenda/:ativo" component={PDV} />
             <Route exact path="/clientes" component={Clientes} />
             <Route exact path="/monitor" component={Monitor} />
             <Route path="*" component={notFound} />

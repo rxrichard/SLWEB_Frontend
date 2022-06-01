@@ -39,7 +39,8 @@ import {
   CompassCalibration,
   MailOutline,
   SupervisedUserCircle,
-  StoreMallDirectory
+  StoreMallDirectory,
+  Shop
 } from "@material-ui/icons/";
 
 import { roleLevel } from "../../misc/commom_functions";
@@ -137,7 +138,7 @@ export default function MiniDrawer() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.reload();
+      window.location.assign('/');
     }catch(err){
       Toast('Falha ao logar na filial', 'update', toastId, 'error')
     }
@@ -396,6 +397,19 @@ export default function MiniDrawer() {
                       </ListItemIcon>
 
                       <ListItemText primary="Gestão de Leads" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/administracao/pedidos/compra"
+                    style={{ color: GREY_SECONDARY }}
+                    title="Pedidos de Compra"
+                  >
+                    <ListItem button onClick={handleDrawerClose}>
+                      <ListItemIcon>
+                        <Shop />
+                      </ListItemIcon>
+
+                      <ListItemText primary="Pedidos de Compra" />
                     </ListItem>
                   </Link>
                   <Link

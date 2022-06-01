@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
 
-import {
-  makeStyles,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Paper,
-  InputBase,
-  IconButton,
-  Divider,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
+import { makeStyles, Button, FormControlLabel, Checkbox, Paper, InputBase, IconButton, Divider, Tooltip, Typography, } from '@material-ui/core';
 
-import {
-  Add as AddIcon,
-  Search as SearchIcon,
-  Close as CloseIcon
-} from '@material-ui/icons'
+import { Add as AddIcon, Search as SearchIcon, Close as CloseIcon } from '@material-ui/icons'
 
 import { RED_PRIMARY } from '../../misc/colors'
 
@@ -188,6 +173,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     '@media (max-width: 800px)': {
       width: '100%',
+      justifyContent: 'center',
     }
   },
   leadCounterContainer: {

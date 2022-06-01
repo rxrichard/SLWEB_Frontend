@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 
 import { Toast } from '../../../components/toasty'
 
-export const Equipamento = ({ PdvId, AnxId }) => {
+export const Equipamento = ({ PdvId, AnxId, onClose, updatePDVsArray }) => {
   const classes = useStyles();
 
   const [equipamentosDisponiveis, setEquipamentosDisponiveis] = useState([])
@@ -25,7 +25,7 @@ export const Equipamento = ({ PdvId, AnxId }) => {
 
   const handleSwitchEqOnPdv = async (eqcod) => {
     if (wait) return
-    
+
     let toastId = null
 
     toastId = Toast('Trocando equipamento no ponto de venda...', 'wait')
@@ -33,7 +33,7 @@ export const Equipamento = ({ PdvId, AnxId }) => {
 
     try {
       //faz o put
-      await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/equip`, {
+      const response = await api.put(`/pontosdevenda/atualizar/${PdvId}/${AnxId}/equip`, {
         UpdatedData: {
           NewEquip: eqcod
         }
@@ -41,8 +41,48 @@ export const Equipamento = ({ PdvId, AnxId }) => {
 
       Toast('Ponto de venda atualizado com sucesso', 'update', toastId, 'success')
       setWait(false)
-      //remove o EQ da lista
-      //atuliza a pagina? troca os dados do PDV aberto pelo novo(pdvId)? fecha o modal, inativa o pdv e cria o novo?
+      updatePDVsArray(oldState => {
+        let aux = [...oldState]
+        let hoje = new Date()
+        let indiceDoPdv = null
+
+        let targetPdv = aux.filter((pdv, i) => {
+          if (pdv.PdvId === PdvId && pdv.AnxId === AnxId) {
+            indiceDoPdv = i
+            return true
+          } else {
+            return false
+          }
+        })[0]
+
+        //Atualiza pdv antigo com status I
+        targetPdv = {
+          ...targetPdv,
+          PdvStatus: 'I',
+          PdvMotivoEncerramento: 'Inativado na troca de equipamento de PDV WEB',
+          PdvDataEncerramento: hoje
+        }
+
+        //Copio o pdv antigo como novo atualizando o PdvId
+        let newPdv = {
+          ...targetPdv,
+          PdvStatus: 'A',
+          PdvId: response.data.payback,
+          PdvDataSolicitacao: hoje,
+          PdvDataInclusao: hoje,
+          PdvDataAtivacao: hoje,
+          PdvObs: 'Inserido pelo SLWEB',
+          PdvMotivoEncerramento: '',
+          PdvDataEncerramento: null
+        }
+
+        aux[indiceDoPdv] = targetPdv
+        aux.unshift(newPdv)
+
+        return aux
+      })
+      // Fecha o modal
+      onClose()
     } catch (err) {
       Toast('Falha ao atualizar ponto de venda', 'update', toastId, 'error')
       setWait(false)

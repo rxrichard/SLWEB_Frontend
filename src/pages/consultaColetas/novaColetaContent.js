@@ -131,10 +131,10 @@ export const NovaColetaContent = (props) => {
             onChange={(e) => {
               setLeituraDoses([])
               setMargem({
-                de: e.target.value !== '' ? e.target.value : null,
+                de: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].DataLeitura : null,
                 deID: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].LeituraId : null,
                 deCont: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].Contador : null,
-                ate: e.target.value !== '' ? e.target.value : null,
+                ate: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].DataLeitura : null,
                 ateID: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].LeituraId : null,
                 ateCont: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].Contador : null,
                 excluir: null
@@ -167,13 +167,13 @@ export const NovaColetaContent = (props) => {
             MLeft="8px"
             label="Leitura até:"
             disabled={margem.de === null || margem.de === margem.ate ? true : false}
-            value={margem.ate === null ? '' : margem.ate}
+            value={margem.ateID === null ? '' : margem.ateID}
             onChange={(e) => {
               setLeituraDoses([])
               setMargem(oldObj => {
                 return {
                   ...oldObj,
-                  ate: e.target.value !== '' ? e.target.value : null,
+                  ate: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].DataLeitura : null,
                   ateID: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].LeituraId : null,
                   ateCont: e.target.value !== '' ? leituras.filter(leit => leit.LeituraId === e.target.value)[0].Contador : null,
                 }

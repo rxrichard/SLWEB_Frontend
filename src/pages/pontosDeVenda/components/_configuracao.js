@@ -2,31 +2,32 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 import { api } from '../../../services/api'
 import { Toast } from '../../../components/toasty'
 
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from '@material-ui/core'
+import { PostAdd as PostAddIcon } from '@material-ui/icons'
 import { ConfigListItem } from './configListItem'
 
 export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
   const [configPDV, setConfigPDV] = useState([])
-  const [backupConfigPDV, setBackupConfigPDV] = useState([])
   const [configPadrao, setConfigPadrao] = useState([])
+  const [configPadraoSelecionada, setConfigPadraoSelecionada] = useState(null)
   const [produtos, setProdutos] = useState([])
   const [tiposDeVenda, setTiposDeVenda] = useState([])
   const [receitas, setReceitas] = useState([])
   const [loaded, setLoaded] = useState(false)
 
+  async function LoadData() {
+    const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/config`)
+
+    setConfigPDV([...response.data.Dados.CfgPdv])
+    setConfigPadrao(response.data.Dados.CfgPadrao)
+
+    setProdutos(response.data.Dados.Produtos)
+    setTiposDeVenda(response.data.Dados.TiposVenda)
+    setReceitas(response.data.Dados.Receitas)
+    setLoaded(true)
+  }
+
   useEffect(() => {
-    async function LoadData() {
-      const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/config`)
-
-      setConfigPDV([...response.data.Dados.CfgPdv])
-      setBackupConfigPDV([...response.data.Dados.CfgPdv])
-      setConfigPadrao(response.data.Dados.CfgPadrao)
-
-      setProdutos(response.data.Dados.Produtos)
-      setTiposDeVenda(response.data.Dados.TiposVenda)
-      setReceitas(response.data.Dados.Receitas)
-      setLoaded(true)
-    }
     LoadData()
   }, [])
 
@@ -41,19 +42,19 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
             }
           })
 
-          setBackupConfigPDV(configPDV)
           return true
-        } catch (err) { }
+        } catch (err) {
+          return false
+        }
       } else {
         return false
       }
     },
 
-    undoChanges() {
-      console.log(backupConfigPDV)
-      console.log(configPDV)
-
-      setConfigPDV(backupConfigPDV)
+    async undoChanges() {
+      setLoaded(false)
+      setConfigPadraoSelecionada(null)
+      await LoadData()
     }
 
   }));
@@ -96,6 +97,19 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
     })
   }
 
+  const handleLoadConfig = () => {
+    const targetConfigToLoad = configPadrao.filter(cfg => cfg.CfgId === configPadraoSelecionada)[0]
+
+    setConfigPDV(targetConfigToLoad.Produtos.map(hm => ({
+      Sel: hm.Sel,
+      ProdId: hm.ProdId,
+      TipoVenda: hm.TipoVenda,
+      Valor_1: 0,
+      Valor_2: 0,
+      RecId: hm.RecId
+    })))
+  }
+
   return !loaded ?
     (
       <Typography variant='subtitle1'> Carregando... </Typography>
@@ -103,6 +117,56 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
     :
     (
       <>
+        <div
+          className="XAlign"
+          style={{ 
+            padding: '0px 0px 8px 8px',
+            justifyContent: 'flex-start'
+           }}
+        >
+          <FormControl variant="outlined">
+            <InputLabel id="demo-simple-select-outlined-label">Configurações salvas</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              style={{ width: '200px' }}
+              value={configPadraoSelecionada}
+              onChange={e => {
+                setConfigPadraoSelecionada(e.target.value)
+              }}
+              disabled={allowEditing}
+              label="Configurações salvas"
+            >
+              <MenuItem value={null}>
+                <em>Selecione...</em>
+              </MenuItem>
+              {configPadrao.map(cfg => <MenuItem value={cfg.CfgId}>{cfg.CfgDesc}</MenuItem>)}
+            </Select>
+          </FormControl>
+          <Tooltip
+            title={
+              <label
+                style={{
+                  fontSize: "14px",
+                  color: "#FFF",
+                  lineHeight: "20px"
+                }}
+              >
+                Carregar configuração
+              </label>
+            }
+            placement="top"
+            arrow={true}
+          >
+            <IconButton
+              disabled={configPadraoSelecionada === null || allowEditing}
+              onClick={handleLoadConfig}
+              color='primary'
+            >
+              <PostAddIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
         <div
           style={{
             overflowY: 'auto',

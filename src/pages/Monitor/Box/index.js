@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 
 import {
-  Storefront as StorefrontIcon,
+  StoreMallDirectory as StoreMallDirectoryIcon,
   EmojiFoodBeverage as EmojiFoodBeverageIcon,
   MoreHoriz as MoreHorizIcon
 } from '@material-ui/icons'
@@ -38,14 +38,14 @@ export const MachineCard = ({ Telemetria, onUpdateTelemetrias, onOpenChamadoComp
   const history = useHistory()
   const [hover, setHover] = useState(false)
 
-  const handleFecharChamado = async(ativo) => {
+  const handleFecharChamado = async (ativo) => {
     const confirm = window.confirm('Confirmar que o chamado foi atendido e fecha-lo?')
     if (confirm) {
 
       let toastId = null
       toastId = Toast('Aguarde...', 'wait')
 
-      try{
+      try {
         await api.put('/monitor/telemetrias/chamado', {
           ID: ativo.Id,
         })
@@ -56,14 +56,14 @@ export const MachineCard = ({ Telemetria, onUpdateTelemetrias, onOpenChamadoComp
           let aux = [...oldState]
 
           aux.forEach((tel, index) => {
-            if(tel.Id === ativo.Id) {
+            if (tel.Id === ativo.Id) {
               aux[index].UltChamado = null
             }
           })
 
           return aux
         })
-      }catch(er){
+      } catch (er) {
         Toast('Falha ao fechar chamado, tente novamente.', 'update', toastId, 'error')
       }
     }
@@ -109,8 +109,8 @@ export const MachineCard = ({ Telemetria, onUpdateTelemetrias, onOpenChamadoComp
           </CabContainer>
           <ButtonContainer>
             <Tooltip title={<label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} > Ponto de Venda </label>} placement="top" arrow={true} >
-              <Button style={{ margin: '4px 0px 0px 0px' }} variant='outlined' color='secondary' disabled={true} onClick={() => { }} size="small" >
-                <StorefrontIcon />
+              <Button style={{ margin: '4px 0px 0px 0px' }} variant='outlined' color='primary' disabled={false} onClick={() => history.push(`/pontodevenda/${Telemetria.EquiCod}`)} size="small" >
+                <StoreMallDirectoryIcon />
               </Button>
             </Tooltip>
             <Tooltip title={<label style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }} > Consulta Coletas </label>} placement="top" arrow={true} >

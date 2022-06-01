@@ -23,21 +23,20 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
   const classes = useStyles()
 
   const [details, setDetails] = useState(INITIAL_STATE)
-  const [backupDetails, setBackupDetails] = useState(INITIAL_STATE)
   const [depositos, setDepositos] = useState([])
   const [configuracoes, setConfiguracoes] = useState([])
   const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
-    async function LoadData() {
-      const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/basic`)
+  async function LoadData() {
+    const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/basic`)
 
-      setDetails(response.data.Dados.cadastro)
-      setBackupDetails(response.data.Dados.cadastro)
-      setDepositos(response.data.Dados.depositos)
-      setConfiguracoes(response.data.Dados.configuracoes)
-      setLoaded(true)
-    }
+    setDetails(response.data.Dados.cadastro)
+    setDepositos(response.data.Dados.depositos)
+    setConfiguracoes(response.data.Dados.configuracoes)
+    setLoaded(true)
+  }
+
+  useEffect(() => {
     LoadData()
   }, [])
 
@@ -52,16 +51,18 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
             }
           })
 
-          setBackupDetails(details)
           return true
-        } catch (err) { }
+        } catch (err) {
+          return false
+        }
       } else {
         return false
       }
     },
 
-    undoChanges() {
-      setDetails(backupDetails)
+    async undoChanges() {
+      setLoaded(false)
+      await LoadData()
     }
 
   }));

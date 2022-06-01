@@ -14,17 +14,19 @@ import { PdvList } from './pdvList'
 import { PdvListOptions } from './options'
 import { DetailsModal } from './modals/detailsModal'
 
-function PontosDeVenda() {
+const PontosDeVenda = ({ match }) => {
   const [loaded, setLoaded] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [PDVs, setPDVs] = useState([]);
-  const [targetPDV, setTargetPDV] = useState({ pdv: null, anx: null});
+  const [targetPDV, setTargetPDV] = useState({ pdv: null, anx: null });
   const [filtro, setFiltro] = useState('');
   const [mostrarInativos, setMostrarInativos] = useState(false);
 
   //componentDidMount
   useEffect(() => {
     async function LoadData() {
+
+
       try {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("/pontosdevenda");
@@ -32,6 +34,11 @@ function PontosDeVenda() {
         setPDVs(response.data.PDVs);
 
         setLoaded(true);
+
+        if (match.params.ativo !== null && typeof match.params.ativo !== 'undefined') {
+          setFiltro(String(match.params.ativo))
+          setMostrarInativos(true)
+        }
       } catch (err) { }
     }
 
@@ -39,8 +46,8 @@ function PontosDeVenda() {
   }, []);
 
   const handleOpenDetailsModal = (index) => {
-    setTargetPDV({ 
-      pdv: returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].PdvId, 
+    setTargetPDV({
+      pdv: returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].PdvId,
       anx: returnPDVsFilter(PDVs, mostrarInativos, filtro)[index].AnxId
     })
     setDetailsModalOpen(true)
@@ -48,7 +55,7 @@ function PontosDeVenda() {
 
   const handleCloseDetailsModal = () => {
     setDetailsModalOpen(false)
-    setTargetPDV({ pdv: null, anx: null})
+    setTargetPDV({ pdv: null, anx: null })
   }
 
   return !loaded ? (
@@ -67,6 +74,7 @@ function PontosDeVenda() {
         onChangeFiltro={setFiltro}
         mostrarInativos={mostrarInativos}
         switchInativos={setMostrarInativos}
+        defaultTarget={match.params.ativo}
       />
       <PdvList
         PDVs={returnPDVsFilter(PDVs, mostrarInativos, filtro)}
