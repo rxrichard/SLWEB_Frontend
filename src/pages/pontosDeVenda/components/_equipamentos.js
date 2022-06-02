@@ -13,14 +13,16 @@ export const Equipamento = ({ PdvId, AnxId, onClose, updatePDVsArray }) => {
   const [loaded, setLoaded] = useState(false)
   const [wait, setWait] = useState(false)
 
-  useEffect(() => {
-    async function LoadData() {
-      const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/equip`)
+  async function LoadData() {
+    const response = await api.get(`/pontosdevenda/info/${PdvId}/${AnxId}/equip`)
 
-      setEquipamentosDisponiveis(response.data.Dados.EqsDisp)
-      setLoaded(true)
-    }
+    setEquipamentosDisponiveis(response.data.Dados.EqsDisp)
+    setLoaded(true)
+  }
+
+  useEffect(() => {
     LoadData()
+    // eslint-disable-next-line
   }, [])
 
   const handleSwitchEqOnPdv = async (eqcod) => {

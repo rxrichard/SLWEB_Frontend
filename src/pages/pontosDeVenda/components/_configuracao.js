@@ -29,6 +29,7 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
 
   useEffect(() => {
     LoadData()
+    // eslint-disable-next-line
   }, [])
 
   useImperativeHandle(ref, () => ({

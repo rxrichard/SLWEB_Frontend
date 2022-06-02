@@ -10,10 +10,7 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  IconButton,
-  Button
 } from '@material-ui/core'
-import { Shuffle as ShuffleIcon } from '@material-ui/icons'
 
 import DatePicker from '../../../components/materialComponents/datePicker'
 import { toValidString } from '../../../misc/commom_functions'
@@ -38,6 +35,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
 
   useEffect(() => {
     LoadData()
+    // eslint-disable-next-line
   }, [])
 
   useImperativeHandle(ref, () => ({

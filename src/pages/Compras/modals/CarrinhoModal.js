@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Input from "react-number-format";
-import Draggable from "react-draggable";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { api } from "../../../services/api";
@@ -17,7 +16,6 @@ import {
   Button,
   Box,
   Tooltip,
-  Paper,
   makeStyles,
   IconButton
 } from "@material-ui/core/";
@@ -121,9 +119,8 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
   return (
     <Dialog
       open={open}
+      fullScreen
       onClose={() => onClose(false)}
-      PaperComponent={PaperComponent}
-      aria-labelledby="draggable-dialog-title"
     >
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
         <div className="XAlign" style={{ justifyContent: "flex-start" }}>
@@ -359,17 +356,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "8px",
   },
 }));
-
-function PaperComponent(props) {
-  return (
-    <Draggable
-      handle="#draggable-dialog-title"
-      cancel={'[class*="MuiDialogContent-root"]'}
-    >
-      <Paper {...props} style={{ width: "100%", maxWidth: "900px" }} />
-    </Draggable>
-  );
-}
 
 const MinFrete = (min, retira) => {
   return retira ? "0,00" : String(Number(min).toFixed(2)).replace('.', ',');

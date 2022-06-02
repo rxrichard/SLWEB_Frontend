@@ -25,8 +25,6 @@ const PontosDeVenda = ({ match }) => {
   //componentDidMount
   useEffect(() => {
     async function LoadData() {
-
-
       try {
         //requisição inicial para obter dados essenciais da pagina
         const response = await api.get("/pontosdevenda");
@@ -43,6 +41,7 @@ const PontosDeVenda = ({ match }) => {
     }
 
     LoadData();
+    // eslint-disable-next-line
   }, []);
 
   const handleOpenDetailsModal = (index) => {

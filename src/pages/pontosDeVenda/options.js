@@ -23,6 +23,7 @@ export const PdvListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos
     if (defaultTarget !== null && typeof defaultTarget !== 'undefined') {
       setFilterWord(String(defaultTarget))
     }
+    // eslint-disable-next-line
   }, [])
 
   return (
