@@ -10,7 +10,7 @@ import {
   LoadLeadsLimite,
 } from "../../global/actions/LeadAction";
 
-import AdicionarLead from './modals/AddLead'
+// import AdicionarLead from './modals/AddLead'
 import Assumidos from './LeadsAssumidos'
 import Disponiveis from './LeadsDisponiveis'
 

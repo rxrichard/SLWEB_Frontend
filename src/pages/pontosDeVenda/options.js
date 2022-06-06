@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   makeStyles,
@@ -15,9 +15,16 @@ import {
   Close as CloseIcon
 } from '@material-ui/icons'
 
-export const PdvListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos }) => {
+export const PdvListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos, defaultTarget }) => {
   const classes = useStyles()
   const [filterWord, setFilterWord] = useState('')
+
+  useEffect(() => {
+    if (defaultTarget !== null && typeof defaultTarget !== 'undefined') {
+      setFilterWord(String(defaultTarget))
+    }
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <div>

@@ -38,8 +38,13 @@ import {
   AssignmentInd,
   CompassCalibration,
   MailOutline,
-  StoreMallDirectory,
   SupervisedUserCircle,
+  StoreMallDirectory,
+<<<<<<< HEAD
+  SupervisedUserCircle,
+=======
+  Shop
+>>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
 } from "@material-ui/icons/";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -107,10 +112,17 @@ export default function MiniDrawer() {
   };
 
   const handleSwitchFilial = async (filial) => {
+<<<<<<< HEAD
     let toastId = null;
 
     try {
       toastId = Toast("Aguarde...", "wait");
+=======
+    let toastId = null
+    toastId = Toast('Aguarde...', 'wait')
+
+    try {
+>>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
 
       const response = await api.post("/admAuth/full", {
         user_code: filial,
@@ -128,6 +140,26 @@ export default function MiniDrawer() {
       Toast("Falha ao logar na filial", "update", toastId, "error");
     }
   };
+
+  const handleLogoutFilial = async () => {
+    let toastId = null
+    toastId = Toast('Aguarde...', 'wait')
+
+    try{
+      const response = await api.get("/admAuth/logout");
+
+      Toast('Conectado!', 'update', toastId, 'success')
+
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("filial_logada", response.data.nome !== '');
+      sessionStorage.setItem("usuário", response.data.nome);
+
+      window.location.assign('/');
+    }catch(err){
+      Toast('Falha ao logar na filial', 'update', toastId, 'error')
+    }
+  }
 
   const Filter = (value, event) => {
     setUserFiltered(usersList);
@@ -166,6 +198,7 @@ export default function MiniDrawer() {
         Filiais={usersListFiltered}
         onSelect={(filial) => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
+        onLogout={handleLogoutFilial}
       />
       <CssBaseline />
       <AppBar
@@ -234,7 +267,11 @@ export default function MiniDrawer() {
               }
               variant="subtitle2"
             >
+<<<<<<< HEAD
               {sessionStorage.getItem("usuário")}
+=======
+              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
+>>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
             </Typography>
            
             <Typography variant="h6">SLAPLIC</Typography>
@@ -449,6 +486,19 @@ export default function MiniDrawer() {
                       </ListItemIcon>
 
                       <ListItemText primary="Gestão de Leads" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/administracao/pedidos/compra"
+                    style={{ color: GREY_SECONDARY }}
+                    title="Pedidos de Compra"
+                  >
+                    <ListItem button onClick={handleDrawerClose}>
+                      <ListItemIcon>
+                        <Shop />
+                      </ListItemIcon>
+
+                      <ListItemText primary="Pedidos de Compra" />
                     </ListItem>
                   </Link>
                   <Link
