@@ -115,18 +115,21 @@ export const Box = styled.div`
 export const Button = styled.button`
     background-color: ${props => props.bgColor || '#41211f'};
     width: ${props => props.width || '0%'};
-    height: 3rem;
+    height:${props =>  props.height || '3rem'};
     display: flex;
     border-radius: ${props => props.borderRadius || '0'};
-    color:#fff;
+    color:${props => props.color || '#fff'};
     font-size: 1.2rem;
     padding: 0px 4px;
     margin: ${props => props.margin || '0'};
     justify-content: center;
     align-items: center;
+    border:${props => props.border || 'none'};
+
     &:hover{
         transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         background-color: ${props => props.bgColorH || '#92211f'};
+        border:${props => props.borderH || 'none'};
     }
     @media (max-width: 600px){
         width: 70vw;

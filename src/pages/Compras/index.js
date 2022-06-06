@@ -51,6 +51,8 @@ function Compras(props) {
   } =
     props.State;
 
+    
+
   //component did mount
   useEffect(() => {
     async function loadProdutos() {

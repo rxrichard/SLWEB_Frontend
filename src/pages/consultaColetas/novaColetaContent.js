@@ -58,7 +58,9 @@ export const NovaColetaContent = (props) => {
             <MenuItem
               value={eq.EquiCod}
               key={eq.EquiCod}
+              
             >
+             
               {eq.EquiCod}
             </MenuItem>
           ))}
@@ -73,13 +75,16 @@ export const NovaColetaContent = (props) => {
             }}
           >
             {detalhes.Cliente === null ? 'Cliente' : detalhes.Cliente}
+
           </Typography>
           <Typography>
             {detalhes.CNPJ === null ? 'CNPJ / CPF' : detalhes.CNPJ}
+
           </Typography>
         </div>
       </section>
       <Divider />
+
       {detalhes.EquiCod !== '' ? (
         <section className={classes.sectionRow}>
           <div className={classes.infoBox}>

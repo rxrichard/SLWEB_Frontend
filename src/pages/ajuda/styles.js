@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
@@ -17,7 +17,7 @@ export const Box = styled.div`
     align-items: center;
     justify-content: center;
     width:${ props => props.width ||'20rem'};
-    height:${ props => props.height ||'25rem'} ;
+    height:${ props => props.height ||'45rem'} ;
     background:#f3f3f3;
     border-radius: 1rem;
     margin: 8px 12px;
@@ -194,4 +194,8 @@ export const PanelBuy = styled.div`
     display: flex;
     padding:0;
     margin:0;
+`
+
+export const Po2 = styled.iframe`
+    
 `

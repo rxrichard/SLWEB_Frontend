@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { api } from '../../services/api'
+import { api } from "../../services/api";
 
 import {
   makeStyles,
@@ -39,14 +39,18 @@ import {
   CompassCalibration,
   MailOutline,
   StoreMallDirectory,
-  SupervisedUserCircle
+  SupervisedUserCircle,
 } from "@material-ui/icons/";
+
+import MenuItem from "@material-ui/core/MenuItem";
+import Badge from "@material-ui/core/Badge";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 
 import { roleLevel } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
 import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../../misc/colors";
 import { Toast } from "../toasty";
-import FiliaisModal from './filiaisModal'
+import FiliaisModal from "./filiaisModal";
 
 const drawerWidthFull = 240;
 const drawerWidthCell = 200;
@@ -54,8 +58,8 @@ const drawerWidthCell = 200;
 export default function MiniDrawer() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-  const stylePC = useStyles_FULL()
-  const styleCELL = useStyles_CELL()
+  const stylePC = useStyles_FULL();
+  const styleCELL = useStyles_CELL();
 
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -65,7 +69,7 @@ export default function MiniDrawer() {
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
-  }, [isMdUp, stylePC, styleCELL])
+  }, [isMdUp, stylePC, styleCELL]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -75,25 +79,27 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
+  const handleChartOpen = () => {
+    
+  }
+
   const handleOpenModal = async () => {
     setOpenModal(true);
     setOpen(false);
 
     try {
-      const response = await api.get('/dashboard/filiais')
+      const response = await api.get("/dashboard/filiais");
 
-      setUserList(response.data)
-      setUserFiltered(response.data)
-    } catch (err) {
-
-    }
-  }
+      setUserList(response.data);
+      setUserFiltered(response.data);
+    } catch (err) {}
+  };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setUserList([])
-    setUserFiltered([])
-  }
+    setUserList([]);
+    setUserFiltered([]);
+  };
 
   const handleLogout = () => {
     window.sessionStorage.clear();
@@ -101,27 +107,27 @@ export default function MiniDrawer() {
   };
 
   const handleSwitchFilial = async (filial) => {
-    let toastId = null
+    let toastId = null;
 
     try {
-      toastId = Toast('Aguarde...', 'wait')
+      toastId = Toast("Aguarde...", "wait");
 
       const response = await api.post("/admAuth/full", {
         user_code: filial,
       });
 
-      Toast('Conectado!', 'update', toastId, 'success')
+      Toast("Conectado!", "update", toastId, "success");
 
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
-      sessionStorage.setItem("filial_logada", response.data.nome !== '');
+      sessionStorage.setItem("filial_logada", response.data.nome !== "");
       sessionStorage.setItem("usuário", response.data.nome);
 
       window.location.reload();
     } catch (err) {
-      Toast('Falha ao logar na filial', 'update', toastId, 'error')
+      Toast("Falha ao logar na filial", "update", toastId, "error");
     }
-  }
+  };
 
   const Filter = (value, event) => {
     setUserFiltered(usersList);
@@ -158,15 +164,19 @@ export default function MiniDrawer() {
         open={openModal}
         onClose={handleCloseModal}
         Filiais={usersListFiltered}
-        onSelect={filial => handleSwitchFilial(filial)}
+        onSelect={(filial) => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
       />
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={isMdUp ? clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        }) : classes.appBar}
+        className={
+          isMdUp
+            ? clsx(classes.appBar, {
+                [classes.appBarShift]: open,
+              })
+            : classes.appBar
+        }
       >
         <Toolbar style={{ justifyContent: "space-between" }}>
           <IconButton
@@ -174,14 +184,39 @@ export default function MiniDrawer() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerOpen}
-            className={isMdUp ? clsx(classes.menuButton, {
-              [classes.hide]: open,
-            }) : classes.menuButton}
+            className={
+              isMdUp
+                ? clsx(classes.menuButton, {
+                    [classes.hide]: open,
+                  })
+                : classes.menuButton
+            }
           >
             <Menu fontSize="large" />
           </IconButton>
           <div />
-
+          <div style={{display:"flex"}}>
+          <MenuItem style={{margin:"0 10px"}}>
+              <IconButton
+                aria-label="show 11 new notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={10} color="primary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <p>Notificações</p>
+            </MenuItem>
+          <MenuItem style={{margin:"0 10px"}}>
+              <IconButton
+                color="inherit"
+              >
+                <Badge badgeContent={10} color="primary">
+                  <ShoppingCart />
+                </Badge>
+              </IconButton>
+              <p>Carrinho</p>
+            </MenuItem>
           <Link
             to="/"
             style={{
@@ -192,14 +227,20 @@ export default function MiniDrawer() {
             }}
           >
             <Typography
-              color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
+              color={
+                roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL
+                  ? "primary"
+                  : "default"
+              }
               variant="subtitle2"
             >
-              {sessionStorage.getItem('usuário')}
+              {sessionStorage.getItem("usuário")}
             </Typography>
+           
             <Typography variant="h6">SLAPLIC</Typography>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
           </Link>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -208,15 +249,19 @@ export default function MiniDrawer() {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
-        classes={isMdUp ? {
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        } : {
-          paper: classes.drawerPaper
-        }}
-        anchor='left'
+        classes={
+          isMdUp
+            ? {
+                paper: clsx({
+                  [classes.drawerOpen]: open,
+                  [classes.drawerClose]: !open,
+                }),
+              }
+            : {
+                paper: classes.drawerPaper,
+              }
+        }
+        anchor="left"
         open={open}
         onClose={handleDrawerClose}
       >
@@ -226,27 +271,28 @@ export default function MiniDrawer() {
           </IconButton>
         </div>
         <Divider />
-        <div style={{
-          display: "flex",
-          flex: '1',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-        }}>
-          <div style={{
+        <div
+          style={{
             display: "flex",
-            flex: '1',
-            flexDirection: 'column',
-            justifyContent: 'flex-start'
-          }}>
+            flex: "1",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flex: "1",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+            }}
+          >
             {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
               <>
                 <List>
-                  <ListItem
-                    button
-                    onClick={handleOpenModal}
-                  >
+                  <ListItem button onClick={handleOpenModal}>
                     <ListItemIcon>
                       <SyncAltIcon />
                     </ListItemIcon>
@@ -256,38 +302,53 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/perfil" style={{ color: GREY_SECONDARY }} title="Perfil">
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Person />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link
+                  to="/perfil"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Perfil"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <Person />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Perfil" />
-                </ListItem>
-              </Link>
-              <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <PersonPinCircle />
-                  </ListItemIcon>
+                    <ListItemText primary="Perfil" />
+                  </ListItem>
+                </Link>
+                <Link
+                  to="/leads"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Leads"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <PersonPinCircle />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Leads" />
-                </ListItem>
-              </Link>
-            </List> : null}
+                    <ListItemText primary="Leads" />
+                  </ListItem>
+                </Link>
+              </List>
+            ) : null}
             <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <AssignmentInd />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link
+                  to="/clientes"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Clientes"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <AssignmentInd />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Clientes" />
-                </ListItem>
-              </Link>
-              {/* <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+                    <ListItemText primary="Clientes" />
+                  </ListItem>
+                </Link>
+                {/* <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <StoreMallDirectory />
@@ -296,57 +357,70 @@ export default function MiniDrawer() {
                   <ListItemText primary="Pontos de Venda" />
                 </ListItem>
               </Link> */}
-            </List> : null}
+              </List>
+            ) : null}
             <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <AddShoppingCart />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link
+                  to="/compras"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Compras"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <AddShoppingCart />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Compras" />
-                </ListItem>
-              </Link>
-              <Link to="/vendas" style={{ color: GREY_SECONDARY }} title="Vendas">
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <ShoppingCart />
-                  </ListItemIcon>
+                    <ListItemText primary="Compras" />
+                  </ListItem>
+                </Link>
+                <Link
+                  to="/vendas"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Vendas"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <ShoppingCart />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Vendas" />
-                </ListItem>
-              </Link>
-            </List> : null}
+                    <ListItemText primary="Vendas" />
+                  </ListItem>
+                </Link>
+              </List>
+            ) : null}
             <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                to="/equipamentos"
-                style={{ color: GREY_SECONDARY }}
-                title="Equipamentos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Kitchen />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link
+                  to="/equipamentos"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Equipamentos"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <Kitchen />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Equipamentos" />
-                </ListItem>
-              </Link>
-              <Link
-                to="/equipamentos/solicitacao"
-                style={{ color: GREY_SECONDARY }}
-                title="Solicitação de Equipamentos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Assignment />
-                  </ListItemIcon>
+                    <ListItemText primary="Equipamentos" />
+                  </ListItem>
+                </Link>
+                <Link
+                  to="/equipamentos/solicitacao"
+                  style={{ color: GREY_SECONDARY }}
+                  title="Solicitação de Equipamentos"
+                >
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <Assignment />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Solicitação" />
-                </ListItem>
-              </Link>
-            </List> : null}
+                    <ListItemText primary="Solicitação" />
+                  </ListItem>
+                </Link>
+              </List>
+            ) : null}
             <Divider />
             {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
               <>
@@ -407,26 +481,28 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <CompassCalibration />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <CompassCalibration />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Telemetria" />
-                </ListItem>
-              </Link>
-              <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <EmojiFoodBeverage />
-                  </ListItemIcon>
+                    <ListItemText primary="Telemetria" />
+                  </ListItem>
+                </Link>
+                <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <EmojiFoodBeverage />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Coletas" />
-                </ListItem>
-              </Link>
-            </List> : null}
+                    <ListItemText primary="Coletas" />
+                  </ListItem>
+                </Link>
+              </List>
+            ) : null}
             <Divider />
             <List>
               <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">
@@ -447,22 +523,23 @@ export default function MiniDrawer() {
               </ListItem>
             </List>
           </div>
-          <div style={{
-            display: "flex",
-            flex: '1',
-            flexDirection: 'column',
-            justifyContent: 'flex-end'
-          }}>
-          </div>
+          <div
+            style={{
+              display: "flex",
+              flex: "1",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+            }}
+          ></div>
         </div>
       </Drawer>
     </div>
   );
 }
 
-const useStyles_CELL = makeStyles(theme => ({
+const useStyles_CELL = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -471,16 +548,16 @@ const useStyles_CELL = makeStyles(theme => ({
   },
   drawer: {
     flexShrink: 0,
-    width: drawerWidthCell
+    width: drawerWidthCell,
   },
   drawerPaper: {
-    width: drawerWidthCell
+    width: drawerWidthCell,
   },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   toolbar: {
     display: "flex",
@@ -493,8 +570,8 @@ const useStyles_CELL = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3)
-  }
+    padding: theme.spacing(3),
+  },
 }));
 
 const useStyles_FULL = makeStyles((theme) => ({
