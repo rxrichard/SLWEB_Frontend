@@ -21,7 +21,7 @@ function NumberFormatCustom(props) {
       thousandSeparator='.'
       onValueChange={(e) => onChange(e)}
       placeholder='Volume'
-      suffix=' m³'
+      suffix=' Un'
       disabled={false}
     />
   );

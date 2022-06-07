@@ -13,6 +13,7 @@ import { Toast } from "../../components/toasty";
 import Button from "../../components/materialComponents/Button";
 import InputUnderline from "../../components/materialComponents/InputUnderline";
 import { RED_PRIMARY } from '../../misc/colors'
+import { navigateTo } from '../../misc/commom_functions'
 
 function Login() {
   const [user_code, setUser] = useState("");
@@ -53,8 +54,7 @@ function Login() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-
-      window.location.assign("/");
+      navigateTo('move', '/')
     } catch (err) {
       Toast('Filial ou senha incorretos', 'update', toastId, 'error')
       setFetching(false)

@@ -24,9 +24,7 @@ export default class Logs extends React.Component {
       const response = await api.get("/equip/requests/own");
 
       this.setState({ logs: response.data, loaded: true });
-    } catch (err) {
-      // window.location.assign('/')
-    }
+    } catch (err) { }
   }
 
   async handleRetrivePDF(OSID) {

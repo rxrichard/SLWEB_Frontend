@@ -33,13 +33,11 @@ function LeadsList(props) {
         LoadLeadsGeral(response.data.LeadsGeral);
         LoadLeadsLimite(response.data.Limites);
         setLoaded(true);
-      } catch (err) {
-        sessionStorage.clear();
-        window.location.assign("/");
-      }
+      } catch (err) { }
     }
     load();
-  }, [LoadLeadsFranqueado, LoadLeadsGeral, LoadLeadsLimite]);
+    // eslint-disable-next-line
+  }, []);
 
   // const CargaPlanilha = () => {
   //   //Pega todos inputs do tipo arquivos

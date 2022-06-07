@@ -43,7 +43,7 @@ import {
   Shop
 } from "@material-ui/icons/";
 
-import { roleLevel } from "../../misc/commom_functions";
+import { roleLevel, navigateTo } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
 import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../../misc/colors";
 import { Toast } from "../toasty";
@@ -98,7 +98,7 @@ export default function MiniDrawer() {
 
   const handleLogout = () => {
     window.sessionStorage.clear();
-    window.location.assign("/");
+    navigateTo('move', "/")
   };
 
   const handleSwitchFilial = async (filial) => {
@@ -118,7 +118,7 @@ export default function MiniDrawer() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.reload();
+      navigateTo('reload')
     } catch (err) {
       Toast('Falha ao logar na filial', 'update', toastId, 'error')
     }
@@ -128,7 +128,7 @@ export default function MiniDrawer() {
     let toastId = null
     toastId = Toast('Aguarde...', 'wait')
 
-    try{
+    try {
       const response = await api.get("/admAuth/logout");
 
       Toast('Conectado!', 'update', toastId, 'success')
@@ -138,8 +138,8 @@ export default function MiniDrawer() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.assign('/');
-    }catch(err){
+      navigateTo('move', '/')
+    } catch (err) {
       Toast('Falha ao logar na filial', 'update', toastId, 'error')
     }
   }
@@ -205,6 +205,7 @@ export default function MiniDrawer() {
           <div />
 
           <Link
+            onClick={() => navigateTo('link', "/")}
             to="/"
             style={{
               color:
@@ -279,7 +280,12 @@ export default function MiniDrawer() {
               </>
             ) : null}
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/perfil" style={{ color: GREY_SECONDARY }} title="Perfil">
+              <Link
+                onClick={() => navigateTo('link', "/perfil")}
+                to="/perfil"
+                style={{ color: GREY_SECONDARY }}
+                title="Perfil"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Person />
@@ -288,7 +294,12 @@ export default function MiniDrawer() {
                   <ListItemText primary="Perfil" />
                 </ListItem>
               </Link>
-              <Link to="/leads" style={{ color: GREY_SECONDARY }} title="Leads">
+              <Link
+                onClick={() => navigateTo('link', "/leads")}
+                to="/leads"
+                style={{ color: GREY_SECONDARY }}
+                title="Leads"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <PersonPinCircle />
@@ -300,7 +311,12 @@ export default function MiniDrawer() {
             </List> : null}
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/clientes" style={{ color: GREY_SECONDARY }} title="Clientes">
+              <Link
+                onClick={() => navigateTo('link', "/clientes")}
+                to="/clientes"
+                style={{ color: GREY_SECONDARY }}
+                title="Clientes"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <AssignmentInd />
@@ -309,7 +325,12 @@ export default function MiniDrawer() {
                   <ListItemText primary="Clientes" />
                 </ListItem>
               </Link>
-              <Link to="/pontodevenda" style={{ color: GREY_SECONDARY }} title="Pontos de Venda">
+              <Link
+                onClick={() => navigateTo('link', "/pontodevenda")}
+                to="/pontodevenda"
+                style={{ color: GREY_SECONDARY }}
+                title="Pontos de Venda"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <StoreMallDirectory />
@@ -321,7 +342,12 @@ export default function MiniDrawer() {
             </List> : null}
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/compras" style={{ color: GREY_SECONDARY }} title="Compras">
+              <Link
+                onClick={() => navigateTo('link', "/compras")}
+                to="/compras"
+                style={{ color: GREY_SECONDARY }}
+                title="Compras"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <AddShoppingCart />
@@ -330,7 +356,12 @@ export default function MiniDrawer() {
                   <ListItemText primary="Compras" />
                 </ListItem>
               </Link>
-              <Link to="/vendas" style={{ color: GREY_SECONDARY }} title="Vendas">
+              <Link
+                onClick={() => navigateTo('link', "/vendas")}
+                to="/vendas"
+                style={{ color: GREY_SECONDARY }}
+                title="Vendas"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <ShoppingCart />
@@ -343,6 +374,7 @@ export default function MiniDrawer() {
             <Divider />
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
               <Link
+                onClick={() => navigateTo('link', "/equipamentos")}
                 to="/equipamentos"
                 style={{ color: GREY_SECONDARY }}
                 title="Equipamentos"
@@ -356,6 +388,7 @@ export default function MiniDrawer() {
                 </ListItem>
               </Link>
               <Link
+                onClick={() => navigateTo('link', "/equipamentos/solicitacao")}
                 to="/equipamentos/solicitacao"
                 style={{ color: GREY_SECONDARY }}
                 title="Solicitação de Equipamentos"
@@ -374,6 +407,7 @@ export default function MiniDrawer() {
               <>
                 <List>
                   <Link
+                    onClick={() => navigateTo('link', "/equipamentos/solicitacao/management")}
                     to="/equipamentos/solicitacao/management"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestao de solicitacoes de equipamentos"
@@ -387,6 +421,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/leads")}
                     to="/administracao/leads"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestão de Leads"
@@ -400,6 +435,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/pedidos/compra")}
                     to="/administracao/pedidos/compra"
                     style={{ color: GREY_SECONDARY }}
                     title="Pedidos de Compra"
@@ -413,6 +449,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/emails")}
                     to="/administracao/emails"
                     style={{ color: GREY_SECONDARY }}
                     title="Central de Emails"
@@ -426,6 +463,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/formularios")}
                     to="/administracao/formularios"
                     style={{ color: GREY_SECONDARY }}
                     title="Formularios de interesses"
@@ -443,7 +481,12 @@ export default function MiniDrawer() {
               </>
             ) : null}
             {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
+              <Link
+                onClick={() => navigateTo('link', "/monitor")}
+                to="/monitor"
+                style={{ color: GREY_SECONDARY }}
+                title="Telemetria"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <CompassCalibration />
@@ -452,7 +495,12 @@ export default function MiniDrawer() {
                   <ListItemText primary="Telemetria" />
                 </ListItem>
               </Link>
-              <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
+              <Link
+                onClick={() => navigateTo('link', "/leituras")}
+                to="/leituras"
+                style={{ color: GREY_SECONDARY }}
+                title="Coletas"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <EmojiFoodBeverage />
@@ -464,7 +512,12 @@ export default function MiniDrawer() {
             </List> : null}
             <Divider />
             <List>
-              <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">
+              <Link
+                onClick={() => navigateTo('link', "/ajuda")}
+                to="/ajuda"
+                style={{ color: GREY_SECONDARY }}
+                title="Ajuda"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Help />

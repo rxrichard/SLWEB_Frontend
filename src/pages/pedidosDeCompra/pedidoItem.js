@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../services/api'
 import moment from 'moment';
 import clsx from 'clsx';
 
@@ -21,7 +22,7 @@ import {
 
 import VolumeInput from './components/volInput'
 import PesoInput from './components/pesoInput'
-// import CaixaInput from './components/caixaInput'
+import { Toast } from '../../components/toasty'
 
 export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }) => {
   const classes = useStyles();
@@ -32,6 +33,24 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
   const [msgNF, setMsgNF] = useState('')
   const [tipoVolume, setTipoVolume] = useState('CX')
 
+  useEffect(() => {
+    if (Pedido.MsgNotaFiscal !== null) {
+      setMsgNF(Pedido.MsgNotaFiscal)
+    }
+
+    if (Pedido.QtdVolumes !== null) {
+      setVol(Pedido.QtdVolumes)
+    }
+
+    if (Pedido.TipoVolume !== null) {
+      setTipoVolume(Pedido.TipoVolume.trim())
+    }
+
+    if (Pedido.Peso !== null) {
+      setPeso(Pedido.Peso)
+    }
+  }, [Pedido])
+
   const handleSubmit = async () => {
     const payload = {
       ID: Pedido.PedidoID,
@@ -41,19 +60,52 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       MsgNFe: msgNF
     }
 
-    console.log(payload)
+    let toastId = null
+    toastId = Toast('Atualizando pedido...', 'wait')
+
+    try {
+      await api.put('/pedidos/compra/', {
+        payload
+      })
+
+      Toast('Pedido atualizado', 'update', toastId, 'success')
+    } catch (err) {
+      Toast('Falha ao atualizar pedido', 'update', toastId, 'error')
+    }
   }
 
   const handleDiscard = () => {
-    setVol(0)
-    setPeso(0)
-    setMsgNF('')
-    setTipoVolume('CX')
+    if (Pedido.MsgNotaFiscal !== null) {
+      setMsgNF(Pedido.MsgNotaFiscal)
+    } else {
+      setMsgNF('')
+    }
+
+    if (Pedido.QtdVolumes !== null) {
+      setVol(Pedido.QtdVolumes)
+    } else {
+      setVol(0)
+    }
+
+    if (Pedido.TipoVolume !== null) {
+      setTipoVolume(Pedido.TipoVolume.trim())
+    } else {
+      setTipoVolume(0)
+    }
+
+    if (Pedido.Peso !== null) {
+      setPeso(Pedido.Peso)
+    } else {
+      setPeso(0)
+    }
   }
 
   return (
     <Accordion
       expanded={ExpandedID === Pedido.PedidoID}
+      style={{
+        borderLeft: `4px solid ${Pedido.Status === 'Aguardando' ? '#4f9eff' : '#29ff8d'}`
+      }}
       onChange={() => handleChangeExpandedAccordion(ExpandedID === Pedido.PedidoID ? null : Pedido.PedidoID)}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
@@ -61,6 +113,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
         <div className={classes.column}>
           <Typography className={classes.heading}>Pedido de compra <strong>{Pedido.PedidoID}</strong></Typography>
           <Typography variant='subtitle2'>Cliente {Pedido.CodigoCliente}</Typography>
+          {/* <Typography variant='subtitle2'>Status: {Pedido.Status}</Typography> */}
         </div>
         <div className={classes.column}>
           <Typography className={classes.secondaryHeading}>Valor do Pedido: <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Pedido.SomaDePrecoTotal)}</strong></Typography>
@@ -74,10 +127,10 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       <AccordionDetails className={classes.details}>
         <div className={clsx(classes.column_1, classes.helper)}>
           {Pedido.Detalhes.map(item => (
-            <div className={classes.prodLine}>
-              {/* <div>
-                <Typography className={classes.heading}>Item <strong>{item.PedidoItemID}</strong></Typography>
-              </div> */}
+            <div
+              key={item.PedidoItemID}
+              className={classes.prodLine}
+            >
               <div>
                 <Typography className={classes.heading}><strong>{String(item.Produto).split('(')[0]}</strong></Typography>
                 <Typography variant='caption'>(Cód <strong>{item.CodigoProduto}</strong>)</Typography>
@@ -157,7 +210,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
           color="primary"
           onClick={handleSubmit}
         >
-          Faturar
+          Salvar
         </Button>
       </AccordionActions>
     </Accordion>
@@ -207,7 +260,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   column: {
-    flexBasis: '33.33%',
+    flexBasis: '33%',
   },
   column_1: {
     display: 'flex',
