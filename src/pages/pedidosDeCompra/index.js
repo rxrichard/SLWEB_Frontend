@@ -8,7 +8,7 @@ import { PedidoList } from './pedidoList'
 import { PedidosListOptions } from './options'
 
 const PedidosDeCompra = () => {
-  const timeFilter = 'week'
+  const timeFilter = 'month'
 
   const [pedidos, setPedidos] = useState([])
   const [loaded, setLoaded] = useState(false)

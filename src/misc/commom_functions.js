@@ -6,6 +6,7 @@ import {
   REACT_APP_BACKOFFICE_ROLE_LEVEL,
   REACT_APP_TECNICA_ROLE_LEVEL,
 } from "./role_levels";
+import { api } from '../services/api'
 
 //Retorna CNPJ/CPF formatado
 export const maskCNPJ = (cnpj) => {
@@ -139,6 +140,8 @@ export const navigateTo = (type, url = null) => {
 }
 
 const saveNavigationToDB = (url) => {
-  console.log(url)
+  api.post('/navegacao/', {
+    url: url
+  })
   return
 }

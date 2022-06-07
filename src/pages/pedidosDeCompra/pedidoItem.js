@@ -20,18 +20,21 @@ import {
   MenuItem
 } from '@material-ui/core';
 
-import VolumeInput from './components/volInput'
 import PesoInput from './components/pesoInput'
+import CaixaInput from './components/caixaInput'
+import DatePicker from '../../components/materialComponents/datePicker'
 import { Toast } from '../../components/toasty'
 
 export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }) => {
   const classes = useStyles();
 
-  const [vol, setVol] = useState(0)
   const [peso, setPeso] = useState(0)
-  // const [qtd, setQtd] = useState(0)
+  const [qtd, setQtd] = useState(0)
+  const [emissao, setEmissao] = useState('00')
   const [msgNF, setMsgNF] = useState('')
   const [tipoVolume, setTipoVolume] = useState('CX')
+  const [transp, setTransp] = useState(null)
+  const [dtFaturamento, setDtFaturamento] = useState(null)
 
   useEffect(() => {
     if (Pedido.MsgNotaFiscal !== null) {
@@ -39,7 +42,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
     }
 
     if (Pedido.QtdVolumes !== null) {
-      setVol(Pedido.QtdVolumes)
+      setQtd(Pedido.QtdVolumes)
     }
 
     if (Pedido.TipoVolume !== null) {
@@ -49,15 +52,23 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
     if (Pedido.Peso !== null) {
       setPeso(Pedido.Peso)
     }
+
+    if (Pedido.EMISS !== null) {
+      setEmissao(Pedido.EMISS)
+    }
+
   }, [Pedido])
 
   const handleSubmit = async () => {
     const payload = {
       ID: Pedido.PedidoID,
       Tipo: tipoVolume,
-      Volume: vol,
+      Qtd: qtd,
       Peso: peso,
-      MsgNFe: msgNF
+      MsgNFe: msgNF,
+      Emissao: emissao,
+      Transportadora: transp,
+      Faturamento: dtFaturamento
     }
 
     let toastId = null
@@ -82,9 +93,9 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
     }
 
     if (Pedido.QtdVolumes !== null) {
-      setVol(Pedido.QtdVolumes)
+      setQtd(Pedido.QtdVolumes)
     } else {
-      setVol(0)
+      setQtd(0)
     }
 
     if (Pedido.TipoVolume !== null) {
@@ -97,6 +108,12 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       setPeso(Pedido.Peso)
     } else {
       setPeso(0)
+    }
+
+    if (Pedido.EMISS !== null) {
+      setEmissao(Pedido.EMISS)
+    } else {
+      setEmissao('00')
     }
   }
 
@@ -112,18 +129,18 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       >
         <div className={classes.column}>
           <Typography className={classes.heading}>Pedido de compra <strong>{Pedido.PedidoID}</strong></Typography>
-          <Typography variant='subtitle2'>Cliente {Pedido.CodigoCliente}</Typography>
-          {/* <Typography variant='subtitle2'>Status: {Pedido.Status}</Typography> */}
+          <Typography className={classes.secondaryHeading}><strong>{moment(Pedido.DataCriacao).format('L')}</strong></Typography>
         </div>
         <div className={classes.column}>
-          <Typography className={classes.secondaryHeading}>Valor do Pedido: <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Pedido.SomaDePrecoTotal)}</strong></Typography>
-          <Typography variant='subtitle2'>Items: {Pedido.ContarDePedidoItemID}</Typography>
+          <Typography className={classes.heading}>Valor do Pedido: <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Pedido.SomaDePrecoTotal)}</strong></Typography>
+          <Typography className={classes.secondaryHeading}>Items: <strong>{Pedido.ContarDePedidoItemID}</strong></Typography>
         </div>
         <div className={classes.column}>
-          <Typography className={classes.heading}><strong>{moment(Pedido.DataCriacao).format('L')}</strong></Typography>
-          <Typography variant='subtitle2'>{moment(Pedido.DataCriacao).fromNow()}</Typography>
+          <Typography className={classes.heading}>{Pedido.Razão_Social}</Typography>
+          <Typography className={classes.secondaryHeading}>Código <strong>{Pedido.CodigoCliente}</strong></Typography>
         </div>
       </AccordionSummary>
+      <Divider />
       <AccordionDetails className={classes.details}>
         <div className={clsx(classes.column_1, classes.helper)}>
           {Pedido.Detalhes.map(item => (
@@ -146,26 +163,74 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
           ))}
         </div>
         <div className={clsx(classes.column_2, classes.helper)}>
+          <div className={classes.align} style={{ alignItems: 'flex-end' }}>
+            <FormControl
+              variant="outlined"
+              className={classes.formControl}
+            >
+              <InputLabel id="demo-simple-select-outlined-label">Embalagem</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                value={tipoVolume}
+                onChange={() => { }}
+                label="Embalagem"
+                disabled={true}
+              >
+                <MenuItem value='CX'>Caixa</MenuItem>
+              </Select>
+            </FormControl>
+            <CaixaInput
+              Qtd={qtd}
+              onChangeQtd={value => setQtd(value)}
+            />
+          </div>
           <FormControl
             variant="outlined"
             className={classes.formControl}
           >
-            <InputLabel id="demo-simple-select-outlined-label">Embalagem</InputLabel>
+            <InputLabel id="demo-simple-select-outlined-label-1">Emissão</InputLabel>
             <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={tipoVolume}
-              onChange={setTipoVolume}
-              label="Embalagem"
-              disabled={true}
+              labelId="demo-simple-select-outlined-label-1"
+              value={emissao}
+              onChange={e => setEmissao(e.target.value)}
+              label="Emissão"
+              disabled={false}
             >
-              <MenuItem value='CX'>Caixa</MenuItem>
+              <MenuItem value='01'>Carrega pedido, não transmite nota, gera boleto</MenuItem>
+              <MenuItem value='11'>Carrega pedido, transmite nota, gera boleto</MenuItem>
+              <MenuItem value='10'>Carrega pedido, transmite nota, não gera boleto</MenuItem>
+              <MenuItem value='00'>Carrega pedido, não transmite nota, não gera boleto</MenuItem>
             </Select>
           </FormControl>
-          <div className={classes.align}>
-            <VolumeInput
-              Volume={vol}
-              onChangeVolume={value => setVol(value)}
+          <FormControl
+            variant="outlined"
+            className={classes.formControl}
+          >
+            <InputLabel id="demo-simple-select-outlined-label-2">Transportadora</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label-2"
+              value={transp}
+              onChange={(e) => setTransp(e.target.value)}
+              label="Transportadora"
+              disabled={true}
+            >
+              <MenuItem value={null}>TRANSPORTADORA</MenuItem>
+            </Select>
+          </FormControl>
+          <div className={classes.align} style={{ alignItems: 'baseline' }}>
+            <DatePicker
+              min={new Date()}
+              style={{
+                marginTop: '0px'
+              }}
+              onChange={value => {
+                if (value !== '') {
+                  setDtFaturamento(value._d)
+                }
+              }}
+              defaultValue={dtFaturamento}
+              disabled={false}
+              label='Faturamento'
             />
             <PesoInput
               Peso={peso}
@@ -210,7 +275,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
           color="primary"
           onClick={handleSubmit}
         >
-          Salvar
+          Faturar
         </Button>
       </AccordionActions>
     </Accordion>
@@ -231,7 +296,8 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
   },
   formControl: {
-    width: '100%'
+    width: '100%',
+    margin: '0px 8px 8px 0px'
   },
   details: {
     alignItems: 'flex-start',
@@ -274,7 +340,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexWrap: 'wrap',
     flexBasis: '33.33%',
   },
@@ -282,7 +348,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-between'
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end'
   },
   helper: {
     borderLeft: `2px solid ${theme.palette.divider}`,

@@ -14,8 +14,8 @@ function NumberFormatCustom(props) {
       getInputRef={inputRef}
       allowLeadingZeros={true}
       allowNegative={false}
-      decimalScale={4}
-      allowEmptyFormatting={true}
+      decimalScale={2}
+      allowEmptyFormatting={false}
       fixedDecimalScale={true}
       decimalSeparator=','
       thousandSeparator='.'
@@ -45,7 +45,7 @@ export default function PesoInput({ Peso, onChangePeso }) {
       label="Peso"
       className={classes.TextInput}
       value={Peso}
-      variant='outlined'
+      variant='standard'
       onChange={handleChange}
       name="Peso"
       InputProps={{
@@ -58,7 +58,7 @@ export default function PesoInput({ Peso, onChangePeso }) {
 const useStyles = makeStyles((theme) => ({
   TextInput: {
     width: "100px",
-    margin: '8px 0px',
+    margin: '8px 8px',
     '& div>input:nth-child(1)': {
       marginLeft: '8px',
     },

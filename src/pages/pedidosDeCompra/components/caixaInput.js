@@ -15,13 +15,13 @@ function NumberFormatCustom(props) {
       allowLeadingZeros={true}
       allowNegative={false}
       decimalScale={0}
-      allowEmptyFormatting={true}
+      allowEmptyFormatting={false}
       fixedDecimalScale={true}
       decimalSeparator=','
       thousandSeparator='.'
       onValueChange={(e) => onChange(e)}
       placeholder='Caixas'
-      suffix=' Qt'
+      suffix=' Un'
       disabled={false}
     />
   );
@@ -45,7 +45,7 @@ export default function CaixaInput({ Qtd, onChangeQtd }) {
       label="Caixas"
       className={classes.TextInput}
       value={Qtd}
-      variant='outlined'
+      variant='standard'
       onChange={handleChange}
       name="Caixas"
       InputProps={{
