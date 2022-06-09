@@ -40,7 +40,8 @@ import {
   MailOutline,
   SupervisedUserCircle,
   StoreMallDirectory,
-  Shop
+  Shop,
+  Folder
 } from "@material-ui/icons/";
 
 import { roleLevel, navigateTo } from "../../misc/commom_functions";
@@ -62,7 +63,7 @@ export default function MiniDrawer() {
   const [openModal, setOpenModal] = useState(false);
   const [classes, setClasses] = useState(stylePC);
   const [usersList, setUserList] = useState([]);
-  const [usersListFiltered, setUserFiltered] = useState([]);
+  const [filterWord, setFilterWord] = useState('');
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
@@ -84,7 +85,6 @@ export default function MiniDrawer() {
       const response = await api.get('/dashboard/filiais')
 
       setUserList(response.data)
-      setUserFiltered(response.data)
     } catch (err) {
 
     }
@@ -93,7 +93,7 @@ export default function MiniDrawer() {
   const handleCloseModal = () => {
     setOpenModal(false);
     setUserList([])
-    setUserFiltered([])
+    setFilterWord('')
   }
 
   const handleLogout = () => {
@@ -144,44 +144,15 @@ export default function MiniDrawer() {
     }
   }
 
-  const Filter = (value, event) => {
-    setUserFiltered(usersList);
-    event.target.value = value.toUpperCase();
-    value = value.toUpperCase();
-
-    if (value === "") {
-      setUserFiltered(usersList);
-      return;
-    }
-
-    if (value.length > 4) {
-      event.target.value = value.slice(0, 4);
-      value = value.slice(0, 4);
-    }
-
-    setUserFiltered(usersList);
-    let aux = [];
-    let newArray = [];
-    aux = [...usersList];
-
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
-        newArray.push(aux[i]);
-      }
-    }
-
-    setUserFiltered(newArray);
-  };
-
   return (
     <div className={classes.root}>
       <FiliaisModal
         open={openModal}
         onClose={handleCloseModal}
-        Filiais={usersListFiltered}
+        Filiais={returnFilteredFranquadosList(usersList, filterWord)}
         onSelect={filial => handleSwitchFilial(filial)}
-        onFilter={(v, e) => Filter(v, e)}
         onLogout={handleLogoutFilial}
+        onChangeFilterWord={setFilterWord}
       />
       <CssBaseline />
       <AppBar
@@ -513,6 +484,20 @@ export default function MiniDrawer() {
             <Divider />
             <List>
               <Link
+                onClick={() => navigateTo('link', "/arquivos")}
+                to="/arquivos"
+                style={{ color: GREY_SECONDARY }}
+                title="Arquivos"
+              >
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <Folder />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Arquivos " />
+                </ListItem>
+              </Link>
+              <Link
                 onClick={() => navigateTo('link', "/ajuda")}
                 to="/ajuda"
                 style={{ color: GREY_SECONDARY }}
@@ -646,3 +631,19 @@ const useStyles_FULL = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
+
+const returnFilteredFranquadosList = (franqueados, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return franqueados.filter(franqueado => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      franqueado.GrupoVenda.trim().toLowerCase().match(re) || franqueado.M0_CODFIL.trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}

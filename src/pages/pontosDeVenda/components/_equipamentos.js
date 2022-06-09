@@ -61,21 +61,15 @@ export const Equipamento = ({ PdvId, AnxId, onClose, updatePDVsArray }) => {
         targetPdv = {
           ...targetPdv,
           PdvStatus: 'I',
-          PdvMotivoEncerramento: 'Inativado na troca de equipamento de PDV WEB',
-          PdvDataEncerramento: hoje
         }
 
         //Copio o pdv antigo como novo atualizando o PdvId
         let newPdv = {
           ...targetPdv,
-          PdvStatus: 'A',
           PdvId: response.data.payback,
-          PdvDataSolicitacao: hoje,
-          PdvDataInclusao: hoje,
+          EquiCod: eqcod,
           PdvDataAtivacao: hoje,
-          PdvObs: 'Inserido pelo SLWEB',
-          PdvMotivoEncerramento: '',
-          PdvDataEncerramento: null
+          PdvStatus: "A"
         }
 
         aux[indiceDoPdv] = targetPdv
