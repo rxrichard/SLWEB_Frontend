@@ -8,7 +8,7 @@ import { PedidoList } from './pedidoList'
 import { PedidosListOptions } from './options'
 
 const PedidosDeCompra = () => {
-  const timeFilter = 'month'
+  const timeFilter = 'week'
 
   const [pedidos, setPedidos] = useState([])
   const [loaded, setLoaded] = useState(false)
@@ -43,6 +43,7 @@ const PedidosDeCompra = () => {
         />
         <PedidoList
           Pedidos={returnPedidosFiltrados(pedidos, mostrarProcessados, filtro)}
+          onUpdatePedido={setPedidos}
         />
       </Panel>
     )

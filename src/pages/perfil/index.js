@@ -37,11 +37,7 @@ function Perfil() {
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await api.get("/profile", {
-          params: {
-            token: sessionStorage.getItem("token"),
-          },
-        });
+        const response = await api.get("/profile");
 
         setInfo(response.data.Franqueado);
         setVencCert(response.data.VencCert)

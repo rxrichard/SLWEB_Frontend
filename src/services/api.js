@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Toast } from '../components/toasty'
-import { navigateTo	 } from '../misc/commom_functions'
+// import { navigateTo	 } from '../misc/commom_functions'
 
 const AxiosWithConfig = axios.create({
   baseURL: `http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`,
@@ -22,7 +22,8 @@ AxiosWithConfig.interceptors.response.use(undefined,
         case '498':
           Toast('Sua sessão expirou, faça login novamente', 'error')
           setTimeout(() => {
-            navigateTo('move', '/')
+            // navigateTo('move', '/')
+            window.location.assign('/')
             window.sessionStorage.clear()
           }, 3000)
           break;

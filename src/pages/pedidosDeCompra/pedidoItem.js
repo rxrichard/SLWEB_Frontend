@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api'
 import moment from 'moment';
 import clsx from 'clsx';
+import MomentUtils from "@date-io/moment";
+import { MuiPickersUtilsProvider, KeyboardDatePicker, } from "@material-ui/pickers";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
@@ -22,17 +24,18 @@ import {
 
 import PesoInput from './components/pesoInput'
 import CaixaInput from './components/caixaInput'
-import DatePicker from '../../components/materialComponents/datePicker'
+// import DatePicker from '../../components/materialComponents/datePicker'
 import { Toast } from '../../components/toasty'
 
-export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }) => {
+export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion, onUpdatePedido }) => {
   const classes = useStyles();
 
+  const [wait, setWait] = useState(false)
   const [peso, setPeso] = useState(0)
   const [qtd, setQtd] = useState(0)
   const [emissao, setEmissao] = useState('00')
   const [msgNF, setMsgNF] = useState('')
-  const [tipoVolume, setTipoVolume] = useState('CX')
+  const [tipoVolume, setTipoVolume] = useState(null)
   const [transp, setTransp] = useState(null)
   const [dtFaturamento, setDtFaturamento] = useState(null)
 
@@ -57,6 +60,14 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       setEmissao(Pedido.EMISS)
     }
 
+    if (Pedido.DataEntrega !== null) {
+      setDtFaturamento(Pedido.DataEntrega)
+    }
+
+    if (Pedido.Transportadora !== null) {
+      setTransp(Pedido.Transportadora.trim())
+    }
+
   }, [Pedido])
 
   const handleSubmit = async () => {
@@ -73,6 +84,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
 
     let toastId = null
     toastId = Toast('Atualizando pedido...', 'wait')
+    setWait(true)
 
     try {
       await api.put('/pedidos/compra/', {
@@ -80,8 +92,30 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       })
 
       Toast('Pedido atualizado', 'update', toastId, 'success')
+      onUpdatePedido(oldPedidosArray => {
+        let aux = [...oldPedidosArray]
+
+        oldPedidosArray.forEach((ped, i) => {
+          if (ped.PedidoID === Pedido.PedidoID) {
+            aux[i] = {
+              ...aux[i],
+              MsgNotaFiscal: msgNF,
+              QtdVolumes: qtd,
+              TipoVolume: tipoVolume,
+              Peso: peso,
+              EMISS: emissao,
+              DataEntrega: dtFaturamento,
+              Transportadora: transp
+            }
+          }
+        })
+
+        return aux
+      })
+      setWait(false)
     } catch (err) {
       Toast('Falha ao atualizar pedido', 'update', toastId, 'error')
+      setWait(false)
     }
   }
 
@@ -101,7 +135,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
     if (Pedido.TipoVolume !== null) {
       setTipoVolume(Pedido.TipoVolume.trim())
     } else {
-      setTipoVolume(0)
+      setTipoVolume(null)
     }
 
     if (Pedido.Peso !== null) {
@@ -114,6 +148,18 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
       setEmissao(Pedido.EMISS)
     } else {
       setEmissao('00')
+    }
+
+    if (Pedido.DataEntrega !== null) {
+      setDtFaturamento(Pedido.DataEntrega)
+    } else {
+      setDtFaturamento(null)
+    }
+
+    if (Pedido.Transportadora !== null) {
+      setTransp(Pedido.Transportadora)
+    } else {
+      setTransp(null)
     }
   }
 
@@ -171,17 +217,19 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
               <InputLabel id="demo-simple-select-outlined-label">Embalagem</InputLabel>
               <Select
                 labelId="demo-simple-select-outlined-label"
-                value={tipoVolume}
-                onChange={() => { }}
+                value={String(tipoVolume).trim()}
+                onChange={(e) => setTipoVolume(e.target.value)}
                 label="Embalagem"
-                disabled={true}
+                disabled={wait}
               >
+                <MenuItem value={null} disabled>Selecione...</MenuItem>
                 <MenuItem value='CX'>Caixa</MenuItem>
               </Select>
             </FormControl>
             <CaixaInput
               Qtd={qtd}
               onChangeQtd={value => setQtd(value)}
+              disabled={wait}
             />
           </div>
           <FormControl
@@ -194,12 +242,12 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
               value={emissao}
               onChange={e => setEmissao(e.target.value)}
               label="Emissão"
-              disabled={false}
+              disabled={wait}
             >
-              <MenuItem value='01'>Carrega pedido, não transmite nota, gera boleto</MenuItem>
-              <MenuItem value='11'>Carrega pedido, transmite nota, gera boleto</MenuItem>
-              <MenuItem value='10'>Carrega pedido, transmite nota, não gera boleto</MenuItem>
-              <MenuItem value='00'>Carrega pedido, não transmite nota, não gera boleto</MenuItem>
+              <MenuItem value='01'>Não transmite nota, gera boleto</MenuItem>
+              <MenuItem value='11'>Transmite nota, gera boleto</MenuItem>
+              <MenuItem value='10'>Transmite nota, não gera boleto</MenuItem>
+              <MenuItem value='00'>Não transmite nota, não gera boleto</MenuItem>
             </Select>
           </FormControl>
           <FormControl
@@ -209,32 +257,48 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
             <InputLabel id="demo-simple-select-outlined-label-2">Transportadora</InputLabel>
             <Select
               labelId="demo-simple-select-outlined-label-2"
-              value={transp}
+              value={String(transp).trim()}
               onChange={(e) => setTransp(e.target.value)}
               label="Transportadora"
               disabled={true}
             >
-              <MenuItem value={null}>TRANSPORTADORA</MenuItem>
+              <MenuItem value={null} disabled>DESABILITADO</MenuItem>
+              <MenuItem value='v'>v</MenuItem>
             </Select>
           </FormControl>
           <div className={classes.align} style={{ alignItems: 'baseline' }}>
-            <DatePicker
-              min={new Date()}
-              style={{
-                marginTop: '0px'
-              }}
-              onChange={value => {
-                if (value !== '') {
-                  setDtFaturamento(value._d)
-                }
-              }}
-              defaultValue={dtFaturamento}
-              disabled={false}
-              label='Faturamento'
-            />
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                style={{ width: "170px", marginTop: '0px' }}
+                disabled={wait}
+                disableToolbar
+                disablePast={true}
+                autoOk
+                invalidDateMessage="Data inválida"
+                minDateMessage={"Data anteior ao dia de hoje"}
+                minDate={moment().startOf('day').toDate()}
+                variant="inline"
+                format="DD/MM/YYYY"
+                margin="normal"
+                id="date-picker-inline"
+                label='Faturamento'
+                value={dtFaturamento}
+                onChange={value => {
+                  if (value!== null && !value.startOf('day').isBefore(moment().startOf('day').toDate()) && value.startOf('day').isValid()) {
+                    setDtFaturamento(value.startOf('day')._d)
+                  }else{
+                    setDtFaturamento(null)
+                  }
+                }}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </MuiPickersUtilsProvider>
             <PesoInput
               Peso={peso}
               onChangePeso={setPeso}
+              disablde={wait}
             />
           </div>
           <TextField
@@ -257,7 +321,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
             value={msgNF}
             onChange={e => setMsgNF(e.target.value)}
             variant="outlined"
-            disabled={false}
+            disabled={wait}
           />
         </div>
       </AccordionDetails>
@@ -275,7 +339,7 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion }
           color="primary"
           onClick={handleSubmit}
         >
-          Faturar
+          Gravar
         </Button>
       </AccordionActions>
     </Accordion>

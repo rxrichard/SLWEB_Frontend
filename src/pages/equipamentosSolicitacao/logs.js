@@ -33,11 +33,7 @@ export default class Logs extends React.Component {
     try {
       toastId = Toast('Buscando...', 'wait')
 
-      const response = await api.get("/equip/requests/retrive", {
-        params: {
-          token: sessionStorage.getItem("token"),
-          OSID,
-        },
+      const response = await api.get(`/equip/requests/retrive/${OSID}`, {
         responseType: "arraybuffer",
       });
 

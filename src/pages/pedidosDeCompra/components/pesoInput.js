@@ -33,7 +33,7 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function PesoInput({ Peso, onChangePeso }) {
+export default function PesoInput({ Peso, onChangePeso, disabled }) {
   const classes = useStyles();
 
   const handleChange = (event) => {
@@ -45,6 +45,7 @@ export default function PesoInput({ Peso, onChangePeso }) {
       label="Peso"
       className={classes.TextInput}
       value={Peso}
+      disabled={disabled}
       variant='standard'
       onChange={handleChange}
       name="Peso"

@@ -33,7 +33,7 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function CaixaInput({ Qtd, onChangeQtd }) {
+export default function CaixaInput({ Qtd, onChangeQtd, disabled }) {
   const classes = useStyles();
 
   const handleChange = (event) => {
@@ -42,12 +42,13 @@ export default function CaixaInput({ Qtd, onChangeQtd }) {
 
   return (
     <TextField
-      label="Caixas"
+      label="Unidades"
       className={classes.TextInput}
       value={Qtd}
+      disabled={disabled}
       variant='standard'
       onChange={handleChange}
-      name="Caixas"
+      name="Unidades"
       InputProps={{
         inputComponent: NumberFormatCustom,
       }}
