@@ -1,5 +1,3 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
 import {
   REACT_APP_FRANQUEADO_ROLE_LEVEL,
   REACT_APP_EXPEDICAO_ROLE_LEVEL,
@@ -8,6 +6,7 @@ import {
   REACT_APP_BACKOFFICE_ROLE_LEVEL,
   REACT_APP_TECNICA_ROLE_LEVEL,
 } from "./role_levels";
+import { api } from '../services/api'
 
 //Retorna CNPJ/CPF formatado
 export const maskCNPJ = (cnpj) => {
@@ -56,27 +55,6 @@ export const maskCEP = (cep) => {
   return `${cep_aux[0]}.${cep_aux[1]}-${cep_aux[2]}`;
 };
 
-//Valida o valor de um input
-export const valueCheck = (value) => {
-  if (!isNaN(parseFloat(value))) {
-    if (
-      value.charAt(value.length - 1) === "." ||
-      value.charAt(value.length - 1) === ","
-    ) {
-      return value;
-    }
-    return parseFloat(value);
-  } else {
-    if (value.length > 1) {
-      value = value.slice(-1);
-      return value.slice(-1);
-    } else {
-      value = 0;
-      return 0;
-    }
-  }
-};
-
 //Retorna a data atual em formato DD/MM/AAAA com fuso horário correto
 export const dateCheck = () => {
   const data = new Date();
@@ -95,19 +73,6 @@ export const convertData = (data) => {
   const dataA = DtSolicita.split("T");
   const dataB = dataA[0].replace(/-/g, "/");
   return dataB.split("/").reverse().join("/");
-};
-
-//Destaca um elemento clicado
-export const Bright = (event) => {
-  event.target.parentElement.className = "Selected";
-  event.persist();
-  setTimeout(() => (event.target.parentElement.className = "Item"), 1000);
-};
-
-export const Go = (to) => {
-  if (typeof to === "string") {
-    return <Redirect to={to} />;
-  }
 };
 
 export const roleLevel = () => {
@@ -144,9 +109,39 @@ export const roleLevel = () => {
 };
 
 export const toValidString = (string, sub = '') => {
-  return string === null || string === 'null' || typeof string == 'undefined'? sub : string;
+  return string === null || string === 'null' || typeof string == 'undefined' ? sub : string;
 }
 
 export const capitalizeMonthFirstLetter = (month) => {
   return month.charAt(0).toUpperCase() + month.slice(1)
+}
+
+export const navigateTo = (type, url = null) => {
+  switch (type) {
+    case 'move':
+      saveNavigationToDB(url)
+      window.location.assign(url)
+      break
+    case 'return':
+      window.history.back()
+      // saveNavigationToDB(window.location.href.split(`${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`)[1])
+      break
+    case 'reload':
+      window.location.reload()
+      // saveNavigationToDB(window.location.href.split(`${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}`)[1])
+      break
+    case 'link':
+      saveNavigationToDB(url)
+      break
+    default:
+      console.log('navigate type not acceptable')
+      break
+  }
+}
+
+const saveNavigationToDB = (url) => {
+  api.post('/navegacao/', {
+    url: url
+  })
+  return
 }

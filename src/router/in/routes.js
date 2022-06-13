@@ -25,6 +25,7 @@ import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import CarrinhoDeCompras from '../../pages/compras/CarrinhoDeCompras'
+import Arquivos from '../../pages/arquivos/index'
 
 function Dashboard(props) {
   return (
@@ -63,6 +64,7 @@ function Dashboard(props) {
             <Route exact path="/pontodevenda/:ativo" component={PDV} />
             <Route exact path="/clientes" component={Clientes} />
             <Route exact path="/monitor" component={Monitor} />
+            <Route exact path="/arquivos" component={Arquivos} />
             <Route path="*" component={notFound} />
           </Switch>
         </div>

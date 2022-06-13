@@ -35,7 +35,7 @@ const PontosDeVenda = ({ match }) => {
 
         if (match.params.ativo !== null && typeof match.params.ativo !== 'undefined') {
           setFiltro(String(match.params.ativo))
-          setMostrarInativos(true)
+          // setMostrarInativos(true)
         }
       } catch (err) { }
     }

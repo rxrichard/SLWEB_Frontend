@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api'
 
-import { makeStyles } from '@material-ui/core';
-
 import { Panel } from '../../components/commom_in'
 import Loading from '../../components/loading_screen'
-import { PedidoItem } from './pedidoItem'
+
+import { PedidoList } from './pedidoList'
+import { PedidosListOptions } from './options'
 
 const PedidosDeCompra = () => {
-  const classes = useStyles();
+  const timeFilter = 'week'
 
   const [pedidos, setPedidos] = useState([])
-  const [expanded, setExpanded] = useState(null)
   const [loaded, setLoaded] = useState(false)
+  // const [timeFilter, setTimeFilter] = useState('week')
+  const [filtro, setFiltro] = useState('');
+  const [mostrarProcessados, setMostrarProcessados] = useState(false);
+
+  async function LoadData() {
+    try {
+      const response = await api.get(`/pedidos/compra/${timeFilter}`)
+
+      setPedidos(response.data.Pedidos)
+      setLoaded(true)
+    } catch (err) {
+
+    }
+  }
 
   useEffect(() => {
-    async function LoadData() {
-      try {
-        const response = await api.get('/pedidos/compra')
-
-        setPedidos(response.data.Pedidos)
-        setLoaded(true)
-      } catch (err) {
-
-      }
-    }
-
     LoadData()
   }, [])
 
@@ -34,30 +36,41 @@ const PedidosDeCompra = () => {
     :
     (
       <Panel>
-        {/* <Typography variant='h5' gutterBottom>Pedidos aguardando faturamento</Typography> */}
-        <div className={classes.root}>
-          {pedidos.map(p => (
-            <PedidoItem
-              Pedido={p}
-              ExpandedID={expanded}
-              handleChangeExpandedAccordion={setExpanded}
-              key={p.PedidoID}
-            />
-          ))}
-        </div>
+        <PedidosListOptions
+          onChangeFiltro={setFiltro}
+          mostrarProcessados={mostrarProcessados}
+          switchProcessados={setMostrarProcessados}
+        />
+        <PedidoList
+          Pedidos={returnPedidosFiltrados(pedidos, mostrarProcessados, filtro)}
+          onUpdatePedido={setPedidos}
+        />
       </Panel>
     )
 }
 
 export default PedidosDeCompra
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: '1000px',
-    overflowY: 'auto',
-    border: '1px solid #CCC',
-    padding: '8px',
-    borderRadius: '4px'
-  },
-}));
+const returnPedidosFiltrados = (pedidos, shouldShowBilled, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return pedidos.filter(ped => {
+    if (shouldShowBilled) {
+      return true
+    } else if (!shouldShowBilled && ped.Status === 'Aguardando') {
+      return true
+    } else {
+      return false
+    }
+  }).filter(ped => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      String(ped.PedidoID).trim().toLowerCase().match(re) || String(ped.CodigoCliente).trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}

@@ -66,7 +66,7 @@ export default function MiniDrawer() {
   const [openModal, setOpenModal] = useState(false);
   const [classes, setClasses] = useState(stylePC);
   const [usersList, setUserList] = useState([]);
-  const [usersListFiltered, setUserFiltered] = useState([]);
+  const [filterWord, setFilterWord] = useState('');
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
@@ -104,7 +104,7 @@ export default function MiniDrawer() {
 
   const handleLogout = () => {
     window.sessionStorage.clear();
-    window.location.assign("/");
+    navigateTo('move', "/")
   };
 
   const handleSwitchFilial = async (filial) => {
@@ -125,7 +125,7 @@ export default function MiniDrawer() {
       sessionStorage.setItem("filial_logada", response.data.nome !== "");
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.reload();
+      navigateTo('reload')
     } catch (err) {
       Toast("Falha ao logar na filial", "update", toastId, "error");
     }
@@ -135,7 +135,7 @@ export default function MiniDrawer() {
     let toastId = null
     toastId = Toast('Aguarde...', 'wait')
 
-    try{
+    try {
       const response = await api.get("/admAuth/logout");
 
       Toast('Conectado!', 'update', toastId, 'success')
@@ -145,40 +145,11 @@ export default function MiniDrawer() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.assign('/');
-    }catch(err){
+      navigateTo('move', '/')
+    } catch (err) {
       Toast('Falha ao logar na filial', 'update', toastId, 'error')
     }
   }
-
-  const Filter = (value, event) => {
-    setUserFiltered(usersList);
-    event.target.value = value.toUpperCase();
-    value = value.toUpperCase();
-
-    if (value === "") {
-      setUserFiltered(usersList);
-      return;
-    }
-
-    if (value.length > 4) {
-      event.target.value = value.slice(0, 4);
-      value = value.slice(0, 4);
-    }
-
-    setUserFiltered(usersList);
-    let aux = [];
-    let newArray = [];
-    aux = [...usersList];
-
-    for (let i = 0; i < aux.length; i++) {
-      if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
-        newArray.push(aux[i]);
-      }
-    }
-
-    setUserFiltered(newArray);
-  };
 
   return (
     <div className={classes.root}>
@@ -189,6 +160,7 @@ export default function MiniDrawer() {
         onSelect={(filial) => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
         onLogout={handleLogoutFilial}
+        onChangeFilterWord={setFilterWord}
       />
       <CssBaseline />
       <AppBar
@@ -248,6 +220,7 @@ export default function MiniDrawer() {
               </Link>
             </MenuItem>
           <Link
+            onClick={() => navigateTo('link', "/")}
             to="/"
             style={{
               color:
@@ -456,6 +429,7 @@ export default function MiniDrawer() {
               <>
                 <List>
                   <Link
+                    onClick={() => navigateTo('link', "/equipamentos/solicitacao/management")}
                     to="/equipamentos/solicitacao/management"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestao de solicitacoes de equipamentos"
@@ -469,6 +443,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/leads")}
                     to="/administracao/leads"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestão de Leads"
@@ -482,6 +457,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/pedidos/compra")}
                     to="/administracao/pedidos/compra"
                     style={{ color: GREY_SECONDARY }}
                     title="Pedidos de Compra"
@@ -495,6 +471,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/emails")}
                     to="/administracao/emails"
                     style={{ color: GREY_SECONDARY }}
                     title="Central de Emails"
@@ -508,6 +485,7 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
+                    onClick={() => navigateTo('link', "/administracao/formularios")}
                     to="/administracao/formularios"
                     style={{ color: GREY_SECONDARY }}
                     title="Formularios de interesses"
@@ -524,22 +502,31 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            {sessionStorage.getItem("filial_logada") === "true" ? (
-              <List>
-                <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
-                  <ListItem button onClick={handleDrawerClose}>
-                    <ListItemIcon>
-                      <CompassCalibration />
-                    </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
+              <Link
+                onClick={() => navigateTo('link', "/monitor")}
+                to="/monitor"
+                style={{ color: GREY_SECONDARY }}
+                title="Telemetria"
+              >
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <CompassCalibration />
+                  </ListItemIcon>
 
-                    <ListItemText primary="Telemetria" />
-                  </ListItem>
-                </Link>
-                <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
-                  <ListItem button onClick={handleDrawerClose}>
-                    <ListItemIcon>
-                      <EmojiFoodBeverage />
-                    </ListItemIcon>
+                  <ListItemText primary="Telemetria" />
+                </ListItem>
+              </Link>
+              <Link
+                onClick={() => navigateTo('link', "/leituras")}
+                to="/leituras"
+                style={{ color: GREY_SECONDARY }}
+                title="Coletas"
+              >
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <EmojiFoodBeverage />
+                  </ListItemIcon>
 
                     <ListItemText primary="Coletas" />
                   </ListItem>
@@ -548,7 +535,26 @@ export default function MiniDrawer() {
             ) : null}
             <Divider />
             <List>
-              <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">
+              <Link
+                onClick={() => navigateTo('link', "/arquivos")}
+                to="/arquivos"
+                style={{ color: GREY_SECONDARY }}
+                title="Arquivos"
+              >
+                <ListItem button onClick={handleDrawerClose}>
+                  <ListItemIcon>
+                    <Folder />
+                  </ListItemIcon>
+
+                  <ListItemText primary="Arquivos " />
+                </ListItem>
+              </Link>
+              <Link
+                onClick={() => navigateTo('link', "/ajuda")}
+                to="/ajuda"
+                style={{ color: GREY_SECONDARY }}
+                title="Ajuda"
+              >
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Help />
@@ -678,3 +684,19 @@ const useStyles_FULL = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
+
+const returnFilteredFranquadosList = (franqueados, filterString) => {
+  var re = new RegExp(filterString.trim().toLowerCase())
+
+  return franqueados.filter(franqueado => {
+    if (filterString.trim() === '') {
+      return true
+    } else if (filterString.trim() !== '' && (
+      franqueado.GrupoVenda.trim().toLowerCase().match(re) || franqueado.M0_CODFIL.trim().toLowerCase().match(re)
+    )) {
+      return true
+    } else {
+      return false
+    }
+  })
+}

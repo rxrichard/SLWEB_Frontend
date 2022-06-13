@@ -8,10 +8,8 @@ import { Container, Box, Logo } from "../../components/commom_out";
 import Button from "../../components/materialComponents/Button";
 import Input from "../../components/materialComponents/InputUnderline";
 import { TagFaces, Input as InputIcon } from "@material-ui/icons";
-import {
-  GREY_PRIMARY,
-  RED_PRIMARY,
-} from "../../misc/colors";
+import { GREY_PRIMARY, RED_PRIMARY } from "../../misc/colors";
+import { navigateTo } from "../../misc/commom_functions";
 
 export default function LoginADM() {
   const [adm_code, setAdmCode] = useState(null);
@@ -50,7 +48,7 @@ export default function LoginADM() {
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
 
-      window.location.assign("/");
+      navigateTo('move', "/")
     } catch (err) {
       setFetching(false)
       Toast('Código ou senha incorretos', 'update', toastId, 'error')
