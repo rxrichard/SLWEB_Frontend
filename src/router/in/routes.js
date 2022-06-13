@@ -24,6 +24,7 @@ import PDV from '../../pages/pontosDeVenda/index'
 import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
+import CarrinhoDeCompras from '../../pages/compras/CarrinhoDeCompras'
 
 function Dashboard(props) {
   return (
@@ -55,6 +56,7 @@ function Dashboard(props) {
             <Route exact path="/administracao/leads" component={GerirLeads} />
             <Route exact path="/administracao/emails" component={CentralEmails} />
             <Route exact path="/administracao/pedidos/compra" component={PedidosCompra} />
+            <Route exact path="/compras/carrinho" component={CarrinhoDeCompras} />
             <Route exact path="/leituras/:ativo" component={Coletas} />
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />

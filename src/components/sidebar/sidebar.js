@@ -40,11 +40,7 @@ import {
   MailOutline,
   SupervisedUserCircle,
   StoreMallDirectory,
-<<<<<<< HEAD
-  SupervisedUserCircle,
-=======
-  Shop
->>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
+  SupervisedUserCircleIcon,
 } from "@material-ui/icons/";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -112,23 +108,17 @@ export default function MiniDrawer() {
   };
 
   const handleSwitchFilial = async (filial) => {
-<<<<<<< HEAD
-    let toastId = null;
-
-    try {
-      toastId = Toast("Aguarde...", "wait");
-=======
     let toastId = null
-    toastId = Toast('Aguarde...', 'wait')
 
     try {
->>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
+      
+
+      toastId = Toast("Aguarde...", "wait");
 
       const response = await api.post("/admAuth/full", {
         user_code: filial,
       });
 
-      Toast("Conectado!", "update", toastId, "success");
 
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
@@ -241,6 +231,11 @@ export default function MiniDrawer() {
               <p>Notificações</p>
             </MenuItem>
           <MenuItem style={{margin:"0 10px"}}>
+              <Link
+                to='/compras/carrinho'
+                style={{ textDecoration: "none", color:'white', display:"flex", alignItems:"center" }}
+                title='Carrinho'
+              >
               <IconButton
                 color="inherit"
               >
@@ -249,6 +244,8 @@ export default function MiniDrawer() {
                 </Badge>
               </IconButton>
               <p>Carrinho</p>
+              
+              </Link>
             </MenuItem>
           <Link
             to="/"
@@ -267,11 +264,7 @@ export default function MiniDrawer() {
               }
               variant="subtitle2"
             >
-<<<<<<< HEAD
               {sessionStorage.getItem("usuário")}
-=======
-              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
->>>>>>> 93bfb00106d67c98abafdae2b0ec2160fbc9bb67
             </Typography>
            
             <Typography variant="h6">SLAPLIC</Typography>
@@ -495,7 +488,7 @@ export default function MiniDrawer() {
                   >
                     <ListItem button onClick={handleDrawerClose}>
                       <ListItemIcon>
-                        <Shop />
+                        {/* <Shop /> */}
                       </ListItemIcon>
 
                       <ListItemText primary="Pedidos de Compra" />

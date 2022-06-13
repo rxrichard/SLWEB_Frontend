@@ -51,18 +51,18 @@ export const Button = styled.button`
 
     background-color: ${props => props.bgColor || '#41211f'};
     width: ${props => props.width || '0%'};
-    height: 3rem;
+    height: ${props => props.height || '3rem'};;
     display: flex;
     border-radius: ${props => props.borderRadius || '0'};
     border:none;
     color:#fff;
     font-size: 1.2rem;
-    padding: 0px 4px;
+
     margin: ${props => props.margin || '0'};
     justify-content: center;
-    align-items: center;
+    align-items:center;
     &:hover{
-        transition: 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        transition: 300ms ease-in-out  0ms;
         background-color: ${props => props.bgColorH || '#92211f'};
     }
     @media (max-width: 600px){
@@ -73,12 +73,11 @@ export const Button = styled.button`
     `;
 
 export const Title = styled.h1`
-    font-size: 2rem;
+    font-size: ${ props => props.fontSize || '2rem'};;
     font-weight: bolder;
     color: #41211f;
-    margin:0;
+    margin:${ props => props.margin || '0'};
     text-align: center;
-  
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
@@ -128,7 +127,7 @@ export const Text = styled.p`
     color: ${props => props.color || '#41211f'};
     font-size: ${props => props.fontSize || '1rem'};
     /* font-weight: bold; */
-    margin: 0 1rem;
+    margin: ${props => props.margin || '0 1rem'};
     align-items: center;
     flex:1;
     text-align: center;
@@ -194,4 +193,47 @@ export const PanelBuy = styled.div`
     display: flex;
     padding:0;
     margin:0;
+    `
+
+export const PanelCart = styled.div`
+    display: flex;
+    width: 92vw;
+    height:95vh;
+    
+
+`
+export const BoxProduct = styled.aside`
+background-color: #FFF;
+width:98%;
+height:200px;
+margin:0 15px 15px 0;
+border-radius:.5rem;
+border:1px solid #000;
+display:flex;
+`
+
+export const BoxDetailProduct = styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:center;
+`
+
+export const BoxQtd = styled.div`
+    display:flex;
+    width:100%;
+    justify-content:flex-start;
+    align-items:center;
+`
+
+export const BoxCheckout = styled.aside`
+background-color:#fff;
+width:400px;
+height:87vh;
+margin-left:25px;
+border-radius:.5rem;
+border:1px solid #000;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 `

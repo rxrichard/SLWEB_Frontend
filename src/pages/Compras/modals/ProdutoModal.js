@@ -62,19 +62,27 @@ BootstrapDialogTitle.propTypes = {
 
 export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
-  const [quantidade, setQuantidade] = useState(1);  
+  const [quantidade, setQuantidade] = useState(0);  
+  
+
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
 
-  const addShoppingCartAction = (props) => {
-    setOpen(false);
-    props.addShoppingCart(props.produto, quantidade);
-  };
+
+  const handleClickAdd = () => {
+    props.onChangeCart([
+      ...props.cart,
+      { quantidade, Cod: props.produto.Cód}
+    ]);
+    console.log(props.cart);
+  }
+
 
 
   const imagem = () => {
@@ -86,6 +94,7 @@ export default function CustomizedDialogs(props) {
   };
 
   return (
+
     <div>
       <ButtonComprar
         width="13vw"
@@ -124,8 +133,8 @@ export default function CustomizedDialogs(props) {
                     id="qtd"
                     type="number"
                     placeholder="Quantidade:"
-                    onChange={() => {
-                      setQuantidade(document.getElementById("qtd").value);
+                    onChange={(e) => {
+                      setQuantidade(e.target.value);
                     }}
                   />
                   <Title id="preco">R${props.produto.Vlr.toFixed(2)}</Title>
@@ -138,7 +147,7 @@ export default function CustomizedDialogs(props) {
                   color="success"
                   size="medium"
                   className="button"
-                  onClick={addShoppingCartAction}
+                  onClick={handleClickAdd}
                   
                 >
                   <AddShoppingCartIcon />

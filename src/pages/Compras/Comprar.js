@@ -15,22 +15,12 @@ import { Button, SwipeableDrawer } from "@mui/material";
 
 function TransferList(props) {
   const [loaded, setLoaded] = useState(false);
+  const [itemsCart, setItemsCart] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openChart, setOpenChart] = useState({ right: false });
+
 
   const { Produtos } = props.State;
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setOpenChart({ ...openChart, [anchor]: open });
-  };
 
   const handleCloseDialog = () => {
     setOpen(false);
@@ -43,23 +33,12 @@ function TransferList(props) {
     // eslint-disable-next-line
   }, []);
 
+
+
+
   const customList = (items) => (
     <>
-      <div>
-        {["right"].map((anchor) => (
-          <React.Fragment key={anchor}>
-            <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-            <SwipeableDrawer
-              anchor={anchor}
-              open={openChart[anchor]}
-              onClose={toggleDrawer(anchor, false)}
-              onOpen={toggleDrawer(anchor, true)}
-            >
-              <Title></Title>
-            </SwipeableDrawer>
-          </React.Fragment>
-        ))}
-      </div>
+    
       <Card>
         <Container>
           {items.map((prod, i) => {
@@ -89,6 +68,8 @@ function TransferList(props) {
                     open={open}
                     onClose={handleCloseDialog}
                     produto={prod}
+                    cart={itemsCart}
+                    onChangeCart={setItemsCart}
                   />
                 </Box>
               </>
