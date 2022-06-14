@@ -1,17 +1,20 @@
 import React from 'react'
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 
 import { FolderList } from './components/folderList'
 import { FileList } from './components/fileList'
 
-export const Explorer = ({ Arquivos, Pastas }) => {
+export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.container}>
       <FolderList
         folderList={Pastas}
+        onRequestOpenFolder={navigateToTargetFolder}
+        goBack={goBack}
+        depthLevel={depthLevel}
       />
       <FileList
         fileList={Arquivos}
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    flexWrap: 'wrap',
+    flexWrap: 'no-wrap',
     width: '100%',
     maxHeight: 'calc(100% - 64px)',
     // maxHeight: 'calc(100% - 100px)',
