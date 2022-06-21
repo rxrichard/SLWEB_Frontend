@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core";
 import { FolderList } from './components/folderList'
 import { FileList } from './components/fileList'
 
-export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel }) => {
+export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel, onBlock }) => {
   const classes = useStyles();
 
   return (
@@ -18,6 +18,7 @@ export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, dep
       />
       <FileList
         fileList={Arquivos}
+        onBlock={onBlock}
       />
     </div>
   )

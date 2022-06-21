@@ -13,10 +13,12 @@ import {
   Description as DescriptionIcon,
   FormatAlignLeft as FormatAlignLeftIcon,
   FormatListNumbered as FormatListNumberedIcon,
-  ContactSupport as ContactSupportIcon
+  ContactSupport as ContactSupportIcon,
+  Lock as LockIcon,
+  Delete as DeleteIcon,
 } from "@material-ui/icons";
 
-export const File = ({ file, onMarkItem, markedItems, onDownloadFile }) => {
+export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock }) => {
   const classes = useStyles();
 
   const handleDownload = async () => {
@@ -25,6 +27,10 @@ export const File = ({ file, onMarkItem, markedItems, onDownloadFile }) => {
 
   const handleDelete = async () => {
     alert('apagar arquivo')
+  }
+
+  const handleLock = async () => {
+    await onBlock('file', file.path)
   }
 
   const handleMark = () => {
@@ -58,6 +64,18 @@ export const File = ({ file, onMarkItem, markedItems, onDownloadFile }) => {
         >
           <DownloadIcon />
         </IconButton>
+        <IconButton
+          color='secondary'
+          onClick={handleLock}
+        >
+          <LockIcon />
+        </IconButton>
+        <IconButton
+          color='secondary'
+          onClick={handleDelete}
+        >
+          <DeleteIcon />
+        </IconButton>
       </ListItemSecondaryAction>
     </ListItem>
   )
@@ -77,8 +95,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const whichAvatarDisplay = (type) => {
-  
-
   switch (type) {
     case 'Imagem':
       return <ImageIcon />

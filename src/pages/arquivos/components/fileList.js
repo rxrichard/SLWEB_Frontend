@@ -9,7 +9,7 @@ import { DoneAll as DoneAllIcon, ClearAll as ClearAllIcon, CloudDownload as Clou
 import { File } from './file'
 import { Toast } from '../../../components/toasty'
 
-export const FileList = ({ fileList }) => {
+export const FileList = ({ fileList, onBlock }) => {
   const classes = useStyles();
   const [markedItems, setMarkedItems] = useState([])
   const [wait, setWait] = useState(false)
@@ -88,6 +88,8 @@ export const FileList = ({ fileList }) => {
     }
   }
 
+
+
   const handleMarkUnmarkAll = () => {
     if (markedItems.length === fileList.length) {
       setMarkedItems([])
@@ -120,39 +122,34 @@ export const FileList = ({ fileList }) => {
               onMarkItem={handleCheckItem}
               markedItems={markedItems.map(item => item.filename)}
               onDownloadFile={handleDownload}
+              onBlock={onBlock}
             />
           ))}
         </List>
       }
 
-      {fileList.length > 1 ?
-        (
-          <>
-            <Button
-              className={classes.buttonLeft}
-              variant='contained'
-              color='primary'
-              disabled={markedItems.length === 0 || wait}
-              onClick={handleDownloadMarked}
-              startIcon={<CloudDownloadIcon />}
-            >
-              Baixar marcados
-            </Button>
-            <Button
-              className={classes.buttonRight}
-              variant='outlined'
-              color='primary'
-              disabled={wait}
-              onClick={handleMarkUnmarkAll}
-              startIcon={markedItems.length === fileList.length ? <ClearAllIcon /> : <DoneAllIcon />}
-            >
-              {markedItems.length === fileList.length ? 'Desmarcar todos' : 'Marcar todos'}
-            </Button>
-          </>
-        )
-        :
-        null
-      }
+
+      <Button
+        className={classes.buttonLeft}
+        variant='contained'
+        color='primary'
+        disabled={markedItems.length === 0 || wait}
+        onClick={handleDownloadMarked}
+        startIcon={<CloudDownloadIcon />}
+      >
+        Baixar marcados
+      </Button>
+      <Button
+        className={classes.buttonRight}
+        variant='outlined'
+        color='primary'
+        disabled={wait || fileList.length === 0}
+        onClick={handleMarkUnmarkAll}
+        startIcon={markedItems.length === fileList.length ? <ClearAllIcon /> : <DoneAllIcon />}
+      >
+        {markedItems.length === fileList.length ? 'Desmarcar todos' : 'Marcar todos'}
+      </Button>
+
     </section>
   )
 }
@@ -160,7 +157,6 @@ export const FileList = ({ fileList }) => {
 const useStyles = makeStyles((theme) => ({
   container: {
     width: '100%',
-    maxWidth: 500,
     height: 'calc(100% - 133px)',
     backgroundColor: theme.palette.background.paper,
   },

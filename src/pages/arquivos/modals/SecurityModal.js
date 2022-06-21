@@ -14,7 +14,7 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
-  ListItemSecondaryAction,
+  Tooltip,
   FormControl,
   InputLabel,
   Select,
@@ -26,7 +26,8 @@ import {
   FolderSpecial as FolderSpecialIcon,
   Folder as FolderIcon,
   Description as DescriptionIcon,
-  Help as HelpIcon
+  Help as HelpIcon,
+  Delete as DeleteIcon
 } from '@material-ui/icons';
 
 export const SecurityModal = ({ open, onClose }) => {
@@ -44,8 +45,6 @@ export const SecurityModal = ({ open, onClose }) => {
 
       setIndexedFolders(response.data.indexedFolders)
       setOperType(response.data.tipoOperadores)
-      console.log(response.data.indexedFolders)
-      console.log(response.data.tipoOperadores)
     } catch (err) {
 
     }
@@ -59,6 +58,54 @@ export const SecurityModal = ({ open, onClose }) => {
     if (wait) return
     onClose();
     setWait(false)
+    setIndexedFolders([])
+    setOperType([])
+  }
+
+  const handleUpdateGroup = async (indexedFolder, newGroup) => {
+    setWait(true)
+    let oldGroup = null
+
+    setIndexedFolders(oldState => {
+      let aux = [...oldState]
+      let index = null
+
+      aux.forEach((inf, i) => {
+        if (inf.path === indexedFolder.path) {
+          index = i
+        }
+      })
+
+      oldGroup = aux[index].AccessLevel
+      aux[index].AccessLevel = newGroup
+
+      return aux
+    })
+
+    try {
+      await api.put('/files/permissions/', {
+        path: encodeURI(indexedFolder.path),
+        newGroup: newGroup
+      })
+
+      setWait(false)
+    } catch (err) {
+      setIndexedFolders(oldState => {
+        let aux = [...oldState]
+        let index = null
+
+        aux.forEach((inf, i) => {
+          if (inf.path === indexedFolder.path) {
+            index = i
+          }
+        })
+
+        aux[index].AccessLevel = oldGroup
+
+        return aux
+      })
+      setWait(false)
+    }
   }
 
   return (
@@ -78,7 +125,7 @@ export const SecurityModal = ({ open, onClose }) => {
       <DialogContent dividers>
         <List dense={true}>
           {indexedFolders.map(item => (
-            <ListItem>
+            <ListItem key={item.path}>
               <ListItemAvatar>
                 <Avatar>
                   {whichIconShow(item.type)}
@@ -88,21 +135,25 @@ export const SecurityModal = ({ open, onClose }) => {
                 primary={item.path_alias}
                 secondary={item.path}
               />
-              <ListItemSecondaryAction>
-                <FormControl className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-label">Grupo</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={Number(item.AccessLevel)}
-                    onChange={() => { }}
-                  >
-                    {operType.map(op => (
-                      <MenuItem value={Number(op.AccessLevel)}>{op.TopeDes}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </ListItemSecondaryAction>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-select-label">Grupo</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={Number(item.AccessLevel)}
+                  onChange={(e) => handleUpdateGroup(item, e.target.value)}
+                  disabled={wait}
+                >
+                  {operType.map(op => (
+                    <MenuItem
+                      key={op.AccessLevel}
+                      value={Number(op.AccessLevel)}
+                    >
+                      {op.Group} - {op.Members}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </ListItem>
           ))}
         </List>
@@ -118,8 +169,13 @@ export const SecurityModal = ({ open, onClose }) => {
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-  }
+    width: '120px',
+    display: 'flex',
+    flexShrink: 0
+  },
+  inline: {
+    display: 'inline',
+  },
 }));
 
 const styles = (theme) => ({
@@ -152,14 +208,16 @@ const DialogTitle = withStyles(styles)((props) => {
 
 const whichIconShow = (type) => {
   switch (type) {
-    case 'root':
-      return <FolderSpecialIcon />
-    case 'file':
-      return <DescriptionIcon />
-    case 'folder':
-      return <FolderIcon />
+    case 'ROOT':
+      return <FolderSpecialIcon color='primary' />
     case 'UPLOAD_DUMP':
-      return <FolderSpecialIcon />
+      return <FolderSpecialIcon color='primary' />
+    case 'TRASH_DUMP':
+      return <DeleteIcon  color='primary' />
+    case 'file':
+      return <DescriptionIcon color='secondary' />
+    case 'folder':
+      return <FolderIcon color='secondary' />
     default:
       return <HelpIcon />
   }
