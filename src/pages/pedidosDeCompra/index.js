@@ -11,6 +11,7 @@ const PedidosDeCompra = () => {
   const timeFilter = 'week'
 
   const [pedidos, setPedidos] = useState([])
+  const [transportadoras, setTrasportadoras] = useState([])
   const [loaded, setLoaded] = useState(false)
   // const [timeFilter, setTimeFilter] = useState('week')
   const [filtro, setFiltro] = useState('');
@@ -20,6 +21,7 @@ const PedidosDeCompra = () => {
     try {
       const response = await api.get(`/pedidos/compra/${timeFilter}`)
 
+      setTrasportadoras(response.data.Transportadoras)
       setPedidos(response.data.Pedidos)
       setLoaded(true)
     } catch (err) {
@@ -40,9 +42,10 @@ const PedidosDeCompra = () => {
           onChangeFiltro={setFiltro}
           mostrarProcessados={mostrarProcessados}
           switchProcessados={setMostrarProcessados}
-        />
+          />
         <PedidoList
           Pedidos={returnPedidosFiltrados(pedidos, mostrarProcessados, filtro)}
+          Transportadoras={transportadoras}
           onUpdatePedido={setPedidos}
         />
       </Panel>

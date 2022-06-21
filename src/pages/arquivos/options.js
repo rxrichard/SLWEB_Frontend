@@ -10,51 +10,51 @@ export const Options = ({ folders, onClickFolder }) => {
   const handleNavigate = (event, index) => {
     event.preventDefault();
 
-    let targetFolder = folders.slice(0, folders.indexOf(folders[index]) + 1).toString().replace(/,/g, '_')
+    let targetFolder = encodeURI(folders.slice(0, folders.indexOf(folders[index]) + 1).toString().replace(/,/g, '\\'))
 
     onClickFolder(targetFolder)
   }
 
   return (
-    <Breadcrumbs aria-label="breadcrumb" className={classes.bread}>
-      {folders.map((folder, i) => {
-        if (folders.length - 1 > i) {
-          return (
-            <Link
-              key={folder}
-              color="inherit"
-              href="/arquivos"
-              onClick={(e) => handleNavigate(e, i)}
-              className={classes.link}
-            >
-              {i === 0 ?
-                <HomeIcon
-                  className={classes.icon}
-                />
-                :
-                null
-              }
-              {folder}
-            </Link>
-          )
-        } else {
-          return (
-            <Typography
-              key={folder}
-              color="textPrimary"
-              className={classes.link}
-            >
-              {i === 0 ?
-                <HomeIcon className={classes.icon} />
-                :
-                null
-              }
-              {folder}
-            </Typography>
-          )
-        }
-      })}
-    </Breadcrumbs>
+      <Breadcrumbs aria-label="breadcrumb" className={classes.bread}>
+        {folders.map((folder, i) => {
+          if (folders.length - 1 > i) {
+            return (
+              <Link
+                key={folder}
+                color="inherit"
+                href="/arquivos"
+                onClick={(e) => handleNavigate(e, i)}
+                className={classes.link}
+              >
+                {i === 0 ?
+                  <HomeIcon
+                    className={classes.icon}
+                  />
+                  :
+                  null
+                }
+                {folder}
+              </Link>
+            )
+          } else {
+            return (
+              <Typography
+                key={folder}
+                color="textPrimary"
+                className={classes.link}
+              >
+                {i === 0 ?
+                  <HomeIcon className={classes.icon} />
+                  :
+                  null
+                }
+                {folder}
+              </Typography>
+            )
+          }
+        })}
+      </Breadcrumbs>
   )
 }
 

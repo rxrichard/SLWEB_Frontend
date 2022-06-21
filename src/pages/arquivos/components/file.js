@@ -16,11 +16,11 @@ import {
   ContactSupport as ContactSupportIcon
 } from "@material-ui/icons";
 
-export const File = ({ file, onMarkItem, markedItems }) => {
+export const File = ({ file, onMarkItem, markedItems, onDownloadFile }) => {
   const classes = useStyles();
 
   const handleDownload = async () => {
-    alert('baixar arquivo')
+    onDownloadFile(file.path)
   }
 
   const handleDelete = async () => {
@@ -104,11 +104,13 @@ const whichAvatarDisplay = (type) => {
 }
 
 const whichMediaType = (type) => {
-  switch (type) {
+  switch (String(type).toLocaleLowerCase()) {
     //imagens
     case 'jpg':
       return 'Imagem'
     case 'jpeg':
+      return 'Imagem'
+    case 'png':
       return 'Imagem'
     case 'gif':
       return 'Imagem'

@@ -8,8 +8,8 @@ export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
   const classes = useStyles();
 
   const handleOpen = async () => {
-    if (type == 'folder') {
-      onOpenFolder(String(folder.path).replace(/\\/g, '_'))
+    if (type === 'folder') {
+      onOpenFolder(encodeURI(folder.path))
     } else {
       goBack()
     }
@@ -21,7 +21,7 @@ export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
 
   return (
     <div className={classes.content} onClick={handleOpen}>
-      {type == 'folder' ?
+      {type === 'folder' ?
         <FolderOpenIcon style={{ fontSize: 40 }} />
         :
         <KeyboardReturnIcon style={{ fontSize: 40 }} />
