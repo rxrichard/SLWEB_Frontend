@@ -27,7 +27,7 @@ import CaixaInput from './components/caixaInput'
 // import DatePicker from '../../components/materialComponents/datePicker'
 import { Toast } from '../../components/toasty'
 
-export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion, onUpdatePedido }) => {
+export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion, onUpdatePedido, Transportadoras }) => {
   const classes = useStyles();
 
   const [wait, setWait] = useState(false)
@@ -257,13 +257,15 @@ export const PedidoItem = ({ Pedido, ExpandedID, handleChangeExpandedAccordion, 
             <InputLabel id="demo-simple-select-outlined-label-2">Transportadora</InputLabel>
             <Select
               labelId="demo-simple-select-outlined-label-2"
-              value={String(transp).trim()}
+              value={transp}
               onChange={(e) => setTransp(e.target.value)}
               label="Transportadora"
-              disabled={true}
+              disabled={wait}
             >
-              <MenuItem value={null} disabled>DESABILITADO</MenuItem>
-              <MenuItem value='v'>v</MenuItem>
+              <MenuItem value={null} disabled>Selecione...</MenuItem>
+              {Transportadoras.map(tr => (
+                <MenuItem key={tr.A4_COD} value={tr.A4_COD}>{tr.A4_NREDUZ}</MenuItem>
+              ))}
             </Select>
           </FormControl>
           <div className={classes.align} style={{ alignItems: 'baseline' }}>

@@ -4,7 +4,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 
 import { PedidoItem } from './pedidoItem'
 
-export const PedidoList = ({ Pedidos, onUpdatePedido }) => {
+export const PedidoList = ({ Pedidos, onUpdatePedido, Transportadoras }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null)
 
@@ -18,6 +18,7 @@ export const PedidoList = ({ Pedidos, onUpdatePedido }) => {
             ExpandedID={expanded}
             handleChangeExpandedAccordion={setExpanded}
             onUpdatePedido={onUpdatePedido}
+            Transportadoras={Transportadoras}
           />
         ))
         :
