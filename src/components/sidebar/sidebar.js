@@ -38,14 +38,11 @@ import {
   AssignmentInd,
   CompassCalibration,
   MailOutline,
-  SupervisedUserCircle,
   StoreMallDirectory,
-  SupervisedUserCircleIcon,
+  SupervisedUserCircle,
 } from "@material-ui/icons/";
-
 import MenuItem from "@material-ui/core/MenuItem";
 import Badge from "@material-ui/core/Badge";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 
 import { roleLevel } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
@@ -66,7 +63,7 @@ export default function MiniDrawer() {
   const [openModal, setOpenModal] = useState(false);
   const [classes, setClasses] = useState(stylePC);
   const [usersList, setUserList] = useState([]);
-  const [filterWord, setFilterWord] = useState('');
+  const [usersListFiltered, setUserFiltered] = useState([]);
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
@@ -79,10 +76,6 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  const handleChartOpen = () => {
-    
-  }
 
   const handleOpenModal = async () => {
     setOpenModal(true);
@@ -104,52 +97,60 @@ export default function MiniDrawer() {
 
   const handleLogout = () => {
     window.sessionStorage.clear();
-    navigateTo('move', "/")
+    window.location.assign("/");
   };
 
   const handleSwitchFilial = async (filial) => {
-    let toastId = null
+    let toastId = null;
 
     try {
-      
-
       toastId = Toast("Aguarde...", "wait");
 
       const response = await api.post("/admAuth/full", {
         user_code: filial,
       });
 
+      Toast("Conectado!", "update", toastId, "success");
 
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("filial_logada", response.data.nome !== "");
       sessionStorage.setItem("usuário", response.data.nome);
 
-      navigateTo('reload')
+      window.location.reload();
     } catch (err) {
       Toast("Falha ao logar na filial", "update", toastId, "error");
     }
   };
 
-  const handleLogoutFilial = async () => {
-    let toastId = null
-    toastId = Toast('Aguarde...', 'wait')
+  const Filter = (value, event) => {
+    setUserFiltered(usersList);
+    event.target.value = value.toUpperCase();
+    value = value.toUpperCase();
 
-    try {
-      const response = await api.get("/admAuth/logout");
-
-      Toast('Conectado!', 'update', toastId, 'success')
-
-      sessionStorage.setItem("token", response.data.token);
-      sessionStorage.setItem("role", response.data.role);
-      sessionStorage.setItem("filial_logada", response.data.nome !== '');
-      sessionStorage.setItem("usuário", response.data.nome);
-
-      navigateTo('move', '/')
-    } catch (err) {
-      Toast('Falha ao logar na filial', 'update', toastId, 'error')
+    if (value === "") {
+      setUserFiltered(usersList);
+      return;
     }
-  }
+
+    if (value.length > 4) {
+      event.target.value = value.slice(0, 4);
+      value = value.slice(0, 4);
+    }
+
+    setUserFiltered(usersList);
+    let aux = [];
+    let newArray = [];
+    aux = [...usersList];
+
+    for (let i = 0; i < aux.length; i++) {
+      if (aux[i].M0_CODFIL.slice(0, value.length) === value) {
+        newArray.push(aux[i]);
+      }
+    }
+
+    setUserFiltered(newArray);
+  };
 
   return (
     <div className={classes.root}>
@@ -159,8 +160,6 @@ export default function MiniDrawer() {
         Filiais={usersListFiltered}
         onSelect={(filial) => handleSwitchFilial(filial)}
         onFilter={(v, e) => Filter(v, e)}
-        onLogout={handleLogoutFilial}
-        onChangeFilterWord={setFilterWord}
       />
       <CssBaseline />
       <AppBar
@@ -190,37 +189,8 @@ export default function MiniDrawer() {
             <Menu fontSize="large" />
           </IconButton>
           <div />
-          <div style={{display:"flex"}}>
-          <MenuItem style={{margin:"0 10px"}}>
-              <IconButton
-                aria-label="show 11 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={10} color="primary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <p>Notificações</p>
-            </MenuItem>
-          <MenuItem style={{margin:"0 10px"}}>
-              <Link
-                to='/compras/carrinho'
-                style={{ textDecoration: "none", color:'white', display:"flex", alignItems:"center" }}
-                title='Carrinho'
-              >
-              <IconButton
-                color="inherit"
-              >
-                <Badge badgeContent={10} color="primary">
-                  <ShoppingCart />
-                </Badge>
-              </IconButton>
-              <p>Carrinho</p>
-              
-              </Link>
-            </MenuItem>
+        
           <Link
-            onClick={() => navigateTo('link', "/")}
             to="/"
             style={{
               color:
@@ -229,6 +199,27 @@ export default function MiniDrawer() {
                   : "#FFF",
             }}
           >
+              <div style={{ display: "flex" }}>
+              <MenuItem style={{ margin: "0 10px" }}>
+                <Link
+                  to="/compras/carrinho"
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  title="Carrinho"
+                >
+                  <IconButton color="inherit">
+                    <Badge badgeContent={10} color="primary">
+                      <ShoppingCart />
+                    </Badge>
+                  </IconButton>
+                  <p>Carrinho</p>
+                </Link>
+              </MenuItem>
+          <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-end'}}>
             <Typography
               color={
                 roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL
@@ -239,11 +230,12 @@ export default function MiniDrawer() {
             >
               {sessionStorage.getItem("usuário")}
             </Typography>
-           
             <Typography variant="h6">SLAPLIC</Typography>
+            </div>
+            </div>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
           </Link>
-          </div>
+          
         </Toolbar>
       </AppBar>
       <Drawer
@@ -429,7 +421,6 @@ export default function MiniDrawer() {
               <>
                 <List>
                   <Link
-                    onClick={() => navigateTo('link', "/equipamentos/solicitacao/management")}
                     to="/equipamentos/solicitacao/management"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestao de solicitacoes de equipamentos"
@@ -443,7 +434,6 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
-                    onClick={() => navigateTo('link', "/administracao/leads")}
                     to="/administracao/leads"
                     style={{ color: GREY_SECONDARY }}
                     title="Gestão de Leads"
@@ -457,21 +447,6 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
-                    onClick={() => navigateTo('link', "/administracao/pedidos/compra")}
-                    to="/administracao/pedidos/compra"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Pedidos de Compra"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        {/* <Shop /> */}
-                      </ListItemIcon>
-
-                      <ListItemText primary="Pedidos de Compra" />
-                    </ListItem>
-                  </Link>
-                  <Link
-                    onClick={() => navigateTo('link', "/administracao/emails")}
                     to="/administracao/emails"
                     style={{ color: GREY_SECONDARY }}
                     title="Central de Emails"
@@ -485,7 +460,6 @@ export default function MiniDrawer() {
                     </ListItem>
                   </Link>
                   <Link
-                    onClick={() => navigateTo('link', "/administracao/formularios")}
                     to="/administracao/formularios"
                     style={{ color: GREY_SECONDARY }}
                     title="Formularios de interesses"
@@ -502,31 +476,22 @@ export default function MiniDrawer() {
                 <Divider />
               </>
             ) : null}
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/monitor")}
-                to="/monitor"
-                style={{ color: GREY_SECONDARY }}
-                title="Telemetria"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <CompassCalibration />
-                  </ListItemIcon>
+            {sessionStorage.getItem("filial_logada") === "true" ? (
+              <List>
+                <Link to="/monitor" style={{ color: GREY_SECONDARY }}>
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <CompassCalibration />
+                    </ListItemIcon>
 
-                  <ListItemText primary="Telemetria" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/leituras")}
-                to="/leituras"
-                style={{ color: GREY_SECONDARY }}
-                title="Coletas"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <EmojiFoodBeverage />
-                  </ListItemIcon>
+                    <ListItemText primary="Telemetria" />
+                  </ListItem>
+                </Link>
+                <Link to="/leituras" style={{ color: GREY_SECONDARY }}>
+                  <ListItem button onClick={handleDrawerClose}>
+                    <ListItemIcon>
+                      <EmojiFoodBeverage />
+                    </ListItemIcon>
 
                     <ListItemText primary="Coletas" />
                   </ListItem>
@@ -535,26 +500,7 @@ export default function MiniDrawer() {
             ) : null}
             <Divider />
             <List>
-              <Link
-                onClick={() => navigateTo('link', "/arquivos")}
-                to="/arquivos"
-                style={{ color: GREY_SECONDARY }}
-                title="Arquivos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Folder />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Arquivos " />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/ajuda")}
-                to="/ajuda"
-                style={{ color: GREY_SECONDARY }}
-                title="Ajuda"
-              >
+              <Link to="/ajuda" style={{ color: GREY_SECONDARY }} title="Ajuda">
                 <ListItem button onClick={handleDrawerClose}>
                   <ListItemIcon>
                     <Help />
@@ -684,19 +630,3 @@ const useStyles_FULL = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-
-const returnFilteredFranquadosList = (franqueados, filterString) => {
-  var re = new RegExp(filterString.trim().toLowerCase())
-
-  return franqueados.filter(franqueado => {
-    if (filterString.trim() === '') {
-      return true
-    } else if (filterString.trim() !== '' && (
-      franqueado.GrupoVenda.trim().toLowerCase().match(re) || franqueado.M0_CODFIL.trim().toLowerCase().match(re)
-    )) {
-      return true
-    } else {
-      return false
-    }
-  })
-}

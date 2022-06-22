@@ -15,6 +15,7 @@
     "@o2xp/react-datatable": "1.1.28",
     "@trendmicro/react-sidenav": "0.4.5",
     "axios": "0.19.0",
+    "caniuse-lite": "^1.0.30001352",
     "chokidar": "3.5.2",
     "date-fns": "2.22.1",
     "file-saver": "2.0.2",

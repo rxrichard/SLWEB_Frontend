@@ -63,8 +63,12 @@ BootstrapDialogTitle.propTypes = {
 export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
   const [quantidade, setQuantidade] = useState(0);  
-  
+  const [carrinhoQtd, setCarrinhoQtd] = useState(0);
 
+  useEffect((props) => { 
+    
+  }, [props.cart]);
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,9 +84,8 @@ export default function CustomizedDialogs(props) {
       ...props.cart,
       { quantidade, Cod: props.produto.Cód}
     ]);
-    console.log(props.cart);
+    setOpen(false);
   }
-
 
 
   const imagem = () => {
