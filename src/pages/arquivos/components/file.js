@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { makeStyles } from "@material-ui/styles";
 import { ListItem, ListItemIcon, Checkbox, Avatar, ListItemText, ListItemAvatar, IconButton, ListItemSecondaryAction } from "@material-ui/core";
@@ -18,19 +18,29 @@ import {
   Delete as DeleteIcon,
 } from "@material-ui/icons";
 
-export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock }) => {
+export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock, onDelete }) => {
   const classes = useStyles();
+  const [bloqueado, setBloqueado] = useState(false)
+  const [apagado, setApagado] = useState(false)
 
   const handleDownload = async () => {
     onDownloadFile(file.path)
   }
 
   const handleDelete = async () => {
-    alert('apagar arquivo')
+    const ret = await onDelete(file.path)
+
+    if (ret) {
+      setApagado(true)
+    }
   }
 
   const handleLock = async () => {
-    await onBlock('file', file.path)
+    const ret = await onBlock('file', file.path)
+
+    if (ret) {
+      setBloqueado(true)
+    }
   }
 
   const handleMark = () => {
@@ -61,21 +71,32 @@ export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock })
         <IconButton
           color='primary'
           onClick={handleDownload}
+          disabled={apagado}
         >
           <DownloadIcon />
         </IconButton>
-        <IconButton
-          color='secondary'
-          onClick={handleLock}
-        >
-          <LockIcon />
-        </IconButton>
-        <IconButton
-          color='secondary'
-          onClick={handleDelete}
-        >
-          <DeleteIcon />
-        </IconButton>
+        {window.sessionStorage.getItem('role') !== 'Franquia' ? (
+          <>
+            <IconButton
+              color='secondary'
+              onClick={handleLock}
+              disabled={bloqueado || apagado}
+            >
+              <LockIcon />
+            </IconButton>
+            <IconButton
+              color='secondary'
+              onClick={handleDelete}
+              disabled={apagado}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        )
+          :
+          null
+        }
+
       </ListItemSecondaryAction>
     </ListItem>
   )
@@ -97,25 +118,25 @@ const useStyles = makeStyles((theme) => ({
 const whichAvatarDisplay = (type) => {
   switch (type) {
     case 'Imagem':
-      return <ImageIcon />
+      return <ImageIcon color='secondary' />
     case 'Vídeo':
-      return <MovieIcon />
+      return <MovieIcon color='secondary' />
     case 'Áudio':
-      return <AudiotrackIcon />
+      return <AudiotrackIcon color='secondary' />
     case 'Documento Microsoft':
-      return <WorkIcon />
+      return <WorkIcon color='secondary' />
     case 'Executável':
-      return <SlowMotionVideoIcon />
+      return <SlowMotionVideoIcon color='secondary' />
     case 'Compactado':
-      return <MoveToInboxIcon />
+      return <MoveToInboxIcon color='secondary' />
     case 'Documento':
-      return <DescriptionIcon />
+      return <DescriptionIcon color='secondary' />
     case 'Texto':
-      return <FormatAlignLeftIcon />
+      return <FormatAlignLeftIcon color='secondary' />
     case 'Texto formatado':
-      return <FormatListNumberedIcon />
+      return <FormatListNumberedIcon color='secondary' />
     default:
-      return <ContactSupportIcon />
+      return <ContactSupportIcon color='secondary' />
   }
 }
 

@@ -3,7 +3,6 @@ import { api } from '../../../services/api'
 
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle as MuiDialogTitle,
   useMediaQuery,
@@ -14,7 +13,6 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
-  Tooltip,
   FormControl,
   InputLabel,
   Select,
@@ -27,7 +25,9 @@ import {
   Folder as FolderIcon,
   Description as DescriptionIcon,
   Help as HelpIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  PermMedia as PermMediaIcon,
+  FolderShared as FolderSharedIcon
 } from '@material-ui/icons';
 
 export const SecurityModal = ({ open, onClose }) => {
@@ -158,10 +158,6 @@ export const SecurityModal = ({ open, onClose }) => {
           ))}
         </List>
       </DialogContent>
-
-      <DialogActions>
-
-      </DialogActions>
     </Dialog>
   );
 }
@@ -210,8 +206,10 @@ const whichIconShow = (type) => {
   switch (type) {
     case 'ROOT':
       return <FolderSpecialIcon color='primary' />
+    case 'FRANQUEADO_DUMP':
+      return <FolderSharedIcon color='primary' />
     case 'UPLOAD_DUMP':
-      return <FolderSpecialIcon color='primary' />
+      return <PermMediaIcon color='primary' />
     case 'TRASH_DUMP':
       return <DeleteIcon  color='primary' />
     case 'file':
