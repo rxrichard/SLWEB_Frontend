@@ -47,6 +47,7 @@ export default function LoginADM() {
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
+      sessionStorage.setItem("links", JSON.stringify(response.data.Links));
 
       navigateTo('move', "/")
     } catch (err) {

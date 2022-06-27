@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { api } from '../../services/api'
 
 import {
   makeStyles,
   Drawer,
   AppBar,
   Toolbar,
-  List,
   CssBaseline,
   Typography,
   Divider,
   IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   useTheme,
   useMediaQuery,
 } from "@material-ui/core/";
@@ -23,32 +18,14 @@ import {
 import {
   ChevronLeft,
   Menu,
-  CollectionsBookmark,
-  Assignment,
-  Person,
-  PersonPinCircle,
-  ExitToApp,
-  ShoppingCart,
-  Help,
-  AddShoppingCart,
-  Kitchen,
-  PermContactCalendar,
-  SyncAlt as SyncAltIcon,
-  EmojiFoodBeverage,
-  AssignmentInd,
-  CompassCalibration,
-  MailOutline,
-  SupervisedUserCircle,
-  StoreMallDirectory,
-  Shop,
-  Folder
 } from "@material-ui/icons/";
 
 import { roleLevel, navigateTo } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
 import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../../misc/colors";
-import { Toast } from "../toasty";
-import FiliaisModal from './filiaisModal'
+
+import { FilialSelectionModal } from './filiaisModal'
+import { SidebarLinks } from './links'
 
 const drawerWidthFull = 240;
 const drawerWidthCell = 200;
@@ -62,8 +39,6 @@ export default function MiniDrawer() {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [classes, setClasses] = useState(stylePC);
-  const [usersList, setUserList] = useState([]);
-  const [filterWord, setFilterWord] = useState('');
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
@@ -79,87 +54,23 @@ export default function MiniDrawer() {
 
   const handleOpenModal = async () => {
     setOpenModal(true);
-    setOpen(false);
-
-    try {
-      const response = await api.get('/dashboard/filiais')
-
-      setUserList(response.data)
-    } catch (err) {
-
-    }
+    setOpen(false); 
   }
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setUserList([])
-    setFilterWord('')
-  }
-
-  const handleLogout = () => {
-    window.sessionStorage.clear();
-    navigateTo('move', "/")
-  };
-
-  const handleSwitchFilial = async (filial) => {
-    let toastId = null
-    toastId = Toast('Aguarde...', 'wait')
-
-    try {
-
-      const response = await api.post("/admAuth/full", {
-        user_code: filial,
-      });
-
-      Toast('Conectado!', 'update', toastId, 'success')
-
-      sessionStorage.setItem("token", response.data.token);
-      sessionStorage.setItem("role", response.data.role);
-      sessionStorage.setItem("filial_logada", response.data.nome !== '');
-      sessionStorage.setItem("usuário", response.data.nome);
-
-      navigateTo('reload')
-    } catch (err) {
-      Toast('Falha ao logar na filial', 'update', toastId, 'error')
-    }
-  }
-
-  const handleLogoutFilial = async () => {
-    let toastId = null
-    toastId = Toast('Aguarde...', 'wait')
-
-    try {
-      const response = await api.get("/admAuth/logout");
-
-      Toast('Conectado!', 'update', toastId, 'success')
-
-      sessionStorage.setItem("token", response.data.token);
-      sessionStorage.setItem("role", response.data.role);
-      sessionStorage.setItem("filial_logada", response.data.nome !== '');
-      sessionStorage.setItem("usuário", response.data.nome);
-
-      navigateTo('move', '/')
-    } catch (err) {
-      Toast('Falha ao logar na filial', 'update', toastId, 'error')
-    }
   }
 
   return (
     <div className={classes.root}>
-      <FiliaisModal
+      <FilialSelectionModal
         open={openModal}
         onClose={handleCloseModal}
-        Filiais={returnFilteredFranquadosList(usersList, filterWord)}
-        onSelect={filial => handleSwitchFilial(filial)}
-        onLogout={handleLogoutFilial}
-        onChangeFilterWord={setFilterWord}
       />
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={isMdUp ? clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        }) : classes.appBar}
+        className={isMdUp ? clsx(classes.appBar, { [classes.appBarShift]: open, }) : classes.appBar}
       >
         <Toolbar style={{ justifyContent: "space-between" }}>
           <IconButton
@@ -167,9 +78,7 @@ export default function MiniDrawer() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerOpen}
-            className={isMdUp ? clsx(classes.menuButton, {
-              [classes.hide]: open,
-            }) : classes.menuButton}
+            className={isMdUp ? clsx(classes.menuButton, { [classes.hide]: open, }) : classes.menuButton}
           >
             <Menu fontSize="large" />
           </IconButton>
@@ -178,12 +87,7 @@ export default function MiniDrawer() {
           <Link
             onClick={() => navigateTo('link', "/")}
             to="/"
-            style={{
-              color:
-                roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL
-                  ? GREY_SECONDARY
-                  : "#FFF",
-            }}
+            style={{ color: roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? GREY_SECONDARY : "#FFF", }}
           >
             <Typography
               color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
@@ -198,18 +102,8 @@ export default function MiniDrawer() {
       </AppBar>
       <Drawer
         variant={isMdUp ? "permanent" : "temporary"}
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={isMdUp ? {
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        } : {
-          paper: classes.drawerPaper
-        }}
+        className={clsx(classes.drawer, { [classes.drawerOpen]: open, [classes.drawerClose]: !open, })}
+        classes={isMdUp ? { paper: clsx({ [classes.drawerOpen]: open, [classes.drawerClose]: !open, }), } : { paper: classes.drawerPaper }}
         anchor='left'
         open={open}
         onClose={handleDrawerClose}
@@ -220,314 +114,10 @@ export default function MiniDrawer() {
           </IconButton>
         </div>
         <Divider />
-        <div style={{
-          display: "flex",
-          flex: '1',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-        }}>
-          <div style={{
-            display: "flex",
-            flex: '1',
-            flexDirection: 'column',
-            justifyContent: 'flex-start'
-          }}>
-            {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
-              <>
-                <List>
-                  <ListItem
-                    button
-                    onClick={handleOpenModal}
-                  >
-                    <ListItemIcon>
-                      <SyncAltIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Filiais" />
-                  </ListItem>
-                </List>
-                <Divider />
-              </>
-            ) : null}
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/perfil")}
-                to="/perfil"
-                style={{ color: GREY_SECONDARY }}
-                title="Perfil"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Person />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Perfil" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/leads")}
-                to="/leads"
-                style={{ color: GREY_SECONDARY }}
-                title="Leads"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <PersonPinCircle />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Leads" />
-                </ListItem>
-              </Link>
-            </List> : null}
-            <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/clientes")}
-                to="/clientes"
-                style={{ color: GREY_SECONDARY }}
-                title="Clientes"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <AssignmentInd />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Clientes" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/pontodevenda")}
-                to="/pontodevenda"
-                style={{ color: GREY_SECONDARY }}
-                title="Pontos de Venda"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <StoreMallDirectory />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Pontos de Venda" />
-                </ListItem>
-              </Link>
-            </List> : null}
-            <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/compras")}
-                to="/compras"
-                style={{ color: GREY_SECONDARY }}
-                title="Compras"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <AddShoppingCart />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Compras" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/vendas")}
-                to="/vendas"
-                style={{ color: GREY_SECONDARY }}
-                title="Vendas"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <ShoppingCart />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Vendas" />
-                </ListItem>
-              </Link>
-            </List> : null}
-            <Divider />
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/equipamentos")}
-                to="/equipamentos"
-                style={{ color: GREY_SECONDARY }}
-                title="Equipamentos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Kitchen />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Equipamentos" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/equipamentos/solicitacao")}
-                to="/equipamentos/solicitacao"
-                style={{ color: GREY_SECONDARY }}
-                title="Solicitação de Equipamentos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Assignment />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Solicitação" />
-                </ListItem>
-              </Link>
-            </List> : null}
-            <Divider />
-            {roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? (
-              <>
-                <List>
-                  <Link
-                    onClick={() => navigateTo('link', "/equipamentos/solicitacao/management")}
-                    to="/equipamentos/solicitacao/management"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Gestao de solicitacoes de equipamentos"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        <CollectionsBookmark />
-                      </ListItemIcon>
-
-                      <ListItemText primary="Solicitações" />
-                    </ListItem>
-                  </Link>
-                  <Link
-                    onClick={() => navigateTo('link', "/administracao/leads")}
-                    to="/administracao/leads"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Gestão de Leads"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        <SupervisedUserCircle />
-                      </ListItemIcon>
-
-                      <ListItemText primary="Gestão de Leads" />
-                    </ListItem>
-                  </Link>
-                  <Link
-                    onClick={() => navigateTo('link', "/administracao/pedidos/compra")}
-                    to="/administracao/pedidos/compra"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Pedidos de Compra"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        <Shop />
-                      </ListItemIcon>
-
-                      <ListItemText primary="Pedidos de Compra" />
-                    </ListItem>
-                  </Link>
-                  <Link
-                    onClick={() => navigateTo('link', "/administracao/emails")}
-                    to="/administracao/emails"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Central de Emails"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        <MailOutline />
-                      </ListItemIcon>
-
-                      <ListItemText primary="Emails" />
-                    </ListItem>
-                  </Link>
-                  <Link
-                    onClick={() => navigateTo('link', "/administracao/formularios")}
-                    to="/administracao/formularios"
-                    style={{ color: GREY_SECONDARY }}
-                    title="Formularios de interesses"
-                  >
-                    <ListItem button onClick={handleDrawerClose}>
-                      <ListItemIcon>
-                        <PermContactCalendar />
-                      </ListItemIcon>
-
-                      <ListItemText primary="Formulários" />
-                    </ListItem>
-                  </Link>
-                </List>
-                <Divider />
-              </>
-            ) : null}
-            {sessionStorage.getItem("filial_logada") === 'true' ? <List>
-              <Link
-                onClick={() => navigateTo('link', "/monitor")}
-                to="/monitor"
-                style={{ color: GREY_SECONDARY }}
-                title="Telemetria"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <CompassCalibration />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Telemetria" />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/leituras")}
-                to="/leituras"
-                style={{ color: GREY_SECONDARY }}
-                title="Coletas"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <EmojiFoodBeverage />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Coletas" />
-                </ListItem>
-              </Link>
-            </List> : null}
-            <Divider />
-            <List>
-              <Link
-                onClick={() => navigateTo('link', "/arquivos")}
-                to="/arquivos"
-                style={{ color: GREY_SECONDARY }}
-                title="Arquivos"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Folder />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Arquivos " />
-                </ListItem>
-              </Link>
-              <Link
-                onClick={() => navigateTo('link', "/ajuda")}
-                to="/ajuda"
-                style={{ color: GREY_SECONDARY }}
-                title="Ajuda"
-              >
-                <ListItem button onClick={handleDrawerClose}>
-                  <ListItemIcon>
-                    <Help />
-                  </ListItemIcon>
-
-                  <ListItemText primary="Ajuda" />
-                </ListItem>
-              </Link>
-              <ListItem button onClick={handleLogout} title="Sair">
-                <ListItemIcon>
-                  <ExitToApp />
-                </ListItemIcon>
-
-                <ListItemText primary="Sair" />
-              </ListItem>
-            </List>
-          </div>
-          <div style={{
-            display: "flex",
-            flex: '1',
-            flexDirection: 'column',
-            justifyContent: 'flex-end'
-          }}>
-          </div>
-        </div>
+        <SidebarLinks
+          onCloseDrawer={handleDrawerClose}
+          onOpenFiliaisModal={handleOpenModal}
+        />
       </Drawer>
     </div>
   );
@@ -631,19 +221,3 @@ const useStyles_FULL = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-
-const returnFilteredFranquadosList = (franqueados, filterString) => {
-  var re = new RegExp(filterString.trim().toLowerCase())
-
-  return franqueados.filter(franqueado => {
-    if (filterString.trim() === '') {
-      return true
-    } else if (filterString.trim() !== '' && (
-      franqueado.GrupoVenda.trim().toLowerCase().match(re) || franqueado.M0_CODFIL.trim().toLowerCase().match(re)
-    )) {
-      return true
-    } else {
-      return false
-    }
-  })
-}
