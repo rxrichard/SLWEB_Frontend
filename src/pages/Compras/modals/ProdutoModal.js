@@ -21,7 +21,7 @@ import {
   Text,
 } from "./StyleProdutoModal";
 
-let i = 0;
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(3),
@@ -80,10 +80,13 @@ export default function CustomizedDialogs(props) {
 
 
   const handleClickAdd = () => {
-    props.onChangeCart([
+   let produtosCarrinho =  props.onChangeCart([
       ...props.cart,
       { quantidade, Cod: props.produto.Cód}
     ]);
+
+    let qtdProdutoCarrinho = produtosCarrinho.length()
+    console.log(qtdProdutoCarrinho)
     setOpen(false);
   }
 
@@ -97,6 +100,7 @@ export default function CustomizedDialogs(props) {
   };
 
   return (
+    
 
     <div>
       <ButtonComprar
