@@ -54,7 +54,7 @@ export const FilialSelectionModal = ({ open, onClose }) => {
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
-      sessionStorage.setItem("links", JSON.parse(response.data.Links));
+      sessionStorage.setItem("links", JSON.stringify(response.data.Links));
 
       navigateTo('reload')
     } catch (err) {
@@ -75,7 +75,7 @@ export const FilialSelectionModal = ({ open, onClose }) => {
       sessionStorage.setItem("role", response.data.role);
       sessionStorage.setItem("filial_logada", response.data.nome !== '');
       sessionStorage.setItem("usuário", response.data.nome);
-      sessionStorage.setItem("links", JSON.parse(response.data.Links));
+      sessionStorage.setItem("links", JSON.stringify(response.data.Links));
 
       navigateTo('move', '/')
     } catch (err) {

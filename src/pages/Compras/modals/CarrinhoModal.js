@@ -46,19 +46,22 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
 
   const CarrinhoFormatado = fromStore2Datagrid(Carrinho);
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const response = await api.get(`/compras/faturamento/rotas/${targetCEP}`)
+  async function loadData() {
+    try {
+      const response = await api.get(`/compras/faturamento/rotas/${targetCEP}`)
 
-        setFaturamento(response.data.Faturamento)
-      } catch (err) {
+      setFaturamento(response.data.Faturamento)
+    } catch (err) {
 
-      }
     }
-    loadData()
+  }
+
+  useEffect(() => {
+    if (open) {
+      loadData()
+    }
     // eslint-disable-next-line
-  }, [])
+  }, [open])
 
   const updateChecked = (SelectedIDs) => {
     let naoMarcados = [];
