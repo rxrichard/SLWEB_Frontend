@@ -74,7 +74,7 @@ const Arquivos = () => {
   }
 
   const handleBlockPath = async (type, ifFile = null) => {
-    const proceed = window.confirm(`Deseja bloquear a pasta: ${type === 'folder' ? folderPath.toString().replace(/,/g, '\\') : ifFile}`)
+    const proceed = window.confirm(`Deseja bloquear ${type === 'folder' ? 'a pasta:' : 'o arquivo:'}  ${type === 'folder' ? folderPath.toString().replace(/,/g, '\\') : ifFile}`)
 
     if (proceed) {
       let toastId = null
@@ -87,8 +87,29 @@ const Arquivos = () => {
         })
 
         Toast('Recurso bloqueado', 'update', toastId, 'success')
+        return true
       } catch (err) {
         Toast('Recurso já bloqueado ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+        return false
+      }
+    }
+  }
+
+  const handleDelete = async (filepath) => {
+    const proceed = window.confirm(`Deseja apagar o arquivo ${filepath}?`)
+
+    if (proceed) {
+      let toastId = null
+      toastId = Toast('Excluindo...', 'wait')
+
+      try {
+        await api.get(`/files/delete/${encodeURI(filepath)}`)
+
+        Toast('Recurso excluído', 'update', toastId, 'success')
+        return true
+      } catch (err) {
+        Toast('Recurso já excluído ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+        return false
       }
     }
   }
@@ -134,6 +155,7 @@ const Arquivos = () => {
             goBack={handleGoBack}
             depthLevel={folderPath.length}
             onBlock={handleBlockPath}
+            onDelete={handleDelete}
           />
           {whichModalsShow(
             shouldShowModals,

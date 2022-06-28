@@ -24,6 +24,7 @@ export default class autoLogin extends Component {
         sessionStorage.setItem('role', response.data.role);
         sessionStorage.setItem("filial_logada", response.data.nome !== '');
         sessionStorage.setItem("usuário", response.data.nome);
+        sessionStorage.setItem("links", JSON.parse(response.data.Links));
 
         this.redirectWindow(targetWindow);
       } else {

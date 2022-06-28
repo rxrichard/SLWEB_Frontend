@@ -17,7 +17,6 @@ import { Icon } from "react-materialize";
 
 import NewFileInput from '../../../components/FileInput'
 import { Toast } from '../../../components/toasty'
-import { navigateTo } from '../../../misc/commom_functions'
 
 export const UploadModal = ({ open, onClose }) => {
   const theme = useTheme();

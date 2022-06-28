@@ -9,7 +9,7 @@ import { DoneAll as DoneAllIcon, ClearAll as ClearAllIcon, CloudDownload as Clou
 import { File } from './file'
 import { Toast } from '../../../components/toasty'
 
-export const FileList = ({ fileList, onBlock }) => {
+export const FileList = ({ fileList, onBlock, onDelete }) => {
   const classes = useStyles();
   const [markedItems, setMarkedItems] = useState([])
   const [wait, setWait] = useState(false)
@@ -88,8 +88,6 @@ export const FileList = ({ fileList, onBlock }) => {
     }
   }
 
-
-
   const handleMarkUnmarkAll = () => {
     if (markedItems.length === fileList.length) {
       setMarkedItems([])
@@ -123,6 +121,7 @@ export const FileList = ({ fileList, onBlock }) => {
               markedItems={markedItems.map(item => item.filename)}
               onDownloadFile={handleDownload}
               onBlock={onBlock}
+              onDelete={onDelete}
             />
           ))}
         </List>

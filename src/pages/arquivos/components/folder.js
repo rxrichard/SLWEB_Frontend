@@ -2,7 +2,13 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/styles";
 import { Typography } from "@material-ui/core";
-import { FolderOpen as FolderOpenIcon, KeyboardReturn as KeyboardReturnIcon } from '@material-ui/icons'
+import {
+  FolderOpen as FolderOpenIcon,
+  KeyboardReturn as KeyboardReturnIcon,
+  FolderShared as FolderSharedIcon,
+  Delete as DeleteIcon,
+  PermMedia as PermMediaIcon
+} from '@material-ui/icons'
 
 export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
   const classes = useStyles();
@@ -15,17 +21,13 @@ export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
     }
   }
 
-  const handleDelete = async () => {
-    alert('apagar pasta')
-  }
+  // const handleDelete = async () => {
+  //   alert('apagar pasta')
+  // }
 
   return (
     <div className={classes.content} onClick={handleOpen}>
-      {type === 'folder' ?
-        <FolderOpenIcon style={{ fontSize: 40 }} />
-        :
-        <KeyboardReturnIcon style={{ fontSize: 40 }} />
-      }
+      {whichIconDisplay(type, folder)}
       <Typography
         className={classes.label}
         variant='caption'>
@@ -62,3 +64,17 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   }
 }))
+
+const whichIconDisplay = (type, folder) => {
+  if (type === 'empty') {
+    return <KeyboardReturnIcon style={{ fontSize: 40 }} />
+  } else if (folder.folder === 'Franqueado') {
+    return <FolderSharedIcon style={{ fontSize: 40 }} />
+  } else if (folder.folder === 'Lixeira') {
+    return <DeleteIcon style={{ fontSize: 40 }} />
+  } else if (folder.folder === 'UPLOADS') {
+    return <PermMediaIcon style={{ fontSize: 40 }} />
+  } else {
+    return <FolderOpenIcon style={{ fontSize: 40 }} />
+  }
+}
