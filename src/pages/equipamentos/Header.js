@@ -71,7 +71,7 @@ const Header = (props) => {
         >
           Aguardando instalação: {props.EquipamentosStandyBy}
         </Typography>
-        <Link to="/equipamentos/solicitacao">
+        <Link to="/solicitacao">
           <Button
             style={{ width: '230px' }}
             color="primary"

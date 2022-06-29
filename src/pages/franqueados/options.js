@@ -1,36 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react'
 
-import {
-  makeStyles,
-  FormControlLabel,
-  Checkbox,
-  Paper,
-  InputBase,
-  IconButton,
-  Divider,
-  Tooltip
-} from '@material-ui/core';
+import { makeStyles, FormControlLabel, Checkbox, Paper, InputBase, IconButton, Divider, Tooltip } from '@material-ui/core';
 
 import { Search as SearchIcon, Close as CloseIcon } from '@material-ui/icons'
 
-export const PdvListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos, defaultTarget }) => {
+export const Options = ({ onChangeFiltro, mostrarInativos, switchInativos }) => {
   const classes = useStyles()
   const [filterWord, setFilterWord] = useState('')
-
-  useEffect(() => {
-    if (defaultTarget !== null && typeof defaultTarget !== 'undefined') {
-      setFilterWord(String(defaultTarget))
-    }
-    // eslint-disable-next-line
-  }, [])
 
   return (
     <div>
       <Paper component="form" className={classes.root}>
         <InputBase
           className={classes.input}
-          placeholder="Buscar PDV"
-          inputProps={{ 'aria-label': 'buscar PDV' }}
+          placeholder="Buscar franquia"
+          inputProps={{ 'aria-label': 'Buscar franquia' }}
           onChange={e => {
             onChangeFiltro('')
             setFilterWord(e.target.value)
@@ -108,7 +92,7 @@ export const PdvListOptions = ({ onChangeFiltro, mostrarInativos, switchInativos
             style={{ marginLeft: '8px' }}
           />
         }
-        label="Mostrar PDV's inativos"
+        label="Mostrar franquias inativas"
       />
     </div>
   )

@@ -25,6 +25,7 @@ import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import Arquivos from '../../pages/arquivos/index'
+import Franqueados from '../../pages/franqueados'
 
 function Dashboard(props) {
   return (
@@ -49,13 +50,7 @@ function Dashboard(props) {
             <Route exact path="/compras" component={Compras} />
             <Route exact path="/vendas" component={Vendas} />
             <Route exact path="/equipamentos" component={Equipamentos} />
-            <Route exact path="/equipamentos/solicitacao" component={AddEquipamentos} />
-            <Route exact path="/equipamentos/solicitacao/management" component={GerenciarEquip} />
-            <Route exact path="/administracao/franquia" component={AdmFranquia} />
-            <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
-            <Route exact path="/administracao/leads" component={GerirLeads} />
-            <Route exact path="/administracao/emails" component={CentralEmails} />
-            <Route exact path="/administracao/pedidos/compra" component={PedidosCompra} />
+            <Route exact path="/solicitacao" component={AddEquipamentos} />
             <Route exact path="/leituras/:ativo" component={Coletas} />
             <Route exact path="/leituras" component={Coletas} />
             <Route exact path="/pontodevenda" component={PDV} />
@@ -63,6 +58,15 @@ function Dashboard(props) {
             <Route exact path="/clientes" component={Clientes} />
             <Route exact path="/monitor" component={Monitor} />
             <Route exact path="/arquivos" component={Arquivos} />
+
+            <Route exact path="/administracao/solicitacao/management" component={GerenciarEquip} />
+            <Route exact path="/administracao/franquia" component={AdmFranquia} />
+            <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
+            <Route exact path="/administracao/leads" component={GerirLeads} />
+            <Route exact path="/administracao/emails" component={CentralEmails} />
+            <Route exact path="/administracao/pedidos/compra" component={PedidosCompra} />
+            <Route exact path="/administracao/franqueados" component={Franqueados} />
+            
             <Route path="*" component={notFound} />
           </Switch>
         </div>

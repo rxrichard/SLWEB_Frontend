@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { api } from '../../services/api'
 
 import { Tooltip, Typography, IconButton } from '@material-ui/core'
@@ -7,7 +8,7 @@ import { LocalAtm as LocalAtmIcon, LocalShipping as LocalShippingIcon } from '@m
 export const Helpers = () => {
   const [faturamento, setFaturamento] = useState(null)
 
-  const path = '/compras'
+  let path = useLocation().pathname
 
   const loadData = async () => {
     try {
@@ -23,7 +24,8 @@ export const Helpers = () => {
     if (path === '/compras') {
       loadData()
     }
-  }, [])
+
+  }, [path])
 
   return (
     <div

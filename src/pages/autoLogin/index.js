@@ -39,7 +39,7 @@ export default class autoLogin extends Component {
   async redirectWindow(target) {
     switch (target) {
       case 'solicitacao':
-        navigateTo('move', "/equipamentos/solicitacao")
+        navigateTo('move', "/solicitacao")
         break;
 
       case 'compras':

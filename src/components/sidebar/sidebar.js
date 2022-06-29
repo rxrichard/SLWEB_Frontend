@@ -93,6 +93,9 @@ export default function MiniDrawer() {
             <Typography
               color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
               variant="subtitle2"
+              style={{
+                whiteSpace: 'noWrap'
+              }}
             >
               {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
             </Typography>
