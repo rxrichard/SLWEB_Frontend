@@ -186,69 +186,73 @@ const whichModalsShow = (controls, onOpenOplModal, onOpenSecModal, onBlock, onEx
         zIndex: "999"
       }}
     >
-      <Grow
-        in={Expanded}
-        style={{ transformOrigin: '0 0 0' }}
-        {...(Expanded ? { timeout: 500 } : {})}
-      >
-        <Fab
-          onClick={() => onBlock('folder')}
-          variant="extended"
-          style={{
-            backgroundColor: '#FFF',
-            margin: '0px 0px 8px 0px',
-            color: '#cc1029',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <LockIcon style={{ marginRight: '4px' }} />
-          Bloquear Pasta
-        </Fab>
-      </Grow>
-      <Grow
-        in={Expanded}
-        style={{ transformOrigin: '0 0 0' }}
-        {...(Expanded ? { timeout: 500 } : {})}
-      >
-        <Fab
-          onClick={onOpenSecModal}
-          variant="extended"
-          style={{
-            backgroundColor: '#FFF',
-            margin: '0px 0px 8px 0px',
-            color: '#a84702',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <SecurityIcon style={{ marginRight: '4px' }} />
-          Permissões
-        </Fab>
-      </Grow>
-      <Grow
-        in={Expanded}
-        style={{ transformOrigin: '0 0 0' }}
-        {...(Expanded ? { timeout: 500 } : {})}
-      >
-        <Fab
-          onClick={onOpenOplModal}
-          variant="extended"
-          style={{
-            backgroundColor: '#FFF',
-            margin: '0px 0px 8px 0px',
-            color: '#0062ff',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <BackupIcon style={{ marginRight: '4px' }} />
-          Upload
-        </Fab>
-      </Grow>
+      {Expanded ? (
+        <>
+          <Grow
+            in={Expanded}
+            style={{ transformOrigin: '0 0 0' }}
+            {...(Expanded ? { timeout: 500 } : {})}
+          >
+            <Fab
+              onClick={() => onBlock('folder')}
+              variant="extended"
+              style={{
+                backgroundColor: '#FFF',
+                margin: '0px 0px 8px 0px',
+                color: '#cc1029',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <LockIcon style={{ marginRight: '4px' }} />
+              Bloquear Pasta
+            </Fab>
+          </Grow>
+          <Grow
+            in={Expanded}
+            style={{ transformOrigin: '0 0 0' }}
+            {...(Expanded ? { timeout: 500 } : {})}
+          >
+            <Fab
+              onClick={onOpenSecModal}
+              variant="extended"
+              style={{
+                backgroundColor: '#FFF',
+                margin: '0px 0px 8px 0px',
+                color: '#a84702',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <SecurityIcon style={{ marginRight: '4px' }} />
+              Permissões
+            </Fab>
+          </Grow>
+          <Grow
+            in={Expanded}
+            style={{ transformOrigin: '0 0 0' }}
+            {...(Expanded ? { timeout: 500 } : {})}
+          >
+            <Fab
+              onClick={onOpenOplModal}
+              variant="extended"
+              style={{
+                backgroundColor: '#FFF',
+                margin: '0px 0px 8px 0px',
+                color: '#0062ff',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <BackupIcon style={{ marginRight: '4px' }} />
+              Upload
+            </Fab>
+          </Grow>
+        </>
+      ) : null}
       <Fab
         color={Expanded ? "primary" : "secondary"}
         onClick={() => onExpand(oldState => !oldState)}
@@ -267,27 +271,29 @@ const whichModalsShow = (controls, onOpenOplModal, onOpenSecModal, onBlock, onEx
         zIndex: "999"
       }}
     >
-      <Grow
-        in={Expanded}
-        style={{ transformOrigin: '0 0 0' }}
-        {...(Expanded ? { timeout: 500 } : {})}
-      >
-        <Fab
-          onClick={onOpenOplModal}
-          variant="extended"
-          style={{
-            backgroundColor: '#FFF',
-            margin: '0px 0px 8px 0px',
-            color: '#0062ff',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'flex-start',
-          }}
+      {Expanded ? (
+        <Grow
+          in={Expanded}
+          style={{ transformOrigin: '0 0 0' }}
+          {...(Expanded ? { timeout: 500 } : {})}
         >
-          <BackupIcon style={{ marginRight: '4px' }} />
-          Upload
-        </Fab>
-      </Grow>
+          <Fab
+            onClick={onOpenOplModal}
+            variant="extended"
+            style={{
+              backgroundColor: '#FFF',
+              margin: '0px 0px 8px 0px',
+              color: '#0062ff',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <BackupIcon style={{ marginRight: '4px' }} />
+            Upload
+          </Fab>
+        </Grow>
+      ) : null}
       <Fab
         color={Expanded ? "primary" : "secondary"}
         onClick={() => onExpand(oldState => !oldState)}

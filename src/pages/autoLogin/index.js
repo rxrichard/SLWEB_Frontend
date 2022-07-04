@@ -24,7 +24,7 @@ export default class autoLogin extends Component {
         sessionStorage.setItem('role', response.data.role);
         sessionStorage.setItem("filial_logada", response.data.nome !== '');
         sessionStorage.setItem("usuário", response.data.nome);
-        sessionStorage.setItem("links", JSON.parse(response.data.Links));
+        sessionStorage.setItem("links", JSON.stringify(response.data.Links));
 
         this.redirectWindow(targetWindow);
       } else {
@@ -39,7 +39,7 @@ export default class autoLogin extends Component {
   async redirectWindow(target) {
     switch (target) {
       case 'solicitacao':
-        navigateTo('move', "/equipamentos/solicitacao")
+        navigateTo('move', "/solicitacao")
         break;
 
       case 'compras':

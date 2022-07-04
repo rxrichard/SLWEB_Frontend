@@ -46,6 +46,7 @@ import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../../misc/colors";
 
 import { FilialSelectionModal } from './filiaisModal'
 import { SidebarLinks } from './links'
+import { Helpers } from './helpers'
 
 const drawerWidthFull = 240;
 const drawerWidthCell = 200;
@@ -136,6 +137,9 @@ export default function MiniDrawer() {
                   : "default"
               }
               variant="subtitle2"
+              style={{
+                whiteSpace: 'noWrap'
+              }}
             >
               {sessionStorage.getItem("usuário")}
             </Typography>

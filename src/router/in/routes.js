@@ -26,6 +26,7 @@ import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import CarrinhoDeCompras from '../../pages/compras/CarrinhoDeCompras'
 import Arquivos from '../../pages/arquivos/index'
+import Franqueados from '../../pages/franqueados'
 
 function Dashboard(props) {
   return (
@@ -65,6 +66,15 @@ function Dashboard(props) {
             <Route exact path="/clientes" component={Clientes} />
             <Route exact path="/monitor" component={Monitor} />
             <Route exact path="/arquivos" component={Arquivos} />
+
+            <Route exact path="/administracao/solicitacao/management" component={GerenciarEquip} />
+            <Route exact path="/administracao/franquia" component={AdmFranquia} />
+            <Route exact path="/administracao/formularios" component={FormsAcompanhamento} />
+            <Route exact path="/administracao/leads" component={GerirLeads} />
+            <Route exact path="/administracao/emails" component={CentralEmails} />
+            <Route exact path="/administracao/pedidos/compra" component={PedidosCompra} />
+            <Route exact path="/administracao/franqueados" component={Franqueados} />
+            
             <Route path="*" component={notFound} />
           </Switch>
         </div>
