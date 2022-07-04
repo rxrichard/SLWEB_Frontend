@@ -6,6 +6,7 @@ export const Main = ({ franquias, onOpenDetailsModal }) => {
     return(
         <FranquiaList 
             Franquias={franquias}
+            onOpenDetailsModal={onOpenDetailsModal}
         />
     )
 }

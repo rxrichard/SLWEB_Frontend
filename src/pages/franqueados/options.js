@@ -1,99 +1,112 @@
 import React, { useState } from 'react'
 
-import { makeStyles, FormControlLabel, Checkbox, Paper, InputBase, IconButton, Divider, Tooltip } from '@material-ui/core';
+import { makeStyles, Button, FormControlLabel, Checkbox, Paper, InputBase, IconButton, Divider, Tooltip } from '@material-ui/core';
 
-import { Search as SearchIcon, Close as CloseIcon } from '@material-ui/icons'
+import { Search as SearchIcon, Close as CloseIcon, Add as AddIcon } from '@material-ui/icons'
 
-export const Options = ({ onChangeFiltro, mostrarInativos, switchInativos }) => {
+export const Options = ({ onChangeFiltro, mostrarInativos, switchInativos, onOpenNewFranquiaModal }) => {
   const classes = useStyles()
   const [filterWord, setFilterWord] = useState('')
 
   return (
-    <div>
-      <Paper component="form" className={classes.root}>
-        <InputBase
-          className={classes.input}
-          placeholder="Buscar franquia"
-          inputProps={{ 'aria-label': 'Buscar franquia' }}
-          onChange={e => {
-            onChangeFiltro('')
-            setFilterWord(e.target.value)
-          }}
-          value={filterWord}
-          disabled={false}
-        />
-        <Tooltip
-          title={
-            <label
-              style={{
-                fontSize: "14px",
-                color: "#FFF",
-                lineHeight: "20px"
-              }}
-            >
-              Buscar
-            </label>
-          }
-          placement="top"
-          arrow={true}
-        >
-          <IconButton
-            type='submit'
-            className={classes.iconButton}
-            aria-label="buscar"
-            onClick={(e) => {
-              e.preventDefault()
-              onChangeFiltro(filterWord)
-            }}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
-        <Divider
-          className={classes.divider}
-          orientation="vertical"
-        />
-        <Tooltip
-          title={
-            <label
-              style={{
-                fontSize: "14px",
-                color: "#FFF",
-                lineHeight: "20px"
-              }}
-            >
-              Limpar busca
-            </label>
-          }
-          placement="right"
-          arrow={true}
-        >
-          <IconButton
-            className={classes.iconButton}
-            aria-label="directions"
-            color="primary"
-            onClick={() => {
+    <div className={classes.container}>
+      <div style={{ width: '171.55px' }} />
+      <div>
+        <Paper component="form" className={classes.root}>
+          <InputBase
+            className={classes.input}
+            placeholder="Buscar franquia"
+            inputProps={{ 'aria-label': 'Buscar franquia' }}
+            onChange={e => {
               onChangeFiltro('')
-              setFilterWord('')
+              setFilterWord(e.target.value)
             }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
-      </Paper>
-      <FormControlLabel
-        control={
-          <Checkbox
-            className={classes.checkbox}
-            checked={mostrarInativos}
-            onChange={(e) => {
-              switchInativos(e.target.checked)
-            }}
-            style={{ marginLeft: '8px' }}
+            value={filterWord}
+            disabled={false}
           />
-        }
-        label="Mostrar franquias inativas"
-      />
+          <Tooltip
+            title={
+              <label
+                style={{
+                  fontSize: "14px",
+                  color: "#FFF",
+                  lineHeight: "20px"
+                }}
+              >
+                Buscar
+              </label>
+            }
+            placement="top"
+            arrow={true}
+          >
+            <IconButton
+              type='submit'
+              className={classes.iconButton}
+              aria-label="buscar"
+              onClick={(e) => {
+                e.preventDefault()
+                onChangeFiltro(filterWord)
+              }}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
+          <Divider
+            className={classes.divider}
+            orientation="vertical"
+          />
+          <Tooltip
+            title={
+              <label
+                style={{
+                  fontSize: "14px",
+                  color: "#FFF",
+                  lineHeight: "20px"
+                }}
+              >
+                Limpar busca
+              </label>
+            }
+            placement="right"
+            arrow={true}
+          >
+            <IconButton
+              className={classes.iconButton}
+              aria-label="directions"
+              color="primary"
+              onClick={() => {
+                onChangeFiltro('')
+                setFilterWord('')
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+        </Paper>
+        <FormControlLabel
+          control={
+            <Checkbox
+              className={classes.checkbox}
+              checked={mostrarInativos}
+              onChange={(e) => {
+                switchInativos(e.target.checked)
+              }}
+              style={{ marginLeft: '8px' }}
+            />
+          }
+          label="Mostrar franquias inativas"
+        />
+      </div>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        size="large"
+        onClick={onOpenNewFranquiaModal}
+        startIcon={<AddIcon />}
+      >
+        Nova Franquia
+      </Button>
     </div>
   )
 }
