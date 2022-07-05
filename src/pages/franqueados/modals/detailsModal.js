@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../../services/api'
 
 import { Button, Dialog, MobileStepper, DialogActions, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography } from '@material-ui/core/';
 import { useTheme, withStyles } from '@material-ui/core/styles';
-import { Close as CloseIcon, Save as SaveIcon, ThumbDownAlt as ThumbDownAltIcon, ThumbUpAlt as ThumbUpAltIcon, Edit as EditIcon, KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons';
-
-import { Toast } from '../../../components/toasty'
+import { Close as CloseIcon, Save as SaveIcon, Edit as EditIcon, KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons';
 
 export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
   const theme = useTheme();
@@ -45,22 +42,22 @@ export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
     // }
   }
 
-  const handleInativar = async ({ Status }) => {
-    let toastId = null
+  // const handleInativar = async ({ Status }) => {
+  //   let toastId = null
 
-    toastId = Toast(Status === 'A' ? 'Inativando...' : 'Ativando...', 'wait')
-    setWait(true)
+  //   toastId = Toast(Status === 'A' ? 'Inativando...' : 'Ativando...', 'wait')
+  //   setWait(true)
 
-    try {
-      //fazer put aqui
+  //   try {
+  //     //fazer put aqui
 
-      Toast(Status === 'A' ? 'Ponto de venda inativado' : 'Ponto de venda ativado', 'update', toastId, 'success')
-      setWait(false)
-    } catch (err) {
-      Toast(Status === 'A' ? 'Falha ao inativar ponto de venda' : 'Falha ao ativar ponto de venda', 'update', toastId, 'error')
-      setWait(false)
-    }
-  }
+  //     Toast(Status === 'A' ? 'Ponto de venda inativado' : 'Ponto de venda ativado', 'update', toastId, 'success')
+  //     setWait(false)
+  //   } catch (err) {
+  //     Toast(Status === 'A' ? 'Falha ao inativar ponto de venda' : 'Falha ao ativar ponto de venda', 'update', toastId, 'error')
+  //     setWait(false)
+  //   }
+  // }
 
   const handleDiscardChanges = () => {
     // childRef.current.undoChanges()

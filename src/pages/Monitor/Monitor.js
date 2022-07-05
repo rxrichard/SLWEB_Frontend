@@ -154,7 +154,7 @@ const Monitor = () => {
       <AbrirChamadoDialog
         open={modalChamadoOpen}
         onClose={handleCloseChamadoModal}
-        title='Abrir chamado MiFix'
+        title='Abrir chamado'
         onChangeDetails={setEditableDetails}
         Details={editableDetails}
         UltChamado={target.UltChamado}
