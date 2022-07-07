@@ -62,6 +62,10 @@ export default class autoLogin extends Component {
         navigateTo('move', "/clientes")
         break;
 
+      case 'coletas':
+        navigateTo('move', "/leituras")
+        break;
+
       default:
         navigateTo('move', "/")
     }

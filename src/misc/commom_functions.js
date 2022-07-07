@@ -5,6 +5,7 @@ import {
   REACT_APP_JURIDICO_ROLE_LEVEL,
   REACT_APP_BACKOFFICE_ROLE_LEVEL,
   REACT_APP_TECNICA_ROLE_LEVEL,
+  REACT_APP_MARKETING_ROLE_LEVEL
 } from "./role_levels";
 import { api } from '../services/api'
 
@@ -88,6 +89,10 @@ export const roleLevel = () => {
     //permissão para interagir com solicitações de máquinas e configurações
     case "Técnica Pilão" || "Técnica Bianchi":
       return REACT_APP_TECNICA_ROLE_LEVEL;
+
+    //permissão para subir conteudos para plataforma
+    case "Marketing":
+      return REACT_APP_MARKETING_ROLE_LEVEL;
 
     //permissão para ver dados sensiveis de franqueados e gerar relatórios
     case "Jurídico":

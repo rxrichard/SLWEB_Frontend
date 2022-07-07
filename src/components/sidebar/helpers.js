@@ -36,9 +36,7 @@ export const Helpers = () => {
       loadComprasData()
     }
 
-    if (path === '/') {
-      loadMainData()
-    }
+    loadMainData()
   }, [path])
 
   return (
@@ -52,12 +50,13 @@ export const Helpers = () => {
         padding: '0px 32px 0px 0px'
       }}
     >
-      {whichContentShow(path, faturamento, blocks)}
+      {pathContentToShow(path, faturamento)}
+      {fixedContentToShow(blocks)}
     </div>
   )
 }
 
-const whichContentShow = (path, faturamento, blocks) => {
+const pathContentToShow = (path, faturamento) => {
   switch (path) {
     case '/compras':
       return (
@@ -83,25 +82,31 @@ const whichContentShow = (path, faturamento, blocks) => {
         </>
       )
     default:
-      if (blocks.Equip) {
-        return (
-          <>
-            <Tooltip
-              title={
-                <div style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}>
-                  Algumas opções do sistema estão bloqueadas porque a localização das máquinas não foi informada no periodo devido.
-                </div>}
-              placement="bottom"
-              arrow={true}
-            >
-              <IconButton color="default" >
-                <LockIcon fontSize='large' />
-              </IconButton>
-            </Tooltip>
-          </>
-        )
-      } else {
-        return null
-      }
+      return null
   }
+}
+
+const fixedContentToShow = (blocks) => {
+  let returnableIcons = []
+
+  if (blocks.Equip) {
+    returnableIcons.push(
+      <>
+        <Tooltip
+          title={
+            <div style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}>
+              Algumas opções do sistema estão bloqueadas porque a localização das máquinas não foi informada no periodo devido.
+            </div>}
+          placement="bottom"
+          arrow={true}
+        >
+          <IconButton color="default" >
+            <LockIcon fontSize='large' />
+          </IconButton>
+        </Tooltip>
+      </>
+    )
+  }
+
+  return returnableIcons
 }

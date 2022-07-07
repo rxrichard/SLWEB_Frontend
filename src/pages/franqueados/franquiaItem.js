@@ -14,9 +14,16 @@ export const FranquiaItem = ({ Franquia, onOpenDetailsModal }) => {
 
   return (
     <Card className={classes.root} variant="elevation">
+      <div
+        style={{
+          width: '100%',
+          height: '4px',
+          background: Franquia.Inatv === 'S' ? 'red' : 'green'
+        }}
+      />
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
-          Filial {Franquia.M0_CODFIL}
+          Filial <strong>{Franquia.M0_CODFIL}</strong>
         </Typography>
         <Typography className={classes.ellipsis} variant="h5" component="h2">
           {Franquia.NREDUZ}
@@ -25,17 +32,15 @@ export const FranquiaItem = ({ Franquia, onOpenDetailsModal }) => {
           {Franquia.GrupoVenda}
         </Typography>
         <Typography variant="body2" component="p">
-          Grupo de Venda: {Franquia.A1_GRPVEN}
+          <strong>Grupo de Venda:</strong> {Franquia.A1_GRPVEN}
           <br />
-          Cod TOTVs: {Franquia.A1_COD}
+          <strong>Cod TOTVs:</strong> {Franquia.A1_COD}
           <br />
-          CNPJ: {Franquia.M0_CGC}
+          <strong>CNPJ:</strong> {Franquia.M0_CGC}
           <br />
-          Consultor: {Franquia.Consultor}
+          <strong>UF:</strong> {Franquia.UF}
           <br />
-          UF: {Franquia.UF}
-          <br />
-          Data de Cadastro: {Franquia.DtCadastro !== null ? moment(Franquia.DtCadastro).format('L') : "Desconhecida"}
+          <strong>Data de Cadastro:</strong> {Franquia.DtCadastro !== null ? moment(Franquia.DtCadastro).format('L') : "Desconhecida"}
           <br />
         </Typography>
       </CardContent>
