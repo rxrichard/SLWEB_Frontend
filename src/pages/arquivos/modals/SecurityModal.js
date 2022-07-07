@@ -1,34 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../../services/api'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle as MuiDialogTitle,
-  useMediaQuery,
-  IconButton,
-  Typography,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
-} from '@material-ui/core/';
+import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography, List, ListItem, ListItemAvatar, Avatar, ListItemText, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core/';
 import { useTheme, withStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  Close as CloseIcon,
-  FolderSpecial as FolderSpecialIcon,
-  Folder as FolderIcon,
-  Description as DescriptionIcon,
-  Help as HelpIcon,
-  Delete as DeleteIcon,
-  PermMedia as PermMediaIcon,
-  FolderShared as FolderSharedIcon
-} from '@material-ui/icons';
+import { Close as CloseIcon, FolderSpecial as FolderSpecialIcon, Folder as FolderIcon, Description as DescriptionIcon, Help as HelpIcon, Delete as DeleteIcon, PermMedia as PermMediaIcon, FolderShared as FolderSharedIcon } from '@material-ui/icons';
 
 export const SecurityModal = ({ open, onClose }) => {
   const theme = useTheme();
@@ -142,7 +117,7 @@ export const SecurityModal = ({ open, onClose }) => {
                   id="demo-simple-select"
                   value={Number(item.AccessLevel)}
                   onChange={(e) => handleUpdateGroup(item, e.target.value)}
-                  disabled={wait}
+                  disabled={wait || (item.type !== 'file' && item.type !== 'folder')}
                 >
                   {operType.map(op => (
                     <MenuItem
