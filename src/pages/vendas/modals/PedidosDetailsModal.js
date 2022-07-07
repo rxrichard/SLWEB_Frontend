@@ -378,22 +378,22 @@ const DetailsModal = ({ pedidoDet, open, actualPedidoInfo, setActualPedidoInfo, 
   }
 
   const handleEditVenda = () => {
-    if (Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0) {
-      Toast('Não é possivel editar pedidos emitidos no mês anterior', 'error')
-      return
-    }
+    if (actualPedidoInfo.ST === 'P') {
+      if (Math.abs(moment(actualPedidoInfo.Emissao).get('month') - moment().get('month')) > 0) {
+        Toast('Não é possivel editar pedidos emitidos no mês anterior', 'error')
+        return
+      }
 
-    if (moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10) {
-      Toast('Não é possível editar pedidos com mais de 10 dias', 'error')
-      return
+      if (moment().diff(moment(actualPedidoInfo.Emissao), 'days') > 10) {
+        Toast('Não é possível editar pedidos com mais de 10 dias', 'error')
+        return
+      }
+
+      EditPedido(actualPedidoInfo.Pvc_ID)
     }
 
     ResetarDetalhes()
     ClearCarrinho()
-
-    if (actualPedidoInfo.ST === 'P') {
-      EditPedido(actualPedidoInfo.Pvc_ID)
-    }
 
     //escolhe o cliente correto
     Clientes.forEach((cliente) =>

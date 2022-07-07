@@ -5,38 +5,37 @@ import {
   REACT_APP_JURIDICO_ROLE_LEVEL,
   REACT_APP_BACKOFFICE_ROLE_LEVEL,
   REACT_APP_TECNICA_ROLE_LEVEL,
+  REACT_APP_MARKETING_ROLE_LEVEL
 } from "./role_levels";
 import { api } from '../services/api'
 
 //Retorna CNPJ/CPF formatado
 export const maskCNPJ = (cnpj) => {
   if (cnpj.length === 11) {
-    const CPF_COM_ZEROS = `000${cnpj}`;
-    const CPF_COMPLETO = CPF_COM_ZEROS.slice(-11);
+    const CPF = String(cnpj);
 
-    var CPF = [];
+    var CPFsplit = [];
 
-    CPF[0] = CPF_COMPLETO.substring(0, 3);
-    CPF[1] = CPF_COMPLETO.substring(3, 6);
-    CPF[2] = CPF_COMPLETO.substring(6, 9);
-    CPF[3] = CPF_COMPLETO.substring(9, 11);
+    CPFsplit.push(CPF.substring(0, 3))
+    CPFsplit.push(CPF.substring(3, 6))
+    CPFsplit.push(CPF.substring(6, 9))
+    CPFsplit.push(CPF.substring(9, 11))
 
-    const CNPJss = `${CPF[0]}.${CPF[1]}.${CPF[2]}-${CPF[3]}`;
+    const CPFss = `${CPFsplit[0]}.${CPFsplit[1]}.${CPFsplit[2]}-${CPFsplit[3]}`;
 
-    return CNPJss;
+    return CPFss;
   } else if (cnpj.length === 14) {
-    const CNPJ_COM_ZEROS = `000${cnpj}`;
-    const CNPJ_COMPLETO = CNPJ_COM_ZEROS.slice(-14);
+    const CNPJ = String(cnpj);
 
-    var CNPJ = [];
+    var CNPJsplit = [];
 
-    CNPJ[0] = CNPJ_COMPLETO.substring(0, 2);
-    CNPJ[1] = CNPJ_COMPLETO.substring(2, 5);
-    CNPJ[2] = CNPJ_COMPLETO.substring(5, 8);
-    CNPJ[3] = CNPJ_COMPLETO.substring(8, 12);
-    CNPJ[4] = CNPJ_COMPLETO.substring(12, 14);
+    CNPJsplit.push(CNPJ.substring(0, 2));
+    CNPJsplit.push(CNPJ.substring(2, 5));
+    CNPJsplit.push(CNPJ.substring(5, 8));
+    CNPJsplit.push(CNPJ.substring(8, 12));
+    CNPJsplit.push(CNPJ.substring(12, 14));
 
-    const CNPJss = `${CNPJ[0]}.${CNPJ[1]}.${CNPJ[2]}/${CNPJ[3]}-${CNPJ[4]}`;
+    const CNPJss = `${CNPJsplit[0]}.${CNPJsplit[1]}.${CNPJsplit[2]}/${CNPJsplit[3]}-${CNPJsplit[4]}`;
 
     return CNPJss;
   } else {
@@ -90,6 +89,10 @@ export const roleLevel = () => {
     //permissão para interagir com solicitações de máquinas e configurações
     case "Técnica Pilão" || "Técnica Bianchi":
       return REACT_APP_TECNICA_ROLE_LEVEL;
+
+    //permissão para subir conteudos para plataforma
+    case "Marketing":
+      return REACT_APP_MARKETING_ROLE_LEVEL;
 
     //permissão para ver dados sensiveis de franqueados e gerar relatórios
     case "Jurídico":
