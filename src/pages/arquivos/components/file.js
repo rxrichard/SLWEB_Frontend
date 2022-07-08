@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { makeStyles } from "@material-ui/styles";
-import { ListItem, ListItemIcon, Checkbox, Avatar, ListItemText, ListItemAvatar, IconButton, ListItemSecondaryAction } from "@material-ui/core";
+import { ListItem, ListItemIcon, Checkbox, Avatar, ListItemText, ListItemAvatar } from "@material-ui/core";
 import {
-  GetApp as DownloadIcon,
   Work as WorkIcon,
   Image as ImageIcon,
   Movie as MovieIcon,
@@ -13,35 +12,31 @@ import {
   Description as DescriptionIcon,
   FormatAlignLeft as FormatAlignLeftIcon,
   FormatListNumbered as FormatListNumberedIcon,
-  ContactSupport as ContactSupportIcon,
-  Lock as LockIcon,
-  Delete as DeleteIcon,
+  ContactSupport as ContactSupportIcon
 } from "@material-ui/icons";
 
-export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock, onDelete }) => {
+export const File = ({ file, onMarkItem, markedItems }) => {
   const classes = useStyles();
-  const [bloqueado, setBloqueado] = useState(false)
-  const [apagado, setApagado] = useState(false)
 
-  const handleDownload = async () => {
-    onDownloadFile(file.path)
-  }
+  // const handleDownload = async () => {
+  //   onDownloadFile(file.path)
+  // }
 
-  const handleDelete = async () => {
-    const ret = await onDelete(file.path)
+  // const handleDelete = async () => {
+  //   const ret = await onDelete(file.path)
 
-    if (ret) {
-      setApagado(true)
-    }
-  }
+  //   if (ret) {
+  //     setApagado(true)
+  //   }
+  // }
 
-  const handleLock = async () => {
-    const ret = await onBlock('file', file.path)
+  // const handleLock = async () => {
+  //   const ret = await onBlock('file', file.path)
 
-    if (ret) {
-      setBloqueado(true)
-    }
-  }
+  //   if (ret) {
+  //     setBloqueado(true)
+  //   }
+  // }
 
   const handleMark = () => {
     onMarkItem(file)
@@ -67,37 +62,6 @@ export const File = ({ file, onMarkItem, markedItems, onDownloadFile, onBlock, o
         primary={file.filename}
         secondary={whichMediaType(file.filename.split(".").pop())}
       />
-      <ListItemSecondaryAction>
-        <IconButton
-          color='primary'
-          onClick={handleDownload}
-          disabled={apagado}
-        >
-          <DownloadIcon />
-        </IconButton>
-        {window.sessionStorage.getItem('role') !== 'Franquia' ? (
-          <>
-            <IconButton
-              color='secondary'
-              onClick={handleLock}
-              disabled={bloqueado || apagado}
-            >
-              <LockIcon />
-            </IconButton>
-            <IconButton
-              color='secondary'
-              onClick={handleDelete}
-              disabled={apagado}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </>
-        )
-          :
-          null
-        }
-
-      </ListItemSecondaryAction>
     </ListItem>
   )
 }

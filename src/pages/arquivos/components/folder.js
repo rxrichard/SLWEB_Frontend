@@ -2,13 +2,7 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/styles";
 import { Typography } from "@material-ui/core";
-import {
-  FolderOpen as FolderOpenIcon,
-  KeyboardReturn as KeyboardReturnIcon,
-  FolderShared as FolderSharedIcon,
-  Delete as DeleteIcon,
-  PermMedia as PermMediaIcon
-} from '@material-ui/icons'
+import { FolderOpen as FolderOpenIcon, KeyboardReturn as KeyboardReturnIcon, FolderShared as FolderSharedIcon, Delete as DeleteIcon, PermMedia as PermMediaIcon } from '@material-ui/icons'
 
 export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
   const classes = useStyles();

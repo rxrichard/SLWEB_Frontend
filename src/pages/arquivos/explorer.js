@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core";
 import { FolderList } from './components/folderList'
 import { FileList } from './components/fileList'
 
-export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel, onBlock, onDelete }) => {
+export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel, onBlock, onDelete, markedItems, onMarkUnmarkAll, onCheckItem }) => {
   const classes = useStyles();
 
   return (
@@ -20,6 +20,9 @@ export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, dep
         fileList={Arquivos}
         onBlock={onBlock}
         onDelete={onDelete}
+        markedItems={markedItems} 
+        onMarkUnmarkAll={onMarkUnmarkAll} 
+        onCheckItem={onCheckItem}
       />
     </div>
   )
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    flexWrap: 'no-wrap',
+    flexWrap: 'nowrap',
     width: '100%',
     maxHeight: 'calc(100% - 64px)',
     // maxHeight: 'calc(100% - 100px)',

@@ -1,11 +1,20 @@
 import React from 'react'
 
-import { makeStyles } from '@material-ui/styles';
-import { Typography, Breadcrumbs, Link } from '@material-ui/core';
-import { Home as HomeIcon } from '@material-ui/icons';
+import { makeStyles, withStyles } from '@material-ui/styles';
+import { Typography, Button, Menu, ListItemText, ListItemIcon, MenuItem, Breadcrumbs, Link } from '@material-ui/core';
+import { Home as HomeIcon, GetApp as Download, MoreVert as MoreVertIcon, Folder as FolderIcon, CreateNewFolder as CreateNewFolderIcon, Edit as EditIcon, MoveToInbox as MoveToInboxIcon, Lock as LockIcon, Delete as DeleteIcon, InsertDriveFile as InsertDriveFileIcon } from '@material-ui/icons';
 
-export const Options = ({ folders, onClickFolder }) => {
+export const Options = ({ folders, onClickFolder, selectedItems, onDownloadMarked, onOpenNewFolderModal, onOpenRenameModal }) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleNavigate = (event, index) => {
     event.preventDefault();
@@ -16,7 +25,12 @@ export const Options = ({ folders, onClickFolder }) => {
   }
 
   return (
-      <Breadcrumbs aria-label="breadcrumb" className={classes.bread}>
+    <div className='XAlign' style={{ flexWrap: 'nowrap' }}>
+      <Breadcrumbs
+        maxItems={2}
+        aria-label="breadcrumb"
+        className={classes.bread}
+      >
         {folders.map((folder, i) => {
           if (folders.length - 1 > i) {
             return (
@@ -55,6 +69,27 @@ export const Options = ({ folders, onClickFolder }) => {
           }
         })}
       </Breadcrumbs>
+      <div style={{ height: '100%' }} >
+        <Button
+          onClick={handleClick}
+          style={{ height: '100%', borderRadius: '0px' }}
+          startIcon={<MoreVertIcon />}
+          variant='contained'
+          color='primary'
+        >
+          Opções
+        </Button>
+        <StyledMenu
+          id="customized-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          {returnOpcoes(selectedItems, onDownloadMarked, onOpenNewFolderModal, onOpenRenameModal)}
+        </StyledMenu>
+      </div>
+    </div>
   )
 }
 
@@ -72,3 +107,79 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '8px'
   }
 }));
+
+const StyledMenu = withStyles({ paper: { border: '1px solid #d3d4d5', }, })((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    '&:focus': {
+      backgroundColor: theme.palette.primary.main,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white,
+      },
+    },
+  },
+}))(MenuItem);
+
+const returnOpcoes = (selectedItems, onDownloadMarked, onOpenNewFolderModal, onOpenRenameModal) => {
+  return (
+    [
+      <StyledMenuItem disabled={true} onClick={() => { }} style={{ borderBottom: '3px dashed #d3d4d5' }}>
+        <ListItemIcon>
+          {selectedItems.length > 0 ? <FolderIcon fontSize="small" color='primary' /> : <InsertDriveFileIcon fontSize="small" color='primary' />}
+        </ListItemIcon>
+        <ListItemText style={{ color: 'red' }} primary={selectedItems.length > 0 ? `${selectedItems.length} ARQUIVO${selectedItems.length > 1 ? 'S' : ''} SELECIONADO${selectedItems.length > 1 ? 'S' : ''}` : 'ESTA PASTA'} />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={onOpenNewFolderModal}>
+        <ListItemIcon>
+          <CreateNewFolderIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Criar pasta aqui' />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={onDownloadMarked} disabled={selectedItems.length === 0}>
+        <ListItemIcon>
+          <Download fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Fazer download' />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={onOpenRenameModal}>
+        <ListItemIcon>
+          <EditIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={selectedItems.length > 0 ? `Renomear arquivo${selectedItems.length > 1 ? 's' : ''}` : 'Renomear esta pasta'} />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={() => { }}>
+        <ListItemIcon>
+          <MoveToInboxIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={selectedItems.length > 0 ? `Mover arquivo${selectedItems.length > 1 ? 's' : ''}` : 'Mover esta pasta'} />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={() => { }}>
+        <ListItemIcon>
+          <LockIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={selectedItems.length > 0 ? `Bloquear arquivo${selectedItems.length > 1 ? 's' : ''}` : 'Bloquear esta pasta'} />
+      </StyledMenuItem>,
+      <StyledMenuItem onClick={() => { }}>
+        <ListItemIcon>
+          <DeleteIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={selectedItems.length > 0 ? `Apagar arquivo${selectedItems.length > 1 ? 's' : ''}` : 'Apagar esta pasta'} />
+      </StyledMenuItem>
+    ]
+  )
+}
