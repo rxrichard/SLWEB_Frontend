@@ -119,6 +119,7 @@ const Dashboard = () => {
         onOpenModal={handleOpenNewsModal}
         News={news}
       />
+   
       {roleLevel() <= REACT_APP_FRANQUEADO_ROLE_LEVEL ?
         null
         :
