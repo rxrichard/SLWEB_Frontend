@@ -11,7 +11,7 @@ export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
 
   const [activeStep, setActiveStep] = useState(0);
   const [allowEditing, setAllowEditing] = useState(true);
-  const [wait, setWait] = useState(false);
+  // const [wait, setWait] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -92,10 +92,10 @@ export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
   };
 
   const handleClose = () => {
-    if (!wait) {
+    // if (!wait) {
       onClose()
       setAllowEditing(true)
-    }
+    // }
   }
 
   return (
@@ -153,7 +153,7 @@ export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
           >
             {!allowEditing ?
               <Button
-                disabled={wait}
+                disabled={false}
                 onClick={handleDiscardChanges}
                 color="secondary"
                 startIcon={<CloseIcon />}
@@ -165,7 +165,7 @@ export const DetailsModal = ({ open, onClose, FranquiaStatus }) => {
             }
 
             <Button
-              disabled={wait || activeStep === 2}
+              disabled={false}
               onClick={handleChangeEditingState}
               color="primary"
               startIcon={allowEditing ? <EditIcon /> : <SaveIcon />}

@@ -1,12 +1,20 @@
 import React from 'react'
 
 import { makeStyles, withStyles } from '@material-ui/styles';
-import { Typography, Button, Menu, ListItemText, ListItemIcon, MenuItem, Breadcrumbs, Link } from '@material-ui/core';
+import { Typography, Divider, Button, Menu, ListItemText, ListItemIcon, MenuItem, Breadcrumbs, Link } from '@material-ui/core';
 import { Home as HomeIcon, GetApp as Download, MoreVert as MoreVertIcon, Folder as FolderIcon, CreateNewFolder as CreateNewFolderIcon, Edit as EditIcon, MoveToInbox as MoveToInboxIcon, Lock as LockIcon, Delete as DeleteIcon, InsertDriveFile as InsertDriveFileIcon, Backup as BackupIcon, Security as SecurityIcon } from '@material-ui/icons';
 
 import { useFiles } from '../../hooks/useFiles'
 
-export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadModal, onOpenSecurityModal }) => {
+export const Options = ({
+  onOpenNewFolderModal,
+  onOpenRenameModal,
+  onOpenUploadModal,
+  onOpenSecurityModal,
+  onOpenMoveModal,
+  onOpenBlockModal,
+  onOpenDeleteModal
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const {
@@ -32,12 +40,12 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
     setAnchorEl(null);
   };
 
-  const handleNavigate = (event, index) => {
+  const handleNavigate = async (event, index) => {
     event.preventDefault();
 
     let targetFolder = encodeURI(folderPath.slice(0, folderPath.indexOf(folderPath[index]) + 1).toString().replace(/,/g, '\\'))
 
-    onNavigate(targetFolder)
+    await onNavigate(targetFolder)
   }
 
   return (
@@ -103,7 +111,7 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
 
           <StyledMenuItem disabled={true} onClick={() => { }} style={{ borderBottom: '3px dashed #d3d4d5' }}>
             <ListItemIcon>
-              {markedItems.length > 0 ? <FolderIcon fontSize="small" color='primary' /> : <InsertDriveFileIcon fontSize="small" color='primary' />}
+              {markedItems.length > 0 ? <InsertDriveFileIcon fontSize="small" color='primary' /> : <FolderIcon fontSize="small" color='primary' />}
             </ListItemIcon>
             <ListItemText style={{ color: 'red' }} primary={markedItems.length > 0 ? `${markedItems.length} ARQUIVO${markedItems.length > 1 ? 'S' : ''} SELECIONADO${markedItems.length > 1 ? 'S' : ''}` : 'ESTA PASTA'} />
           </StyledMenuItem>
@@ -130,6 +138,8 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
             null
           }
 
+          <Divider />
+
           {shouldEnableNewFolderButton ?
             <StyledMenuItem onClick={onOpenNewFolderModal} disabled={false}>
               <ListItemIcon>
@@ -142,7 +152,7 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
           }
 
           {shouldEnableDownloadButton ?
-            <StyledMenuItem onClick={onDownloadMarkedItems} disabled={false}>
+            <StyledMenuItem onClick={onDownloadMarkedItems} disabled={markedItems.length === 0}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
@@ -152,8 +162,10 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
             null
           }
 
+          <Divider />
+
           {shouldEnableRenameButton ?
-            <StyledMenuItem onClick={onOpenRenameModal} disabled={false}>
+            <StyledMenuItem onClick={onOpenRenameModal} disabled={markedItems.length > 1}>
               <ListItemIcon>
                 <EditIcon fontSize="small" />
               </ListItemIcon>
@@ -164,7 +176,7 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
           }
 
           {shouldEnableMoveButton ?
-            <StyledMenuItem onClick={() => { }} disabled={false} >
+            <StyledMenuItem onClick={onOpenMoveModal} disabled={false} >
               <ListItemIcon>
                 <MoveToInboxIcon fontSize="small" />
               </ListItemIcon>
@@ -175,7 +187,7 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
           }
 
           {shouldEnableBlockButton ?
-            <StyledMenuItem onClick={() => { }} disabled={false} >
+            <StyledMenuItem onClick={onOpenBlockModal} disabled={false} >
               <ListItemIcon>
                 <LockIcon fontSize="small" />
               </ListItemIcon>
@@ -186,7 +198,7 @@ export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadM
           }
 
           {shouldEnableDeleteButton ?
-            <StyledMenuItem onClick={() => { }} disabled={false} >
+            <StyledMenuItem onClick={onOpenDeleteModal} disabled={false} >
               <ListItemIcon>
                 <DeleteIcon fontSize="small" />
               </ListItemIcon>

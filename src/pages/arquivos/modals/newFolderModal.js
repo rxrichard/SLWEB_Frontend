@@ -4,8 +4,6 @@ import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle as
 import { useTheme, withStyles, makeStyles } from '@material-ui/core/styles';
 import { Close as CloseIcon, CreateNewFolder as CreateNewFolderIcon } from '@material-ui/icons';
 
-import { Toast } from '../../../components/toasty'
-
 import { useFiles } from '../../../hooks/useFiles'
 
 export const NewFolderModal = ({ open, onClose }) => {
@@ -13,28 +11,21 @@ export const NewFolderModal = ({ open, onClose }) => {
   const classes = useStyles();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { folderPath }
+    data: { folderPath },
+    actions: { onCreateFolder }
   } = useFiles()
 
   const [wait, setWait] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
 
   const handleSubmit = async () => {
-    alert('continua no backend')
-    //verificar se o nome da pasta é válido(não existe outro no diretório)
-
     setWait(true)
-    let toastId = null
-    toastId = Toast('Enviando...', 'wait')
 
-    try {
-      //fazer request      
+    const res = await onCreateFolder(newFolderName)
 
-      //incluir pasta no array de pastas
-      Toast('Pasta criada com sucesso', 'update', toastId, 'success')
+    if (res === true) {
       handleClose()
-    } catch (err) {
-      Toast('Falha ao criar pasta, tente remover caractéres especiais', 'update', toastId, 'error')
+    } else {
       setWait(false)
     }
   }
@@ -67,7 +58,9 @@ export const NewFolderModal = ({ open, onClose }) => {
             onChange={e => setNewFolderName(e.target.value)}
             disabled={wait}
           />
-          <Typography variant='caption'><strong>Caminho: </strong>{actualFolderFormated(folderPath)}\{newFolderName}</Typography>
+          <Typography variant='caption'>
+            Caminho: <strong>\{actualFolderFormated(folderPath)}\{newFolderName}</strong>
+          </Typography>
         </div>
       </DialogContent>
 

@@ -14,7 +14,7 @@ export const Folder = ({ type, folder }) => {
 
   const handleOpen = async () => {
     if (type === 'folder') {
-      onNavigate(encodeURI(folder.path))
+      await onNavigate(encodeURI(folder.path))
     } else {
       onNavigateBackwards()
     }

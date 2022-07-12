@@ -24,7 +24,8 @@ export const UploadModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { folderPath }
+    data: { folderPath },
+    actions: { onNavigate }
   } = useFiles()
 
   const [wait, setWait] = useState(false)
@@ -32,6 +33,7 @@ export const UploadModal = ({ open, onClose }) => {
 
   const handleSubmit = async () => {
     setWait(true)
+
     const arquivos = getFiles()
     const formData = makeFormData(arquivos)
 
@@ -47,6 +49,7 @@ export const UploadModal = ({ open, onClose }) => {
     let toastId = null
 
     formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
+    formData.append('targetFolder', actualFolderFormated(folderPath))
 
     try {
       toastId = Toast('Enviando...', 'wait')
@@ -59,6 +62,7 @@ export const UploadModal = ({ open, onClose }) => {
       })
 
       Toast('Upload concluído com sucesso', 'update', toastId, 'success')
+      await onNavigate(encodeURI(actualFolderFormated(folderPath)))
       handleClose()
     } catch (err) {
       Toast('Falha no upload', 'update', toastId, 'error')
@@ -151,7 +155,7 @@ export const UploadModal = ({ open, onClose }) => {
                 onChange={() => getFileNames(makeFormData(getFiles()))}
                 multiple={true}
                 name="upload"
-                accept="*"
+                accept="application/pdf, image/png, image/jpeg, video/mp4"
                 label={
                   <div className="XAlign">
                     <Icon>attach_file</Icon>
@@ -182,7 +186,7 @@ export const UploadModal = ({ open, onClose }) => {
             </div>
           </div>
           <Typography variant='subtitle1' style={{ marginTop: '8px' }}>
-            <strong>Upload para: </strong>{actualFolderFormated(folderPath)}\
+            Upload para: <strong>\{actualFolderFormated(folderPath)}\</strong>
           </Typography>
         </div>
       </DialogContent>

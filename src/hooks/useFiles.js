@@ -8,7 +8,6 @@ const FilesContext = createContext()
 
 export const FilesProvider = ({ children }) => {
   const [loaded, setLoaded] = useState(false)
-  const [wait, setWait] = useState(false)
 
   const [arquivos, setArquivos] = useState([])
   const [pastas, setPastas] = useState([])
@@ -27,6 +26,7 @@ export const FilesProvider = ({ children }) => {
   })
 
   const LoadData = async (folder) => {
+
     if (folder !== 'root') {
       setLoaded(false)
     }
@@ -61,8 +61,8 @@ export const FilesProvider = ({ children }) => {
     LoadData('root')
   }, [])
 
-  const handleClickPath = (folder) => {
-    LoadData(folder)
+  const handleClickPath = async (folder) => {
+    await LoadData(folder)
   }
 
   const handleGoBack = () => {
@@ -79,44 +79,60 @@ export const FilesProvider = ({ children }) => {
     LoadData(encodeURI(actualFolder.toString().replace(/,/g, '')))
   }
 
-  const handleBlockPath = async (type, ifFile = null) => {
-    const proceed = window.confirm(`Deseja bloquear ${type === 'folder' ? 'a pasta:' : 'o arquivo:'}  ${type === 'folder' ? folderPath.toString().replace(/,/g, '\\') : ifFile}`)
+  const handleBlockFolderOrMarked = async () => {
+    if (markedItems.length === 0) {
+      await BlockPathOrFile('folder', folderPath.toString().replace(/,/g, '\\'))
+    } else {
+      let baixadosComSucesso = []
 
-    if (proceed) {
-      let toastId = null
-      toastId = Toast('Bloqueando...', 'wait')
+      for (let i = 0; i < markedItems.length; i++) {
+        let downloaded = await BlockPathOrFile('file', markedItems[i].path)
 
-      try {
-        await api.post('/files/permissions/', {
-          path: type === 'folder' ? folderPath.toString().replace(/,/g, '\\') : ifFile,
-          type: type,
-        })
-
-        Toast('Recurso bloqueado', 'update', toastId, 'success')
-        return true
-      } catch (err) {
-        Toast('Recurso já bloqueado ou você não tem permissão para executar a ação', 'update', toastId, 'error')
-        return false
+        if (downloaded) {
+          baixadosComSucesso.push(markedItems[i].path)
+        }
       }
+
+      setMarkedItems(oldState => {
+        let aux = [...oldState].filter(marked => baixadosComSucesso.indexOf(marked.path) === -1)
+
+        return aux
+      })
+    }
+
+    return true
+  }
+
+  const BlockPathOrFile = async (type, path) => {
+    let toastId = null
+    toastId = Toast('Bloqueando...', 'wait')
+
+    try {
+      await api.post('/files/permissions/', {
+        path: path,
+        type: type,
+      })
+
+      Toast('Recurso bloqueado', 'update', toastId, 'success')
+      return true
+    } catch (err) {
+      Toast('Recurso já bloqueado ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+      return false
     }
   }
 
   const handleDelete = async (filepath) => {
-    const proceed = window.confirm(`Deseja apagar o arquivo ${filepath}?`)
+    let toastId = null
+    toastId = Toast('Excluindo...', 'wait')
 
-    if (proceed) {
-      let toastId = null
-      toastId = Toast('Excluindo...', 'wait')
+    try {
+      await api.get(`/files/delete/${encodeURI(filepath)}`)
 
-      try {
-        await api.get(`/files/delete/${encodeURI(filepath)}`)
-
-        Toast('Recurso excluído', 'update', toastId, 'success')
-        return true
-      } catch (err) {
-        Toast('Recurso já excluído ou você não tem permissão para executar a ação', 'update', toastId, 'error')
-        return false
-      }
+      Toast('Recurso excluído', 'update', toastId, 'success')
+      return true
+    } catch (err) {
+      Toast('Recurso já excluído ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+      return false
     }
   }
 
@@ -154,10 +170,9 @@ export const FilesProvider = ({ children }) => {
     }
   }
 
-  const handleDownload = async (filepath) => {
+  const Download = async (filepath) => {
     let toastId = null;
     toastId = Toast("Baixando...", "wait");
-    setWait(true)
 
     try {
       const response = await api.get(`/files/download/${encodeURI(filepath)}`, {
@@ -171,17 +186,15 @@ export const FilesProvider = ({ children }) => {
 
       //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
       saveAs(blob, String(filepath).split('\\')[String(filepath).split('\\').length - 1]);
-      setWait(false)
       return true
     } catch (err) {
       Toast("Falha no download", "update", toastId, "error");
-      setWait(false)
       return false
     }
   }
 
   const handleDownloadMarked = async () => {
-    if(markedItems.length === 0){
+    if (markedItems.length === 0) {
       Toast('Selecione pelo menos um arquivo para ser baixado', 'warn')
       return
     }
@@ -189,7 +202,7 @@ export const FilesProvider = ({ children }) => {
     let baixadosComSucesso = []
 
     for (let i = 0; i < markedItems.length; i++) {
-      let downloaded = await handleDownload(markedItems[i].path)
+      let downloaded = await Download(markedItems[i].path)
 
       if (downloaded) {
         baixadosComSucesso.push(markedItems[i].path)
@@ -203,12 +216,77 @@ export const FilesProvider = ({ children }) => {
     })
   }
 
+  const handleCreateFolder = async (newFolderName) => {
+    if (pastas.filter(f => String(f.folder).trim() === String(newFolderName).trim()).length > 0) {
+      Toast('Essa pasta já existe nesse diretório', 'warn')
+      return
+    }
+
+    if (String(newFolderName).trim() === '') {
+      Toast('Informe o nome da pasta', 'warn')
+      return
+    }
+
+    let toastId = null
+    toastId = Toast('Criando...', 'wait')
+
+    try {
+      //fazer request   
+      await api.post('/files/create/folder', {
+        dirName: encodeURI(String([...folderPath, String(newFolderName).trim()]).toString().replace(/,/g, '\\'))
+      })
+
+      Toast('Pasta criada com sucesso', 'update', toastId, 'success')
+      await handleClickPath(encodeURI(String(folderPath).toString().replace(/,/g, '\\')))
+      return true
+    } catch (err) {
+      Toast('Falha ao criar pasta, tente remover caractéres especiais', 'update', toastId, 'error')
+      return false
+    }
+  }
+
+  const handleRename = async (newName) => {
+    if (String(newName).trim() === '') {
+      Toast(`Informe o nome ${markedItems.length > 0 ? 'do arquivo' : 'da pasta'}`, 'warn')
+      return
+    }
+
+    if (markedItems.length > 0 && arquivos.filter(f => String(f.filename).trim() === String(newName).trim()).length > 0) {
+      Toast('Já existe um arquivo com esse nome', 'warn')
+      return
+    }
+
+    let toastId = null
+    toastId = Toast('Renomeando...', 'wait')
+
+    try {
+      //fazer request   
+      await api.put('/files/rename/', {
+        currPath: markedItems.length > 0 ?
+          encodeURI(markedItems[0].path)
+          :
+          encodeURI(String(folderPath).toString().replace(/,/g, '\\'))
+        ,
+        newPath: markedItems.length > 0 ?
+          encodeURI([...markedItems[0].path.split('\\').slice(0, markedItems[0].path.split('\\').length - 1), newName].toString().replace(/,/g, '\\'))
+          :
+          encodeURI(String([...folderPath.slice(0, folderPath.length - 1), newName]).toString().replace(/,/g, '\\'))
+      })
+
+      Toast(`${markedItems.length > 0 ? 'Arquivo renomeado' : 'Pasta renomeada'} com sucesso`, 'update', toastId, 'success')
+      await handleClickPath(markedItems.length > 0 ? encodeURI(String(folderPath).toString().replace(/,/g, '\\')) : encodeURI(String([...folderPath.slice(0, folderPath.length - 1), newName]).toString().replace(/,/g, '\\')))
+      return true
+    } catch (err) {
+      Toast(`Falha ao renomear ${markedItems.length > 0 ? 'arquivo' : 'pasta'}`, 'update', toastId, 'error')
+      return false
+    }
+  }
+
   return (
     <FilesContext.Provider value={
       {
         uiControl: {
-          loaded,
-          wait
+          loaded
         },
         data: {
           files: arquivos,
@@ -218,14 +296,15 @@ export const FilesProvider = ({ children }) => {
         },
         uiPermissions: shouldShowModals,
         actions: {
-          onDownload: handleDownload,
           onDownloadMarkedItems: handleDownloadMarked,
           onMarkItem: handleCheckItem,
           onMarkAllItems: handleMarkUnmarkAll,
-          onDelete: handleDelete,
-          onBlock: handleBlockPath,
+          onDelete: () => {},
+          onBlock: handleBlockFolderOrMarked,
           onNavigateBackwards: handleGoBack,
           onNavigate: handleClickPath,
+          onCreateFolder: handleCreateFolder,
+          onRename: handleRename
         }
       }
     }>

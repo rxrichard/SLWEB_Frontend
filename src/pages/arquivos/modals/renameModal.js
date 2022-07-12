@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography } from '@material-ui/core/';
 import { useTheme, withStyles, makeStyles } from '@material-ui/core/styles';
@@ -11,20 +11,29 @@ export const RenameModal = ({ open, onClose }) => {
   const classes = useStyles();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { markedItems, folderPath }
+    data: { markedItems, folderPath },
+    actions: { onRename }
   } = useFiles()
 
   const [wait, setWait] = useState(false)
   const [newName, setNewName] = useState('')
 
   const handleSubmit = async () => {
-    alert('continua no backend')
+    setWait(true)
+
+    const res = await onRename(newName)
+
+    if(res ===  true){
+      handleClose()
+    }else{
+      setWait(false)
+    }
   }
 
   const handleClose = () => {
     if (wait) return
     onClose();
-
+    setNewName('')
     setWait(false)
   }
 

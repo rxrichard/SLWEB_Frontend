@@ -98,40 +98,43 @@ export const SecurityModal = ({ open, onClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <List dense={true}>
-          {indexedFolders.map(item => (
-            <ListItem key={item.path}>
-              <ListItemAvatar>
-                <Avatar>
-                  {whichIconShow(item.type)}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={item.path_alias}
-                secondary={item.path}
-              />
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">Grupo</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={Number(item.AccessLevel)}
-                  onChange={(e) => handleUpdateGroup(item, e.target.value)}
-                  disabled={wait || (item.type !== 'file' && item.type !== 'folder')}
-                >
-                  {operType.map(op => (
-                    <MenuItem
-                      key={op.AccessLevel}
-                      value={Number(op.AccessLevel)}
-                    >
-                      {op.Group} - {op.Members}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </ListItem>
-          ))}
-        </List>
+        {indexedFolders.length > 0 ?
+          <List dense={true}>
+            {indexedFolders.map(item => (
+              <ListItem key={item.path}>
+                <ListItemAvatar>
+                  <Avatar>
+                    {whichIconShow(item.type)}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.path_alias}
+                  secondary={item.path}
+                />
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-label">Grupo</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={Number(item.AccessLevel)}
+                    onChange={(e) => handleUpdateGroup(item, e.target.value)}
+                    disabled={wait || (item.type !== 'file' && item.type !== 'folder')}
+                  >
+                    {operType.map(op => (
+                      <MenuItem
+                        key={op.AccessLevel}
+                        value={Number(op.AccessLevel)}
+                      >
+                        {op.Group} - {op.Members}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </ListItem>
+            ))}
+          </List>
+          :
+          <Typography variant='subtitle1'>Aguarde.</Typography>}
       </DialogContent>
     </Dialog>
   );
@@ -186,7 +189,7 @@ const whichIconShow = (type) => {
     case 'UPLOAD_DUMP':
       return <PermMediaIcon color='primary' />
     case 'TRASH_DUMP':
-      return <DeleteIcon  color='primary' />
+      return <DeleteIcon color='primary' />
     case 'file':
       return <DescriptionIcon color='secondary' />
     case 'folder':
