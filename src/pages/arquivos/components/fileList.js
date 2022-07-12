@@ -6,18 +6,18 @@ import { DoneAll as DoneAllIcon, ClearAll as ClearAllIcon } from '@material-ui/i
 
 import { File } from './file'
 
-export const FileList = ({ fileList, onBlock, onDelete, markedItems, onMarkUnmarkAll, onCheckItem }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const FileList = () => {
   const classes = useStyles();
-
-
-
-  // useEffect(() => {
-  //   setMarkedItems([])
-  // }, [fileList])
+  const {
+    data: { files, markedItems },
+    actions: { onMarkAllItems }
+  } = useFiles()
 
   return (
     <section className={classes.container}>
-      {fileList.length === 0 ? (
+      {files.length === 0 ? (
         <>
           <Typography
             align='center'
@@ -32,32 +32,26 @@ export const FileList = ({ fileList, onBlock, onDelete, markedItems, onMarkUnmar
       )
         :
         <List dense className={classes.root}>
-          {fileList.map(f => (
+          {files.map(f => (
             <File
               file={f}
               key={f.path}
-              onMarkItem={onCheckItem}
-              markedItems={markedItems.map(item => item.filename)}
-              onBlock={onBlock}
-              onDelete={onDelete}
             />
           ))}
         </List>
       }
 
-      {fileList.length > 0 ? <Button
+      {files.length > 0 ? <Button
         className={classes.buttonRight}
-        disabled={fileList.length === 0}
-        onClick={onMarkUnmarkAll}
-        startIcon={markedItems.length === fileList.length ? <ClearAllIcon /> : <DoneAllIcon />}
+        disabled={files.length === 0}
+        onClick={onMarkAllItems}
+        startIcon={markedItems.length === files.length ? <ClearAllIcon /> : <DoneAllIcon />}
       >
-        {markedItems.length === fileList.length ? 'Desmarcar todos' : 'Marcar todos'}
+        {markedItems.length === files.length ? 'Desmarcar todos' : 'Marcar todos'}
       </Button>
         :
         null
       }
-
-
     </section>
   )
 }

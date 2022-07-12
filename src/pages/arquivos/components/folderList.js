@@ -4,29 +4,30 @@ import { makeStyles } from '@material-ui/styles'
 
 import { Folder } from './folder'
 
-export const FolderList = ({ folderList, onRequestOpenFolder, goBack, depthLevel }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const FolderList = () => {
   const classes = useStyles();
+  const {
+    data: { folders, folderPath }
+  } = useFiles()
 
   return (
     <section className={classes.folders}>
-      {depthLevel > 1 ?
+      {folderPath.length > 1 ?
         <Folder
           folder={{ folder: 'VOLTAR', path: '' }}
-          onOpenFolder={onRequestOpenFolder}
           type='empty'
-          goBack={goBack}
         />
         :
         null
       }
 
-      {folderList.map(f =>
+      {folders.map(f =>
         <Folder
           key={f.path}
           folder={f}
-          onOpenFolder={onRequestOpenFolder}
           type='folder'
-          goBack={goBack}
         />
       )}
     </section>

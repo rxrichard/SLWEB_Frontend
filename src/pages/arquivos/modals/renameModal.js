@@ -4,12 +4,18 @@ import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle as
 import { useTheme, withStyles, makeStyles } from '@material-ui/core/styles';
 import { Close as CloseIcon, Edit as EditIcon } from '@material-ui/icons';
 
-export const RenameModal = ({ open, onClose, itemsSelecionados, folderPath }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const RenameModal = ({ open, onClose }) => {
   const theme = useTheme();
   const classes = useStyles();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const {
+    data: { markedItems, folderPath }
+  } = useFiles()
 
   const [wait, setWait] = useState(false)
+  const [newName, setNewName] = useState('')
 
   const handleSubmit = async () => {
     alert('continua no backend')
@@ -25,27 +31,34 @@ export const RenameModal = ({ open, onClose, itemsSelecionados, folderPath }) =>
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title" >
       <DialogTitle id="customized-dialog-title" onClose={handleClose} >
-        Renomear {itemsSelecionados.length === 1 ? 'arquivo' : itemsSelecionados.length > 1 ? 'arquivos' : 'pasta'}
+        Renomear {markedItems.length === 1 ? 'arquivo' : markedItems.length > 1 ? 'arquivos' : 'pasta'}
       </DialogTitle>
 
       <DialogContent dividers>
-        <div className='XAlign' style={{ flexWrap: 'nowrap' }}>
+        <div className='YAlign'>
           <TextField
             className={classes.TextInput}
             label="Nome atual"
             variant="outlined"
-            value='Pilao.pdf'
-            onChange={() => { }}
+            value={markedItems.length > 0 ? markedItems[0].filename : folderPath[folderPath.length - 1]}
             disabled={true}
           />
           <TextField
             className={classes.TextInput}
-            label="Novo nome"
+            style={{ marginTop: '8px' }}
+            label="Insira novo nome"
             variant="outlined"
-            value=''
-            onChange={() => { }}
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
             disabled={false}
           />
+          {markedItems.length > 0 ?
+            <Typography variant='caption'>
+              *Alterar a extensão do arquivo pode torná-lo inutilizável
+            </Typography>
+            :
+            null
+          }
         </div>
       </DialogContent>
 

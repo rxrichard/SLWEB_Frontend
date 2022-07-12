@@ -14,13 +14,18 @@ import {
 import { useTheme, withStyles, } from '@material-ui/core/styles';
 import { Close as CloseIcon, Backup as BackupIcon } from '@material-ui/icons';
 import { Icon } from "react-materialize";
-
 import NewFileInput from '../../../components/FileInput'
+
 import { Toast } from '../../../components/toasty'
+
+import { useFiles } from '../../../hooks/useFiles'
 
 export const UploadModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const {
+    data: { folderPath }
+  } = useFiles()
 
   const [wait, setWait] = useState(false)
   const [fileNames, setFileNames] = useState([])
@@ -90,6 +95,10 @@ export const UploadModal = ({ open, onClose }) => {
     setFileNames(aux)
   }
 
+  const actualFolderFormated = (AF) => {
+    return String(AF).toString().replace(/,/g, '\\')
+  }
+
   const handleClose = () => {
     if (wait) return
     onClose();
@@ -142,7 +151,7 @@ export const UploadModal = ({ open, onClose }) => {
                 onChange={() => getFileNames(makeFormData(getFiles()))}
                 multiple={true}
                 name="upload"
-                accept="application/pdf, image/png, image/jpeg"
+                accept="*"
                 label={
                   <div className="XAlign">
                     <Icon>attach_file</Icon>
@@ -172,6 +181,9 @@ export const UploadModal = ({ open, onClose }) => {
               </ul>
             </div>
           </div>
+          <Typography variant='subtitle1' style={{ marginTop: '8px' }}>
+            <strong>Upload para: </strong>{actualFolderFormated(folderPath)}\
+          </Typography>
         </div>
       </DialogContent>
 

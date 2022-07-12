@@ -26,6 +26,8 @@ import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import Arquivos from '../../pages/arquivos/index'
 import Franqueados from '../../pages/franqueados'
 
+import { FilesProvider } from '../../hooks/useFiles'
+
 function Dashboard(props) {
   return (
     <div
@@ -57,7 +59,12 @@ function Dashboard(props) {
             <Route exact path={validateRouteAccess("/pontodevenda/:ativo")} component={PDV} />
             <Route exact path={validateRouteAccess("/clientes")} component={Clientes} />
             <Route exact path={validateRouteAccess("/monitor")} component={Monitor} />
-            <Route exact path={validateRouteAccess("/arquivos")} component={Arquivos} />
+            <Route exact path={validateRouteAccess("/arquivos")} component={
+              () =>
+                <FilesProvider>
+                  <Arquivos />
+                </FilesProvider>
+            } />
 
             <Route exact path={validateRouteAccess("/administracao/solicitacao/management")} component={GerenciarEquip} />
             <Route exact path={validateRouteAccess("/administracao/formularios")} component={FormsAcompanhamento} />

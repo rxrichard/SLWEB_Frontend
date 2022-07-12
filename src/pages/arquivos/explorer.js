@@ -5,25 +5,13 @@ import { makeStyles } from "@material-ui/core";
 import { FolderList } from './components/folderList'
 import { FileList } from './components/fileList'
 
-export const Explorer = ({ Arquivos, Pastas, navigateToTargetFolder, goBack, depthLevel, onBlock, onDelete, markedItems, onMarkUnmarkAll, onCheckItem }) => {
+export const Explorer = () => {
   const classes = useStyles();
 
   return (
     <div className={classes.container}>
-      <FolderList
-        folderList={Pastas}
-        onRequestOpenFolder={navigateToTargetFolder}
-        goBack={goBack}
-        depthLevel={depthLevel}
-      />
-      <FileList
-        fileList={Arquivos}
-        onBlock={onBlock}
-        onDelete={onDelete}
-        markedItems={markedItems} 
-        onMarkUnmarkAll={onMarkUnmarkAll} 
-        onCheckItem={onCheckItem}
-      />
+      <FolderList />
+      <FileList />
     </div>
   )
 }
