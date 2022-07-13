@@ -23,7 +23,7 @@ import Coletas from '../../pages/consultaColetas/index'
 import PDV from '../../pages/pontosDeVenda/index'
 import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
-
+import TelaCarrinho from '../../pages/compras/CarrinhoDeCompras'
 function Dashboard(props) {
   return (
     <div
@@ -58,6 +58,7 @@ function Dashboard(props) {
             <Route exact path="/pontodevenda" component={PDV} />
             <Route exact path="/clientes" component={Clientes} />
             <Route exact path="/monitor" component={Monitor} />
+            <Route exact path="/carrinho" component={TelaCarrinho} />
             <Route path="*" component={notFound} />
           </Switch>
         </div>

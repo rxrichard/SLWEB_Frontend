@@ -63,21 +63,6 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
     // eslint-disable-next-line
   }, [open])
 
-  const updateChecked = (SelectedIDs) => {
-    let naoMarcados = [];
-
-    CarrinhoFormatado.forEach((prod) => {
-      if (SelectedIDs.indexOf(prod.id) === -1) naoMarcados.push(prod.id);
-    });
-
-    let CheckedSemNaoMarcados = Checked.filter(
-      (check) => naoMarcados.indexOf(check) === -1
-    );
-
-    // Basicamente: Carrinho U Checked - CarrinhoNãoMarcados
-    const newChecked = [...CheckedSemNaoMarcados, ...SelectedIDs];
-    SetCheckedProd(newChecked);
-  };
 
   const handleBuy = async (event) => {
     const LoadDTO = {
@@ -213,9 +198,7 @@ const CarrinhoModal = ({ open, onClose, desconto, ...props }) => {
             onCellEditCommit={(params, event) => {
               SetBuyQtt(params);
             }}
-            onSelectionModelChange={(SelectedIDs) => {
-              updateChecked(SelectedIDs);
-            }}
+            
           />
         </div>
       </DialogContent>

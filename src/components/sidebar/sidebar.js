@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { api } from "../../services/api";
 
 import {
   makeStyles,
@@ -19,28 +18,9 @@ import {
 import {
   ChevronLeft,
   Menu,
-  CollectionsBookmark,
-  Assignment,
-  Person,
-  PersonPinCircle,
-  ExitToApp,
-  ShoppingCart,
-  Help,
-  AddShoppingCart,
-  Kitchen,
-  PermContactCalendar,
-  SyncAlt as SyncAltIcon,
-  EmojiFoodBeverage,
-  AssignmentInd,
-  CompassCalibration,
-  MailOutline,
-  StoreMallDirectory,
-  SupervisedUserCircle,
 } from "@material-ui/icons/";
-import MenuItem from "@material-ui/core/MenuItem";
-import Badge from "@material-ui/core/Badge";
 
-import { roleLevel } from "../../misc/commom_functions";
+import { roleLevel, navigateTo } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
 import { RED_PRIMARY, GREY_LIGHT, GREY_SECONDARY } from "../../misc/colors";
 
@@ -54,8 +34,8 @@ const drawerWidthCell = 200;
 export default function MiniDrawer() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-  const stylePC = useStyles_FULL();
-  const styleCELL = useStyles_CELL();
+  const stylePC = useStyles_FULL()
+  const styleCELL = useStyles_CELL()
 
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -63,7 +43,7 @@ export default function MiniDrawer() {
 
   useEffect(() => {
     setClasses(isMdUp ? stylePC : styleCELL);
-  }, [isMdUp, stylePC, styleCELL]);
+  }, [isMdUp, stylePC, styleCELL])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -103,52 +83,26 @@ export default function MiniDrawer() {
           >
             <Menu fontSize="large" />
           </IconButton>
-          <div />
-        
+          <Helpers />
+
           <Link
+            onClick={() => navigateTo('link', "/")}
             to="/"
             style={{ color: roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? GREY_SECONDARY : "#FFF", }}
           >
-              <div style={{ display: "flex" }}>
-              <MenuItem style={{ margin: "0 10px" }}>
-                <Link
-                  to="/compras/carrinho"
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  title="Carrinho"
-                >
-                  <IconButton color="inherit">
-                    <Badge badgeContent={10} color="primary">
-                      <ShoppingCart />
-                    </Badge>
-                  </IconButton>
-                  <p>Carrinho</p>
-                </Link>
-              </MenuItem>
-          <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-end'}}>
             <Typography
-              color={
-                roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL
-                  ? "primary"
-                  : "default"
-              }
+              color={roleLevel() > REACT_APP_FRANQUEADO_ROLE_LEVEL ? "primary" : "default"}
               variant="subtitle2"
               style={{
                 whiteSpace: 'noWrap'
               }}
             >
-              {sessionStorage.getItem("usuário")}
+              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
             </Typography>
+
             <Typography variant="h6">SLAPLIC</Typography>
-            </div>
-            </div>
             {/* <img style={{ height: "64px" }} src={Logo} alt="Inicio" /> */}
           </Link>
-          
         </Toolbar>
       </AppBar>
       <Drawer
@@ -174,9 +128,9 @@ export default function MiniDrawer() {
   );
 }
 
-const useStyles_CELL = makeStyles((theme) => ({
+const useStyles_CELL = makeStyles(theme => ({
   root: {
-    display: "flex",
+    display: "flex"
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -185,16 +139,16 @@ const useStyles_CELL = makeStyles((theme) => ({
   },
   drawer: {
     flexShrink: 0,
-    width: drawerWidthCell,
+    width: drawerWidthCell
   },
   drawerPaper: {
-    width: drawerWidthCell,
+    width: drawerWidthCell
   },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
+      display: "none"
+    }
   },
   toolbar: {
     display: "flex",
@@ -207,8 +161,8 @@ const useStyles_CELL = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
-  },
+    padding: theme.spacing(3)
+  }
 }));
 
 const useStyles_FULL = makeStyles((theme) => ({

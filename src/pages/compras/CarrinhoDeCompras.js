@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Exemplo() {
+function CarrinhoCompras() {
   const [loaded, setLoaded] = useState(false);
 
   const [age, setAge] = React.useState("");
@@ -102,37 +102,6 @@ function Exemplo() {
               </BoxDetailProduct>
             </BoxProduct> */}
 
-    <Card className={classes.root}>
-      <CardActionArea style={{display:'flex', border:'1px solid #000'}}>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="80"
-          width="80"
-          image="http://plone.ufpb.br/labeet/contents/paginas/acervo-brazinst/copy_of_cordofones/udecra/sem-imagem.jpg/@@images/a74f5e97-d7f8-434c-add1-2954494f51cd.jpeg"
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Chocolate Pão de Queijo
-          </Typography>
-          <div style={{flex:'1', display:'flex',}}>
-            <div>
-              <Text>Valor unitário: R$ 1,00</Text>
-            </div>
-            <div>
-            <Text>Quantidade: 1</Text>
-              </div>
-          </div>
-
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button color="primary" style={{height:'115%', width:'60px', borderLeft:'1px solid #000'}}>
-           <CancelIcon size='large'/>
-        </Button>
-      </CardActions>
-    </Card>
 
 
     <Card className={classes.root}>
@@ -224,4 +193,4 @@ function Exemplo() {
   );
 }
 
-export default Exemplo;
+export default CarrinhoCompras;

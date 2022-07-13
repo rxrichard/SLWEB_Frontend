@@ -89,18 +89,16 @@ export const FilialSelectionModal = ({ open, onClose }) => {
     onClose()
   }
 
-
-function ModalPersonalizado(props) {
   return (
     <div>
       <Dialog
-        open={props.open}
-        onClose={props.onClose}
+        open={open}
+        onClose={handleClose}
         PaperComponent={PaperComponent}
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {props.title}
+          Filiais
         </DialogTitle>
 
         <DialogContent>
@@ -111,7 +109,7 @@ function ModalPersonalizado(props) {
             }}
           >
             <TextField
-              onChange={e => props.onFilter(e.target.value, e)}
+              onChange={e => setFilterWord(e.target.value)}
               type="text"
               label='Procurar'
               autoFocus
@@ -124,28 +122,44 @@ function ModalPersonalizado(props) {
                 minWidth: '400px'
               }}
             >
-              {props.Filiais.length === 0 ?
+              {returnFilteredFranquadosList(filiais, filterWord).length === 0 ?
                 <ListItem button onClick={() => { }}>
                   <ListItemText primary='' />
                   <ListItemText primary='Carregando Filiais...' />
                 </ListItem>
                 :
-                props.Filiais.map((filial, index) => (
-                  <>
-                    <ListItem button onClick={() => props.onSelect(filial.M0_CODFIL)}>
+                returnFilteredFranquadosList(filiais, filterWord).map((filial, index) => (
+                  <div
+                    key={filial.M0_CODFIL}
+                  >
+                    <ListItem
+                      button
+                      onClick={() => handleSwitchFilial(filial.M0_CODFIL)}
+                    >
                       <ListItemText primary={filial.M0_CODFIL} />
                       <ListItemText primary={filial.GrupoVenda} />
                     </ListItem>
                     <Divider />
-                  </>
+                  </div>
                 ))}
             </List>
           </div>
         </DialogContent>
         <DialogActions style={{ padding: '8px 24px' }}>
-          <Button onClick={props.onClose} color="primary">
-            Fechar
-          </Button>
+          <div className="XAlign" style={{ justifyContent: 'space-between' }}>
+            {sessionStorage.getItem("filial_logada") === 'true' ?
+              (
+                <Button onClick={handleLogoutFilial} color="primary">
+                  Logout Filial
+                </Button>
+              )
+              :
+              <div />
+            }
+            <Button onClick={handleClose} color="primary">
+              Fechar
+            </Button>
+          </div>
         </DialogActions>
       </Dialog>
     </div>
@@ -178,4 +192,4 @@ const returnFilteredFranquadosList = (franqueados, filterString) => {
       return false
     }
   })
-}}
+}
