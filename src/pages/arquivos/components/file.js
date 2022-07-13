@@ -2,41 +2,16 @@ import React from 'react'
 
 import { makeStyles } from "@material-ui/styles";
 import { ListItem, ListItemIcon, Checkbox, Avatar, ListItemText, ListItemAvatar } from "@material-ui/core";
-import {
-  Work as WorkIcon,
-  Image as ImageIcon,
-  Movie as MovieIcon,
-  Audiotrack as AudiotrackIcon,
-  SlowMotionVideo as SlowMotionVideoIcon,
-  MoveToInbox as MoveToInboxIcon,
-  Description as DescriptionIcon,
-  FormatAlignLeft as FormatAlignLeftIcon,
-  FormatListNumbered as FormatListNumberedIcon,
-  ContactSupport as ContactSupportIcon
-} from "@material-ui/icons";
+import { Work as WorkIcon, Image as ImageIcon, Movie as MovieIcon, Audiotrack as AudiotrackIcon, SlowMotionVideo as SlowMotionVideoIcon, MoveToInbox as MoveToInboxIcon, Description as DescriptionIcon, FormatAlignLeft as FormatAlignLeftIcon, FormatListNumbered as FormatListNumberedIcon, ContactSupport as ContactSupportIcon } from "@material-ui/icons";
 
-export const File = ({ file, onMarkItem, markedItems }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const File = ({ file }) => {
   const classes = useStyles();
-
-  // const handleDownload = async () => {
-  //   onDownloadFile(file.path)
-  // }
-
-  // const handleDelete = async () => {
-  //   const ret = await onDelete(file.path)
-
-  //   if (ret) {
-  //     setApagado(true)
-  //   }
-  // }
-
-  // const handleLock = async () => {
-  //   const ret = await onBlock('file', file.path)
-
-  //   if (ret) {
-  //     setBloqueado(true)
-  //   }
-  // }
+  const {
+    actions: { onMarkItem },
+    data: { markedItems }
+  } = useFiles()
 
   const handleMark = () => {
     onMarkItem(file)
@@ -48,7 +23,7 @@ export const File = ({ file, onMarkItem, markedItems }) => {
         <Checkbox
           className={classes.checkbox}
           edge="start"
-          checked={markedItems.indexOf(file.filename) >= 0}
+          checked={markedItems.map(item => item.filename).indexOf(file.filename) >= 0}
           tabIndex={-1}
           disableRipple
         />

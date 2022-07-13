@@ -99,6 +99,7 @@ function LeadList(props) {
                       color='primary'
                       startIcon={<ContactPhoneIcon />}
                       disabled={le.status === 'Desistido' || le.status === 'Expirado'}
+                      style={{ whiteSpace: 'nowrap' }}
                     >
                       {whichButtonDescToShow(le.status)}
                     </Button>

@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
 import { List, Divider, ListItem, ListItemIcon, ListItemText } from "@material-ui/core/";
@@ -11,6 +12,8 @@ import { navigateTo } from "../../misc/commom_functions";
 export const SidebarLinks = ({ onCloseDrawer, onOpenFiliaisModal }) => {
 
   const Links = JSON.parse(window.sessionStorage.getItem('links'))
+
+  let path = useLocation().pathname
 
   const handleLogout = () => {
     window.sessionStorage.clear();
@@ -35,7 +38,7 @@ export const SidebarLinks = ({ onCloseDrawer, onOpenFiliaisModal }) => {
         <List>
           {Links.map(sess => (
             <>
-              {sess.map(lnk => whichLinkDisplay(lnk, onOpenFiliaisModal, onCloseDrawer))}
+              {sess.map(lnk => whichLinkDisplay(lnk, onOpenFiliaisModal, onCloseDrawer, path))}
               <Divider />
             </>
           ))}
@@ -67,7 +70,8 @@ export const SidebarLinks = ({ onCloseDrawer, onOpenFiliaisModal }) => {
   )
 }
 
-const whichLinkDisplay = (link, onOpenFiliaisModal, onCloseDrawer) => {
+const whichLinkDisplay = (link, onOpenFiliaisModal, onCloseDrawer, actualPath) => {
+
   if (link.Descricao === 'Filiais') {
     //se for o botão filiais
 
@@ -91,7 +95,7 @@ const whichLinkDisplay = (link, onOpenFiliaisModal, onCloseDrawer) => {
       >
         <ListItem button onClick={onCloseDrawer}>
           <ListItemIcon>
-            <Icon>{link.Icon}</Icon>
+            <Icon color={String(actualPath).includes(link.Link) ? 'primary' : 'secondary'}>{link.Icon}</Icon>
           </ListItemIcon>
 
           <ListItemText primary={link.Descricao} />
@@ -110,7 +114,7 @@ const whichLinkDisplay = (link, onOpenFiliaisModal, onCloseDrawer) => {
       >
         <ListItem button onClick={onCloseDrawer}>
           <ListItemIcon>
-            <Icon>{link.Icon}</Icon>
+            <Icon color={String(actualPath).includes(link.Link) ? 'primary' : 'secondary'}>{link.Icon}</Icon>
           </ListItemIcon>
 
           <ListItemText primary={link.Descricao} />

@@ -4,14 +4,19 @@ import { makeStyles } from "@material-ui/styles";
 import { Typography } from "@material-ui/core";
 import { FolderOpen as FolderOpenIcon, KeyboardReturn as KeyboardReturnIcon, FolderShared as FolderSharedIcon, Delete as DeleteIcon, PermMedia as PermMediaIcon } from '@material-ui/icons'
 
-export const Folder = ({ folder, onOpenFolder, type, goBack }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const Folder = ({ type, folder }) => {
   const classes = useStyles();
+  const {
+    actions: { onNavigate, onNavigateBackwards }
+  } = useFiles()
 
   const handleOpen = async () => {
     if (type === 'folder') {
-      onOpenFolder(encodeURI(folder.path))
+      await onNavigate(encodeURI(folder.path))
     } else {
-      goBack()
+      onNavigateBackwards()
     }
   }
 

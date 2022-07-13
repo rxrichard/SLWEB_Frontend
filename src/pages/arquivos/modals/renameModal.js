@@ -1,51 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography } from '@material-ui/core/';
 import { useTheme, withStyles, makeStyles } from '@material-ui/core/styles';
 import { Close as CloseIcon, Edit as EditIcon } from '@material-ui/icons';
 
-export const RenameModal = ({ open, onClose, itemsSelecionados, folderPath }) => {
+import { useFiles } from '../../../hooks/useFiles'
+
+export const RenameModal = ({ open, onClose }) => {
   const theme = useTheme();
   const classes = useStyles();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const {
+    data: { markedItems, folderPath },
+    actions: { onRename }
+  } = useFiles()
 
   const [wait, setWait] = useState(false)
+  const [newName, setNewName] = useState('')
 
   const handleSubmit = async () => {
-    alert('continua no backend')
+    setWait(true)
+
+    const res = await onRename(newName)
+
+    if(res ===  true){
+      handleClose()
+    }else{
+      setWait(false)
+    }
   }
 
   const handleClose = () => {
     if (wait) return
     onClose();
-
+    setNewName('')
     setWait(false)
   }
 
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title" >
       <DialogTitle id="customized-dialog-title" onClose={handleClose} >
-        Renomear {itemsSelecionados.length === 1 ? 'arquivo' : itemsSelecionados.length > 1 ? 'arquivos' : 'pasta'}
+        Renomear {markedItems.length === 1 ? 'arquivo' : markedItems.length > 1 ? 'arquivos' : 'pasta'}
       </DialogTitle>
 
       <DialogContent dividers>
-        <div className='XAlign' style={{ flexWrap: 'nowrap' }}>
+        <div className='YAlign'>
           <TextField
             className={classes.TextInput}
             label="Nome atual"
             variant="outlined"
-            value='Pilao.pdf'
-            onChange={() => { }}
+            value={markedItems.length > 0 ? markedItems[0].filename : folderPath[folderPath.length - 1]}
             disabled={true}
           />
           <TextField
             className={classes.TextInput}
-            label="Novo nome"
+            style={{ marginTop: '8px' }}
+            label="Insira novo nome"
             variant="outlined"
-            value=''
-            onChange={() => { }}
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
             disabled={false}
           />
+          {markedItems.length > 0 ?
+            <Typography variant='caption'>
+              *Alterar a extensão do arquivo pode torná-lo inutilizável
+            </Typography>
+            :
+            null
+          }
         </div>
       </DialogContent>
 
