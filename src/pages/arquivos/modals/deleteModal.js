@@ -10,13 +10,22 @@ export const DeleteModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { markedItems }
+    data: { markedItems, folderPath },
+    actions: { onDelete }
   } = useFiles();
 
   const [wait, setWait] = useState(false)
 
   const handleSubmit = async () => {
-    alert('continua no backend')
+    setWait(true)
+
+    const res = await onDelete()
+
+    if (res === true) {
+      handleClose()
+    } else {
+      setWait(false)
+    }
   }
 
   const handleClose = () => {
@@ -26,6 +35,10 @@ export const DeleteModal = ({ open, onClose }) => {
     setWait(false)
   }
 
+  const actualFolderFormated = (AF) => {
+    return String(AF).toString().replace(/,/g, '\\')
+  }
+
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title" >
       <DialogTitle id="customized-dialog-title" onClose={handleClose} >
@@ -33,7 +46,23 @@ export const DeleteModal = ({ open, onClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-
+        <Typography variant='body1' gutterBottom>
+          Você está apagando {markedItems.length === 1 ? 'o arquivo' : markedItems.length > 1 ? 'os arquivos' : 'a pasta'}:
+        </Typography>
+        {markedItems.length > 0 ?
+          markedItems.map(item => (
+            <Typography variant='subtitle1' gutterBottom>
+              <strong>{actualFolderFormated(item.filename)}</strong>
+            </Typography>
+          ))
+          :
+          <Typography variant='subtitle1' gutterBottom>
+            <strong>\{actualFolderFormated(folderPath)}\</strong>
+          </Typography>
+        }
+        <Typography variant='caption'>
+          *{markedItems.length > 0 ? 'O arquivo' : 'A pasta'} será {markedItems.length > 0 ? 'movido' : 'movida'} para lixeira e apenas um administrador poderá recupera-{markedItems.length > 0 ? 'lo' : 'la'}.
+        </Typography>
       </DialogContent>
 
       <DialogActions>

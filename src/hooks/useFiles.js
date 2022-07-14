@@ -79,22 +79,22 @@ export const FilesProvider = ({ children }) => {
     LoadData(encodeURI(actualFolder.toString().replace(/,/g, '')))
   }
 
-  const handleBlockFolderOrMarked = async () => {
+  const handleBlockFileOrFolderMarked = async () => {
     if (markedItems.length === 0) {
       await BlockPathOrFile('folder', folderPath.toString().replace(/,/g, '\\'))
     } else {
-      let baixadosComSucesso = []
+      let bloqueadoComSucesso = []
 
       for (let i = 0; i < markedItems.length; i++) {
         let downloaded = await BlockPathOrFile('file', markedItems[i].path)
 
         if (downloaded) {
-          baixadosComSucesso.push(markedItems[i].path)
+          bloqueadoComSucesso.push(markedItems[i].path)
         }
       }
 
       setMarkedItems(oldState => {
-        let aux = [...oldState].filter(marked => baixadosComSucesso.indexOf(marked.path) === -1)
+        let aux = [...oldState].filter(marked => bloqueadoComSucesso.indexOf(marked.path) === -1)
 
         return aux
       })
@@ -121,7 +121,39 @@ export const FilesProvider = ({ children }) => {
     }
   }
 
-  const handleDelete = async (filepath) => {
+  const handleDeleteFileOrFolderMarked = async () => {
+    if (markedItems.length === 0) {
+      await Delete(folderPath.toString().replace(/,/g, '\\'))
+
+      await handleClickPath(encodeURI(String(folderPath.slice(0, folderPath.length - 1)).toString().replace(/,/g, '\\')))
+    } else {
+      let excluidoComSucesso = []
+
+      for (let i = 0; i < markedItems.length; i++) {
+        let downloaded = await Delete(markedItems[i].path)
+        
+        if (downloaded) {
+          excluidoComSucesso.push(markedItems[i].path)
+        }
+      }
+      
+      setArquivos(oldState => {
+        let aux = [...oldState].filter(marked => excluidoComSucesso.indexOf(marked.path) === -1)
+        
+        return aux
+      })
+
+      setMarkedItems(oldState => {
+        let aux = [...oldState].filter(marked => excluidoComSucesso.indexOf(marked.path) === -1)
+  
+        return aux
+      })
+    }
+
+    return true
+  }
+
+  const Delete = async (filepath) => {
     let toastId = null
     toastId = Toast('Excluindo...', 'wait')
 
@@ -299,8 +331,8 @@ export const FilesProvider = ({ children }) => {
           onDownloadMarkedItems: handleDownloadMarked,
           onMarkItem: handleCheckItem,
           onMarkAllItems: handleMarkUnmarkAll,
-          onDelete: () => {},
-          onBlock: handleBlockFolderOrMarked,
+          onDelete: handleDeleteFileOrFolderMarked,
+          onBlock: handleBlockFileOrFolderMarked,
           onNavigateBackwards: handleGoBack,
           onNavigate: handleClickPath,
           onCreateFolder: handleCreateFolder,
