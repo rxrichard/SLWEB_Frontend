@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../../../services/api'
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle as MuiDialogTitle,
-  useMediaQuery,
-  IconButton,
-  Typography,
-} from '@material-ui/core/';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle as MuiDialogTitle, useMediaQuery, IconButton, Typography, } from '@material-ui/core/';
 import { useTheme, withStyles, } from '@material-ui/core/styles';
 import { Close as CloseIcon, Backup as BackupIcon } from '@material-ui/icons';
 import { Icon } from "react-materialize";
@@ -24,7 +15,7 @@ export const UploadModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { folderPath },
+    data: { formatedFolderPath },
     actions: { onNavigate }
   } = useFiles()
 
@@ -49,7 +40,7 @@ export const UploadModal = ({ open, onClose }) => {
     let toastId = null
 
     formData.append('multiple', qtdArquivos > 1 ? "S" : "N")
-    formData.append('targetFolder', actualFolderFormated(folderPath))
+    formData.append('targetFolder', formatedFolderPath)
 
     try {
       toastId = Toast('Enviando...', 'wait')
@@ -62,7 +53,7 @@ export const UploadModal = ({ open, onClose }) => {
       })
 
       Toast('Upload concluído com sucesso', 'update', toastId, 'success')
-      await onNavigate(encodeURI(actualFolderFormated(folderPath)))
+      await onNavigate(encodeURI(formatedFolderPath))
       handleClose()
     } catch (err) {
       Toast('Falha no upload', 'update', toastId, 'error')
@@ -97,10 +88,6 @@ export const UploadModal = ({ open, onClose }) => {
       aux.push(FormData.getAll('formData')[i].name)
     }
     setFileNames(aux)
-  }
-
-  const actualFolderFormated = (AF) => {
-    return String(AF).toString().replace(/,/g, '\\')
   }
 
   const handleClose = () => {
@@ -186,7 +173,7 @@ export const UploadModal = ({ open, onClose }) => {
             </div>
           </div>
           <Typography variant='subtitle1' style={{ marginTop: '8px' }}>
-            Upload para: <strong>\{actualFolderFormated(folderPath)}\</strong>
+            Upload para: <strong>\{formatedFolderPath}\</strong>
           </Typography>
         </div>
       </DialogContent>
