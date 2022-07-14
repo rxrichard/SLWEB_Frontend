@@ -26,7 +26,7 @@ function News({ onOpenModal, News }) {
             image={
               <img
                 alt=""
-                src={`https://source.unsplash.com/1280x720/?coffee/${n.NewsId}`}
+                src={`https://source.unsplash.com/1280x720/?coffee-maker/${n.NewsId}`}
               // src={`https://source.unsplash.com/random/1280x720?sig=${n.NewsId}`}
               />
             }

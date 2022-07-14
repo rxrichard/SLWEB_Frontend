@@ -54,7 +54,7 @@ function TransferList(props) {
                 <Box key={i}>
                   <Codigo>Código: {prod.Cód}</Codigo>
                   <Image>
-                    <img src={imagem()} alt="teste" />
+                    <img src={imagem()} alt={prod.Produto} />
                   </Image>
                   <Text>{prod.Produto}</Text>
                   <Title>

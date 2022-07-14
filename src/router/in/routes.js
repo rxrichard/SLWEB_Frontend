@@ -24,11 +24,6 @@ import PDV from '../../pages/pontosDeVenda/index'
 import Clientes from '../../pages/clientes'
 import GerirLeads from '../../pages/gerirLeads/index'
 import TelaCarrinho from '../../pages/compras/CarrinhoDeCompras'
-import PedidosCompra from '../../pages/pedidosDeCompra/index'
-import Arquivos from '../../pages/arquivos/index'
-import Franqueados from '../../pages/franqueados'
-
-import { FilesProvider } from '../../hooks/useFiles'
 
 function Dashboard(props) {
   return (
