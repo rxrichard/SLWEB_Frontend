@@ -103,22 +103,29 @@ export const FilesProvider = ({ children }) => {
     return true
   }
 
-  const BlockPathOrFile = async (type, path) => {
-    let toastId = null
-    toastId = Toast('Bloqueando...', 'wait')
+  const handleMoveFileOrFolderMarked = async (OP, NP) => {
+    if (markedItems.length === 0) {
+      await Move(OP, NP)
+    } else {
+      let movidoComSucesso = []
 
-    try {
-      await api.post('/files/permissions/', {
-        path: path,
-        type: type,
+      for (let i = 0; i < markedItems.length; i++) {
+        let movido = await Move(markedItems[i].path, `${NP}\\${markedItems[i].filename}`)
+
+        if (movido) {
+          movidoComSucesso.push(markedItems[i].path)
+        }
+      }
+
+      setMarkedItems(oldState => {
+        let aux = [...oldState].filter(marked => movidoComSucesso.indexOf(marked.path) === -1)
+
+        return aux
       })
-
-      Toast('Recurso bloqueado', 'update', toastId, 'success')
-      return true
-    } catch (err) {
-      Toast('Recurso já bloqueado ou você não tem permissão para executar a ação', 'update', toastId, 'error')
-      return false
     }
+
+    await handleClickPath(markedItems.length > 0 ? encodeURI(String(folderPath).toString().replace(/,/g, '\\')) : encodeURI(String(folderPath.slice(0, folderPath.length - 1)).toString().replace(/,/g, '\\')))
+    return true
   }
 
   const handleDeleteFileOrFolderMarked = async () => {
@@ -131,41 +138,26 @@ export const FilesProvider = ({ children }) => {
 
       for (let i = 0; i < markedItems.length; i++) {
         let downloaded = await Delete(markedItems[i].path)
-        
+
         if (downloaded) {
           excluidoComSucesso.push(markedItems[i].path)
         }
       }
-      
+
       setArquivos(oldState => {
         let aux = [...oldState].filter(marked => excluidoComSucesso.indexOf(marked.path) === -1)
-        
+
         return aux
       })
 
       setMarkedItems(oldState => {
         let aux = [...oldState].filter(marked => excluidoComSucesso.indexOf(marked.path) === -1)
-  
+
         return aux
       })
     }
 
     return true
-  }
-
-  const Delete = async (filepath) => {
-    let toastId = null
-    toastId = Toast('Excluindo...', 'wait')
-
-    try {
-      await api.get(`/files/delete/${encodeURI(filepath)}`)
-
-      Toast('Recurso excluído', 'update', toastId, 'success')
-      return true
-    } catch (err) {
-      Toast('Recurso já excluído ou você não tem permissão para executar a ação', 'update', toastId, 'error')
-      return false
-    }
   }
 
   const handleCheckItem = (item) => {
@@ -199,29 +191,6 @@ export const FilesProvider = ({ children }) => {
       setMarkedItems([])
     } else {
       setMarkedItems(arquivos)
-    }
-  }
-
-  const Download = async (filepath) => {
-    let toastId = null;
-    toastId = Toast("Baixando...", "wait");
-
-    try {
-      const response = await api.get(`/files/download/${encodeURI(filepath)}`, {
-        responseType: "arraybuffer",
-      })
-
-      Toast("Download concluído", "update", toastId, "success");
-
-      //Converto o PDF para BLOB
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
-
-      //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
-      saveAs(blob, String(filepath).split('\\')[String(filepath).split('\\').length - 1]);
-      return true
-    } catch (err) {
-      Toast("Falha no download", "update", toastId, "error");
-      return false
     }
   }
 
@@ -314,6 +283,84 @@ export const FilesProvider = ({ children }) => {
     }
   }
 
+  const actualFolderFormated = (AF) => {
+    return String(AF).toString().replace(/,/g, '\\')
+  }
+
+  const BlockPathOrFile = async (type, path) => {
+    let toastId = null
+    toastId = Toast('Bloqueando...', 'wait')
+
+    try {
+      await api.post('/files/permissions/', {
+        path: path,
+        type: type,
+      })
+
+      Toast('Recurso bloqueado', 'update', toastId, 'success')
+      return true
+    } catch (err) {
+      Toast('Recurso já bloqueado ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+      return false
+    }
+  }
+
+  const Delete = async (filepath) => {
+    let toastId = null
+    toastId = Toast('Excluindo...', 'wait')
+
+    try {
+      await api.get(`/files/delete/${encodeURI(filepath)}`)
+
+      Toast('Recurso excluído', 'update', toastId, 'success')
+      return true
+    } catch (err) {
+      Toast('Recurso já excluído ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+      return false
+    }
+  }
+
+  const Download = async (filepath) => {
+    let toastId = null;
+    toastId = Toast("Baixando...", "wait");
+
+    try {
+      const response = await api.get(`/files/download/${encodeURI(filepath)}`, {
+        responseType: "arraybuffer",
+      })
+
+      Toast("Download concluído", "update", toastId, "success");
+
+      //Converto o PDF para BLOB
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+      //Salvo em PDF junto com a data atual, só pra não sobreescrever nada
+      saveAs(blob, String(filepath).split('\\')[String(filepath).split('\\').length - 1]);
+      return true
+    } catch (err) {
+      Toast("Falha no download", "update", toastId, "error");
+      return false
+    }
+  }
+
+  const Move = async (oldPath, targetPath) => {
+    let toastId = null
+    toastId = Toast('Movendo...', 'wait')
+
+    try {
+      await api.put('/files/move/', {
+        currPath: oldPath,
+        newPath: targetPath,
+      })
+
+      Toast('Movido com sucesso', 'update', toastId, 'success')
+      return true
+    } catch (err) {
+      Toast('Recurso já movido ou você não tem permissão para executar a ação', 'update', toastId, 'error')
+      return false
+    }
+  }
+
   return (
     <FilesContext.Provider value={
       {
@@ -325,6 +372,7 @@ export const FilesProvider = ({ children }) => {
           folders: pastas,
           folderPath,
           markedItems,
+          formatedFolderPath: actualFolderFormated(folderPath)
         },
         uiPermissions: shouldShowModals,
         actions: {
@@ -336,7 +384,8 @@ export const FilesProvider = ({ children }) => {
           onNavigateBackwards: handleGoBack,
           onNavigate: handleClickPath,
           onCreateFolder: handleCreateFolder,
-          onRename: handleRename
+          onRename: handleRename,
+          onMove: handleMoveFileOrFolderMarked
         }
       }
     }>

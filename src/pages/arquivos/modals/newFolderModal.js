@@ -11,7 +11,7 @@ export const NewFolderModal = ({ open, onClose }) => {
   const classes = useStyles();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { folderPath },
+    data: { formatedFolderPath },
     actions: { onCreateFolder }
   } = useFiles()
 
@@ -38,10 +38,6 @@ export const NewFolderModal = ({ open, onClose }) => {
     setNewFolderName('')
   }
 
-  const actualFolderFormated = (AF) => {
-    return String(AF).toString().replace(/,/g, '\\')
-  }
-
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title" >
       <DialogTitle id="customized-dialog-title" onClose={handleClose} >
@@ -59,7 +55,7 @@ export const NewFolderModal = ({ open, onClose }) => {
             disabled={wait}
           />
           <Typography variant='caption'>
-            Caminho: <strong>\{actualFolderFormated(folderPath)}\{newFolderName}</strong>
+            Caminho: <strong>\{formatedFolderPath}\{newFolderName}</strong>
           </Typography>
         </div>
       </DialogContent>

@@ -97,7 +97,7 @@ export default function MiniDrawer() {
                 whiteSpace: 'noWrap'
               }}
             >
-              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : 'ADMINISTRADOR'}
+              {sessionStorage.getItem("filial_logada") === 'true' ? sessionStorage.getItem('usuário') : sessionStorage.getItem('role').toLocaleUpperCase()}
             </Typography>
 
             <Typography variant="h6">SLAPLIC</Typography>

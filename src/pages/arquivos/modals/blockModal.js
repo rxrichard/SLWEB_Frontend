@@ -10,7 +10,7 @@ export const BlockModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { markedItems, folderPath },
+    data: { markedItems, formatedFolderPath },
     actions: { onBlock }
   } = useFiles();
 
@@ -35,10 +35,6 @@ export const BlockModal = ({ open, onClose }) => {
     setWait(false)
   }
 
-  const actualFolderFormated = (AF) => {
-    return String(AF).toString().replace(/,/g, '\\')
-  }
-
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title" >
       <DialogTitle id="customized-dialog-title" onClose={handleClose} >
@@ -52,12 +48,12 @@ export const BlockModal = ({ open, onClose }) => {
         {markedItems.length > 0 ?
           markedItems.map(item => (
             <Typography variant='subtitle1' gutterBottom>
-              <strong>{actualFolderFormated(item.filename)}</strong>
+              <strong>{formatedFolderPath}</strong>
             </Typography>
           ))
           :
           <Typography variant='subtitle1' gutterBottom>
-            <strong>\{actualFolderFormated(folderPath)}\</strong>
+            <strong>\{formatedFolderPath}\</strong>
           </Typography>
         }
         <Typography variant='caption'>
