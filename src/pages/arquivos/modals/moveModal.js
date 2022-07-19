@@ -11,7 +11,7 @@ export const MoveModal = ({ open, onClose }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const {
-    data: { markedItems, formatedFolderPath },
+    data: { markedItems, formatedFolderPath, folderPath },
     actions: { onMove }
   } = useFiles();
 
@@ -111,6 +111,8 @@ export const MoveModal = ({ open, onClose }) => {
           <Typography variant='caption'>
             <strong>Para:</strong> \{String(thisPath).toString().replace(/,/g, '\\')}\
           </Typography>
+          
+          {[...thisPath, folderPath[folderPath.length - 1]] === folderPath ? 'n pode' :  'pode'}
         </div>
       </DialogContent>
 
@@ -138,7 +140,7 @@ export const MoveModal = ({ open, onClose }) => {
               color="primary"
               onClick={handleSubmit}
               startIcon={<MoveToInboxIcon />}
-              disabled={wait}
+              // disabled={wait || (markedItems.length === 0 && )}
               variant='contained'
             >
               Mover aqui
