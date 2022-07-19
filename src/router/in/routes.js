@@ -25,6 +25,7 @@ import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import Arquivos from '../../pages/arquivos/index'
 import Franqueados from '../../pages/franqueados'
+import DRE from '../../pages/dre'
 
 import { FilesProvider } from '../../hooks/useFiles'
 
@@ -59,12 +60,8 @@ function Dashboard(props) {
             <Route exact path={validateRouteAccess("/pontodevenda/:ativo")} component={PDV} />
             <Route exact path={validateRouteAccess("/clientes")} component={Clientes} />
             <Route exact path={validateRouteAccess("/monitor")} component={Monitor} />
-            <Route exact path={validateRouteAccess("/arquivos")} component={
-              () =>
-                <FilesProvider>
-                  <Arquivos />
-                </FilesProvider>
-            } />
+            <Route exact path={validateRouteAccess("/dre")} component={DRE} />
+            <Route exact path={validateRouteAccess("/arquivos")} component={ () => <FilesProvider> <Arquivos /> </FilesProvider> } />
 
             <Route exact path={validateRouteAccess("/administracao/solicitacao/management")} component={GerenciarEquip} />
             <Route exact path={validateRouteAccess("/administracao/formularios")} component={FormsAcompanhamento} />

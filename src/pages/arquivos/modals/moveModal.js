@@ -50,6 +50,8 @@ export const MoveModal = ({ open, onClose }) => {
     if (wait) return
     onClose();
 
+    setTgFolder([])
+    setThisPath([])
     setWait(false)
   }
 
@@ -111,8 +113,6 @@ export const MoveModal = ({ open, onClose }) => {
           <Typography variant='caption'>
             <strong>Para:</strong> \{String(thisPath).toString().replace(/,/g, '\\')}\
           </Typography>
-          
-          {[...thisPath, folderPath[folderPath.length - 1]] === folderPath ? 'n pode' :  'pode'}
         </div>
       </DialogContent>
 
@@ -140,7 +140,11 @@ export const MoveModal = ({ open, onClose }) => {
               color="primary"
               onClick={handleSubmit}
               startIcon={<MoveToInboxIcon />}
-              // disabled={wait || (markedItems.length === 0 && )}
+              disabled={
+                wait ||
+                (markedItems.length === 0 && String(folderPath).toString() === String([...thisPath, folderPath.length > 1 ? folderPath[folderPath.length - 1] : null].filter(item => item !== null)).toString()) ||
+                (String(folderPath).toString() === String(thisPath).toString())
+              }
               variant='contained'
             >
               Mover aqui

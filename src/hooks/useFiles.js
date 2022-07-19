@@ -105,12 +105,12 @@ export const FilesProvider = ({ children }) => {
 
   const handleMoveFileOrFolderMarked = async (OP, NP) => {
     if (markedItems.length === 0) {
-      await Move(OP, NP)
+      await Move(OP, NP, 'folder')
     } else {
       let movidoComSucesso = []
 
       for (let i = 0; i < markedItems.length; i++) {
-        let movido = await Move(markedItems[i].path, `${NP}\\${markedItems[i].filename}`)
+        let movido = await Move(markedItems[i].path, `${NP}\\${markedItems[i].filename}`, 'file')
 
         if (movido) {
           movidoComSucesso.push(markedItems[i].path)
@@ -343,7 +343,7 @@ export const FilesProvider = ({ children }) => {
     }
   }
 
-  const Move = async (oldPath, targetPath) => {
+  const Move = async (oldPath, targetPath, type) => {
     let toastId = null
     toastId = Toast('Movendo...', 'wait')
 
@@ -351,6 +351,7 @@ export const FilesProvider = ({ children }) => {
       await api.put('/files/move/', {
         currPath: oldPath,
         newPath: targetPath,
+        type: type
       })
 
       Toast('Movido com sucesso', 'update', toastId, 'success')
