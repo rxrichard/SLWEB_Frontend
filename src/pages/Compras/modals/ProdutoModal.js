@@ -66,10 +66,7 @@ export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
   const [quantidade, setQuantidade] = useState(0);  
 
-
-  useEffect(() => { 
-    
-  }, [props.cart]);
+  useEffect(() => {}, [props.cart]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,17 +78,15 @@ export default function CustomizedDialogs(props) {
 
 
   const handleClickAdd = () => {
-   let produtosCarrinho =  props.onChangeCart([
+ props.onChangeCart([
     ...props.cart,
     { quantidade, Cod: props.produto.Cód}
-
     
     ]);
 
     setOpen(false);
-    console.log(produtosCarrinho);
+    console.table(props.cart);
   }
-
 
   const imagem = () => {
     try {
