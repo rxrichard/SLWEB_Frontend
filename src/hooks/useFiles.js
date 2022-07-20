@@ -11,6 +11,7 @@ export const FilesProvider = ({ children }) => {
 
   const [arquivos, setArquivos] = useState([])
   const [pastas, setPastas] = useState([])
+  const [enviroment, setEnviroment] = useState('')
   const [folderPath, setFolderPath] = useState([])
   const [markedItems, setMarkedItems] = useState([])
 
@@ -48,6 +49,7 @@ export const FilesProvider = ({ children }) => {
         shouldEnableUploadButton: response.data.controlModals.upload,
         shouldEnableSecurityButton: response.data.controlModals.security
       })
+      setEnviroment(response.data.enviroment)
 
       setLoaded(true)
     } catch (err) {
@@ -371,6 +373,7 @@ export const FilesProvider = ({ children }) => {
         data: {
           files: arquivos,
           folders: pastas,
+          enviroment: enviroment,
           folderPath,
           markedItems,
           formatedFolderPath: actualFolderFormated(folderPath)
