@@ -95,7 +95,7 @@ const whichLinkDisplay = (link, onOpenFiliaisModal, onCloseDrawer, actualPath) =
       >
         <ListItem button onClick={onCloseDrawer}>
           <ListItemIcon>
-            <Icon color={String(actualPath).includes(link.Link) ? 'primary' : 'secondary'}>{link.Icon}</Icon>
+            <Icon color={String(actualPath).startsWith(link.Link) ? 'primary' : 'secondary'}>{link.Icon}</Icon>
           </ListItemIcon>
 
           <ListItemText primary={link.Descricao} />

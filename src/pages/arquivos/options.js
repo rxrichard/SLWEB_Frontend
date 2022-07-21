@@ -18,18 +18,9 @@ export const Options = ({
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const {
-    data: { folderPath, markedItems },
+    data: { folderPath, markedItems, enviroment },
     actions: { onNavigate, onDownloadMarkedItems },
-    uiPermissions: {
-      shouldEnableNewFolderButton,
-      shouldEnableDownloadButton,
-      shouldEnableRenameButton,
-      shouldEnableMoveButton,
-      shouldEnableBlockButton,
-      shouldEnableDeleteButton,
-      shouldEnableUploadButton,
-      shouldEnableSecurityButton
-    }
+    uiPermissions: { shouldEnableNewFolderButton, shouldEnableDownloadButton, shouldEnableRenameButton, shouldEnableMoveButton, shouldEnableBlockButton, shouldEnableDeleteButton, shouldEnableUploadButton, shouldEnableSecurityButton }
   } = useFiles()
 
   const handleClick = (event) => {
@@ -108,106 +99,7 @@ export const Options = ({
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-
-          <StyledMenuItem disabled={true} onClick={() => { }} style={{ borderBottom: '3px dashed #d3d4d5' }}>
-            <ListItemIcon>
-              {markedItems.length > 0 ? <InsertDriveFileIcon fontSize="small" color='primary' /> : <FolderIcon fontSize="small" color='primary' />}
-            </ListItemIcon>
-            <ListItemText style={{ color: 'red' }} primary={markedItems.length > 0 ? `${markedItems.length} ARQUIVO${markedItems.length > 1 ? 'S' : ''} SELECIONADO${markedItems.length > 1 ? 'S' : ''}` : 'ESTA PASTA'} />
-          </StyledMenuItem>
-
-          {shouldEnableSecurityButton ?
-            <StyledMenuItem onClick={onOpenSecurityModal} disabled={false} >
-              <ListItemIcon>
-                <SecurityIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary='Permissões' />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          {shouldEnableUploadButton ?
-            <StyledMenuItem onClick={onOpenUploadModal} disabled={false} >
-              <ListItemIcon>
-                <BackupIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary='Upload' />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          <Divider />
-
-          {shouldEnableNewFolderButton ?
-            <StyledMenuItem onClick={onOpenNewFolderModal} disabled={false}>
-              <ListItemIcon>
-                <CreateNewFolderIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary='Criar pasta aqui' />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          {shouldEnableDownloadButton ?
-            <StyledMenuItem onClick={onDownloadMarkedItems} disabled={markedItems.length === 0}>
-              <ListItemIcon>
-                <Download fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary='Fazer download' />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          <Divider />
-
-          {shouldEnableRenameButton ?
-            <StyledMenuItem onClick={onOpenRenameModal} disabled={markedItems.length > 1}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={markedItems.length > 0 ? `Renomear arquivo${markedItems.length > 1 ? 's' : ''}` : 'Renomear esta pasta'} />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          {shouldEnableMoveButton ?
-            <StyledMenuItem onClick={onOpenMoveModal} disabled={false} >
-              <ListItemIcon>
-                <MoveToInboxIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={markedItems.length > 0 ? `Mover arquivo${markedItems.length > 1 ? 's' : ''}` : 'Mover esta pasta'} />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          {shouldEnableBlockButton ?
-            <StyledMenuItem onClick={onOpenBlockModal} disabled={false} >
-              <ListItemIcon>
-                <LockIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={markedItems.length > 0 ? `Bloquear arquivo${markedItems.length > 1 ? 's' : ''}` : 'Bloquear esta pasta'} />
-            </StyledMenuItem>
-            :
-            null
-          }
-
-          {shouldEnableDeleteButton ?
-            <StyledMenuItem onClick={onOpenDeleteModal} disabled={false} >
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={markedItems.length > 0 ? `Apagar arquivo${markedItems.length > 1 ? 's' : ''}` : 'Apagar esta pasta'} />
-            </StyledMenuItem>
-            :
-            null
-          }
-
+          {returnControlButtons({ enviroment, markedItems, shouldEnableSecurityButton, shouldEnableUploadButton, shouldEnableNewFolderButton, shouldEnableRenameButton, shouldEnableMoveButton, shouldEnableBlockButton, shouldEnableDeleteButton, shouldEnableDownloadButton, onOpenSecurityModal, onOpenUploadModal, onOpenNewFolderModal, onDownloadMarkedItems, onOpenRenameModal, onOpenMoveModal, onOpenBlockModal, onOpenDeleteModal })}
         </StyledMenu>
       </div>
     </div>
@@ -255,3 +147,110 @@ const StyledMenuItem = withStyles((theme) => ({
     },
   },
 }))(MenuItem);
+
+const returnControlButtons = ({ enviroment, markedItems, shouldEnableSecurityButton, shouldEnableUploadButton, shouldEnableNewFolderButton, shouldEnableRenameButton, shouldEnableMoveButton, shouldEnableBlockButton, shouldEnableDeleteButton, shouldEnableDownloadButton, onOpenSecurityModal, onOpenUploadModal, onOpenNewFolderModal, onDownloadMarkedItems, onOpenRenameModal, onOpenMoveModal, onOpenBlockModal, onOpenDeleteModal }) => {
+  let componentsNode = []
+
+  componentsNode.push(
+    <StyledMenuItem disabled={true} onClick={() => { }} style={{ borderBottom: '3px dashed #d3d4d5' }}>
+      <ListItemIcon>
+        {markedItems.length > 0 ? <InsertDriveFileIcon fontSize="small" color='primary' /> : <FolderIcon fontSize="small" color='primary' />}
+      </ListItemIcon>
+      <ListItemText style={{ color: 'red' }} primary={markedItems.length > 0 ? `${markedItems.length} ARQUIVO${markedItems.length > 1 ? 'S' : ''} SELECIONADO${markedItems.length > 1 ? 'S' : ''}` : 'ESTA PASTA'} />
+    </StyledMenuItem>
+  )
+
+  if (shouldEnableSecurityButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenSecurityModal} disabled={false} >
+        <ListItemIcon>
+          <SecurityIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Permissões' />
+      </StyledMenuItem>
+    )
+  }
+
+  if (shouldEnableUploadButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenUploadModal} disabled={false} >
+        <ListItemIcon>
+          <BackupIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Upload' />
+      </StyledMenuItem>
+    )
+  }
+
+  componentsNode.push(<Divider />)
+
+  if (shouldEnableNewFolderButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenNewFolderModal} disabled={false}>
+        <ListItemIcon>
+          <CreateNewFolderIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Criar pasta aqui' />
+      </StyledMenuItem>
+    )
+  }
+
+  if (shouldEnableDownloadButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onDownloadMarkedItems} disabled={markedItems.length === 0}>
+        <ListItemIcon>
+          <Download fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary='Fazer download' />
+      </StyledMenuItem>
+    )
+  }
+
+  componentsNode.push(<Divider />)
+
+  if (shouldEnableRenameButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenRenameModal} disabled={markedItems.length > 1}>
+        <ListItemIcon>
+          <EditIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={markedItems.length > 0 ? `Renomear arquivo${markedItems.length > 1 ? 's' : ''}` : 'Renomear esta pasta'} />
+      </StyledMenuItem>
+    )
+  }
+
+  if (shouldEnableMoveButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenMoveModal} disabled={false} >
+        <ListItemIcon>
+          <MoveToInboxIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={markedItems.length > 0 ? `Mover arquivo${markedItems.length > 1 ? 's' : ''}` : 'Mover esta pasta'} />
+      </StyledMenuItem>
+    )
+  }
+
+  if (shouldEnableBlockButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenBlockModal} disabled={false} >
+        <ListItemIcon>
+          <LockIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={markedItems.length > 0 ? `Bloquear arquivo${markedItems.length > 1 ? 's' : ''}` : 'Bloquear esta pasta'} />
+      </StyledMenuItem>
+    )
+  }
+
+  if (shouldEnableDeleteButton) {
+    componentsNode.push(
+      <StyledMenuItem onClick={onOpenDeleteModal} disabled={false} >
+        <ListItemIcon>
+          <DeleteIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText primary={markedItems.length > 0 ? `Apagar arquivo${markedItems.length > 1 ? 's' : ''}` : 'Apagar esta pasta'} />
+      </StyledMenuItem>
+    )
+  }
+
+  return componentsNode
+}

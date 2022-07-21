@@ -2,7 +2,7 @@ import React from 'react'
 
 import { InputLabel, Typography, MenuItem, Tooltip, IconButton, Select, FormControl, } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { Refresh as RefreshIcon, Save as SaveIcon, Redeem as RedeemIcon } from '@material-ui/icons'
+import { Refresh as RefreshIcon, Save as SaveIcon } from '@material-ui/icons'
 
 import ExcelLogo from '../../../assets/svg/EXCEL.svg';
 
