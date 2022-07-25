@@ -1,12 +1,11 @@
 import React from 'react';
+import moment from 'moment'
 
 import { makeStyles } from '@material-ui/core/styles';
-
 import { Card, CardActions, CardContent, Button, Typography, } from '@material-ui/core';
-
 import { Launch as LaunchIcon } from '@material-ui/icons'
 
-import moment from 'moment'
+import { maskCNPJ } from '../../misc/commom_functions'
 
 
 export const FranquiaItem = ({ Franquia, onOpenDetailsModal }) => {
@@ -36,7 +35,7 @@ export const FranquiaItem = ({ Franquia, onOpenDetailsModal }) => {
           <br />
           <strong>Cod TOTVs:</strong> {Franquia.A1_COD}
           <br />
-          <strong>CNPJ:</strong> {Franquia.M0_CGC}
+          <strong>CNPJ:</strong> {maskCNPJ(Franquia.M0_CGC)}
           <br />
           <strong>UF:</strong> {Franquia.UF}
           <br />
