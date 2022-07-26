@@ -6,22 +6,10 @@ import { Home as HomeIcon, GetApp as Download, MoreVert as MoreVertIcon, Folder 
 
 import { useFiles } from '../../hooks/useFiles'
 
-export const Options = ({
-  onOpenNewFolderModal,
-  onOpenRenameModal,
-  onOpenUploadModal,
-  onOpenSecurityModal,
-  onOpenMoveModal,
-  onOpenBlockModal,
-  onOpenDeleteModal
-}) => {
+export const Options = ({ onOpenNewFolderModal, onOpenRenameModal, onOpenUploadModal, onOpenSecurityModal, onOpenMoveModal, onOpenBlockModal, onOpenDeleteModal }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const {
-    data: { folderPath, markedItems, enviroment },
-    actions: { onNavigate, onDownloadMarkedItems },
-    uiPermissions: { shouldEnableNewFolderButton, shouldEnableDownloadButton, shouldEnableRenameButton, shouldEnableMoveButton, shouldEnableBlockButton, shouldEnableDeleteButton, shouldEnableUploadButton, shouldEnableSecurityButton }
-  } = useFiles()
+  const { data: { folderPath, markedItems, enviroment }, actions: { onNavigate, onDownloadMarkedItems }, uiPermissions: { shouldEnableNewFolderButton, shouldEnableDownloadButton, shouldEnableRenameButton, shouldEnableMoveButton, shouldEnableBlockButton, shouldEnableDeleteButton, shouldEnableUploadButton, shouldEnableSecurityButton } } = useFiles()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -210,7 +198,10 @@ const returnControlButtons = ({ enviroment, markedItems, shouldEnableSecurityBut
 
   if (shouldEnableRenameButton) {
     componentsNode.push(
-      <StyledMenuItem onClick={onOpenRenameModal} disabled={markedItems.length > 1}>
+      <StyledMenuItem 
+      onClick={onOpenRenameModal} 
+      disabled={markedItems.length > 1 || (markedItems.length === 0 && (enviroment === 'ROOT' || enviroment === 'DUMP'))}
+      >
         <ListItemIcon>
           <EditIcon fontSize="small" />
         </ListItemIcon>
@@ -221,7 +212,7 @@ const returnControlButtons = ({ enviroment, markedItems, shouldEnableSecurityBut
 
   if (shouldEnableMoveButton) {
     componentsNode.push(
-      <StyledMenuItem onClick={onOpenMoveModal} disabled={false} >
+      <StyledMenuItem onClick={onOpenMoveModal} disabled={markedItems.length === 0 && (enviroment === 'ROOT' || enviroment === 'DUMP')} >
         <ListItemIcon>
           <MoveToInboxIcon fontSize="small" />
         </ListItemIcon>
@@ -232,7 +223,7 @@ const returnControlButtons = ({ enviroment, markedItems, shouldEnableSecurityBut
 
   if (shouldEnableBlockButton) {
     componentsNode.push(
-      <StyledMenuItem onClick={onOpenBlockModal} disabled={false} >
+      <StyledMenuItem onClick={onOpenBlockModal} disabled={markedItems.length === 0 && (enviroment === 'ROOT' || enviroment === 'DUMP')} >
         <ListItemIcon>
           <LockIcon fontSize="small" />
         </ListItemIcon>
@@ -243,7 +234,7 @@ const returnControlButtons = ({ enviroment, markedItems, shouldEnableSecurityBut
 
   if (shouldEnableDeleteButton) {
     componentsNode.push(
-      <StyledMenuItem onClick={onOpenDeleteModal} disabled={false} >
+      <StyledMenuItem onClick={onOpenDeleteModal} disabled={markedItems.length === 0 && (enviroment === 'ROOT' || enviroment === 'DUMP')} >
         <ListItemIcon>
           <DeleteIcon fontSize="small" />
         </ListItemIcon>

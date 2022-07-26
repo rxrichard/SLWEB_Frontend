@@ -11,7 +11,9 @@ import { api } from '../services/api'
 
 //Retorna CNPJ/CPF formatado
 export const maskCNPJ = (cnpj) => {
-  if (cnpj.length === 11) {
+  if (cnpj === null) {
+    return cnpj;
+  } else if (cnpj.length === 11) {
     const CPF = String(cnpj);
 
     var CPFsplit = [];

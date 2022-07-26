@@ -32,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    paddingTop: '8px'
+    paddingTop: '8px',
+
+    '@media (max-width: 800px)': {
+      maxHeight: 'calc(100% - 150px)'
+    }
   }
 }))
