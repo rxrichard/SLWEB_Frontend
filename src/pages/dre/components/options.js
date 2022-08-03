@@ -95,14 +95,14 @@ export const Options = ({ onChange, selectedRef, refList }) => {
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
           value={selectedRef}
-          onChange={onChange}
+          onChange={e => onChange(e.target.value)}
           label="Referencia"
         >
           <MenuItem value="" disabled={true}>
             <em>Selecione...</em>
           </MenuItem>
           {refList.map(r => (
-            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={r.Refdt}>{r.RefMes}/{r.RefAno}</MenuItem>
           ))}
         </Select>
       </FormControl>

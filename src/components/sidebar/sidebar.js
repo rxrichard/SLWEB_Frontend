@@ -2,23 +2,9 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 
-import {
-  makeStyles,
-  Drawer,
-  AppBar,
-  Toolbar,
-  CssBaseline,
-  Typography,
-  Divider,
-  IconButton,
-  useTheme,
-  useMediaQuery,
-} from "@material-ui/core/";
+import { makeStyles, Drawer, AppBar, Toolbar, CssBaseline, Typography, Divider, IconButton, useTheme, useMediaQuery, } from "@material-ui/core/";
 
-import {
-  ChevronLeft,
-  Menu,
-} from "@material-ui/icons/";
+import { ChevronLeft, Menu, } from "@material-ui/icons/";
 
 import { roleLevel, navigateTo } from "../../misc/commom_functions";
 import { REACT_APP_FRANQUEADO_ROLE_LEVEL } from "../../misc/role_levels";
