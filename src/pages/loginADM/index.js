@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { api } from "../../services/api";
 import { Link } from "react-router-dom";
 
-import Image from "../../assets/logo_sl.PNG";
+import Image from "../../assets/logo_sl.png";
 import { Toast } from "../../components/toasty";
 import { Container, Box, Logo } from "../../components/commom_out";
 import Button from "../../components/materialComponents/Button";

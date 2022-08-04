@@ -71,7 +71,7 @@ const whichIconDisplay = (type, folder) => {
     return <FolderSharedIcon style={{ fontSize: 40 }} />
   } else if (folder.folder === 'Lixeira') {
     return <DeleteIcon style={{ fontSize: 40 }} />
-  } else if (folder.folder === 'UPLOADS') {
+  } else if (folder.folder === 'SL CAFES') {
     return <PermMediaIcon style={{ fontSize: 40 }} />
   } else {
     return <FolderOpenIcon style={{ fontSize: 40 }} />

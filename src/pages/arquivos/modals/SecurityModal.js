@@ -186,7 +186,7 @@ const whichIconShow = (type) => {
       return <FolderSpecialIcon color='primary' />
     case 'FRANQUEADO_DUMP':
       return <FolderSharedIcon color='primary' />
-    case 'UPLOAD_DUMP':
+    case 'PRIVATE_DUMP':
       return <PermMediaIcon color='primary' />
     case 'TRASH_DUMP':
       return <DeleteIcon color='primary' />

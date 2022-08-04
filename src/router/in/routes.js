@@ -46,10 +46,10 @@ function Dashboard(props) {
         <div id="App">
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/ajuda" component={Ajuda} />
 
             <Route exact path={validateRouteAccess("/leads")} component={Leads} />
             <Route exact path={validateRouteAccess("/perfil")} component={Perfil} />
-            <Route exact path={validateRouteAccess("/ajuda")} component={Ajuda} />
             <Route exact path={validateRouteAccess("/compras")} component={Compras} />
             <Route exact path={validateRouteAccess("/vendas")} component={Vendas} />
             <Route exact path={validateRouteAccess("/equipamentos")} component={Equipamentos} />
