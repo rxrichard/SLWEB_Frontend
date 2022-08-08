@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
   line: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'no-wrap',
+    flexWrap: 'nowrap',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',

@@ -15,6 +15,8 @@ export const DetailsModal = ({ open, onClose, PdvId, AnxId, PdvStatus, updatePDV
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const childRef = useRef();
+  
+  // console.log(PdvStatus)
 
   const [activeStep, setActiveStep] = useState(0);
   const [allowEditing, setAllowEditing] = useState(true);
