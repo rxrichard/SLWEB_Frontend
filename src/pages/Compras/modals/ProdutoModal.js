@@ -21,7 +21,6 @@ import {
   Text,
 } from "./StyleProdutoModal";
 
-
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(3),
@@ -60,13 +59,13 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-
-
 export default function CustomizedDialogs(props) {
   const [open, setOpen] = useState(false);
-  const [quantidade, setQuantidade] = useState(0);  
+  const [quantidade, setQuantidade] = useState(0);
 
-  useEffect(() => {}, [props.cart]);
+  useEffect(() => {
+    console.log(props.cart);
+  }, [props.cart]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,17 +75,26 @@ export default function CustomizedDialogs(props) {
     setOpen(false);
   };
 
-
   const handleClickAdd = () => {
- props.onChangeCart([
-    ...props.cart,
-    { quantidade, Cod: props.produto.Cód}
-    
-    ]);
-
+    if (props.cart.Cod === props.produto.Cód) {
+      props.onChangeCart([
+        ...props.cart,
+        { quantidade: props.cart.cod + quantidade, Cod: props.produto.Cód },
+      ])
+     
+    }else {
+      props.onChangeCart([
+        ...props.cart,
+        { quantidade, Cod: props.produto.Cód },
+      ]);
+    }
+    let qtdCart = props.cart;
+    console.log(props.cart);
+    console.log(` Quantidade de itens: ${qtdCart.length}`)
+  
     setOpen(false);
-    console.table(props.cart);
-  }
+    
+  };
 
   const imagem = () => {
     try {
@@ -97,8 +105,6 @@ export default function CustomizedDialogs(props) {
   };
 
   return (
-    
-
     <div>
       <ButtonComprar
         width="13vw"
@@ -128,7 +134,6 @@ export default function CustomizedDialogs(props) {
             </Image>
 
             <Flex width="40%" direction="column">
-              
               <Text>Contem:{props.produto.Produto}</Text>
 
               <Flex>
@@ -147,12 +152,10 @@ export default function CustomizedDialogs(props) {
               <Flex align="space-around">
                 <Button
                   variant="outlined"
-                  
                   color="success"
                   size="medium"
                   className="button"
                   onClick={handleClickAdd}
-                  
                 >
                   <AddShoppingCartIcon />
                   ADICIONAR AO CARRINHO

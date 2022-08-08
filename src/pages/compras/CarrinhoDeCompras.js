@@ -21,13 +21,10 @@ import Typography from '@material-ui/core/Typography';
 
 
 import {
-  BoxProduct,
   BoxCheckout,
   PanelCart,
   Title,
   Text,
-  BoxDetailProduct,
-  BoxQtd,
 } from "./styles";
 
 import DoneIcon from "@material-ui/icons/Done";
@@ -46,11 +43,16 @@ const useStyles = makeStyles({
 function CarrinhoCompras() {
   const [loaded, setLoaded] = useState(false);
 
-  const [age, setAge] = React.useState("");
+  const [address, setAddress] = React.useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setAddress(event.target.value);
+  
   };
+  //get delivery address
+  useEffect(() => {
+    console.log(address)
+  }, [address]);
   //componentDidMount
   useEffect(() => {
     async function LoadData() {
@@ -71,6 +73,8 @@ function CarrinhoCompras() {
       console.log("Resetar store");
     };
   }, []);
+
+
   const classes = useStyles();
   return !loaded ? (
     <Loading />
@@ -167,11 +171,11 @@ function CarrinhoCompras() {
             <Text>Subtotal: R$ 0,00</Text>
             <div style={{margin:'10px 1px',}}>
             <InputLabel id="demo-simple-select-error-label">Escolha o endereço</InputLabel>
-            <Select value={age} onChange={handleChange} style={{width:'320px'}}>
+            <Select value={address} onChange={handleChange} style={{width:'320px'}}>
             
-              <MenuItem value={10}>Endereço 1</MenuItem>
-              <MenuItem value={10}>Endereço 2</MenuItem>
-              <MenuItem value={10}>Endereço 3</MenuItem>
+              <MenuItem value={1} >Endereço 1</MenuItem>
+              <MenuItem value={2}>Endereço 2</MenuItem>
+              <MenuItem value={3}>Endereço 3</MenuItem>
    
             </Select>
             </div>

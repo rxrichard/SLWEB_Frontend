@@ -25,12 +25,8 @@ import GerirLeads from '../../pages/gerirLeads/index'
 import PedidosCompra from '../../pages/pedidosDeCompra/index'
 import Arquivos from '../../pages/arquivos/index'
 import Franqueados from '../../pages/franqueados'
-<<<<<<< HEAD
+import DRE from '../../pages/dre/index'
 import TelaCarrinho from '../../pages/compras/CarrinhoDeCompras'
-=======
-import DRE from '../../pages/dre'
-
->>>>>>> 75dc99a78d65d434b5bd61baa730244e830b3697
 import { FilesProvider } from '../../hooks/useFiles'
 
 function Dashboard(props) {

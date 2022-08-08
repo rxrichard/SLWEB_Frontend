@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { api } from "../../services/api";
 import { Link } from "react-router-dom";
-import { Tooltip, Typography, IconButton } from "@material-ui/core";
+import { Tooltip, Typography, IconButton, Badge  } from "@material-ui/core";
 import {
   LocalAtm as LocalAtmIcon,
   LocalShipping as LocalShippingIcon,
@@ -10,9 +10,10 @@ import {
 } from "@material-ui/icons";
 
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-export const Helpers = () => {
+export const Helpers = (props) => {
   const [faturamento, setFaturamento] = useState(null);
   const [blocks, setBlocks] = useState({});
+
 
   let path = useLocation().pathname;
 
@@ -62,6 +63,7 @@ export const Helpers = () => {
 };
 
 const pathContentToShow = (path, faturamento) => {
+ 
   switch (path) {
     case "/compras":
       return (
@@ -128,6 +130,7 @@ const pathContentToShow = (path, faturamento) => {
             placement="bottom"
             arrow={true}
           >
+            
             <IconButton color="default">
               <LocalAtmIcon fontSize="large" />
             </IconButton>
@@ -135,7 +138,9 @@ const pathContentToShow = (path, faturamento) => {
 
           <Link to="/carrinho">
             <IconButton color="default">
+            <Badge badgeContent={4} color='primary' >
               <ShoppingCartIcon fontSize="large" />
+              </Badge>
             </IconButton>
           </Link>
         </>
@@ -143,10 +148,12 @@ const pathContentToShow = (path, faturamento) => {
     default:
       return (
         <Link to="/carrinho">
-          <IconButton color="default">
-            <ShoppingCartIcon fontSize="large" />
-          </IconButton>
-        </Link>
+        <IconButton color="default">
+        <Badge badgeContent={4} color='primary'>
+          <ShoppingCartIcon fontSize="large" />
+          </Badge>
+        </IconButton>
+      </Link>
       );
   }
 };
