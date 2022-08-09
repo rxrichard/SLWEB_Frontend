@@ -116,6 +116,7 @@ export const ConfigListItem = ({ Sel, Produtos, ProdCod, TiposDeVenda, TVendaId,
           <option
             className={classes.Opt}
             value={rec.RecId}
+            title={rec.det.map(d => `${String(d.GprdDesc).trim()} ${String(d.RdetQtd).trim()}${String(d.GprdUn).trim()}`)}
           >
             {rec.RecDesc}
           </option>

@@ -167,7 +167,6 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
             style={{ width: '100px', marginRight: '8px' }}
           />
           <div className='XAlign' style={{ fontSize: '16px', height: '62px', paddingBottom: '8px', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-            
             {
               details.PdvStatus === 'A'
                 ? <>STATUS PDV: <stong style={{ fontWeight: 'bold' }}>Ativo</stong><CheckCircleIcon style={{ color: 'green', marginLeft: '8px' }} /></>

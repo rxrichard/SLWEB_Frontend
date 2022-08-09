@@ -121,10 +121,10 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
       <>
         <div
           className="XAlign"
-          style={{ 
+          style={{
             padding: '0px 0px 8px 8px',
             justifyContent: 'flex-start'
-           }}
+          }}
         >
           <FormControl variant="outlined">
             <InputLabel id="demo-simple-select-outlined-label">Configurações salvas</InputLabel>
@@ -176,7 +176,27 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
             borderBottom: '8px'
           }}
         >
-          {configPDV.length > 0 ? <ConfigListItemHeader /> : null}
+          {configPDV.length > 0
+            ? <ConfigListItemHeader
+              Editing={false}
+
+              Sel={null}
+              ProdCod={null}
+              TVendaId={null}
+              V1={null}
+              V2={null}
+              RecId={null}
+
+              Produtos={produtos}
+              TiposDeVenda={tiposDeVenda}
+              Receitas={receitas}
+
+              Linha={null}
+              onUpdateConfig={() => { }}
+              onRemoveConfig={() => { }}
+            />
+            : null
+          }
           {configPDV.sort((a, b) => a.Sel - b.Sel).map((cfg, index) => (
             <ConfigListItem
               Editing={allowEditing}
