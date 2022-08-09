@@ -142,7 +142,8 @@ export const UploadModal = ({ open, onClose }) => {
                 onChange={() => getFileNames(makeFormData(getFiles()))}
                 multiple={true}
                 name="upload"
-                accept="application/pdf, image/png, image/jpeg, video/mp4"
+                // accept="application/pdf, application/cdr, application/coreldraw, application/x-cdr, application/x-coreldraw, application/vnd.corel-draw, image/cdr, image/CDR, image/x-cdr, image/x-coreldraw, zz-application/zz-winassoc-cdr, image/png, image/jpeg, video/mp4, font/ttf"
+                accept='*'
                 label={
                   <div className="XAlign">
                     <Icon>attach_file</Icon>

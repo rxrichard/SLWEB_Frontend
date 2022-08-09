@@ -1,16 +1,9 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { api } from '../../../services/api'
 
-import {
-  Typography,
-  TextField,
-  FormControl,
-  Divider,
-  makeStyles,
-  MenuItem,
-  Select,
-  InputLabel,
-} from '@material-ui/core'
+import { Typography, TextField, FormControl, Divider, makeStyles, MenuItem, Select, InputLabel, } from '@material-ui/core'
+
+import { CheckCircle as CheckCircleIcon, NotInterested as NotInterestedIcon } from '@material-ui/icons'
 
 import DatePicker from '../../../components/materialComponents/datePicker'
 import { toValidString } from '../../../misc/commom_functions'
@@ -107,6 +100,22 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
           />
         </section>
         <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="CNPJ"
+            value={toValidString(details.CNPJss)}
+            disabled={true}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                CNPJss: e.target.value
+              }))
+            }}
+            style={{ width: '100%' }}
+          />
+        </section>
+        <section className={classes.line}>
           <FormControl className={classes.formControl}>
             <InputLabel>Depósito</InputLabel>
             <Select
@@ -157,12 +166,21 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
             disabled={true}
             style={{ width: '100px', marginRight: '8px' }}
           />
-          <TextField
+          <div className='XAlign' style={{ fontSize: '16px', height: '62px', paddingBottom: '8px', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+            
+            {
+              details.PdvStatus === 'A'
+                ? <>STATUS PDV: <stong style={{ fontWeight: 'bold' }}>Ativo</stong><CheckCircleIcon style={{ color: 'green', marginLeft: '8px' }} /></>
+                : <>STATUS PDV: <stong style={{ fontWeight: 'bold' }}>Inativo</stong><NotInterestedIcon style={{ color: 'red', marginLeft: '8px' }} /></>
+            }
+          </div>
+
+          {/* <TextField
             variant='standard'
             label="IMEI"
             value={details.IMEI}
             disabled={true}
-          />
+          /> */}
           {/* <IconButton
             onClick={onRequestEquipSection}
           >
@@ -276,7 +294,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
           />
         </section>
         <section className={classes.lineStart}>
-          <TextField
+          {/* <TextField
             variant='standard'
             label="Departamento"
             value={toValidString(details.PdvDepartamento)}
@@ -289,7 +307,7 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
               }))
             }}
             style={{ width: '100%', marginRight: '8px' }}
-          />
+          /> */}
           <TextField
             variant='standard'
             label="Anotações"
@@ -323,53 +341,36 @@ export const Dados = forwardRef(({ PdvId, AnxId, allowEditing, onRequestEquipSec
         </li>
 
         <section className={classes.line}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <DatePicker
-              label='Data Ativação'
-              disabled={true}
-              defaultValue={details.PdvDataAtivacao}
-              onChange={() => { }}
-            />
-            <DatePicker
-              label='Data Encerramento'
-              disabled={true}
-              defaultValue={details.PdvDataEncerramento}
-              onChange={() => { }}
-            />
 
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
+          <DatePicker
+            label='Data Ativação'
+            disabled={true}
+            defaultValue={details.PdvDataAtivacao}
+            onChange={() => { }}
+          />
+          <DatePicker
+            label='Data Encerramento'
+            disabled={true}
+            defaultValue={details.PdvDataEncerramento}
+            onChange={() => { }}
+          />
+        </section>
+
+        <section className={classes.line}>
+          <TextField
+            variant='standard'
+            label="Motivo do encerramento"
+            value={details.PdvMotivoEncerramento}
+            disabled={allowEditing}
+            onChange={(e) => {
+              e.persist()
+              setDetails(oldState => ({
+                ...oldState,
+                PdvMotivoEncerramento: e.target.value
+              }))
             }}
-          >
-            <DatePicker
-              label='Data Alteração'
-              disabled={true}
-              defaultValue={details.PdvDataAlteracao}
-              onChange={() => { }}
-            />
-            <TextField
-              variant='standard'
-              label="Motivo do encerramento"
-              value={details.PdvMotivoEncerramento}
-              disabled={allowEditing}
-              onChange={(e) => {
-                e.persist()
-                setDetails(oldState => ({
-                  ...oldState,
-                  PdvMotivoEncerramento: e.target.value
-                }))
-              }}
-              style={{ width: '170px', margin: '16px 0px 8px 0px' }}
-            />
-          </div>
+            style={{ width: '100%', margin: '16px 0px 8px 0px' }}
+          />
         </section>
 
         <Divider variant="inset" />

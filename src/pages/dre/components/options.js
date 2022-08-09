@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 import { InputLabel, Typography, MenuItem, Tooltip, IconButton, Select, FormControl, } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
@@ -6,7 +7,7 @@ import { Refresh as RefreshIcon, Save as SaveIcon } from '@material-ui/icons'
 
 import ExcelLogo from '../../../assets/svg/EXCEL.svg';
 
-export const Options = ({ onChange, selectedRef, refList }) => {
+export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) => {
   const classes = useStyles();
 
   return (
@@ -24,7 +25,7 @@ export const Options = ({ onChange, selectedRef, refList }) => {
         placement="top"
         arrow={true}
       >
-        <IconButton aria-label="Excel">
+        <IconButton disabled={selectedRef === ''} onClick={() => alert('Gerar Excel base de cálculo de royalties')} aria-label="Excel">
           <img
             src={ExcelLogo}
             width='23px'
@@ -46,7 +47,7 @@ export const Options = ({ onChange, selectedRef, refList }) => {
         placement="top"
         arrow={true}
       >
-        <IconButton aria-label="Excel" color='primary'>
+        <IconButton disabled={selectedRef === ''} onClick={() => alert('Gerar Excel DRE')} aria-label="Excel" color='primary'>
           <img
             src={ExcelLogo}
             width='23px'
@@ -68,7 +69,7 @@ export const Options = ({ onChange, selectedRef, refList }) => {
         placement="top"
         arrow={true}
       >
-        <IconButton aria-label="save" color='primary'>
+        <IconButton disabled={selectedRef === ''} onClick={onSave} aria-label="save" color='primary'>
           <SaveIcon />
         </IconButton>
       </Tooltip>
@@ -85,7 +86,7 @@ export const Options = ({ onChange, selectedRef, refList }) => {
         placement="top"
         arrow={true}
       >
-        <IconButton aria-label="refresh">
+        <IconButton disabled={selectedRef === ''} onClick={() => onReload(moment(selectedRef).get('year'), moment(selectedRef).add(3, 'hours').get('month') + 1)} aria-label="refresh">
           <RefreshIcon />
         </IconButton>
       </Tooltip>

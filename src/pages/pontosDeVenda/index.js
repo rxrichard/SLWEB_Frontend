@@ -67,7 +67,11 @@ const PontosDeVenda = ({ match }) => {
         PdvId={targetPDV.pdv}
         AnxId={targetPDV.anx}
         updatePDVsArray={setPDVs}
-        PdvStatus={PDVs.filter(pdv => pdv.PdvId === targetPDV.pdv).length > 0 ? PDVs.filter(pdv => pdv.PdvId === targetPDV.pdv)[0].PdvStatus : 'I'}
+        PdvStatus={
+          returnPDVsFilter(PDVs, mostrarInativos, filtro).filter(pdv => pdv.PdvId === targetPDV.pdv && pdv.AnxId === targetPDV.anx).length > 0
+            ? returnPDVsFilter(PDVs, mostrarInativos, filtro).filter(pdv => pdv.PdvId === targetPDV.pdv && pdv.AnxId === targetPDV.anx)[0].PdvStatus
+            : 'I'
+        }
       />
       <PdvListOptions
         onChangeFiltro={setFiltro}

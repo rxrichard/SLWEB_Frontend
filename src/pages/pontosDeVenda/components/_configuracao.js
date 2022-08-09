@@ -5,6 +5,7 @@ import { Toast } from '../../../components/toasty'
 import { Button, Typography, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from '@material-ui/core'
 import { PostAdd as PostAddIcon } from '@material-ui/icons'
 import { ConfigListItem } from './configListItem'
+import { ConfigListItemHeader } from './configListItemHeader'
 
 export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => {
   const [configPDV, setConfigPDV] = useState([])
@@ -175,6 +176,7 @@ export const Configuracao = forwardRef(({ PdvId, AnxId, allowEditing }, ref) => 
             borderBottom: '8px'
           }}
         >
+          {configPDV.length > 0 ? <ConfigListItemHeader /> : null}
           {configPDV.sort((a, b) => a.Sel - b.Sel).map((cfg, index) => (
             <ConfigListItem
               Editing={allowEditing}

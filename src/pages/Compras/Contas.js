@@ -431,7 +431,7 @@ const Contas = (props) => {
                         </StyledTableCell>
                       </StyledTableRowWithoutHighlight>
                     ) : null}
-                    <StyledTableRowWithoutHighlight>
+                    <StyledTableRowWithoutHighlight style={{ background: '#CCC' }}>
                       <StyledTableCell>Total</StyledTableCell>
                       <StyledTableCell>
                         {currencyFormat(TotalDuplicatas.reduce((accumulator, dup) => {

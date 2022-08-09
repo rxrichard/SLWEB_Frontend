@@ -13,7 +13,7 @@ import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import Home from "../../pages/dashboard/index";
-import Monitor from "../../pages/Monitor/index";
+import Monitor from "../../pages/monitor/index";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
 import Compras from '../../pages/compras/index'
@@ -46,10 +46,9 @@ function Dashboard(props) {
         <div id="App">
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/carrinho" component={TelaCarrinho} />
+
             <Route exact path={validateRouteAccess("/leads")} component={Leads} />
             <Route exact path={validateRouteAccess("/perfil")} component={Perfil} />
-            <Route exact path={validateRouteAccess("/ajuda")} component={Ajuda} />
             <Route exact path={validateRouteAccess("/compras")} component={Compras} />
             <Route exact path={validateRouteAccess("/vendas")} component={Vendas} />
             <Route exact path={validateRouteAccess("/equipamentos")} component={Equipamentos} />
