@@ -57,9 +57,9 @@ const PontosDeVenda = ({ match }) => {
     setTargetPDV({ pdv: null, anx: null })
   }
 
-  return !loaded ? (
-    <Loading />
-  ) : (
+  return !loaded
+    ? <Loading />
+    :
     <Panel style={{ justifyContent: 'flex-start' }}>
       <DetailsModal
         open={detailsModalOpen}
@@ -84,7 +84,6 @@ const PontosDeVenda = ({ match }) => {
         onOpenModal={handleOpenDetailsModal}
       />
     </Panel>
-  );
 }
 
 export default PontosDeVenda;
