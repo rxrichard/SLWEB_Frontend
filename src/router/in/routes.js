@@ -13,7 +13,7 @@ import Equipamentos from '../../pages/equipamentos/index';
 import AddEquipamentos from "../../pages/equipamentosSolicitacao/index";
 import GerenciarEquip from "../../pages/gerenciarSolicitacoes/index";
 import Home from "../../pages/dashboard/index";
-import Monitor from "../../pages/monitor/index";
+import Monitor from "../../pages/Monitor/index";
 import FormsAcompanhamento from "../../pages/formulários_cadastrados";
 import CentralEmails from "../../pages/emails/index";
 import Compras from '../../pages/compras/index'
@@ -52,6 +52,7 @@ function Dashboard(props) {
             <Route exact path={validateRouteAccess("/compras")} component={Compras} />
             <Route exact path={validateRouteAccess("/vendas")} component={Vendas} />
             <Route exact path={validateRouteAccess("/equipamentos")} component={Equipamentos} />
+            <Route exact path={validateRouteAccess("/carrinho")} component={TelaCarrinho} />
             <Route exact path={validateRouteAccess("/solicitacao")} component={AddEquipamentos} />
             <Route exact path={validateRouteAccess("/leituras/:ativo")} component={Coletas} />
             <Route exact path={validateRouteAccess("/leituras")} component={Coletas} />
@@ -67,6 +68,7 @@ function Dashboard(props) {
             <Route exact path={validateRouteAccess("/administracao/leads")} component={GerirLeads} />
             <Route exact path={validateRouteAccess("/administracao/emails")} component={CentralEmails} />
             <Route exact path={validateRouteAccess("/administracao/pedidos/compra")} component={PedidosCompra} />
+            
             <Route exact path={validateRouteAccess("/administracao/franqueados")} component={Franqueados} />
 
             
