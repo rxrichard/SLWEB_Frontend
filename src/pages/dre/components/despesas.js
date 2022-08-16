@@ -4,12 +4,26 @@ import { makeStyles } from '@material-ui/styles'
 
 import { LinhaEditavel } from './linhaEditavel'
 
-export const Despesas = ({ Des }) => {
+export const Despesas = ({ Des, pRef, onUpdateLine }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.root}>
-      {Des.map(d => <LinhaEditavel linha={d} />)}
+      {Des.filter(d => d.DreCod !== 34 && d.DreCod !== 30 && d.DreCod !== 35).map(d =>
+        <LinhaEditavel
+          linha={d}
+          pRef={pRef}
+          onUpdateLine={onUpdateLine}
+        />
+      )}
+      {Des.filter(d => d.DreCod === 34 || d.DreCod === 30 || d.DreCod === 35).map(d =>
+        <LinhaEditavel
+          linha={d}
+          pRef={pRef}
+          onUpdateLine={onUpdateLine}
+          editavel={false}
+        />
+      )}
     </div>
   )
 }

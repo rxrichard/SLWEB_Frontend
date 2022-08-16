@@ -26,6 +26,54 @@ const DRE = () => {
     setSelRef(selref)
   }
 
+  const handleUpdateLine = (lineID, lineValue, linePercentage) => {
+    let oldLine = null
+
+    setDre(oldState => {
+      let aux = [...oldState]
+
+      aux.forEach((l, i) => {
+        if (l.DreCod === lineID) {
+          oldLine = aux[i]
+
+          aux[i] = {
+            ...aux[i],
+            DreVlr: Number(lineValue),
+            DrePorc: linePercentage
+          }
+        }
+      })
+
+      return aux
+    })
+
+    api.put('/dre', {
+      ano: moment(selRef).get('year'),
+      mes: moment(selRef).add(3, 'hours').get('month') + 1,
+      cod: lineID,
+      vlr: Number(lineValue),
+      porc: linePercentage
+    }).then(response => {
+      setDre(response.data.DRE)
+      setDov(response.data.DOV)
+    }).catch(err => {
+      setDre(oldState => {
+        let aux = [...oldState]
+
+        aux.forEach((l, i) => {
+          if (l.DreCod === lineID) {
+            oldLine = aux[i]
+
+            aux[i] = oldLine
+          }
+        })
+
+        return aux
+      })
+    })
+
+  }
+
   const loadRefs = async () => {
     try {
       const response = await api.get(`/dre/referencia`)
@@ -53,22 +101,22 @@ const DRE = () => {
   }
 
   const handleSubmit = async () => {
-    let toastId = null
+    //   let toastId = null
 
-    try {
-      toastId = Toast('Aguarde...', 'wait')
+    //   try {
+    //     toastId = Toast('Aguarde...', 'wait')
 
-      await api.post('/dre', {
-        ano: moment(selRef).get('year'),
-        mes: moment(selRef).add(3, 'hours').get('month') + 1,
-        DRE: dre,
-        DOV: dov,
-      })
+    //     await api.post('/dre', {
+    //       ano: moment(selRef).get('year'),
+    //       mes: moment(selRef).add(3, 'hours').get('month') + 1,
+    //       DRE: dre,
+    //       DOV: dov,
+    //     })
 
-      Toast('DRE gravado', 'update', toastId, 'success')
-    } catch (err) {
-      Toast('Falha ao gravar DRE', 'update', toastId, 'error')
-    }
+    //     Toast('DRE gravado', 'update', toastId, 'success')
+    //   } catch (err) {
+    //     Toast('Falha ao gravar DRE', 'update', toastId, 'error')
+    //   }
   }
 
   useEffect(() => {
@@ -89,12 +137,14 @@ const DRE = () => {
           <div className='XAlign' style={{ height: 'calc(100% - 70.91px)', width: '100%' }}>
             <section className={classes.metadinha}>
               <Resumo
-                Res={dre.filter(d => d.DreCod < 23)}
+                Res={dre.filter(d => d.DreCod < 23 || d.DreCod === 35)}
               />
             </section>
             <section className={classes.metadinha}>
               <Despesas
-                Des={dre.filter(d => d.DreCod > 22)}
+                Des={dre.filter(d => d.DreCod > 22 && d.DreCod !== 35)}
+                onUpdateLine={handleUpdateLine}
+                pRef={dre.filter(d => d.DreCod === 1)[0]?.DreVlr}
               />
               <DespesasVariaveis
                 DesV={dov}
