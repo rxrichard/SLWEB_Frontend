@@ -11,7 +11,6 @@ import { Options } from './components/options'
 
 import { Panel } from '../../components/commom_in'
 import Loading from '../../components/loading_screen'
-import { Toast } from '../../components/toasty'
 
 const DRE = () => {
   const classes = useStyles()
@@ -26,16 +25,34 @@ const DRE = () => {
     setSelRef(selref)
   }
 
-  const handleUpdateLine = (lineID, lineValue, linePercentage) => {
-    let oldLine = null
+  const handleAddNewDOVLine = () => {
+    let nextId = 1
 
+    dov.forEach(item => {
+      if (item.DOVCod >= nextId) {
+        nextId = item.DOVCod + 1
+      }
+    })
+
+    setDov(oldState => ([
+      ...oldState,
+      {
+        GrpVen: null,
+        DOVRef: null,
+        DOVCod: nextId,
+        DOVDesc: "Nova Despesa",
+        DOVTipo: null,
+        DOVVlr: 0
+      }
+    ]))
+  }
+
+  const handleUpdateLineDre = (lineID, lineValue, linePercentage) => {
     setDre(oldState => {
       let aux = [...oldState]
 
       aux.forEach((l, i) => {
         if (l.DreCod === lineID) {
-          oldLine = aux[i]
-
           aux[i] = {
             ...aux[i],
             DreVlr: Number(lineValue),
@@ -46,7 +63,27 @@ const DRE = () => {
 
       return aux
     })
+  }
 
+  const handleUpdateLineDov = (lineID, lineValue, lineDesc) => {
+    setDov(oldState => {
+      let aux = [...oldState]
+
+      aux.forEach((l, i) => {
+        if (l.DOVCod === lineID) {
+          aux[i] = {
+            ...aux[i],
+            DOVVlr: Number(lineValue),
+            DOVDesc: lineDesc
+          }
+        }
+      })
+
+      return aux
+    })
+  }
+
+  const syncChangesDre = async (lineID, lineValue, linePercentage) => {
     api.put('/dre', {
       ano: moment(selRef).get('year'),
       mes: moment(selRef).add(3, 'hours').get('month') + 1,
@@ -57,21 +94,25 @@ const DRE = () => {
       setDre(response.data.DRE)
       setDov(response.data.DOV)
     }).catch(err => {
-      setDre(oldState => {
-        let aux = [...oldState]
-
-        aux.forEach((l, i) => {
-          if (l.DreCod === lineID) {
-            oldLine = aux[i]
-
-            aux[i] = oldLine
-          }
-        })
-
-        return aux
-      })
+      setDre(err.response.data.DRE)
+      setDov(err.response.data.DOV)
     })
+  }
 
+  const syncChangesDov = async (lineID, lineValue, lineDesc) => {
+    api.put('/dov', {
+      ano: moment(selRef).get('year'),
+      mes: moment(selRef).add(3, 'hours').get('month') + 1,
+      cod: lineID,
+      vlr: Number(lineValue),
+      desc: lineDesc
+    }).then(response => {
+      setDre(response.data.DRE)
+      setDov(response.data.DOV)
+    }).catch(err => {
+      setDre(err.response.data.DRE)
+      setDov(err.response.data.DOV)
+    })
   }
 
   const loadRefs = async () => {
@@ -101,22 +142,7 @@ const DRE = () => {
   }
 
   const handleSubmit = async () => {
-    //   let toastId = null
-
-    //   try {
-    //     toastId = Toast('Aguarde...', 'wait')
-
-    //     await api.post('/dre', {
-    //       ano: moment(selRef).get('year'),
-    //       mes: moment(selRef).add(3, 'hours').get('month') + 1,
-    //       DRE: dre,
-    //       DOV: dov,
-    //     })
-
-    //     Toast('DRE gravado', 'update', toastId, 'success')
-    //   } catch (err) {
-    //     Toast('Falha ao gravar DRE', 'update', toastId, 'error')
-    //   }
+    alert('qualquer coisa')
   }
 
   useEffect(() => {
@@ -134,7 +160,7 @@ const DRE = () => {
     : (
       <Panel>
         <div className='YAlign' style={{ height: '100%', width: '100%', flexWrap: 'nowrap' }}>
-          <div className='XAlign' style={{ height: 'calc(100% - 70.91px)', width: '100%' }}>
+          <div className='XAlign'>
             <section className={classes.metadinha}>
               <Resumo
                 Res={dre.filter(d => d.DreCod < 23 || d.DreCod === 35)}
@@ -143,11 +169,16 @@ const DRE = () => {
             <section className={classes.metadinha}>
               <Despesas
                 Des={dre.filter(d => d.DreCod > 22 && d.DreCod !== 35)}
-                onUpdateLine={handleUpdateLine}
+                onChangeValue={handleUpdateLineDre}
+                onUpdateLine={syncChangesDre}
                 pRef={dre.filter(d => d.DreCod === 1)[0]?.DreVlr}
               />
               <DespesasVariaveis
                 DesV={dov}
+                onAddNewLine={handleAddNewDOVLine}
+                AllowAddNewLine={selRef !== ''}
+                onChangeValue={handleUpdateLineDov}
+                onUpdateLine={syncChangesDov}
               />
             </section>
           </div>

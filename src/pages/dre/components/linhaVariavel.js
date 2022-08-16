@@ -1,40 +1,38 @@
 import React from 'react'
+import NumberFormat from 'react-number-format'
 
-import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 
-export const LinhaVariavel = ({ linha }) => {
+export const LinhaVariavel = ({ linha, onChangeValue, onUpdateLine }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.root}>
-      {/* <p>{linha.DreCod}</p> */}
-      <Typography
-        className={classes.desc}
-        variant="subtitle1"
-      >
-        {linha.DOVDesc}
-      </Typography>
+      <input
+        className={classes.input}
+        type="text"
+        value={linha.DOVDesc}
+        onChange={(e) => onChangeValue(linha.DOVCod, linha.DOVVlr, e.target.value)}
+        onBlur={() => onUpdateLine(linha.DOVCod, linha.DOVVlr, linha.DOVDesc)}
+      />
+
       <div className={classes.valuesDiv}>
-        <Typography
+        <NumberFormat
+          value={linha.DOVVlr}
           className={classes.values}
-          variant="subtitle1"
-        >
-          <strong>
-            {new Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-            }).format(linha.DOVVlr)}
-          </strong>
-        </Typography>
-        {/* <Typography
-          className={classes.percentages}
-          variant="subtitle1"
-        >
-          <strong style={{ color: RED_PRIMARY }}>
-            {String(Number(linha.DrePorc * 100).toFixed(2)).padStart(6, ' ') + '%'}
-          </strong>
-        </Typography> */}
+          placeholder='R$'
+          type='text'
+          prefix='R$'
+          allowNegative={false}
+          allowLeadingZeros={false}
+          allowedDecimalSeparators={false}
+          decimalSeparator=','
+          thousandSeparator='.'
+          decimalScale={2}
+          onBlur={() => onUpdateLine(linha.DOVCod, linha.DOVVlr, linha.DOVDesc)}
+          onValueChange={(e) => onChangeValue(linha.DOVCod, e.value, linha.DOVDesc)}
+          disabled={false}
+        />
       </div>
     </div>
   )
@@ -49,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'nowrap',
     width: '100%',
     height: '25px',
-    padding: '0px 16px'
+    padding: '0px 0px 8px 0px !important'
   },
   valuesDiv: {
     display: 'flex',
@@ -58,18 +56,19 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     flexWrap: 'nowrap',
     height: '25px',
+    margin: '0px 8px 0px 8px'
   },
-  desc: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
+  input: {
+    width: '100% !important',
+    background: '#CCC !important',
+    padding: '4px 0px 4px 8px !important',
+    height: '100% !important',
+    margin: '0px 8px 0px 8px !important',
   },
   values: {
-    padding: '0px 4px 0px 0px',
-    width: '100px'
-  },
-  percentages: {
-    padding: '0px 0px 0px 4px',
-    width: '70px'
+    padding: '0px 0px 0px 8px !important',
+    width: '80px !important',
+    background: '#CCC !important',
+    height: '100% !important',
   }
 }))

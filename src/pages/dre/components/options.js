@@ -103,7 +103,7 @@ export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) =>
             <em>Selecione...</em>
           </MenuItem>
           {refList.map(r => (
-            <MenuItem value={r.Refdt}>{r.RefMes}/{r.RefAno}</MenuItem>
+            <MenuItem key={r.Refdt} value={r.Refdt}>{r.RefMes}/{r.RefAno}</MenuItem>
           ))}
         </Select>
       </FormControl>

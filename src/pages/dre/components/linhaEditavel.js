@@ -6,8 +6,8 @@ import { makeStyles } from '@material-ui/styles'
 
 import { RED_PRIMARY } from '../../../misc/colors'
 
-export const LinhaEditavel = ({ linha, pRef, onUpdateLine, editavel = true }) => {
-  const classes = useStyles()
+export const LinhaEditavel = ({ linha, pRef, onChangeValue, onUpdateLine, editavel = true }) => {
+  const classes = useStyles({ editavel })
 
   return (
     <div className={classes.root}>
@@ -23,15 +23,16 @@ export const LinhaEditavel = ({ linha, pRef, onUpdateLine, editavel = true }) =>
           value={linha.DreVlr}
           placeholder='R$'
           type='text'
+          prefix='R$'
           allowNegative={false}
           allowLeadingZeros={false}
-          allowedDecimalSeparators={false}
+          allowedDecimalSeparators={true}
           decimalSeparator=','
           thousandSeparator='.'
           decimalScale={2}
-          onBlur={e => console.log(e.value)}
+          onBlur={() => onUpdateLine(linha.DreCod, linha.DreVlr, (linha.DreVlr / pRef))}
           onValueChange={editavel
-            ? (e) => onUpdateLine(linha.DreCod, e.value, (e.value / pRef))
+            ? (e) => onChangeValue(linha.DreCod, e.value, (e.value / pRef))
             : () => { }
           }
           disabled={!editavel}
@@ -50,7 +51,7 @@ export const LinhaEditavel = ({ linha, pRef, onUpdateLine, editavel = true }) =>
 }
 
 const calculatePercentage = (amount, refAmount) => {
-  return String(Number((amount / refAmount) * 100).toFixed(2)).padStart(6, ' ') + '%'
+  return String(Number((amount / refAmount) * 100).toFixed(2)) + '%'
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -62,26 +63,29 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'nowrap',
     width: '100%',
     height: '25px',
-    padding: '0px 16px',
+    padding: '14px 16px !important',
   },
-  valuesDiv: {
+  valuesDiv: (props) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'nowrap',
     height: '25px',
-  },
+    // background: props.editavel === false ? '#CCC' : 'transparent'
+  }),
   desc: {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
   },
-  values: {
-    padding: '0px 4px 0px 0px',
-    width: '100px !important',
-    background: 'rgba(204, 204, 204, 0.1)'
-  },
+  values: (props) => ({
+    padding: '0px 0px 0px 8px !important',
+    width: '80px !important',
+    border: 'none !important',
+    background: props.editavel === true ? '#CCC !important' : 'transparent',
+    height: '100% !important',
+  }),
   percentages: {
     padding: '0px 0px 0px 4px',
     width: '70px'
