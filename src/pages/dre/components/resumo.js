@@ -9,7 +9,7 @@ export const Resumo = ({ Res }) => {
 
   return (
     <div className={classes.root} >
-      {Res.map(r => <LinhaFixa linha={r}/>)}
+      {Res.map(r => <LinhaFixa key={r.DreCod} linha={r}/>)}
     </div>
   )
 }
