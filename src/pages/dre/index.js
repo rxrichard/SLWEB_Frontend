@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 import { api } from '../../services/api'
+import { saveAs } from 'file-saver'
 
 import { makeStyles } from '@material-ui/styles'
 
@@ -11,6 +12,7 @@ import { Options } from './components/options'
 
 import { Panel } from '../../components/commom_in'
 import Loading from '../../components/loading_screen'
+import { Toast } from '../../components/toasty'
 
 const DRE = () => {
   const classes = useStyles()
@@ -30,7 +32,7 @@ const DRE = () => {
 
     dov.forEach(item => {
       if (item.DOVCod >= nextId) {
-        nextId = item.DOVCod + 1
+        nextId = Number(item.DOVCod) + 1
       }
     })
 
@@ -145,6 +147,48 @@ const DRE = () => {
     alert('qualquer coisa')
   }
 
+  const handleDownloadExcel = async (type) => {
+    const ano = moment(selRef).get('year')
+    const mes = moment(selRef).add(3, 'hours').get('month') + 1
+
+    let toastId = null
+    toastId = Toast('Gerando excel...', 'wait')
+
+    try {
+      if (type === 'DRE') {
+        const response = await api.get(
+          `/dre/excel/dre/${ano}/${mes}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
+
+        const blob = new Blob([response.data], { type: 'application/octet-stream' });
+
+        saveAs(blob, `DRE_${ano}_${mes}.xlsx`);
+
+        Toast('Excel recebido!', 'update', toastId, 'success')
+      } else if (type === 'BASE') {
+        const response = await api.get(
+          `/dre/excel/baseroy/${ano}/${mes}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
+
+        const blob = new Blob([response.data], { type: 'application/octet-stream' });
+
+        saveAs(blob, `Base Royalties_${ano}_${mes}.xlsx`);
+
+        Toast('Excel recebido!', 'update', toastId, 'success')
+      }else{
+        throw new Error()
+      }
+    } catch (err) {
+      Toast('Falha ao gerar excel', 'update', toastId, 'error')
+    }
+  }
+
   useEffect(() => {
     loadRefs()
   }, [])
@@ -189,6 +233,7 @@ const DRE = () => {
               refList={refs}
               onReload={loadData}
               onSave={handleSubmit}
+              onDownloadExcel={handleDownloadExcel}
             />
           </section>
         </div>

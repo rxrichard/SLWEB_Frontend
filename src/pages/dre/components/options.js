@@ -7,7 +7,7 @@ import { Refresh as RefreshIcon, Save as SaveIcon } from '@material-ui/icons'
 
 import ExcelLogo from '../../../assets/svg/EXCEL.svg';
 
-export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) => {
+export const Options = ({ onChange, selectedRef, refList, onReload, onSave, onDownloadExcel }) => {
   const classes = useStyles();
 
   return (
@@ -25,7 +25,7 @@ export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) =>
         placement="top"
         arrow={true}
       >
-        <IconButton disabled={selectedRef === ''} onClick={() => alert('Gerar Excel base de cálculo de royalties')} aria-label="Excel">
+        <IconButton disabled={selectedRef === ''} onClick={() => onDownloadExcel('BASE')} aria-label="Excel">
           <img
             src={ExcelLogo}
             width='23px'
@@ -47,7 +47,7 @@ export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) =>
         placement="top"
         arrow={true}
       >
-        <IconButton disabled={selectedRef === ''} onClick={() => alert('Gerar Excel DRE')} aria-label="Excel" color='primary'>
+        <IconButton disabled={selectedRef === ''} onClick={() => onDownloadExcel('DRE')} aria-label="Excel" color='primary'>
           <img
             src={ExcelLogo}
             width='23px'
@@ -56,7 +56,7 @@ export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) =>
           />
         </IconButton>
       </Tooltip>
-      <Tooltip
+      {/* <Tooltip
         title={
           <div
             style={{ fontSize: "14px", color: "#FFF", lineHeight: "20px" }}
@@ -72,7 +72,7 @@ export const Options = ({ onChange, selectedRef, refList, onReload, onSave }) =>
         <IconButton disabled={selectedRef === ''} onClick={onSave} aria-label="save" color='primary'>
           <SaveIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip
         title={
           <div
