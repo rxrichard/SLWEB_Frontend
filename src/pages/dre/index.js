@@ -202,15 +202,30 @@ const DRE = () => {
   return !loaded
     ? <Loading />
     : (
-      <Panel>
-        <div className='YAlign' style={{ height: '100%', width: '100%', flexWrap: 'nowrap' }}>
-          <div className='XAlign'>
-            <section className={classes.metadinha}>
+      <Panel className={classes.panelMob}>
+       
+        <div className='YAlign' style={{height: '100%', width: '100%', flexWrap: 'nowrap', justifyContent:'flex-start'}}>
+          <div className='XAlign'style={{alignItems:'flex-start',height:'100%'}}>
+          <section className={classes.barraDeBotoes}>
+            <Options
+              onChange={handleUpdateSelectedRef}
+              selectedRef={selRef}
+              refList={refs}
+              onReload={loadData}
+              onSave={handleSubmit}
+              onDownloadExcel={handleDownloadExcel}
+            />
+          </section>
+          
+            <section className={classes.metadinha} style={{height:'85%'}}>
+       
               <Resumo
                 Res={dre.filter(d => d.DreCod < 23 || d.DreCod === 35)}
               />
+              
             </section>
-            <section className={classes.metadinha}>
+            <section className={classes.metadinha}style={{ height: '83%'}}>
+        
               <Despesas
                 Des={dre.filter(d => d.DreCod > 22 && d.DreCod !== 35)}
                 onChangeValue={handleUpdateLineDre}
@@ -224,18 +239,12 @@ const DRE = () => {
                 onChangeValue={handleUpdateLineDov}
                 onUpdateLine={syncChangesDov}
               />
+               
             </section>
+           
+           
           </div>
-          <section className={classes.barraDeBotoes}>
-            <Options
-              onChange={handleUpdateSelectedRef}
-              selectedRef={selRef}
-              refList={refs}
-              onReload={loadData}
-              onSave={handleSubmit}
-              onDownloadExcel={handleDownloadExcel}
-            />
-          </section>
+          
         </div>
       </Panel>
     )
@@ -248,7 +257,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     height: '100%',
-    width: '100%',
+    width: '100%', 
+ 
   },
   metadinha: {
     display: 'flex',
@@ -257,17 +267,33 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-start',
     width: '50%',
     minWidth: '300px',
-    height: '100%',
+    height: '75%',
 
-    '@media (max-width: 900px)': {
-      width: '100%',
+    '@media (max-width: 719px)': {
+      width: 'auto',
+      marginBottom:'35px'
     }
   },
+
   barraDeBotoes: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+
+    '@media (max-width: 719px)': {
+      height:'auto',
+      display:'inline-block',
+      justifyContent:'center',
+      alignItems:'flex-end'
+    }
+  },
+  panelMob:{
+
+    '@media (max-width: 719px)': {
+      height:'auto !important' ,
+      padding:'25px 0px',
   }
+  },
 }))

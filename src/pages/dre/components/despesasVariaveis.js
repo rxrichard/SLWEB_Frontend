@@ -10,6 +10,7 @@ export const DespesasVariaveis = ({ DesV, onAddNewLine, AllowAddNewLine, onChang
   const classes = useStyles()
 
   return (
+    <>
     <div className={classes.root}>
       {DesV.map(d =>
         <LinhaVariavel
@@ -19,7 +20,8 @@ export const DespesasVariaveis = ({ DesV, onAddNewLine, AllowAddNewLine, onChang
           onUpdateLine={onUpdateLine}
         />
       )}
-      <Button
+    </div>
+    <Button style={{width:'98%'}}
         variant="contained"
         color="primary"
         startIcon={<AddIcon />}
@@ -28,7 +30,7 @@ export const DespesasVariaveis = ({ DesV, onAddNewLine, AllowAddNewLine, onChang
       >
         Nova Despesa Variável
       </Button>
-    </div>
+    </>
   )
 }
 
